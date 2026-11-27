@@ -33,19 +33,6 @@ test("Habitat's Cross module: one row of up to seven, two rows of up to seven to
   assert.deepEqual([one.upTo, one.grid, two.upTo, two.grid[0]], [7, [7, 1], F.max, 7]); assert.ok(two.pitch[1] >= two.first[3], "the rows do not overlap");
   holds(F, range(1, F.max), "cross faces"); refuses(F, F.max + 1, "cross faces");
 });
-test("Cargo's find strip: one row of up to seven", () => {
-  const F = S("cargo").regions.hatch.strip.find; assert.equal(most(F), F.max); holds(F, range(1, F.max), "finds"); refuses(F, F.max + 1, "finds");
-});
-test("Cargo's arrival band: who leaves, one to three faces, every form right-aligned to one edge", () => {
-  const B = S("cargo").regions.arrival.band.leaving; holds(B, range(1, 3), "leaving faces"); refuses(B, 4, "leaving faces");
-  const right = (n) => { const b = listPitch(B, n, n - 1); return b[0] + b[2]; }; assert.equal(right(2), right(1)); assert.equal(right(3), right(1));
-  for (let n = 1; n <= 3; n++) assert.deepEqual(listPitch(B, n, 0).slice(2), B.faceSize, `the faces of ${n} at faceSize`);
-});
-test("Cargo's arrival band: the Probe's plates, up to four, at the icon size the props still read", () => {
-  const B = S("cargo").regions.arrival.band.probe, F = B.forms.row;
-  assert.equal(F.upTo, 4, "the Probe's shield is at most four plates (state.mjs TIER)"); assert.deepEqual(F.first.slice(2), B.size);
-  holds(B, range(1, 4), "probe plates"); refuses(B, 5, "a fifth plate (a new tier must add a form)");
-});
 test("the Probe bench: the switch's plates and what the upgrade adds, inside their modules, at the icon size the props still read", () => {
   const b = S("bench").regions, inside = (r, m) => r[0] >= m[0] && r[1] >= m[1] && r[0] + r[2] <= m[0] + m[2] && r[1] + r[3] <= m[1] + m[3];
   const M = b.switch.meaning.plates; holds(M, range(1, 4), "switch plates"); refuses(M, 5, "switch plates"); assert.deepEqual(M.forms.row.first.slice(2), M.icon);
@@ -58,10 +45,9 @@ test("the decision panel: one to three cards at the widths the spec's limits nam
   assert.equal(most(C), C.max); for (let n = 1; n <= C.max; n++) { holds(C, [n], "cards"); assert.equal(listPitch(C, n, 0)[2], P.limits[n].card, "the width the spec's limits name"); }
   refuses(C, C.max + 1, "cards");
 });
-test("the name tags' plates and Cargo's dock ribbon: bounds that are multiples of the step, and the ribbon's most its rect's width", () => {
+test("the name tags' plates: bounds that are multiples of the step", () => {
   for (const f of ["home", "vivarium", "habitat"]) {
     const N = S(f).regions.nameTag, P = N.plate; assert.ok(P.min % P.round === 0 && P.max % P.round === 0 && P.min <= P.max, f + ": min and max on the step");
     for (let tw = 0; tw <= 260; tw++) { const w = plateWidth(N, tw); assert.ok(w % P.round === 0 && w >= P.min && w <= P.max, `${f} ${tw}`); }
   }
-  const R = S("cargo").regions.dockRibbon; assert.equal(R.plate.max, R.rect[2], "the ribbon is at most its rect's width"); assert.equal(R.plate.pad, R.pad);
 });

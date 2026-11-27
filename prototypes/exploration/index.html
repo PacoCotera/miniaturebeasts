@@ -241,6 +241,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf, makeHauntWalk } from "./src/world7.mjs";
 import { nightTable } from "./src/night.mjs";
+import { cardFrames, cardStep, rgbaOf } from "./src/card-motion.mjs";
 import { duskTable, duskLitRgb } from "./src/dusk.mjs";
 import { cutName, kindId, CUT_DIR } from "./src/riding-cut.mjs";
 import { beatOf, poseOf, stripPoses, chipOf, givesNow, drawsCut } from "./src/watch.mjs";
@@ -633,6 +634,8 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
 const PROP_DY = { 'find-glint-1': 0, 'find-tuft-1': 0,'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'crate-sealed-lid': 0, 'crate-sealed-icon': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+  // her night pod (signed, mibi-art ledger; pod-sleep-pixel-3): the 24 x 14 piece, the 32 x 32 land tile (foot on row 31; the pawn's foot is row 30, so -1) and the 32 x 18 Case cut
+  'night-pod-loika-24x14': 0, 'NIGHT_POD_LOIKA-tile-32x32': -1, 'night-pod-loika-case-32x18': 0,
   // the walk cups (surface and cave, empty and full), the cave crystals (dim, lit), the mushroom ring and the burrow (open, closed; deep-shadow #141b1b): art/desk f66de6a16, 32 x 32; foot row as the code-drawn ones were
   'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (12 x 14, signed 1x, mibi-art 75f1ff195) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
@@ -641,7 +644,7 @@ const PROP_DY = { 'find-glint-1': 0, 'find-tuft-1': 0,'way-through-mark-stone': 
     // the explorer: nine 32 x 32 frames, feet on row 30 (mibi-art 9c1bf9ece), blitted at the cell's top-left as the code-drawn one was
     ...['down-0', 'down-1', 'up-0', 'up-1', 'left-0', 'left-1', 'creep-down', 'creep-up', 'creep-left'].map(n => 'pawn-' + n)].map(n => [n, 0])) };
 const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
-const PROP_SIZE = { 'heart-slab': [32, 20], 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'crate-sealed-lid': [48, 36], 'crate-sealed-icon': [16, 14], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32],
+const PROP_SIZE = { 'night-pod-loika-24x14': [24, 14], 'NIGHT_POD_LOIKA-tile-32x32': [32, 32], 'night-pod-loika-case-32x18': [32, 18], 'heart-slab': [32, 20], 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'crate-sealed-lid': [48, 36], 'crate-sealed-icon': [16, 14], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
   ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-' + s, [12, 14]])), 'pod-walk-bone': [15, 16],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['walk-depot-' + s, [43, 47]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['walk-beacon-' + s, [20, 44]])) };
@@ -1137,7 +1140,7 @@ function firstHome() {
 const firstWalk = () => !!S && !(RT && RT.readOnly) && !firstHome();
 // The one teaching line due now on the first walk, or '' (each line waits for its deed; the Station's goal takes over once the pod is home).
 // A pod this place shows now (a Call lifted it, or the veil does): the glint to go to.
-const podShown = key => S.pods.some(p => p.k === key && !p.h && p.x >= 0 && unveiled(key, p.x, p.y));
+const podShown = (key, night) => S.pods.some(p => p.k === key && !p.h && p.x >= 0 && isNightPod(p) === !!night && unveiled(key, p.x, p.y));   // a pod in view: the built kind's, or (night) her night pod
 // The first walk's pod beat as a way from here: the nearest buried pod, in this place or next door; { dir: 'north-east', vx, vy } or null.
 const DIR_VEC = { 'north': [0, -1], 'south': [0, 1], 'east': [1, 0], 'west': [-1, 0], 'north-east': [1, -1], 'north-west': [-1, -1], 'south-east': [1, 1], 'south-west': [-1, 1] };
 function beatWay(P) {
@@ -1181,7 +1184,9 @@ function teachStep() {
   if (S.phase === 'place') return T.place;
   if (S.phase === 'map') return ex.cargo.pods.length && ex.pos === ex.start ? T.endHere : T.go;
   const P = S.phase === 'patch' ? ex.patch : null; if (!P) return '';
+  { const np = S.pods.find(p => isNightPod(p) && p.k === P.key && !p.h && unveiled(P.key, p.x, p.y)); if (np && !ex.cargo.pods.some(isNightPod) && !S.found.includes('teach:nightpod')) return WORDS.pod.podTeach(np.nm); }   // pod-sleep-build-1: her pod in sight: the line names her, never the built line for a pod (once per save: spent when she is taken up)
   if (!ex.cargo.pods.length) { if (podShown(P.key)) return T.pod;   // her own pod, in sight
+    let c0 = ex.carry === 'fruit' ? indInSight() : null; if (c0 && !onScreen(c0.x, c0.y)) c0 = null; if (c0 && S.named && S.named[c0.id] && !S.found.includes('teach:eats')) return WORDS.pod.eatsTeach(S.named[c0.id]);   // fruit in hand, a named Loika in sight: once per save (spent at the feed)
     const w = loikaTeach(); if (w) return w; }   // W5: the next deed with a named Loika, in the words W4 uses
   if (!ex.cargo.e && layout(P.key).feats.some(f => f.kind === 'k' && stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f))) return T.stone;
   { const wl = whereTeach(P); if (wl) return wl; }   // first-walk-teach-approach-1: where she comes, in a place with none
@@ -1192,7 +1197,7 @@ function teachStep() {
 function namedCells() {
   // round 2: not keyed on PLACES.epoch (it climbs with every place the worker delivers); keyed on the reach and on how many of the Loika's reach cells have their place, and a cell is checked once (memo) when its place arrives
   const ex = S.exp, reach = new Set(ex.reach.map(Number)), cand = [];
-  for (const q of S.cr) { if (q.sp !== 0 || q.cv || !reach.has(+q.c) || cand.some(x => x.c === +q.c)) continue; cand.push({ c: +q.c, q }); }
+  for (const q of S.cr) { if (q.sp !== 0 || q.cv || q.home || !reach.has(+q.c) || cand.some(x => x.c === +q.c)) continue; cand.push({ c: +q.c, q }); }
   const have = cand.filter(x => placeHave(String(x.c))).length, key = S.seed + '|' + S.cr.length + '|' + ex.reach.length + '|' + have;
   if (RT.namedCells && RT.namedCells.key === key) return RT.namedCells.list;
   const memo = (RT.namedMemo && RT.namedMemo.seed === S.seed) ? RT.namedMemo : (RT.namedMemo = { seed: S.seed, m: new Map() }), list = [];
@@ -1241,10 +1246,10 @@ function teachFill() {
 // The goal line: F1-F3 before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
 // W5 (first walk): the named Loika he follows; { id, name } or null when none is met.
 function metBest() {
-  const nm = S.named || {}, order = (S.metIds || []).filter(id => nm[id]);
-  for (const id of Object.keys(nm)) if (!order.includes(id)) order.push(id);   // a save from before the met order: by id
+  const nm = S.named || {}, gone = S.homeIds || {}, order = (S.metIds || []).filter(id => nm[id] && !gone[id]);   // pod-sleep-build-1: one gone home is skipped: the goal moves to the next Loika met
+  for (const id of Object.keys(nm)) if (!order.includes(id) && !gone[id]) order.push(id);   // a save from before the met order: by id
   // owner note 167 (rule 47a): the one he follows is the named Loika he last faced, watched or noted (S.follow); before any of those the first named one he met; a Loika newly seen never takes it
-  const id = S.follow && nm[S.follow] ? S.follow : order[0]; return id ? { id, name: nm[id] } : null;
+  const id = S.follow && nm[S.follow] && !gone[S.follow] ? S.follow : order[0]; return id ? { id, name: nm[id] } : null;
 }
 // owner note 167: facing, watching or noting a named Loika makes her the one followed
 function followSet(c) { if (RT.readOnly || !c || !c.ind || !S.named || !S.named[c.id]) return; S.follow = String(c.id); }
@@ -2399,8 +2404,10 @@ function advance(scope, info) {
   if (ex.shield <= 0 && !ex.dark) goDark(ex);   // the break ends nothing (owner 11-22 "expeditions do not end until the player says so"): the Probe goes dark where you stand
   if (S.day.spent >= DAY.light && !ex.ending) nightPasses();   // the night does not end the walk: the world turns, a new day starts where the explorer stands
   else if (!ex.ending) { const part1 = dayPart();   // dusk and night are news, never a threat: once each, when the clock crosses into them
-    if (part1 !== part0 && part1 === 'dusk') { if (!cardShow('dusk')) fxMsg(DAY_TEXT.duskNews(untilNext()), 3); }
-    else if (part1 !== part0 && part1 === 'night') { if (!cardShow('night')) fxMsg(DAY_TEXT.nightNews(untilNext()), 3); } }
+    if (part1 !== part0 && part1 === 'dusk') { const fed = fedNames(); if (!cardShow('dusk') && !fed.length) fxMsg(DAY_TEXT.duskNews(untilNext()), 3); if (fed.length) fxMsg(DAY_TEXT.duskFed(fed), 3); }   // pod-sleep-build-1: on a fed day the dusk line names her (two fed: the first and a count)
+    else if (part1 !== part0 && part1 === 'night') { const r = closeSleepers(); if (!cardShow('night') && !r.fed) fxMsg(DAY_TEXT.nightNews(untilNext()), 3);
+      if (r.closed.length === 1) fxMsg(DAY_TEXT.nightFed(r.closed[0]), 3); else if (r.closed.length > 1) fxMsg(DAY_TEXT.nightFedMore(r.closed[0], r.closed.length - 1), 3);
+      for (const n of r.woken) fxMsg(DAY_TEXT.nightWoken(n), 3); } }
   save();
 }
 // night step 4: the dusk, night and dawn cards. Each is the art director's signed painting (night-camp pieces 1 to 3), passed by any press, once a day each.
@@ -2408,6 +2415,7 @@ function advance(scope, info) {
 // When a painting is signed, its file goes in here and cardShow draws it on the Companion's frame; the PR stays draft + hold until all three are.
 // All three cards are in: dusk (sha 53624a5e73b7), night (9454ad7228bf) and dawn (af6e535dac7b), each the art director's signed cut.
 const NIGHT_CARDS = { dusk: { slot: 'dusk card', file: 'art/cards/dusk-card-450x600.png' }, night: { slot: 'night card', file: 'art/cards/night-card-450x600.png' }, dawn: { slot: 'dawn card', file: 'art/cards/dawn-card-450x600.png' } };
+const CARD_LOOP = {};   // kind -> the loop's 4 frames (canvases), beside the still
 const CARD_ART = {};   // kind -> the file's canvas, as loaded (450 x 600: the Companion's whole frame, drawn 1:1 and never redrawn)
 async function loadCardArt() {
   try {
@@ -2419,6 +2427,7 @@ async function loadCardArt() {
       const cv = document.createElement('canvas'); cv.width = 450; cv.height = 600;
       cv.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, 450, 600), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
       CARD_ART[k] = cv;
+      try { CARD_LOOP[k] = cardFrames(k, px.data).map(a => { const f = document.createElement('canvas'); f.width = 450; f.height = 600; f.getContext('2d').putImageData(new ImageData(rgbaOf(a), 450, 600), 0, 0); return f; }); } catch (e) { console.warn('card motion off for ' + k, e); }
     }
   } catch (e) { for (const k in CARD_ART) delete CARD_ART[k]; console.warn('a card did not load; the message-box line stays', e); }
 }
@@ -2429,9 +2438,58 @@ function cardShow(k) {
 }
 // Any press passes the card (and is spent on it); its line goes to the message box then.
 function cardPass() { const k = FX.card.k; FX.card = null; const t = CARD_TEXT[k]; if (t && t[1]) fxMsg(t[1], 3); }
-function drawDuskCard() { const c = FX.card && CARD_ART[FX.card.k]; if (c) { g.imageSmoothingEnabled = false; g.drawImage(c, 0, 0); } }
+// #175: the card moves a little, from its own pixels (src/card-motion.mjs); the still is the fallback and what reduced motion keeps
+function drawDuskCard() { const k = FX.card && FX.card.k, c = k && CARD_ART[k]; if (c) { g.imageSmoothingEnabled = false; const L = CARD_LOOP[k]; g.drawImage(L && motion() ? L[cardStep(k, NOW - FX.card.at)] : c, 0, 0); } }
 // [art] night step 5: her curled token on her bed (night-camp piece 11, 32 px, plain and saddled, 2 breathing frames), signed by the art director (round 4, ledger de7f1e763). drawCreature shows it when curledNow(c) says she is asleep on her bed.
 const CURLED_LOIKA = { slot: WORDS.habit.curledSlot, file: 'art/walk/loika-curl-loika-s01-idle-right-{plain,saddled}-curl-{0,1}.png', plain: [".488A10.21AD10A.19AD8C3DA.17AD2C11DA.15AD2C13DA.13AD2C15DA.12AD2C13AQ2A.12AD2C11A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37", ".457A8.22A2D8A2.19AD8C2D2A.17AD3C10DA.15AD2C13DA.14AD2C14A.13AD2C15DA.12AD2C13AQ2A.12AD2C11A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37"], saddled: [".488A10.21AK7D3A.19AK9C2DA.17AK6C3K2C2DA.15ADK4C10DA.13AD2K3C12DA.12AD2CK2C10AQ2A.12AD2C2KC8A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37", ".457A8.22A2K6D2A2.19AK9CD2A.17AK6C3K2C2DA.15ADK4C10DA.14ADK3C12A.13AD2CK2C12DA.12AD2C2KC10AQ2A.12AD2C11A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37"] };   // signed round 4 (AD, ledger de7f1e763): the four frames as the walk tokens' own row text, byte-for-byte the pictures in art/walk/
+// ---------- pod-sleep-build-1: a named wild Loika fed from the hand sleeps in her pod for the night ----------
+// Her record in S.cr says where she is: w.slept = 1 while she is a pod (off the place's creatures), w.home = 1 once she has gone home with a sealed crate (the realm never spawns her again, whatever REALM_REV is).
+// Her pod is a pod in S.pods (how: 'night', loika: her id, nm: her name, bx/by: her bed's tile), and the same record rides in the Case and the crate.
+const nightOf = p => p.loika != null ? { loika: p.loika, nm: p.nm, bx: p.bx, by: p.by } : {};
+const isNightPod = p => !!p && p.how === 'night' && p.loika != null;
+const fedIds = () => !S.day ? [] : Object.keys(habDay()).filter(k => k.startsWith('fed:')).map(k => k.slice(4));
+const fedNames = () => fedIds().map(id => S.named && S.named[id]).filter(Boolean);
+// at nightfall: fed today and a sleeper at ease at her bed → her token gives way to her pod on that tile. { closed: names, woken: names (fed, but no pod tonight), fed: how many were fed in this place }
+function closeSleepers() {
+  const ex = S.exp, out = { closed: [], woken: [], fed: 0 }; if (!ex) return out;
+  for (const id of fedIds()) {   // every Loika fed today, in whatever place she is: her record (S.cr) says where; a place not visited this walk has her at her bed
+    const w = S.cr.find(q => String(q.id) === id); if (!w || w.slept || w.home || !S.named || !S.named[id] || !fedToday({ ind: 1, id, sp: w.sp })) continue;
+    const key = w.cv ? 'c' + w.c : String(w.c), live = ex.live[key], lay = layout(key), c = live && live.cr.find(q => String(q.id) === id); out.fed++;
+    let at;
+    if (c) { if (!sleeperOf(c) || (c.ease | 0) >= 1) { out.woken.push(S.named[id]); continue; } at = { x: c.x, y: c.y }; }
+    else { const ind = individualOf(w, lay), bed = ind && hauntStand(ind.hs.bed, hauntFree(lay, key, null)); if (!bed) continue; at = bed; }
+    if (podAt(key, at.x, at.y, true)) at = freeAround(key, at.x, at.y, null) || at;   // her young's pod may lie at her bed: hers goes beside it
+    S.pods.push({ id: 'n' + id, k: key, x: at.x, y: at.y, sp: w.sp, h: 0, g: groundName(lay.land, lay.cave), how: 'night', loika: String(id), nm: S.named[id], bx: at.x, by: at.y });   // bx, by: the tile of her bed, where she is "at her bed" at first light
+    if (c) live.cr.splice(live.cr.indexOf(c), 1); w.slept = 1; out.closed.push(S.named[id]); logEv(S.named[id] + ' closed into her pod for the night'); }
+  return out;
+}
+// her page's state line, by her id ('' when she has none to show)
+function herState(id) {
+  id = String(id); const gone = S.homeIds && S.homeIds[id]; if (gone) return WORDS.pod.goneHome(gone.d);
+  if (S.exp && S.exp.cargo.pods.some(p => isNightPod(p) && p.loika === id)) return WORDS.pod.inCase;
+  if (S.pods.some(p => isNightPod(p) && p.loika === id)) return WORDS.pod.asleepPage;
+  const w = S.cr.find(q => String(q.id) === id); return S.day && w && fedToday({ ind: 1, id, sp: w.sp }) ? WORDS.pod.fed : '';
+}
+// End expedition seals her pod in the crate like anything else in the Case: her id is kept gone home, so the realm never spawns it again (the save keeps it whatever REALM_REV is). She keeps her name and her record (S.named, S.habits, S.pages).
+function sendSleepersHome(ex) {
+  for (const q of ex.cargo.pods.filter(isNightPod)) { const w = S.cr.find(r => String(r.id) === q.loika); if (w) { delete w.slept; w.home = 1; }
+    (S.homeIds || (S.homeIds = {}))[q.loika] = { d: ex.n, turn: wTurn() }; if (S.seenAt) delete S.seenAt[q.loika]; logEv(q.nm + ' went home in her pod'); }
+}
+// The bay is full, nothing seals: she is set on the ground, asleep, and wakes there at first light.
+function leaveSleepers(ex) {
+  for (const q of ex.cargo.pods.filter(isNightPod)) { ex.cargo.pods.splice(ex.cargo.pods.indexOf(q), 1); const key = ex.patch ? ex.patch.key : q.k, lay = layout(key), s = ex.patch ? freeAround(key, ex.patch.x, ex.patch.y, null) : { x: q.bx, y: q.by };
+    S.pods.push({ id: 'n' + q.loika, k: key, x: s.x, y: s.y, sp: q.sp, h: 0, g: q.g, how: 'night', ...nightOf(q) }); }
+}
+// first light: a pod of hers lying on the ground opens: she wakes on that tile, in that place, and her day goes on as built (her first haunt). Returns the lines for the message box.
+function wakeSleepers() {
+  const ex = S.exp, lines = [];
+  for (const p of S.pods.filter(isNightPod)) {
+    const w = S.cr.find(q => String(q.id) === p.loika); S.pods.splice(S.pods.indexOf(p), 1); if (!w) continue;
+    const lay = layout(p.k), live = ex && ex.live && ex.live[p.k]; delete w.slept; w.c = lay.cell; w.cv = lay.cave ? 1 : 0;
+    const ind = individualOf(w, lay); if (live && ind) live.cr.push({ id: w.id, sp: w.sp, x: p.x, y: p.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1, ind, ready: false });
+    if (p.x !== p.bx || p.y !== p.by) lines.push(WORDS.pod.wokeSet(p.nm)); }
+  return lines;
+}
 // The day's light is spent: the world turns once (as the night's end did), a fresh day starts, and the walk goes on in the same place with everything as it was.
 function nightPasses() {
   const ex = S.exp, pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
@@ -2440,6 +2498,7 @@ function nightPasses() {
   S.day = freshDay(); ex.stormCells = {}; ex.nights = (ex.nights || 0) + 1;   // the trail and the storm marks are spent in this turn; the end card counts the days
   RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(ripeLoop, 250);
   const a = turned.arrived; ex.nightNews = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] };
+  for (const l of wakeSleepers()) fxMsg(l, 3);   // pod-sleep-build-1: a pod of hers on the ground opens at first light; a pod in the Case stays asleep to the walk's end
   fxMsg(DAY_TEXT.nightPassed(partOfDay(0)), 4);
   for (const l of turned.lines) fxMsg(l, 3);   // the world turn's news, one line at a time in the message box
   cardShow('dawn');   // the new day starts at dawn: its card, once a day, passed by any press
@@ -2611,7 +2670,7 @@ function easeLoika(c, X) {
     else if (e === 'gone') { e5.gone++; e5.heard++; c.go = 0; c.st = 'flee'; c.fl = fleeTiles(spOf(c.sp)); c.t = Math.ceil(c.fl / 2); const h = nextHaunt(c.ind, dayPart()); c.gone = { t: hauntStand(h, hauntFree(X.lay, X.key, c)), night: sleepPart(dayPart()) ? S.turn : null, part: dayPart() }; logEv(c.ind.name ? c.ind.name + ' went to her next haunt for the day' : 'A Loika went to its next haunt for the day'); }
     else if (e === 'settled') { e5.settled++; if (c.ease === 1) { c.st = 'alert'; c.t = 1; c.go = 0; } else { c.st = 'idle'; c.t = 0; } }
   }
-  if (ev.length && !X.away(c) && inSight(c.x, c.y)) fxMsg(ev.includes('gone') ? WORDS.ease.gone(c.ind && c.ind.name) : ev.includes('stirred') ? WORDS.ease.stirred : ev.includes('heard') ? (heard && !X.moved ? WORDS.ease.stayHeard(c.ind && c.ind.name) : WORDS.ease.heard(c.ind && c.ind.name)) : WORDS.ease.settled(c.ind && c.ind.name),ev.includes('gone') ? 3 : 2);
+  if (ev.length && !X.away(c) && inSight(c.x, c.y)) fxMsg(ev.includes('gone') ? WORDS.ease.heardTwice(c.ind && c.ind.name) : ev.includes('stirred') ? WORDS.ease.stirred : ev.includes('heard') ? (heard && !X.moved ? WORDS.ease.stayHeard(c.ind && c.ind.name) : WORDS.ease.heard(c.ind && c.ind.name)) : WORDS.ease.settled(c.ind && c.ind.name),ev.includes('gone') ? 3 : 2);
   return ev;
 }
 const easeEnvNow = () => { const lay = curLay(); return easeEnvOf(lay, !lay.cave && stormRain(lay.cell % MW), !lay.cave && inFog(lay.cell)); };
@@ -2638,7 +2697,7 @@ function nameKind(nm, sp) { return nm + ' · ' + WORDS.ease.wildKind(spOf(sp).na
 // the candidates for the bottom line under a wild one in sight, longest first (the line takes the first that fits): its ease, whether this step would be heard creeping and walking, how long it lets you stay
 function wildCtx(c, nm) {
   const hl = hearLineOf(c); if (!hl) return null;
-  const E = WORDS.ease, who = nm || spName(c.sp), curled = curledNow(c), es = curled ? E.asleepShort : (c.ease | 0) < 1 && habDay()['fed:' + c.id] ? E.fed : E.stage[c.ease | 0], full = E.hear(hl.c, hl.w), cr = E.hearCreep(hl.c), st = hl.left == null ? "" : E.stayShort(hl.left), j = (...p) => p.filter(Boolean).join(" · "), cd = habCardNext(c), cde = curled ? "" : es;   // W4: the card line, what is still to learn
+  const E = WORDS.ease, who = nm || spName(c.sp), curled = curledNow(c), settling = !!c.hb && c.hb.k === 'sleep' && !(c.ease >= 1), es = curled || settling ? E.asleepShort : (c.ease | 0) < 1 && habDay()['fed:' + c.id] ? E.fed : E.stage[c.ease | 0], full = E.hear(hl.c, hl.w), cr = E.hearCreep(hl.c), st = hl.left == null ? "" : E.stayShort(hl.left), j = (...p) => p.filter(Boolean).join(" · "), cd = habCardNext(c), cde = curled ? "" : es;   // W4: the card line, what is still to learn
   if (HUD.ok) return [...(st ? [j(who, es, st), j(who, st)] : []), ...(cd ? [j(who, cde, cd), j(who, cd)] : []), j(who, es), who];   // W6a: the carry ring says whether a step would be heard (rule 21); the stay stays, and the stand-in "creep heard · walk unheard" goes
   return [j(who, es, full, st), j(who, full, st), j(who, full), ...(cd ? [j(who, cde, cd), j(who, cd)] : []), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), who];
 }
@@ -2963,9 +3022,9 @@ function ensureLive(key) {
   for (const p of S.pods.slice()) if (p.k === key && p.x < 0) { const s = findSlotFor(lay, key, p, ent) || freeSpot(key, R, 0, (x, y) => { const d = cheb({ x, y }, ent); return d >= 3 && d <= 6; }) || freeSpot(key, R, 5) || freeAround(key, ent.x, ent.y, null);
     if (s) { p.x = s.x; p.y = s.y; if (p.how === 'shed') { fxGlint(s.x, s.y); logEv('A pod of ' + p.of + "'s line"); } } else { S.pods.splice(S.pods.indexOf(p), 1); logEv('A pod had no room in this place and was dropped'); } }
   const nests = lay.feats.filter(f => f.kind === 'e');
-  const mates = S.cr.filter(w => w.c === lay.cell && !!w.cv === lay.cave).map(w => w.id).sort((a, b) => a - b);   // the cell's creatures by id: they share the template's spawn areas round robin (walk content B6)
+  const mates = S.cr.filter(w => w.c === lay.cell && !!w.cv === lay.cave && !w.slept && !w.home).map(w => w.id).sort((a, b) => a - b);   // the cell's creatures by id: they share the template's spawn areas round robin (walk content B6); one asleep in a pod or gone home is not among them
   for (const w of S.cr) {
-    if (w.c !== lay.cell || !!w.cv !== lay.cave) continue;
+    if (w.c !== lay.cell || !!w.cv !== lay.cave || w.slept || w.home) continue;
     const nest = nests.length ? nests[w.id % nests.length] : null;
     const own = lay.spawns && lay.spawns.filter(q => !q.species.length || q.species.includes((spOf(w.sp).name || '').toLowerCase())), inArea = q => (x, y) => x >= q.x && y >= q.y && x < q.x + q.w && y < q.y + q.h;
     const mine = own && own.length ? own[mates.indexOf(w.id) % own.length] : null, inOwn = own && own.length ? (x, y) => own.some(q => inArea(q)(x, y)) : null;   // a template's spawn areas
@@ -3619,6 +3678,10 @@ function patchAction() {
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
   if (o && o.type === 'slabLeft') return { label: o.f.under === 'mat' ? WORDS.slabTake.mat : WORDS.slabTake.find, run: () => takeSlabLeft(o.f) };
   if (o && o.type === 'tuft') return hn ? hers(hn) : { label: 'Pick up the tuft', run: () => takeTuft(o.tf) };
+  if (o && o.type === 'pod' && isNightPod(o.p)) { const held = ex.cargo.pods.find(isNightPod);   // pod-sleep-build-1: her pod; one sleeper in the Case at a time
+    const pc = [WORDS.pod.line(o.p.nm), WORDS.pod.lineShort(o.p.nm), o.p.nm];   // her line, three forms, the first that fits
+    if (held) return { label: WORDS.pod.second, ctx: pc, dim: true, run: () => { FX.bumpAt = NOW; fxMsg(WORDS.pod.secondMsg(held.nm), 3); } };   // nothing spent
+    return { label: WORDS.pod.take, ctx: pc, run: () => { if (!darkRefuse()) S.ui.swap = { id: o.p.id, sel: 0, night: 1 }; } }; }   // opens the confirm on the chooser's frame (swapState, drawSwap): nothing is spent and nothing moves until its ✓
   if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? SWAP_TEXT.swapTitle : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
   if (o && o.type === 'pt') return idleAct(P, lay);
   if (o && o.type === 'tile' && o.t === T.DEEP && !(lay.coastWater && lay.coastWater(f.x, f.y))) return { label: 'Needs a swimmer', run: swimBump };
@@ -3830,26 +3893,27 @@ function lightBeacon(f) { if (darkRefuse()) return;
   fxMsg((n ? 'The beacon lights the land around · ' + n + ' cell' + (n > 1 ? 's' : '') + ' revealed' : 'The beacon burns · nothing new in sight') + ' · −1 Energy', 2);
 }
 // Pods, named for the player: the species if identified, and one tag that tells two pods apart (where it came from).
-function podName(p, short) { return S.known.includes(p.sp) ? spOf(p.sp).name + (short ? '' : ' pod') : short ? 'Unknown' : 'Unknown pod'; }
+function podName(p, short) { if (isNightPod(p)) return p.nm; return S.known.includes(p.sp) ? spOf(p.sp).name + (short ? '' : ' pod') : short ? 'Unknown' : 'Unknown pod'; }
 const podInSentence = p => S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown';   // release 22 words: a bare kind name in a sentence reads as a mibi, so a sentence says "the Untuva pod"
 // The hold's column is narrow: the six newest hows have a short form there (the Ground row keeps the full tag).
 const HOW_SHORT = { grab: 'grabbing fruit', warm: 'warm stone', dig: 'in a fresh hole', fog: 'in a fog bank', still: 'keeping still', air: 'airing scales' };
 function podTagOf(p, short) {
   if (short && HOW_SHORT[p.how]) return HOW_SHORT[p.how];
-  const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal', grab: 'shed, grabbing fruit', warm: 'by a warm stone', dig: 'in a fresh hole', fog: 'shed in a fog bank', still: 'shed, keeping still', air: 'shed, airing scales', shed: "of {of}'s line", own: WORDS.w5.ownTag('{of}') }[p.how];
+  const how = { night: WORDS.pod.asleepPage, slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal', grab: 'shed, grabbing fruit', warm: 'by a warm stone', dig: 'in a fresh hole', fog: 'shed in a fog bank', still: 'shed, keeping still', air: 'shed, airing scales', shed: "of {of}'s line", own: WORDS.w5.ownTag('{of}') }[p.how];
   return how ? how.replace('{of}', p.of) : (p.g === 'cave' ? 'cave' : p.bur ? 'from a hole' : 'from the ' + ({ pond: 'pond edge', rock: 'rock field' }[p.g] || p.g));
 }
 // Confirm on a pod with a full hold opens the chooser: pad picks which held pod to leave, ✓ swaps, ← keeps.
 function swapState() { const ex = S.exp, sw = S.ui.swap; if (!ex || !ex.patch || !sw) return null; const p = S.pods.find(q => q.id === sw.id); if (!p) return null;
-  return { p, held: ex.cargo.pods, sel: clamp(sw.sel, 0, ex.cargo.pods.length - 1) }; }
+  return { p, held: ex.cargo.pods, sel: clamp(sw.sel, 0, ex.cargo.pods.length - 1), night: !!sw.night }; }
 function takePod(p, leave) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, full = ex.cargo.pods.length >= ex.hold;
   if (full && leave == null) { S.ui.swap = { id: p.id, sel: 0 }; return; }   // choose first; nothing is spent
   const out = full ? ex.cargo.pods.splice(leave, 1)[0] : null;
   S.pods = S.pods.filter(q => q !== p);
   // the genome seed is fixed the first time a pod is taken: the Station reads its genome from it
-  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), dv: 2, k: key, ...gotNow(), ...shedOf(p), ...whyOf(p) });
-  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...(out.dv ? { dv: out.dv } : {}), ...shedOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
+  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), dv: 2, k: key, ...gotNow(), ...shedOf(p), ...nightOf(p), ...whyOf(p) });
+  if (isNightPod(p) && !S.found.includes('teach:nightpod')) S.found.push('teach:nightpod');
+  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...(out.dv ? { dv: out.dv } : {}), ...shedOf(out), ...nightOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod'); if (!out) fxJuice('pod', p.x, p.y, 1); else fxJuice('pod', p.x, p.y, 0);
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
@@ -3869,7 +3933,7 @@ function awardMoment(c, kind, X) {
   const ex = S.exp; if (actDone(ex, c, kind)) return; ex.momented[c.id + ':' + kind] = 1;
   if (kind === 'eat' && c.ind) {   // habits-out-build-1: feeding a named Loika sets "fed" for the day and gives no Data; she is fed once a day and tonight she sleeps in her pod
     if (!habDay()['fed:' + c.id]) bookEv('fed', c, WORDS.fruit.log(habName(c)));   // the Log keeps one line a day, under her name
-    habDay()['fed:' + c.id] = 1; ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + habName(c) + ' fed'); fxMsg(WORDS.habit.fed, 3); return; }
+    habDay()['fed:' + c.id] = 1; if (!S.found.includes('teach:eats')) S.found.push('teach:eats'); ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + habName(c) + ' fed'); fxMsg(WORDS.habit.fed(habName(c)), 3); return; }
   const got = ex.cargo.d < CAP ? addMat('d', ACT_DATA, c.x, c.y) : 0;   // a full hold takes nothing; the line below says so
   ex.dAct = (ex.dAct || 0) + got;   // counts, for the end report
   ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data' + (got ? '' : ' (hold full)'));
@@ -3880,9 +3944,11 @@ function awardMoment(c, kind, X) {
 }
 // her-fruit-build-1: a named wild Loika takes fruit from the hand while she grazes (ease 0), is not in a habit or asleep, and the stay has light left. Her ease, quiet, crowd and habits never move for it. (The partner's calm on her, once w7-build-1 is on main, is not built here.)
 // her-fruit-build-2 (design): in her habit or asleep ✓ stays "Keep still" (the note) with fruit in hand; the fruit is neither offered nor shown. Ears up and watching: dimmed with its reason.
+// pod-sleep-build-1: "fed today" is the one flag her-fruit-build-1 keeps (habDay()['fed:' + id]), read through the one function that asks the kind's food (spOf(sp).eats: the fruit)
+const fedToday = c => !!c.ind && !!S.day && !!spOf(c.sp).eats && !!habDay()['fed:' + c.id];
 const herTakes = c => !!c.ind && (c.ease | 0) === 0 && !c.hb && !sleeperOf(c) && (hearLineOf(c) || {}).left > 0;
 function herFruitAction(c) {
-  if (c.hb || sleeperOf(c)) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(c) };
+  if (c.hb || sleeperOf(c) || fedToday(c)) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(c) };   // GD 11-25: fed today there is nothing to offer: ✓ keeps still
   if (herTakes(c)) return { label: WORDS.fruit.offer, run: () => offer(c) };
   return { label: WORDS.fruit.refuse, dim: true, run: () => { FX.bumpAt = NOW; } };   // nothing is spent: no light, no fruit
 }
@@ -4087,10 +4153,17 @@ function digDone() { const ex = S && S.exp; if (!ex || !ex.caveDue) return; dele
 // owner note 156 (#156-2): a named one in view is named at once (S.named, S.metIds, the Log's met), on entering a place and whenever the view is drawn, not only after an action
 // one function, patchTick's own condition (not hidden, not away, in sight); called where the state changes (a step, entering a place), never from the draw, and never on a read-only view
 const awayFrom = (o, P) => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7;
+// GD 11-25 (ruling 5): at first sight she takes her seeded name unless a living Loika the save knows (S.named: met, carried or gone home to the Station) already has it; then the next free name in her seeded order. None free: she keeps her seeded name and S.nameFull says so (the build tells the GD; editorial adds names).
+const NAMES_N = 44;   // the realm's pool (src/gen7/haunts.mjs NAMES)
+function freeName(c) {
+  const used = new Set(Object.values(S.named || {})), rank = S.cr.filter(q => q.sp === c.sp && q.id < c.id).length;
+  for (let k = 0; k < NAMES_N; k++) { const n = loikaName(S.seed, rank + k); if (!used.has(n)) return n; }
+  S.nameFull = 1; return c.ind.name;
+}
 function nameSeen(c, away) {
   if (RT.readOnly || !c.ind || c.hide || away(c) || !inSight(c.x, c.y)) return;
   const nm = S.named || (S.named = {});
-  if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); const mr = bookEv('met', c, WORDS.book.met(c.ind.name)); if (mr) { const pg = (S.pages || (S.pages = {})); (pg[c.id] || (pg[c.id] = {})).met = { d: mr.d, part: mr.part, place: mr.place, from: mr.from, t: wTurn() }; } }   // her page keeps the four fields of the Log's met entry (the Log drops it after three days), and the turn
+  if (!nm[c.id]) { nm[c.id] = freeName(c); (S.metIds || (S.metIds = [])).push(String(c.id)); const mr = bookEv('met', c, WORDS.book.met(nm[c.id])); if (mr) { const pg = (S.pages || (S.pages = {})); (pg[c.id] || (pg[c.id] = {})).met = { d: mr.d, part: mr.part, place: mr.place, from: mr.from, t: wTurn() }; } }   // her page keeps the four fields of the Log's met entry (the Log drops it after three days), and the turn
 }
 function nameInSight() {
   const ex = S && S.exp, P = ex && ex.patch; if (!P) return;
@@ -4611,7 +4684,9 @@ function sealPreview() {
   if (!exploredAny(ex) && !(ex.dug && ex.dug.length)) { out.push(WORDS.waits); out.push('your finds stay in the hold'); return out; }
   const h = Object.assign({}, ex.cargo);   // what End will seal: the hold as it is (Data comes only from readings and creature acts)
   if (holdEmpty(h)) { /* nothing to seal (only a save from before places had a tier): no line */ }
-  else if (S.bay.length >= BAY) { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); }
+  else if (S.bay.length >= BAY) { const np = (h.pods || []).find(isNightPod); if (np) out.push(WORDS.pod.bayFull(np.nm)); else { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); } }
+  else if ((h.pods || []).some(isNightPod)) { const np = h.pods.find(isNightPod), n = h.pods.length - 1;   // pod-sleep-build-1: the preview names her (editorial's join for the rest of the hold)
+    out.push(WORDS.pod.seal(np.nm, (n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + ' + ' : '') + 'supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY); out.push(WORDS.pod.sealTail); }
   else { out.push('Seals ' + sealedWords(h, ' + ', 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
     out.push('The Station takes it when you dock'); }
   if (ex.shield < ex.smax) out.push('Docking mends the Shield');
@@ -4625,7 +4700,7 @@ function dropPods(ex, rep) {
   const free = []; for (let i = 0; i < lay.w * lay.h; i++) if (lay.reach[i] && !taken.has(i)) free.push(i);
   rep.dropped = ex.cargo.pods.length; rep.at = cxy(cell);
   for (const pod of ex.cargo.pods) { const i = free.length ? free.splice(R.int(free.length), 1)[0] : lay.spawnPt.y * lay.w + lay.spawnPt.x;   // no free tile: the entry tile, stacked
-    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % lay.w, y: (i / lay.w) | 0, sp: pod.sp, ...(pod.species ? { species: pod.species } : {}), h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1, gs: pod.gs, ...shedOf(pod), ...whyOf(pod) }); }
+    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % lay.w, y: (i / lay.w) | 0, sp: pod.sp, ...(pod.species ? { species: pod.species } : {}), h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1, gs: pod.gs, ...shedOf(pod), ...nightOf(pod), ...whyOf(pod) }); }
   if (rep.dropped) (S.skulls = S.skulls || {})[cell] = key;   // which place holds the pods (the cave sits under the gate cell)
   logEv('Probe broke at ' + rep.at.x + ',' + rep.at.y + ' · ' + rep.dropped + ' pod' + (rep.dropped === 1 ? '' : 's') + ' left there (skull on the map)');
   ex.cargo.pods = [];
@@ -4692,10 +4767,10 @@ function endExpedition(reason) {
   { const a = turned.arrived; rep.news = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] }; }   // where it happened: the opening puts a pip on these cells until the next set-out
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
-    else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
+    else if (S.bay.length >= BAY) { rep.kept = true; leaveSleepers(ex); S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n + (tripOfDay ? 'c' + tripOfDay : ''),...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, ...((ex.cargo.samples || []).length ? { samples: ex.cargo.samples.map(q => ({ ...q })) } : {}),
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), ...(q.dv ? { dv: q.dv } : {}), k: q.k || null, ...(q.got ? { got: q.got } : {}), ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
-      S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), ...(q.dv ? { dv: q.dv } : {}), k: q.k || null, ...(q.got ? { got: q.got } : {}), ...shedOf(q), ...nightOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
+      S.bay.push(c); S.hold = null; rep.sealed = c; sendSleepersHome(ex); logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
   S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(true);   // a line from the walk does not linger over the sealed screen
@@ -5288,6 +5363,9 @@ function flipPB(pb) { const o = new PB(pb.w, pb.h); for (let y = 0; y < pb.h; y+
 // ---------- Small items and features ----------
 // Pods: shell colour from the ground and a dark outline so they read on grass and in shade. An unread pod shows nothing of its kind.
 // The pod is the art desk's painted walk pod, one file per shell (art/props/pod-walk-<shell>, signed in mibi-art e48cee90a); s = 2 or 3 is the same picture, each pixel a whole block. No pod is drawn in code.
+// her pod (isNightPod) draws the signed night piece for its place: 'tile' the 32 x 32 on the land, 'case' the 32 x 18 cut in the cradle, else the 24 x 14; every other pod is podArt as before
+const NIGHT_POD_PIECE = { tile: 'NIGHT_POD_LOIKA-tile-32x32', case: 'night-pod-loika-case-32x18', small: 'night-pod-loika-24x14' };
+function podPic(p, s, where) { return isNightPod(p) ? propPiece(NIGHT_POD_PIECE[where || 'small']) : podArt(POD_SHELL[p && p.g] || 'bone', s); }
 function podArt(shell, s) { const n = 'pod-walk-' + shell; return propPiece((s || 1) > 1 ? n + 'x' + s : n); }
 // The walk props are the art desk's painted files (art/props/, see PROP_FILES): no prop is drawn in code.
 const FRUIT = () => propPiece('prop-fruit'), FRUIT2 = () => propPiece('prop-fruitx2');
@@ -6089,6 +6167,9 @@ const RM = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : 
 const motion = () => !RM.matches;
 const R = (x, y, w, h, c) => { g.fillStyle = HEX[c]; g.fillRect(Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)); };
 const blit = (pb, x, y, rm, flip, chk) => g.drawImage(pb.canvas(rm, flip, chk), Math.round(x) + (pb.dx || 0), Math.round(y) + (pb.dy || 0));
+// a standing glint is always drawn: full for its 400 ms pulse, the same picture dimmer between pulses (bug 160)
+const GLINT_DIM = .4;
+const glintBlit = (pb, x, y, bright) => { if (bright || !motion()) { blit(pb, x, y); return; } g.save(); g.globalAlpha = GLINT_DIM; blit(pb, x, y); g.restore(); };
 function text(str, x, y, col, s, align, tight) {
   s = s || 2; x = Math.round(x); y = Math.round(y);
   const w = tight ? textWT(str, s) : textW(str, s);
@@ -7222,7 +7303,8 @@ function drawPatchBody(t) {
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     // a find your Call or partner turned up stays outlined until you take it
     if (p.out) { const o2 = fr ? 0 : 1; for (let k = 2; k < ts - 2; k += 4) { R(W(x + k), H(y + 1 + o2), 2, 2, C.cream); R(W(x + k), H(y + ts - 3 - o2), 2, 2, C.cream); R(W(x + 1 + o2), H(y + k), 2, 2, C.cream); R(W(x + ts - 3 - o2), H(y + k), 2, 2, C.cream); } }
-    blit(podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), findRm(p.x, p.y)); }
+    const nt = isNightPod(p), bob = fr && (p.x + p.y) % 2 ? 1 : 0;   // her night pod is the 32 x 32 tile at the cell's top-left; the others sit in their box
+    blit(nt ? podPic(p, 1, 'tile') : podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + (nt ? 0 : 8), SY(y) + (nt ? 0 : 8) + bob, nt ? 0 : findRm(p.x, p.y)); }
   // the take marks: a charged storm stone keeps its bolt for as long as it holds a charge; a strike mark stands in the art desk's slot with the Probe's glint on it while unread (kit light)
   if (!lay.cave) {
     for (const f of lay.feats) { if (f.kind !== 'k' || stormCharge(P.key, f) <= 0) continue;
@@ -7232,12 +7314,11 @@ function drawPatchBody(t) {
       const x = f.x * ts, y = f.y * ts; if (!vis2(x, y) || !see(f.x, f.y)) continue;
       // the mark itself is a ground decal (drawn with the ground marks, below anything standing); the Probe's glint on an unread one is drawn here
       const read = strikeIsRead(P.key, f);
-      if (!read && motion() && (NOW + hash(f.x, f.y, 5) % 1600) % 1600 < 400) { const a = sparkArt(false); blit(a, W(x + (ts >> 1)) - Math.floor(a.w / 2), H(y + (ts >> 1) - 4) - Math.floor(a.h / 2)); } }
-    // once the place is explored, every takeable still in view glints: the sparkle for 400 ms every 1.6 s, staggered by position; none under reduced motion
-    if ((walkedCell(lay.cell) || (RT.pointed && RT.pointed[lay.cell])) && motion()) {   // (or a place a tab pointed at: its finds glint on arrival, owner-notes-fix-160)
+      if (!read) { const a = sparkArt(false); glintBlit(a, W(x + (ts >> 1)) - Math.floor(a.w / 2), H(y + (ts >> 1) - 4) - Math.floor(a.h / 2), (NOW + hash(f.x, f.y, 5) % 1600) % 1600 < 400); } }
+    // once the place is explored, every takeable still in view glints: the sparkle always showing, bright for 400 ms every 1.6 s (staggered by position) and dim between; under reduced motion it stands steady, bright (a find marker, not decoration)
+    if ((walkedCell(lay.cell) || (RT.pointed && RT.pointed[lay.cell]))) {   // (or a place a tab pointed at: its finds glint on arrival, owner-notes-fix-160)
       for (const it of leftItems(lay.cell)) { if (it.cave || it.k === 'strike' || !vis2(it.x * ts, it.y * ts)) continue;
-        if ((NOW + hash(it.x, it.y, 7) % 1600) % 1600 >= 400) continue;
-        const a = sparkArt(false); blit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); } } }
+        const a = sparkArt(false); glintBlit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2), (NOW + hash(it.x, it.y, 7) % 1600) % 1600 < 400); } } }
   // what Confirm will act on
   const act = patchAction();
   if (act.run && act !== NOTHING && !act.face) { const f = ACT_AT || frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
@@ -7665,7 +7746,8 @@ const goalBandOn = () => !!S && (S.phase === 'map' || (S.phase === 'patch' && !S
 // The target line (W6a): when the walk's goal names a wild one the player has met (the first walk's "her ways" goal, metBest), the row shows her mini on its slate chip, the words, and an arrow
 // to where the player last saw her: 8-way from the explorer's cell, cream when that sight was today, mist when it was on an earlier day, "here" when that cell is the explorer's. Never her live place.
 // Until the goal names one the player has seen, the row keeps the goal's words and draws no mini and no arrow. null then.
-const DIR_ABBR = { 'north': 'n', 'north-east': 'ne', 'east': 'e', 'south-east': 'se', 'south': 's', 'south-west': 'sw', 'west': 'w', 'north-west': 'nw' };
+const DIR_ABBR = { 'north': 'n', 'north-east': 'ne', 'east': 'e', 'south-east': 'se', 'south': 's', 'south-west': 'sw', 'west': 'w', 'north-west': 'nw' };   // still read: the arrow art keys (target-dir-w-seen)
+const TARGET_TEXT_W = SCR_W - 28 - 8 - 9 - 4;   // the goal band's text width: words at x 28, the arrow's 9 px and its margins at the right; drawGoalBand clips to it and targetLine's fits() reads it
 function targetLine() {
   if (!HUD.ok || !S || !S.exp || RT.readOnly || !firstWalk()) return null;
   const ex = S.exp; if (ex.cargo.pods.length || ownPodLying()) return null;
@@ -7676,7 +7758,7 @@ function targetLine() {
   else if (numeric(rec.k) && (P ? numeric(P.key) : true)) { const a = cxy(+rec.k), c = cxy(P ? +P.key : ex.pos); dx = a.x - c.x; dy = a.y - c.y; }
   const here = dx === 0 && dy === 0, word = dx == null || here ? null : dirWord(dx, dy, Math.hypot(dx, dy)), dir = here ? 'here' : word ? DIR_ABBR[word] : null;
   const lay = layoutCache.get(String(rec.k)), where = lay && !lay.cave ? placeName(lay) : '';
-  return { sp: rec.sp, dir, seen: rec.t === S.turn, text: WORDS.target.line(b.name, where, dir), id: b.id };
+  return { sp: rec.sp, dir, seen: rec.t === S.turn, text: WORDS.target.line(b.name, where, here ? 'here' : word, s => textW(s, 2) <= TARGET_TEXT_W), id: b.id };
 }
 function drawGoalBand() {
   if (!goalBandOn()) return;
@@ -7684,7 +7766,7 @@ function drawGoalBand() {
   const tl = targetLine();
   if (tl) {   // the mini on its 16 x 16 slate chip (the top bar's panel), the words, the signed arrow at the right end (strip 3: mini at 8, words at 28, arrow 9 x 9 at 433)
     panel(6, y + 4, 16, 16, C.night, C.slate); miniOf(tl.sp, 8, y + 6);
-    text(clipText(tl.text, SCR_W - 28 - 8 - 9 - 4, 2), 28, y + 4, C.bone);
+    text(clipText(tl.text, TARGET_TEXT_W, 2), 28, y + 4, C.bone);
     const im = tl.dir && HUD_ART['target-dir-' + tl.dir + '-' + (tl.seen ? 'seen' : 'last')]; if (im) g.drawImage(im, SCR_W - 8 - 9, y + 7);
     return; }
   // GOAL_MARK.slot (goal-mark-12): the mark's place, left empty for the art director's piece
@@ -7748,6 +7830,11 @@ function drawLine(o) {
 // the one to leave framed; Ground: the pod you face.
 function drawSwap() {
   const sw = swapState(); if (!sw) return;
+  if (sw.night) {   // pod-sleep-build-1: the confirm on the chooser's frame (wild-pod-route-ui-1 p-3): her head, her signed night pod picture and one sentence
+    const ls = wrapText(WORDS.pod.c1, 398, 2).slice(0, 4), h = 66 + ls.length * 22, y0 = VIEW_Y + 64;
+    panel(6, y0, SCR_W - 12, h, C.ink, C.amber); text(WORDS.pod.head(sw.p.nm), 22, y0 + 14, C.bone, 2);
+    blitScaled(podPic(sw.p, 1, 'small'), SCR_W - 6 - 16 - 48, y0 + 10, 2);
+    ls.forEach((l, i) => text(l, 22, y0 + 50 + i * 22, C.fog, 2)); return; }
   // picture first: the pods in your bag on the left (the framed one is the one that stays), the found pod large on the right
   const T = SWAP_TEXT, n = sw.held.length, y0 = VIEW_Y + 64, cy = y0 + 70, ch = 218, cw = 204, lx = 16, rx = 230;
   panel(6, y0, SCR_W - 12, 372, C.ink, C.amber);
@@ -7891,7 +7978,7 @@ function warnPicPlace(x0, y0, a) {
     g.drawImage(pb.canvas(rm, false, false, rm !== 3 && !unveiled(a.key, tx, ty)), Math.round(X(sx)), Math.round(Y(sy))); };
   for (let k = 0; k < lay.w * lay.h; k++) if (lay.tiles[k] === T.TRUNK) { const tx = k % lay.w, ty = (k / lay.w) | 0, under = tokens.some(q => cheb(q, { x: tx, y: ty }) <= 1);
     const crown = ts === 48 && treeCanopy(lay, k, under ? 1 : 0, light(tx, ty) === 3); if (crown) over(crown, tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
-  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1), x0 + 8, y0 + 8);
+  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) { const nt = isNightPod(q); blit(nt ? podPic(q, 1, 'tile') : podArt(POD_SHELL[q.g] || 'bone', 1), x0 + (nt ? 0 : 8), y0 + (nt ? 0 : 8)); }
   RT.remap = keepRm;
   g.restore();
   R(x0, y0, 32, 2, C.yellow); R(x0, y0 + 30, 32, 2, C.yellow); R(x0, y0, 2, 32, C.yellow); R(x0 + 30, y0, 2, 32, C.yellow);
@@ -7909,7 +7996,7 @@ const PIC = {
   warm: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, -1, 1, 1), x, y)),
   charged: (x, y) => onGrass(x, y, () => blit(stoneArt(1, false, 0, 0, 1), x, y)),
   shelter: (x, y) => cen(SHELTER(), x, y),
-  pod: (x, y, p) => cen(podArt(POD_SHELL[p && p.g] || 'bone', 1), x, y),
+  pod: (x, y, p) => cen(podPic(p, 1, 'small'), x, y),
   full: (x, y, ps) => { podSlot(x, y + 6, (ps && ps[0]) || { g: 'meadow' }); podSlot(x + 16, y + 6, (ps && ps[1]) || { g: 'pond' }); },
   bank: (x, y) => cen2('crate', crateArt(), x, y),
   fog: (x, y) => ditherFill(x, y, 32, 32, 'fog', 8),
@@ -8390,7 +8477,8 @@ function drawHer() {
   if (kx + textW(W.kind, 2) > (o.length > 1 ? 340 : 430)) y += 24;
   const met = (S.pages && S.pages[id] && S.pages[id].met) || (S.book || []).find(r => r.kind === 'met' && String(r.id) === id);
   if (met) { put(W.met(met.d, met.part, met.t)); put(WORDS.book.place(met.place) + ' · ' + met.from); }
-  if (sa) { const lay = layoutCache.get(String(sa.k)), ws = W.seen(sa.t === S.turn, sa.t + 1, lay && !lay.cave ? placeName(lay) : ''); put(ws[0]); if (ws[1]) put(ws[1]); }
+  { const st = herState(id);   // pod-sleep-build-1: her state takes the when-line of the "last seen" pair: fed today, asleep in her pod, in the Case, gone home
+    if (sa || st) { const lay = sa && layoutCache.get(String(sa.k)), ws = W.seen(sa && sa.t === S.turn, sa ? sa.t + 1 : 0, lay && !lay.cave ? placeName(lay) : ''); put(st || ws[0]); if (sa && ws[1]) put(ws[1]); } }
   // what he has been shown of her: one block for each habit noted (habits-out-build-1: no count of ways, none named as unseen)
   y = Math.max(214, y + 2); const H = (S.habits && S.habits[id]) || {};
   for (const k of HABITS) { const rec = H[k]; if (!rec || !Object.keys(rec.ranges).length) continue;
@@ -8681,7 +8769,7 @@ function drawCargo(t) {
   caseBrass(209, 542, 32, 12); R(221, 546, 8, 4, C.soil);
   // the pod cradles (a pod in each that holds one, its signed picture at 2x), the three supplies (the top bar's own counter pictures at 2x), the satchel's 8 places
   for (const c of cells) {
-    if (c.k === 'pod') { const cx = c.x + c.r, cy = c.y + c.r, p = (h.pods || [])[c.i]; caseCradle(cx, cy, c.r); if (p) blit(podArt(POD_SHELL[p.g] || 'bone', 2), cx - 15, cy - 16); }
+    if (c.k === 'pod') { const cx = c.x + c.r, cy = c.y + c.r, p = (h.pods || [])[c.i]; caseCradle(cx, cy, c.r); if (p) { if (isNightPod(p)) blit(podPic(p, 1, 'case'), cx - 16, cy - 9); else blit(podArt(POD_SHELL[p.g] || 'bone', 2), cx - 15, cy - 16); } }
     else if (c.k === 'sup') { caseHollow(c.x, c.y, c.w, c.h); blitScaled(ICON[{ e: 'energy', d: 'data', s: 'essence' }[c.s]](), c.x + 14, c.y + 6, 2); text(String(h[c.s] | 0), c.x + 28, c.y + 40, C.soil, 2, 'center'); }
     else if (c.k === 'smp') { caseHollow(c.x, c.y, c.w, c.h); const st = sampleStacks(h.samples)[c.i]; if (st && st.item === 'tuft') blitScaled(ICON.tuft(), c.x + 30, c.y + 20, 2); else if (st) { text(W.slotWord[st.item], c.x + c.w / 2, c.y + 8, C.soil, 2, 'center'); blitScaled(ICON.paw('soil'), c.x + 14, c.y + 32, 2); } if (st) text(String(st.list.length), c.x + c.w - 8, c.y + c.h - 20, C.soil, 2, 'right'); }   // [art] whisker and shed claw: no signed picture yet, the place stays empty
   }
@@ -9160,7 +9248,7 @@ function lineBase() {
         else if (nm) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h);
           ctx = [nm + hw + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + hw, nm].concat(ctx); }
         if (o.c.ind) { const w = wildCtx(o.c, nm && !S.known.includes(o.c.sp) ? nameKind(nm, o.c.sp) : nm); if (w) wild = nm && !S.known.includes(o.c.sp) ? w.filter(s => s.includes(nm)) : w; } }   // her kind unidentified: the name is never alone   // walk W3: the line under a wild one in sight: its ease, whether this step would be heard, how long it lets you stay
-      if (S.ui.swap) { const sw = swapState(); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
+      if (S.ui.swap) { const sw = swapState(); if (sw && sw.night) return L1(WORDS.pod.take, '', WORDS.pod.leave, fieldFrozen()); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
       if (!lay.cave && !a.ctx && !(o && o.type === 'cr')) { const sl2 = screenLoika(), w2 = sl2 && sl2.c, n2 = w2 && S.named && S.named[w2.id]; if (w2 && n2 && !S.known.includes(w2.sp)) wild = [nameKind(n2, w2.sp)]; else if (w2) wild = wildCtx(w2, n2); }   // not faced, but in sight: the same line
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx); if (wild) ctx = wild.concat(ctx);   // the wild one's line leads, without the part of day
@@ -9336,8 +9424,8 @@ function act(k, mode) {
       if (S.ui.swap) { const sw = swapState(); if (!sw) S.ui.swap = null;
         else if (k === 'up' || k === 'down') { }
         else if (k === 'left' || k === 'right') sw.held.length && (S.ui.swap.sel = (sw.sel + (k === 'right' ? 1 : sw.held.length - 1)) % sw.held.length);
-        else if (k === 'confirm') { S.ui.swap = null; takePod(sw.p, sw.sel); }
-        else if (k === 'back') { S.ui.swap = null; fxMsg(SWAP_TEXT.kept); }
+        else if (k === 'confirm') { S.ui.swap = null; takePod(sw.p, sw.night ? undefined : sw.sel); }   // her confirm's ✓ is one action: into the Case (a full hold opens the built chooser)
+        else if (k === 'back') { S.ui.swap = null; if (!sw.night) fxMsg(SWAP_TEXT.kept); }   // ← leaves her asleep: nothing is spent
         break; }
       if (isDir) patchStep(k, mode || 'creep');
       else if (k === 'confirm') { const a = patchAction(); if (a.run) { FX.ownRun = 1; try { a.run(); } finally { FX.ownRun = 0; } } else { FX.bumpAt = NOW; return; } }   // "Nothing here": no action spent
@@ -9820,6 +9908,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
+// test-harness only (s32): the words as bone glyphs on a bare canvas, the crop a screenshot of the band is judged against; and the band's text box
 window.__mb = { onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,

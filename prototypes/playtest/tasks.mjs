@@ -62,9 +62,9 @@ export function toHome(ctx) {
   return screenOf(ctx) === "home";
 }
 
-// the Bay: ✓ Open now, then ✓ Skip the opening, until the crate is in (it leaves for Pods)
+// the Bay: ✓ Open the crate, ✓ Put away, for each crate that waits (at most three and a portrait crate), then ✓ To the Nursery: the screen leaves for Pods
 export function openBay(ctx) {
-  for (let i = 0; i < 6 && screenOf(ctx) === "cargo"; i++) ctx.press("confirm", "open the crate");
+  for (let i = 0; i < 12 && screenOf(ctx) === "cargo"; i++) ctx.press("confirm", "open the crate");
   return screenOf(ctx) !== "cargo";
 }
 

@@ -110,21 +110,6 @@
     ],
     "clear": [],
     "pending": [] },
-  { "state": "cargo/cargo-bay-one", "from": "the UI/UX layout sweep: Cargo",
-    "expect": [
-     { "rule": "L1", "node": "bay", "other": "top", "measured": 6, "mark": "✓m", "why": "the Bay 6 under the top bar" },
-     { "rule": "L1", "node": "bay", "other": "bottom", "measured": 10, "mark": "✓m", "why": "10 over the bottom line" }
-    ],
-    "clear": [],
-    "pending": [
-     { "what": "the hatch floor line, L7b", "needs": "declared columns with the floor line (✓d)" }
-    ] },
-  { "state": "cargo/cargo-bay-waiting-many", "from": "the UX audit: Cargo",
-    "expect": [
-     { "rule": "L4", "node": "waiting.pod#3", "other": "waitingMore", "mark": "✓e", "why": "\"+2\" over the third pod" }
-    ],
-    "clear": [],
-    "pending": [] },
   { "state": "habitat/habitat-rest", "from": "the UI/UX layout sweep: Habitat",
     "expect": [
      { "rule": "L1", "node": "rooms", "other": "bottom", "measured": 10, "mark": "✓m", "why": "the panes 10 over the bottom line, as the strip was (R6: the same two panes as the whole)" },
@@ -138,12 +123,6 @@
   { "state": "habitat/habitat-card", "from": "the UX audit: Habitat's lone marks",
     "expect": [
      { "rule": "L11", "container": "card", "node": "card", "measured": 17, "mark": "✓e", "why": "the skill notches, 16 x 24 gold marks with no word (style guide section 6)" }
-    ],
-    "clear": [],
-    "pending": [] },
-  { "state": "cargo/cargo-arrival-choice", "from": "the UX audit: Cargo's arrival",
-    "expect": [
-     { "rule": "L11", "container": "bay", "node": "band.leaving", "mark": "✓e", "why": "unlabelled marks: the arrival's exit glyph and mibi face with no word" }
     ],
     "clear": [],
     "pending": [] },
@@ -235,56 +214,6 @@
   { "state": "bench/bench", "card": "bench-L8-1", "verdict": "fault", "from": "owner card bench-L8-1, marked fault: it floats, 83 → 64",
     "expect": [
      { "rule": "L8", "part": "b", "container": "opening", "node": "cradle", "other": "every neighbour", "mark": "owner", "why": "marked a fault by the owner: it floats, 83 → 64 in the reviewed run" }
-    ],
-    "clear": [],
-    "pending": [] },
-  { "state": "cargo/cargo-arrival-empty-trip", "card": "cargo-L1-9", "verdict": "fault", "from": "owner card cargo-L1-9, marked fault: loose, 364 → 16",
-    "expect": [
-     { "rule": "L7", "part": "b", "container": "bay", "node": "bay", "other": "left / right", "mark": "owner", "why": "carried by cargo-L7-11 and cargo-L8-4: the same fault is reported once" },
-     { "rule": "L8", "part": "b", "container": "bay", "node": "ribbon", "other": "every neighbour", "mark": "owner", "why": "carried by cargo-L7-11 and cargo-L8-4: the same fault is reported once" }
-    ],
-    "clear": [],
-    "pending": [] },
-  { "state": "cargo/cargo-arrival-2200", "card": "cargo-L3-1", "verdict": "fault", "from": "owner card cargo-L3-1, marked fault: crowding, 0 → 16",
-    "expect": [
-     { "rule": "L3", "part": "a", "container": "opening", "node": "bay", "other": "apron", "mark": "owner", "why": "marked a fault by the owner: crowding, 0 → 16 in the reviewed run" }
-    ],
-    "clear": [],
-    "pending": [] },
-  { "state": "cargo/cargo-arrival-2200", "card": "cargo-L4-3", "verdict": "fine", "from": "owner card cargo-L4-3, marked fine: they overlap 304 x 160, 160 → 0",
-    "expect": [],
-    "clear": [
-     { "rule": "L4", "container": "opening", "node": "mibis", "other": "apron", "mark": "owner", "why": "cleared: movers: the mibis are placed by depth, a mibi in front of a crate is the scene's order (cargo.json layout.movers)" }
-    ],
-    "pending": [] },
-  { "state": "cargo/cargo-bay-waiting-many", "card": "cargo-L5-6", "verdict": "fault", "from": "owner card cargo-L5-6, marked fault: almost aligned: the centre (y) and the container's 458 and 464, 6 → 0",
-    "expect": [
-     { "rule": "L5", "part": "b", "container": "waiting", "node": "waiting.pod", "other": "waiting centre (y)", "mark": "owner", "why": "marked a fault by the owner: almost aligned: the centre (y) and the container's 458 and 464, 6 → 0 in the reviewed run" }
-    ],
-    "clear": [],
-    "pending": [] },
-  { "state": "cargo/cargo-arrival-empty-trip", "card": "cargo-L6-4", "verdict": "fine", "from": "owner card cargo-L6-4, marked fine: an empty 992 x 272, 0.85 → 0.25",
-    "expect": [],
-    "clear": [
-     { "rule": "L6", "container": "bay", "node": "bay", "mark": "owner", "why": "cleared: the bay's painting is a painted fill (cargo.json layout.painted, region bay)" }
-    ],
-    "pending": [] },
-  { "state": "cargo/cargo-arrival-empty-trip", "card": "cargo-L7-11", "verdict": "fault", "from": "owner card cargo-L7-11, marked fault: slack 25 left, 364 right, 339 → 4",
-    "expect": [
-     { "rule": "L7", "part": "b", "container": "bay", "node": "bay", "other": "left / right", "mark": "owner", "why": "marked a fault by the owner: slack 25 left, 364 right, 339 → 4 in the reviewed run" }
-    ],
-    "clear": [],
-    "pending": [] },
-  { "state": "cargo/cargo-arrival-empty-trip", "card": "cargo-L7-9", "verdict": "fault", "from": "owner card cargo-L7-9, marked fault: the filled area's centroid off the centre: x -0.04, y -0.83, 0.83 → 0.1",
-    "expect": [
-     { "rule": "L7", "part": "b", "container": "bay", "node": "bay", "other": "left / right", "mark": "owner", "why": "carried by cargo-L7-11 and cargo-L8-4: the same fault is reported once" },
-     { "rule": "L8", "part": "b", "container": "bay", "node": "ribbon", "other": "every neighbour", "mark": "owner", "why": "carried by cargo-L7-11 and cargo-L8-4: the same fault is reported once" }
-    ],
-    "clear": [],
-    "pending": [] },
-  { "state": "cargo/cargo-arrival-empty-trip", "card": "cargo-L8-4", "verdict": "fault", "from": "owner card cargo-L8-4, marked fault: it floats, 306 → 16",
-    "expect": [
-     { "rule": "L8", "part": "b", "container": "bay", "node": "ribbon", "other": "every neighbour", "mark": "owner", "why": "marked a fault by the owner: it floats, 306 → 16 in the reviewed run" }
     ],
     "clear": [],
     "pending": [] },

@@ -352,7 +352,7 @@ export function screenProps(plate) {
   const line = { ...body.line }; if (line.need == null) line.need = need().text;
   if (UI.keep && holdOn()) { line.subject = SPECS.frame.strings.keep; const kc = SPECS.frame.regions.marks.roomCue?.confirm; if (kc && assetEntry(kc)) ids.add(kc); }   // F5b: ✓ was let go early: "Keep holding [✓ cap]" in the middle slot for hold.keepMs
   { const cues = cuesOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (cues.length) { line.keys = cues; for (const c of cues) { const id = SPECS.frame.regions.marks.roomCue?.[c.room]; if (id && assetEntry(id)) ids.add(id); } } if (UI.teach && cues.some((c) => c.key === UI.teach.key)) line.subject = SPECS.frame.strings.teach[UI.teach.key]; }   // the first time a key has a cue its line stands in the middle slot (intents/frame.mjs teachTick)   // the colour keys that would carry what the ring is on (carry.mjs): the key's icon and a word, left of ←   // the frame's notice on every screen unless the screen has its own
-  { const gl = goalNow(); if (gl && !line.subject) line.subject = gl.text; }   // the goal on every room: the middle slot, where the screen has no line of its own there (the arrival's own line, "Your first pod is inside", stands over the goal)
+  { const gl = goalNow(); if (gl && !line.subject && screen !== "cargo") line.subject = gl.text; }   // the goal on every room: the middle slot, where the screen has no line of its own there (the arrival's own line, "Your first pod is inside", stands over the goal)
   { const back = originWord({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (back && line.back) line.back = back; }   // after a carry ← goes back to where it started: the way back names that place
   for (const k of ["ok", "subject", "need"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);   // each of the line's three is a line and takes its capital, once, here (views/words.mjs capLine)
   if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
@@ -458,6 +458,7 @@ function habitatFocus(h, target) {
 // While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends, after a kept Dock key; Home's rest drops it too (home.json events.rest.keys).
 export function onFaceMessage(h, m) {
   if (m.t === "done") { if (m.kind === "hatch" && cuttingHatch(h) && !h.holding()) landHatch(h); return; }   // informative only, but for the hatch with a moving set: a key the face acted on after the hold ended it (its cut), and that key lands the meet
+  if (m.t === "intent" && UI.screen === "cargo") UI.cargo.pressed = true;   // his first press at the Bay: who came home goes in (cargo.json, her slot)
   if (UI.flight && (m.t === "intent" || m.t === "focus")) INTENTS.frame.landFlight(h);   // a press during the carry's flight lands it at once, and then acts on the room it opened
   if (m.t === "intent" && m.verb === "confirm:early") { if (holdOn()) { const k = { }; UI.keep = k; h.at(SPECS.frame.hold.keepMs ?? 2500, () => { if (UI.keep === k) UI.keep = null; }); } return; }   // F5b: ✓ let go before the ring was full: the middle slot says to keep holding, for hold.keepMs
   if (m.t === "intent" && m.verb === "confirm:held") { UI.keep = null; if (h.held) h.held(); else heldKey(h); return; }   // the hold ring is full (anim/hold.c): the plate that holds acts on it (a pod to let go, the Return card; intents/index.mjs held)
@@ -486,8 +487,6 @@ export function onFaceMessage(h, m) {
   if (m.screen === "habitat" && UI.hab.namer && !m.verb?.startsWith("room:")) return;   // the screen beneath takes no key while the namer is open
   if (m.screen === "habitat" && m.verb?.startsWith("room:") && !h.holding()) endMeet(h);   // the first press ends the meet, a room key too
   if (m.verb === "back" && m.screen !== "namer" && m.screen !== "panel" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) UI.pods.view = up.state === "room" ? "room" : "inventory"; h.goto(up.screen); } return; }
-  if (m.screen === "cargo" && UI.screen === "cargo" && UI.cargo.state === "opening" && (m.verb === "confirm" || m.verb === "back" || m.verb?.startsWith("room:"))) { INTENTS.cargo.held(h, m.verb, INTENTS.frame.roomKey); return; }   // while the opening holds the face also says ✓, ← and a room key (build spec 8.4): Skip, Home, or a room, each ending the current crate as a cut
-  if (m.verb?.startsWith("room:") && UI.cargo.state === "arrival") h.skip();   // a room key on the arrival is Later, and then it acts: the show's hold ends now (the key itself closes the arrival: intents/frame.mjs roomKey)
   if (h.holding()) { if (m.verb?.startsWith("room:") && !UI.resting) h.pendingRoom = m.verb.slice(5); return; }
   if (m.verb === "wake") { dispatch(h, m); const w = SPECS.frame.idle.wake, cut = !(h.motion ? h.motion() : true); h.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: cut ? 0 : w.hold }); return; }
   dispatch(h, m);

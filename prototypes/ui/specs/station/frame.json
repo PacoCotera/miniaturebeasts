@@ -8,7 +8,7 @@
  "regions": {
   "top": { "rect": [0, 0, 1024, 40], "component": "topBar", "rule": "bottom", "slice": "frame-top-bar-1024x40", "painted": "the bar 1:1 at the rect; the zones, the top rules and the marks over it; while the bar is not on the face, the code panel (colours.chrome) and the rule (colours.rule)", "readout": { "gap": 12, "markGap": 4, "role": "quiet", "end": 248, "mark": [10, 10] }, "ground": "bar" },
   "title": { "rect": [16, 8, 232, 24], "turnPx": 16, "mark": [16, 8, 24, 24], "text": [48, 8, 200, 24], "role": "title", "words": 1, "case": "title", "marks": { "home": "Home", "cargo": "Home", "pods": "Research", "create": "Vivarium", "incubator": "Vivarium", "probe": "Research", "bench": "Research", "library": "Library", "library.species": "Library", "library.family": "Library", "vivarium": "Vivarium", "habitat": "Vivarium", "cross": "Vivarium", "sitting": "Vivarium", "settings": "Home", "store": "Research" }, "marksRule": "the mark is the icon of the coloured key that leads there: Home (with Cargo), Vivarium, Research, Library. `habitat` is the screen id of one mibi up close, a level of the Vivarium", "fadeMs": 200 },
-  "materials": { "rect": [384, 8, 256, 24], "centre": 512, "icon": 16, "gap": 4, "between": 24, "role": "figure", "flashMs": 240 },
+  "materials": { "rect": [384, 8, 256, 24], "centre": 512, "narrowCentre": 400, "icon": 16, "gap": 4, "between": 24, "role": "figure", "flashMs": 240 },
   "companion": { "rect": [816, 8, 64, 24], "right": 880, "lamp": 8, "px": 16, "glyph": [816, 8, 16, 24], "lampAt": [836, 16, 8, 8], "face": [856, 8, 24, 24], "words": 0, "liftMs": 200, "lift": 2 },
   "time": { "rect": [904, 8, 104, 24], "right": 1008, "mark": [16, 16], "gap": 4, "role": "figure" },
   "topRules": { "x": [256, 888], "y0": 8, "y1": 32 },
@@ -17,7 +17,7 @@
   "action": { "rect": [16, 570, 376, 24], "role": "verb", "gap": 12, "capGap": 4, "cap": [16, 574, 16, 16], "capSize": [16, 16], "verbWords": 4, "backMoved": "regions.back", "wait": { "token": "⧗", "icon": "icon-wait-16", "size": [16, 16], "order": "after ⚡ ❀ ◆", "colour": "price", "never": "need", "screens": ["create"], "note": "the bud's wait as a price group (fix 6 N1a; game designer, 2026-10-15)" } },
   "subject": { "rect": [408, 570, 208, 24], "centre": 512, "role": "subject", "words": 6, "shrinks": true },
   "need": { "rect": [632, 570, 272, 24], "right": 904, "role": "notice", "lamp": [12, 12], "lampGap": 4, "words": 6, "slideMs": 200 },
-  "back": { "rect": [920, 570, 88, 24], "right": 1008, "role": "back", "cap": [16, 16], "capGap": 4, "words": 1, "gapBefore": 16, "room": 68, "roomRule": "the word's room is the slot less the cap and its gap, 88 − 16 − 4; a wider word reads \"Back\". The longest title word, \"Vivarium\" (66 px), fits", "wide": { "room": 104, "rule": "a line with backWide (the Vivarium's pick of two, Drop the pick: the collection v2 design §1 and its build sign-off) takes up to this room for its way back, growing left into the gap before it and the notice zone; the notice's right edge moves left by the same px, so the two never meet" } },
+  "back": { "rect": [920, 570, 88, 24], "right": 1008, "narrowRight": 514, "role": "back", "cap": [16, 16], "capGap": 4, "words": 1, "gapBefore": 16, "room": 68, "roomRule": "the word's room is the slot less the cap and its gap, 88 − 16 − 4; a wider word reads \"Back\". The longest title word, \"Vivarium\" (66 px), fits", "wide": { "room": 104, "rule": "a line with backWide (the Vivarium's pick of two, Drop the pick: the collection v2 design §1 and its build sign-off) takes up to this room for its way back, growing left into the gap before it and the notice zone; the notice's right edge moves left by the same px, so the two never meet" } },
   "answer": { "keysX": [223, 382, 542, 702], "backX": 928, "top": 508, "h": 40, "w": 150, "notch": 9, "pad": 10, "capGap": 8, "plate": "ground", "dimLevels": 5, "dimOf": 16, "confirm": { "y": 456, "right": 1008 }, "call": { "y": 404, "right": 1008 }, "role": "figure", "keyColours": ["yellow", "sky", "grass", "lilac"], "backColour": "stone", "confirmColour": "orange", "callColour": "teal", "rule": "Call's answer (the controls scheme; props frame.answer { keys [{ room, word }], ok, back, call }): the stage under a 5 of 16 dim (a screen that shows its own answer, Pods' picker, draws its own and the frame adds none), then a tag over each key where the key stands on the device: the four keys in the order Home, Pods, Vivarium, Library centred on keysX, ← on backX (150 wide, top 508, 40 high, a notch of `notch` px down at its centre), ✓ and Call right-aligned to 1008 at their y; each a dark plate with a 2 px ring in the key's colour, the key's cap (room mark 24 px) or its glyph and a word in `role`; words fitted to the plate, never an ellipsis. The tags are placed by the hardware: if a key moves its tag moves" },
   "cues": { "hop": { "px": 4, "times": 2, "ms": 300 }, "teachMs": 5000, "callUntilTurn": 8, "flight": { "ms": 200, "firstMs": 400, "firstCarries": 3, "pod": "list", "mibi": [48, 50], "rule": "the carry's flight: the ringed thing's picture (a pod's list picture, a mibi's 48 x 50 house picture; the face never scales a picture) goes from the ring to the key's cue in whole pixels, 200 ms (400 ms for the first three carries of a save), then the room cuts in; a press during it lands the carry at once" }, "right": 904, "left": 616, "growLeft": 416, "y": 570, "h": 24, "mark": [16, 16], "markGap": 4, "gap": 12, "role": "back", "rule": "the colour keys' carries (props frame.line.keys, [{ room, word }] in key order): each is the key's room icon (marks.roomCue, the 16 px drawing) and a word in `role`, right-aligned to `right` and standing in the need's zone, which they replace while they show; cues that would pass `left` grow left to `growLeft` and the middle words (the subject) are not drawn while they do; still short, the mist second-tap cue (props frame.line.keys[i].second: the key just carried, an outline cap and its room's name in role back.mist) is dropped first, then the cues from the last; ✓ and ← are never dropped" },
   "separators": { "x": [400, 624], "y0": 571, "y1": 591 },
@@ -193,7 +193,7 @@
   },
   "screens": {
    "home": {"parent": null, "back": null},
-   "cargo": {"parent": "home", "back": "Home", "states": ["bay", "opening", "end", "arrival"], "spec": "cargo.json"},
+   "cargo": {"parent": "home", "back": "Home", "states": ["bay"], "spec": "cargo.json"},
    "pods.inventory": {
     "parent": "home",
     "back": "Home",
@@ -243,7 +243,7 @@
    {
     "from": "cargo",
     "state": "end",
-    "action": "Look at the pods",
+    "action": "To the Nursery",
     "to": "pods",
     "view": "inventory",
     "focus": "the newest pod",
