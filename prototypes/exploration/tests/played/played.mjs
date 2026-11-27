@@ -62,14 +62,15 @@ after(async () => { if (browser) await browser.close(); if (site) site.close(); 
 const ready = () => { try { return !!window.__play.frames.companion.contentWindow.__mb.S; } catch { return false; } };
 async function open(size, saveName) {
   const ctx = await browser.newContext({ viewport: { width: size.w, height: size.h }, deviceScaleFactor: size.dpr, hasTouch: true, isMobile: true });
-  const raw = readFileSync(path.join(savesDir, saveName + ".save"), "utf8");
-  const p1 = await ctx.newPage();
-  await p1.goto(site.url); await p1.waitForFunction(ready, null, { timeout: 60000 }); await wait(2000);
-  const id = await p1.evaluate(() => JSON.parse(localStorage.getItem("mb-companion-A")).id);
-  await p1.close();
-  await ctx.addInitScript(([i, s, tab]) => { localStorage.setItem("mb-save-v8@" + i, s); if (tab) localStorage.setItem("mb-play-tab", tab); }, [id, raw, process.env.PLAYED_START || ""]);   // PLAYED_START=station: a cold start where the page opens on the Station (test-harness only)
+  const fresh = typeof saveName === "object" && saveName !== null;   // { seed }: a fresh game on that seed through the page's own ?seed= (a test-harness flag); no save is loaded
+  const raw = fresh ? "" : readFileSync(path.join(savesDir, saveName + ".save"), "utf8");
+  const p1 = fresh ? null : await ctx.newPage();
+  if (!fresh) { await p1.goto(site.url); await p1.waitForFunction(ready, null, { timeout: 60000 }); await wait(2000); }
+  const id = fresh ? null : await p1.evaluate(() => JSON.parse(localStorage.getItem("mb-companion-A")).id);
+  if (p1) await p1.close();
+  if (!fresh) await ctx.addInitScript(([i, s, tab]) => { localStorage.setItem("mb-save-v8@" + i, s); if (tab) localStorage.setItem("mb-play-tab", tab); }, [id, raw, process.env.PLAYED_START || ""]);   // PLAYED_START=station: a cold start where the page opens on the Station (test-harness only)
   const page = await ctx.newPage();
-  await page.goto(site.url); await page.waitForFunction(ready, null, { timeout: 60000 }); await wait(8000);
+  await page.goto(fresh ? site.url + "?seed=" + saveName.seed : site.url); await page.waitForFunction(ready, null, { timeout: 60000 }); await wait(8000);
   // the page may open on the Station: press the 'Companion' tab as a player would, then assert the Companion is the device in view and not docked, before any shot is read
   console.log(`# opened on the ${await page.evaluate(() => window.__play.owner)} (${size.w}x${size.h})`);
   await page.getByRole("tab", { name: "Companion" }).click();
@@ -814,4 +815,48 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
 }
+
+// OWNER 2026-11-25 06:4x (design-loop-review-1, fix 5): "ok". tell-seen-fix-4. Seed 33 at 390x844, light 52 to 57: Osier's tell and shake-dry ran seven tiles away under the veil while the box kept the stone's line.
+// The rule (design 11-27): the veil lifts when, within ten tiles, a Loika he has met (S.named) starts her tell; her line is then the box's line.
+// Played as the review's game A, on a fresh seed 33 (the page's ?seed=): ✓ to set out, east across the first place and over the border, toward her until she is seen once (named), then ✓ "Keep still" until her tell starts.
+// Every press waits for its effect (state changed, or 3 s) before the next, never a fixed pause.
+// State only asserts the case is reached (she is named, her tile was veiled before, the top line names her, her tell has started, she is within ten tiles). The verdict is the pixels: her tile against a crop of her tile (saves/s21-tell-tile.png)
+// and the box against a crop of her tell line (saves/s21-tell-box.png); the stone's line is a different crop. PLAYED_WRITE_CROPS=1 rewrites the crops.
+it(`s21 tell-seen-fix-4 (seed 33): Osier's tell starts within ten tiles of him: her tile is not veiled and the box shows her line, not the stone's [390x844]`, async () => {
+  const size = { w: 390, h: 844, dpr: 3 };
+  const g = await open(size, { seed: 33 });
+  const MSGBOX = [0.02, 0.80, 0.96, 0.10];
+  const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; const c = P && m.curLive().cr.find(q => q.ind && q.ind.name === "Osier"); let t = null; try { t = m.targetLine(); } catch {} return { phase: S.phase, key: P && P.key, x: P && P.x, y: P && P.y, hb: !!(c && c.hb), named: !!(c && S.named && S.named[c.id]), open: !!(c && P && S.veil && S.veil[P.key] && (Number(S.veil[P.key][c.y]) & (1 << c.x)) !== 0), top: !!(t && c && String(t.id) === String(c.id)), dx: c && P ? c.x - P.x : null, dy: c && P ? c.y - P.y : null, ts: m.RT.ts, pl: m.RT.plScr }; });
+  try {
+    const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.key, P && P.x, P && P.y, S.day && S.day.spent, S.ui && S.ui.menuSel].join("|"); });
+    const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };   // the effect: the state changes, then holds still for 400 ms (a press during a screen's change is swallowed)
+    let s = await st(), im = null;
+    for (let i = 0; i < 12 && !s.key; i++) { await step("confirm"); s = await st(); }   // ✓ to set out, ✓ at "Start here", ✓ into the place: each waits for its effect
+    for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }       // the place is built by a worker: wait until he is in it
+    assert.ok(s.key, `set out: he is in the first place (${JSON.stringify(s)})`);
+    // the route that names her at first sight (east x24, up x12, right x12, down x12), stopping the moment she is named; she is never walked up to
+    for (const [d, n] of [["right", 24], ["up", 12], ["right", 12], ["down", 12]]) for (let i = 0; i < n && !s.named; i++) { await step(d); s = await st(); }
+    assert.ok(s.named && !s.hb, `she is seen first: Osier is named, her tell not yet started (${JSON.stringify(s)})`);
+    let before = s;   // the last state before her tell: her tile is still veiled
+    for (let i = 0; i < 120 && !s.hb; i++) { before = s; await step("confirm"); s = await st(); }   // ✓ "Keep still", as the review did
+    im = await g.shot("s21-tell");
+    assert.ok(!before.open && s.open, `her tile was veiled before her tell and is open when it starts (${JSON.stringify([before, s])})`);
+    assert.ok(s.named && s.top, `the case is reached: Osier is named and the top line points to her (${JSON.stringify(s)})`);
+    assert.ok(s.hb, `the case is reached: her tell has started (${JSON.stringify(s)})`);
+    assert.ok(Math.max(Math.abs(s.dx), Math.abs(s.dy)) <= 10, `the case is reached: she is within ten tiles (${JSON.stringify(s)})`);
+    const r = await g.region(), k = r.w / 450, ts = s.ts;
+    const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+    const box = { x: r.x + Math.round(r.w * MSGBOX[0]), y: r.y + Math.round(r.h * MSGBOX[1]), w: Math.round(r.w * MSGBOX[2]), h: Math.round(r.h * MSGBOX[3]) };
+    // she herself stands 6 tiles east, past the screen's right edge (the view is 9 tiles wide): the verdict tile is the farthest one on the line to her that is on the screen (4 tiles out), which only her tell lifts
+    const n = Math.max(Math.abs(s.dx), Math.abs(s.dy)), f = n > 4 ? 4 / n : 1, cx = s.pl.x + Math.round(s.dx * f) * ts, cy = s.pl.y + Math.round(s.dy * f) * ts, tile = { x: r.x + Math.round((cx - ts / 2) * k), y: r.y + Math.round((cy - ts / 2) * k), w: Math.round(ts * k), h: Math.round(ts * k) };
+    assert.ok(tile.x >= r.x && tile.y >= r.y && tile.x + tile.w <= r.x + r.w && tile.y + tile.h <= r.y + r.h, `the verdict tile is on the screen (${JSON.stringify({ tile, r, s })})`);
+    const stored = (name, b) => { const f = path.join(savesDir, name); if (process.env.PLAYED_WRITE_CROPS) { const c = crop(b); writeFileSync(f, encodePNG(c.width, c.height, c.data)); } return decodePNG(readFileSync(f)); };
+    const differ = (c, ref) => { let n = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) n++; return n; };
+    const boxRef = stored("s21-tell-box.png", box), tileRef = stored("s21-tell-tile.png", tile);
+    const nb = differ(crop(box), boxRef), nt = differ(crop(tile), tileRef), area = tile.w * tile.h;
+    console.log(`# s21: the box differs from her tell line's crop by ${nb} pixels, her tile from its crop by ${nt} of ${area}`);
+    assert.ok(nb < 5000, `the box shows her tell line, not the stone's (${nb} pixels differ)`);
+    assert.ok(nt < area * 0.05, `her tile is not under the veil (${nt} of ${area} pixels differ from her tile's crop)`);
+  } finally { await g.ctx.close(); }
+});
 });
