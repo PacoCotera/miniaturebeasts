@@ -4505,6 +4505,7 @@ function endExpedition(reason) {
   if (!explored && !(ex.dug && ex.dug.length) && !night && !ex.nights) {   // nothing explored (and no night passed: a night turned the world): nothing sealed, and the finds stay in the hold (a break loses them); only the night's end turns the world
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
     S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); return; }
+  S.expN++;   // the number counts expeditions (an outing that explored or dug, at a camp or at night), not world turns: the next set-out is one more
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   if (explored || (ex.dug && ex.dug.length)) S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // this expedition is a trip for the Station
   RIPE_LATER = []; let turned, ripeLater;
@@ -4718,7 +4719,7 @@ function surfaceMissing(R, t, farFromPlayer) {
 // The turn of the realm: the counters, the mibi clock, the outposts and the lines a player cares about. It runs with the region the Companion is in mounted.
 function realmTurn(turned, pending) {
   const { mv, charged, bushes, bloom, newPods, young } = turned;
-  S.turn++; S.expN++;
+  S.turn++;
   const grown = liveMibis().filter(grownNow), aged = liveMibis().filter(agedNow);   // the clock: elder from grownTurn when it has one
   // Two or three plain lines a player would care about, each beside the record of what happened (specs/world-events.md): [kind, place, who, n]. The Companion decides which; the Station draws them.
   const lines = [], ev = [], say = (line, e) => { lines.push(line); ev.push(e); };
