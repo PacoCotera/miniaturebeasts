@@ -1764,7 +1764,7 @@ for (const size of SCALE_SIZES.filter((s) => s.w === 412 || s.w === 390)) {
 // 11-27 15:4x "ok, queue water fix then"). The dark is flat night (#29253a, in the reach view ink under night dots); where it meets seen land the edge is the art desk's signed pieces, laid by the build (src/fogedge.mjs).
 // His 178.save (seed 20, cell 186) and his 141.save (seed 64, place 172), at his size 412x915, by presses: hold Call for the look-around; for 178 also ← then Leave this place for the map (the reach view). The verdict is the pixels:
 // along each strip where seen land meets the dark, per row (or column) the first pixel that is not dark: how many different positions, and how long it keeps one (within 2 device px): a straight cell-long cut keeps one for the whole strip (a cell is
-// 384 device px in the look-around). Each strip is also set against a crop of it (refs/s38-*.png, cut from the shipped build by PLAYED_MAKE_REFS=1 PLAYED_WRITE_CROPS=1); two shots a moment apart must match first.
+// 384 device px in the look-around). Each strip is also set against a crop of it (refs/s39-*.png, cut from the shipped build by PLAYED_MAKE_REFS=1 PLAYED_WRITE_CROPS=1); two shots a moment apart must match first.
 {
   const size = { w: 412, h: 915, dpr: 2.625 };
   const NIGHT = ([r, gg, b]) => Math.abs(r - 41) < 4 && Math.abs(gg - 37) < 4 && Math.abs(b - 58) < 4;   // the look-around's dark: #29253a
@@ -1793,32 +1793,32 @@ for (const size of SCALE_SIZES.filter((s) => s.w === 412 || s.w === 390)) {
       { name: "bottom", box: { x: 10, y: 740, w: 140, h: 130 }, dark: NIGHT, dir: "y-", why: "the water's bottom edge against the dark" },
     ],
   };
-  for (const save of ["178", "141"]) it(`s38 the unexplored dark's edge wanders in the look-around (#${save}, his save: no straight cell-long cut) [412x915]`, async () => {
+  for (const save of ["178", "141"]) it(`s39 the unexplored dark's edge wanders in the look-around (#${save}, his save: no straight cell-long cut) [412x915]`, async () => {
     const g = await open(size, save);
     try {
       assert.ok(await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.fogEdgeReady()), "the case is reached: the signed edge pieces are in");
       const r = await g.region();
       await g.hold("call"); await wait(3000);
-      const a = await g.shot(`s38-${save}-look`); await wait(700); const b2 = await g.shot(`s38-${save}-look-b`);
+      const a = await g.shot(`s39-${save}-look`); await wait(700); const b2 = await g.shot(`s39-${save}-look-b`);
       await g.release(); await wait(1000);
       for (const s of STRIPS[save]) {
         const box = { x: r.x + s.box.x, y: r.y + s.box.y, w: s.box.w, h: s.box.h }, e = softEdge(a, box, s.dark, s.dir);
-        console.log(`# s38 ${save} ${s.name}: ${e.found}/${e.rows} lines have land, ${e.distinct} different edge positions, longest straight run ${e.longest} device px (${s.why})`);
+        console.log(`# s39 ${save} ${s.name}: ${e.found}/${e.rows} lines have land, ${e.distinct} different edge positions, longest straight run ${e.longest} device px (${s.why})`);
         assert.ok(e.found > e.rows * 0.9, `the case is reached: ${s.why} is in view (${e.found}/${e.rows})`);
         assert.ok(e.distinct >= 6, `${s.why} wanders (${e.distinct} different positions)`);
         assert.ok(e.longest < 120, `no cell-long cut: ${s.why} keeps one position for ${e.longest} device px (120 allowed; a cell is 384)`);
         assert.ok(changed(a, b2, box).frac < 0.02, `two shots of the strip alike, so a crop can judge it`);
-        const c = againstRef(a, box, `s38-${save}-${s.name}`);
+        const c = againstRef(a, box, `s39-${save}-${s.name}`);
         assert.ok(c.frac < 0.03, `${s.why} is as its crop (${c.frac.toFixed(3)} differ)`);
       }
       if (save === "178") {   // the map: the sea's east edge against the dark beyond the reach view
         await leaveToMap(g);
-        const m = await g.shot("s38-178-map"), box = { x: r.x + 780, y: r.y + 115, w: 50, h: 670 }, e = softEdge(m, box, INKISH, "x-");
-        console.log(`# s38 178 map: ${e.found}/${e.rows} rows have land, ${e.distinct} different edge positions, longest straight run ${e.longest} device px`);
+        const m = await g.shot("s39-178-map"), box = { x: r.x + 780, y: r.y + 115, w: 50, h: 670 }, e = softEdge(m, box, INKISH, "x-");
+        console.log(`# s39 178 map: ${e.found}/${e.rows} rows have land, ${e.distinct} different edge positions, longest straight run ${e.longest} device px`);
         assert.ok(e.found > e.rows * 0.5, `the case is reached: the sea's east edge is in view on the map (${e.found}/${e.rows})`);
         assert.ok(e.distinct >= 6, `the map's dark edge wanders (${e.distinct} different positions)`);
         assert.ok(e.longest < 144, `no cell-long cut on the map: one position for ${e.longest} device px (144 allowed; a cell is 144)`);
-        const c = againstRef(m, box, "s38-178-map-east");
+        const c = againstRef(m, box, "s39-178-map-east");
         assert.ok(c.frac < 0.03, `the map's dark edge is as its crop (${c.frac.toFixed(3)} differ)`);
       }
     } finally { await g.ctx.close(); }
