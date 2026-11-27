@@ -31,11 +31,17 @@ void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, 
   v_layer(LAYER_ART); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", w, h, width, c);
   v_composed(id, x, y, w, h, b);
 }
+/* Where the counters centre in the top bar: the frame's 512, or on the Bay's narrow form (the phone's 530 lp window) the spec's narrowCentre, so all three stay inside the window the Bay design, section 2.1 */
+static int bar_centre(void) {
+  char sc[32] = ""; spec_str(P, "screen", sc, sizeof sc);
+  if (spec_bool(P, "narrow", 0) && strcmp(sc, "cargo") == 0) return v_si(F, "regions.materials.narrowCentre", v_si(F, "regions.materials.centre", 0));
+  return v_si(F, "regions.materials.centre", 0);
+}
 /* The centre of a counter's icon in the top bar (i: 0 Energy, 1 Data, 2 Essence), as word_topBar lays them out (the figures as shown now, a tick counting up included): the place a Cargo material travels to. 1 when the bar has the props, else 0. */
 int frame_material_centre(int i, int out[2]) {
   if (i < 0 || i > 2 || !spec_has(P) || !spec_has(F)) return 0;
   static const char K[3] = { 'e', 'd', 's' };
-  int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = v_si(F, "regions.materials.centre", 0), mrect[4]; v_srect(F, "regions.materials.rect", mrect);
+  int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = bar_centre(), mrect[4]; v_srect(F, "regions.materials.rect", mrect);
   char mrole[24]; snprintf(mrole, sizeof mrole, "%s", v_sstr(F, "regions.materials.role"));
   int widths[3], total = 0;
   for (int q = 0; q < 3; q++) {
@@ -88,7 +94,7 @@ void word_topBar(void) {
   v_inline_end();   /* the title's group closes after its readout (T8: title → readout 12) */
   /* what you hold, centred on 512 */
   static const char K[3] = { 'e', 'd', 's' }; static const char *ICON[3] = { "energy", "data", "essence" };
-  int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = v_si(F, "regions.materials.centre", 0);
+  int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = bar_centre();
   int mrect[4]; v_srect(F, "regions.materials.rect", mrect); char mrole[24]; snprintf(mrole, sizeof mrole, "%s", v_sstr(F, "regions.materials.role")); int mtop = v_role_cap_in(mrect[1], mrect[3], mrole);
   int widths[3], total = 0; char txt[3][16], fl[3];
   for (int i = 0; i < 3; i++) {
@@ -285,7 +291,8 @@ void word_bottomLine(void) {
   /* the way back: its cap, then one word, right-aligned to 1008 */
   if (spec_str(P, "frame.line.back", s, sizeof s) > 0) {
     int br[4], bcap[2]; v_srect(F, "regions.back.rect", br); bcap[0] = spec_int(F, "regions.back.cap.0", 16); bcap[1] = spec_int(F, "regions.back.cap.1", 16);
-    int right = v_si(F, "regions.back.right", 0), room = br[2] - bcap[0] - v_si(F, "regions.back.capGap", 0) + back_extra; snprintf(c, 24, "%s", v_sstr(F, "regions.back.role"));
+    char bsc[32] = ""; spec_str(P, "screen", bsc, sizeof bsc);   /* the Bay's narrow form: the way back stands at the window's right end (the phone's 530 lp window), not at 1008 outside it */
+    int right = spec_bool(P, "narrow", 0) && strcmp(bsc, "cargo") == 0 ? v_si(F, "regions.back.narrowRight", v_si(F, "regions.back.right", 0)) : v_si(F, "regions.back.right", 0), room = br[2] - bcap[0] - v_si(F, "regions.back.capGap", 0) + back_extra; snprintf(c, 24, "%s", v_sstr(F, "regions.back.role"));
     v_inline("line.back"); v_region("back", LAYER_TYPE);
     v_run_t run = v_say_run("line.back", v_role_width(s, c) > room ? "Back" : s, right, v_role_cap_in(br[1], br[3], c), c, lg, V_ALIGN_RIGHT);
     v_region("back", LAYER_ART); int cr[4] = { right - run.width - v_si(F, "regions.back.capGap", 0) - bcap[0], cap[1], bcap[0], bcap[1] };

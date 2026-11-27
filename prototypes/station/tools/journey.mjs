@@ -148,15 +148,12 @@ const events0 = await page.evaluate(() => window.__st.face.stats.events);
 stepOf("home-dock-arrival"); await hpress("dock", 300);
 s = await st(); expect(s.dock.docked, "docked");
 { const p = await props(), u = await ui(), holding = await page.evaluate(() => window.__st.holding()), events = (await page.evaluate(() => window.__st.face.stats.events)) - events0;
-  expect(events >= 1 && holding && u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "show" && p.frame.line.ok === "Skip", `home-dock-arrival: the dock plays the arrival over Home: Cargo's bay in its show (${events} events), input held, ✓ Skip: ` + JSON.stringify([u.screen, p.state, p.frame.line.ok, holding]));
-  expect(p.regions.arrival.plates.max > 0 && p.regions.dockCrates.places.length === 2, "home-dock-arrival: two crates, the Probe's plates: " + JSON.stringify(p.regions.arrival)); }
-await page.waitForTimeout(1800); await frameShot("cargo-arrival-show", true);
-await hpress("confirm", 400);   // any key skips the show to its choice
-{ const p = await props(), u = await ui();
-  expect(u.screen === "cargo" && p.state === "arrival" && p.regions.arrival.phase === "choice" && !p.overlay && p.frame.line.ok === "Open the crate" && p.frame.line.back === "Later" && !(await page.evaluate(() => window.__st.holding())), "home-dock-arrival: the show cuts to the choice: no card, the bottom line names ✓ Open the crate and ← Later (arrival A): " + JSON.stringify([p.overlay, p.frame.line])); }
-await frameShot("cargo-arrival-choice", true);
-await hpress("right", 200); { const p = await props(); expect(p.regions.arrival.phase === "choice" && !p.overlay && p.frame.line.back === "Later", "home-dock-arrival: the pad does nothing on the choice: " + JSON.stringify(p.frame.line)); }
-await hpress("back", 600);   // ← is Later: the dither back to Home, as it was
+  expect(events >= 1 && u.screen === "cargo" && p.state === "bay", `home-dock-arrival: the dock opens the Bay at once (${events} events): cargo, state bay: ` + JSON.stringify([u.screen, p.state, holding]));
+  const b = p.bay;
+  expect(b && b.table && b.table.open === false && b.ledge.length === 1 && b.behind === 0 && p.frame.line.ok === "Open the crate" && p.frame.line.back === "Home", "home-dock-arrival: the crates wait on the table and the ledge (two), ✓ Open the crate, ← Home: " + JSON.stringify([b?.table?.open, b?.ledge?.length, b?.behind, p.frame.line])); }
+await page.waitForTimeout(600); await frameShot("cargo-bay-dock", true);
+await hpress("right", 200); { const p = await props(); expect(p.state === "bay" && !p.overlay && p.frame.line.back === "Home", "home-dock-arrival: the pad does nothing on the Bay: " + JSON.stringify(p.frame.line)); }
+await hpress("back", 600);   // ← is Home, as it was
 { const p = await props(), l = await line(), u = await ui();
   expect(u.screen === "vivarium", "home-dock-arrival: Later is Home, the Vivarium room: " + JSON.stringify(u));
   expect(p.frame.top.companion.docked === true && !/away/.test(p.regions.card?.words ?? ""), "home-dock-arrival: docked, the room's card no longer says the mibi is away: " + JSON.stringify([p.frame.top.companion, p.regions.card?.words]));
@@ -169,18 +166,16 @@ await page.waitForTimeout(900); await frameShot("home-docked", true);
   let u = await ui(); expect(u.screen === "vivarium" && /crates? wait/i.test((await line()).need ?? ""), "home-bay: Home (the room) says the crates wait in the Bay: " + JSON.stringify([u.screen, await line()]));   // station step 4: Home's doors are gone; the Home key in the room does what Idle's line says waits
   if (u.vview !== "room") { u = await hpress("home", 500); expect(u.screen === "vivarium" && u.vview === "room", "home-bay: the Home key from the wall opens the room: " + JSON.stringify(u)); }
   u = await hpress("home", 500); expect(u.screen === "cargo", "home-bay: the Home key in the room opens the Bay (Cargo): " + JSON.stringify(u));
-  // the Home key with crates waiting goes through Cargo to the opening on the same key (home.mjs doNeed): there is no bay to look at first
-  let p = await props(), l = p.frame.line; expect(p.screen === "cargo" && p.state === "opening" && p.regions.opening?.starts?.length === 2, "home-bay: the Home key opens both crates, one at a time: " + JSON.stringify([p.screen, p.state, p.regions.opening?.starts]));
-  expect(await page.evaluate(() => window.__st.holding()), "home-bay: the opening holds input");
-  p = await props(); expect(p.state === "opening" && p.frame.line.ok === "Skip" && p.frame.line.back === "Home", "home-bay: the line offers ✓ Skip and ← Home (a skippable hold, lvgl-switch.md §2.1): " + JSON.stringify([p.state, p.frame.line]));
-  const total = p.regions.opening.starts.at(-1) + p.regions.opening.lens.at(-1);
-  u = await hpress("down", 200); expect(u.screen === "cargo" && (await props()).state === "opening", "home-bay: the pad does nothing while the crates open: " + JSON.stringify(u));
-  await page.waitForTimeout(total + 400);
-  p = await props(); l = p.frame.line; s = await st();
-  expect(p.state === "end" && p.regions.hatch.wells.filter((w) => w.from).length > 0 && !(await page.evaluate(() => window.__st.holding())), "home-bay: after both crates the end shows, input free: " + JSON.stringify([p.state, p.regions.hatch?.wells?.map((w) => w.from)]));
-  expect(l.ok === "Look at the pods" && l.back === "Home", "home-bay: ✓ Look at the pods, ← Home: " + JSON.stringify(l));
-  expect(s.accepted.includes("xw2n9c-5") && s.accepted.filter((id) => id.startsWith("dev-")).length === 1 && s.tray.length === 4, "home-bay: both crates accepted once, four pods in the wells: " + s.tray.length);
-  { cur.push({ end: true, wells: p.regions.hatch.wells.map((w) => w.from), ok: l.ok }); }
+  // the Home key with crates waiting goes through Cargo and opens the first crate on the same key (home.mjs doNeed): the Bay is one sorting table, ✓ opens the crate in hand, ✓ again puts it away
+  let p = await props(), l = p.frame.line; expect(p.screen === "cargo" && p.state === "bay" && p.bay.table?.open === true && p.bay.ledge.length === 1 && l.ok === "Put away" && l.back === "Home", "home-bay: the Home key opens the Bay with the first crate open on the table, the second on the ledge, ✓ Put away: " + JSON.stringify([p.screen, p.state, p.bay?.table?.open, p.bay?.ledge?.length, l]));
+  expect(!(await page.evaluate(() => window.__st.holding())), "home-bay: the Bay holds no input");
+  u = await hpress("confirm", 300); p = await props(); s = await st();
+  expect(u.screen === "cargo" && p.bay.table && p.bay.table.open === false && p.bay.ledge.length === 0 && s.tray.length > 0 && p.frame.line.ok === "Open the crate", "home-bay: ✓ puts the first crate away (its pods go to the shelf), the second comes down closed, ✓ Open the crate: " + JSON.stringify([p.bay?.table?.open, p.bay?.ledge?.length, s.tray.length, p.frame.line]));
+  u = await hpress("confirm", 300); p = await props(); expect(p.bay.table?.open === true && p.frame.line.ok === "Put away", "home-bay: ✓ opens the second crate: " + JSON.stringify([p.bay?.table?.open, p.frame.line]));
+  u = await hpress("confirm", 300); p = await props(); l = p.frame.line; s = await st();
+  expect(u.screen === "cargo" && !p.bay.table && p.bay.end !== "" && l.ok === "To the Nursery" && l.back === "Home", "home-bay: after both crates the end shows what came, ✓ To the Nursery, ← Home: " + JSON.stringify([!!p.bay?.table, p.bay?.end, l]));
+  expect(s.accepted.includes("xw2n9c-5") && s.accepted.filter((id) => id.startsWith("dev-")).length === 1 && s.tray.length === 4, "home-bay: both crates accepted once, four pods on the shelf: " + s.tray.length);
+  { cur.push({ end: true, end_words: p.bay.end, ok: l.ok }); }
   u = await hpress("confirm", 600); const newest = s.tray.at(-1);
   { const rows = await page.evaluate(() => window.__st.shelfRows()), ring = await page.evaluate(() => window.__st.UI.pods.ring);   // station step 5: the pods go on the nursery's shelf, in rows by origin; the ring is on the shelf
     expect(u.screen === "pods" && u.view === "nursery" && ring?.z === "shelf" && rows.flatMap((r) => r.ids).includes(newest.id) && rows.reduce((n, r) => n + r.count, 0) === 4, "home-bay: ✓ on the end lands on the nursery with the ring on its shelf, the four pods in rows: " + JSON.stringify([u.screen, u.view, ring, rows.map((r) => r.key + "×" + r.count)])); }
@@ -215,8 +210,7 @@ await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => 
   u = await hpress("dock", 500); expect(!u.idle && u.screen === "pods" && !(await st()).dock.docked, "idle-vivarium: the Dock key on Idle (docked) wakes and lifts, the screen under Idle shows: " + JSON.stringify([u, (await st()).dock]));
   await page.evaluate(() => { window.__st.UI.lastInput = performance.now() - 61000; }); await page.waitForTimeout(700);
   { const u0 = await ui(); expect(u0.idle === true, "idle-vivarium: the timer brings Idle again: " + JSON.stringify(u0)); }
-  u = await hpress("dock", 500); expect(!u.idle && u.screen === "cargo" && (await props()).state === "arrival" && (await st()).dock.docked, "idle-vivarium: the Dock key on Idle (lifted) wakes, docks and the arrival plays over Home: " + JSON.stringify([u, (await st()).dock]));
-  u = await hpress("confirm", 400); u = await hpress("back", 600); expect(u.screen === "vivarium", "idle-vivarium: ✓ skips the show, ← is Later: Home, the Vivarium: " + JSON.stringify(u)); }
+  u = await hpress("dock", 500); expect(!u.idle && u.screen === "vivarium" && (await st()).dock.docked, "idle-vivarium: the Dock key on Idle (lifted) wakes and docks; no crate came, so the Bay stays shut and the Vivarium shows: " + JSON.stringify([u, (await st()).dock])); }
 { const file = path.resolve(here, "../../face/golden/journey-home.json"), json = JSON.stringify({ _note: "Home's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps: trace }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(trace)])) if (JSON.stringify(want[id]) !== JSON.stringify(trace[id])) fail(`journey-home.json: step ${id} differs from the golden: ${JSON.stringify(trace[id] ?? null).slice(0, 300)}`); }
@@ -514,8 +508,7 @@ const vuntil = async (k, done, n = 12, ms = 200) => { let r = null; for (let i =
   await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitForTimeout(500);
   { const dk = JSON.stringify((await st()).dock); r = await vpress("dock", 500); expect(JSON.stringify((await st()).dock) !== dk && r.u.screen === "vivarium", "vivarium-whole: the Dock key lifts the Companion on the Wall, on the frame of the key: " + JSON.stringify([r.u.screen, (await st()).dock]));
     { const p = await props(), away = await sv().then((v) => (v.carried ?? []).map(String)); expect(away.length === 0 || p.regions.wall.cells.filter((c) => away.includes(c.id)).every((c) => /mark-companion-outline/.test(c.mark)), "vivarium-whole: away, a traveller keeps its place on the Wall with the Companion's outline mark"); await frameShot("page-vivarium-away", true); } }
-  r = await vpress("dock", 500); expect((await st()).dock.docked && r.u.screen === "cargo" && (await props()).state === "arrival", "vivarium-whole: the Dock key docks again and the arrival plays over the Vivarium: " + r.u.screen);
-  r = await vpress("confirm", 600); expect(r.u.screen === "vivarium" && (await st()).dock.docked, "vivarium-whole: an empty trip has no choice: ✓ skips the show and it closes, the Vivarium as it was: " + r.u.screen); }
+  r = await vpress("dock", 500); expect((await st()).dock.docked && r.u.screen === "vivarium", "vivarium-whole: the Dock key docks again; an empty trip has nothing to open, the Vivarium as it was: " + r.u.screen); }
 { const file = path.resolve(here, "../../face/golden/journey-vivarium.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("vivarium-"))), json = JSON.stringify({ _note: "The Vivarium's whole, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) { const a = want[id] ?? [], b = steps[id] ?? [], i = [...Array(Math.max(a.length, b.length)).keys()].find((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k])); fail(`journey-vivarium.json: step ${id} differs from the golden at action ${i} (golden ${a.length} actions, now ${b.length}): golden ${JSON.stringify(a[i])?.slice(0, 400)} · now ${JSON.stringify(b[i])?.slice(0, 400)}`); }; }
@@ -700,11 +693,10 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
 { const loop = async (k, what, until) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(120); await page.waitForFunction(() => !window.__st.holding(), null, { timeout: 15000 }); if (until) await page.waitForFunction(until, null, { timeout: 12000 }).catch(() => fail("fresh-loop: " + what + " (never happened): ")); await page.waitForTimeout(150); };
   await toHome( 300);
   await page.evaluate(() => window.__st.seedCrate("S01", 1, 4242));
-  await loop("dock", "the Dock key docks and the arrival plays over Home", () => window.__st.ST.dock.docked && window.__st.props?.state === "arrival");
-  await loop("confirm", "any key skips the show to the choice (no card: the bottom line names ✓ Open the crate and ← Later)", () => window.__st.props?.regions?.arrival?.phase === "choice");
-  await loop("confirm", "✓ Open the crate opens the close look into it (arrival B); the first pod the Station has stored holds the view", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "opening");
-  await loop("confirm", "✓ Take the pod ends the look: the pod, the supplies and the finds leave and the end shows", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "end");
-  await loop("confirm", "✓ on the end lands on Pods", () => window.__st.UI.screen === "pods");
+  await loop("dock", "the Dock key docks and the Bay opens with the crate on the table", () => window.__st.ST.dock.docked && window.__st.props?.state === "bay" && window.__st.props?.bay?.table?.open === false);
+  await loop("confirm", "✓ Open the crate opens it on the table", () => window.__st.props?.bay?.table?.open === true);
+  await loop("confirm", "✓ Put away: the pod goes to the shelf, nothing waits and the end shows", () => window.__st.UI.screen === "cargo" && window.__st.props?.state === "bay" && !window.__st.props?.bay?.table && !!window.__st.props?.bay?.end);
+  await loop("confirm", "✓ To the Nursery lands on Pods", () => window.__st.UI.screen === "pods");
   await loop("confirm", "✓ on the new pod's card opens the reading screen on it in one press (Read, the caller's verb), the ring on the key", () => window.__st.props?.state === "read" && window.__st.UI.pods.focus.cur === "key");
   await loop("confirm", "✓ Identify, the ring on the rail", () => window.__st.UI.pods.focus.cur === "rail");
   await loop("back", "← leaves in one press: the inventory on this pod's card", () => window.__st.UI.pods.view === "inventory" && (window.__st.UI.pods.focus.cur ?? "").startsWith("card."));

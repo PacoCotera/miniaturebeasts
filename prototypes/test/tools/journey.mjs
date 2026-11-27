@@ -185,11 +185,10 @@ if (!SMALL) for (const m of MENU) {
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(900);
   eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "D: Shift+D from the Companion docks the Caddy");
   eq(await page.evaluate(() => window.__tp.S.shown), "station", "D: and shows the Station");
-  eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.props?.state]), ["cargo", "arrival"], "D: the Station's arrival is playing");
+  eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.props?.state]), ["cargo", "bay"], "D: the Station's Bay is open");
   expect(!(await mb().evaluate(() => window.__heard)).includes("Shift+KeyD"), "D: Shift+D never reached the Companion");
   eq(await word(), "Lift", "D: docked: the control says Lift");
-  await page.waitForTimeout(3600); await st().waitForFunction(() => window.__st.props?.overlay?.form === "strip", null, { timeout: 15000 }).catch(() => {});
-  await page.keyboard.press("ArrowRight"); await page.waitForTimeout(200); await page.keyboard.press("Enter"); await page.waitForTimeout(900);   // Later
+  await page.waitForTimeout(800); await page.keyboard.press("Escape"); await page.waitForTimeout(900);   // ← Home
   await page.keyboard.press("Shift+D"); await page.waitForTimeout(900);
   eq([await st().evaluate(() => window.__st.ST.dock.docked), await page.evaluate(() => window.__tp.S.shown)], [false, "companion"], "D: Lift (Shift+D) lifts the Caddy and shows the Companion");
   await page.keyboard.press("1"); await page.waitForTimeout(300);
