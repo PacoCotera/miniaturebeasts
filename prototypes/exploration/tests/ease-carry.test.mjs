@@ -96,7 +96,7 @@ test("wind: per land per part of day from the seed, steady through a part, deter
   }
   const seen = new Set(); for (const seed of [1, 2, 3, 4, 5, 6, 7, 13, 42]) for (let land = 0; land < 20; land++) seen.add(windOf(seed, land, "dawn")); assert.equal(seen.size, 4, "all four ways are drawn");
   let turns = 0; for (const seed of SEEDS) for (let land = 0; land < 30; land++) { const r = DAY.parts.map(([n]) => windOf(seed, land, n)); turns += r.filter((w, i) => i && w !== r[i - 1]).length; } assert.ok(turns > 0, "it turns at some parts");
-  assert.ok(WORDS.wind.N && WORDS.windShort.W, "the wind has its [copy] words");
+  assert.ok(WORDS.windShort.W, "the wind has its [copy] words");
 });
 
 test("the stay: each light within 2 tiles adds one, reset beyond; past 10 less twice the creeping carry (never below 0) it is a heard step", () => {

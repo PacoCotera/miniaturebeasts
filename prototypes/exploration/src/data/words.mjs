@@ -26,7 +26,6 @@ export const WORDS = {
   // [copy] the notice line (lock-playtest-world, owner 2026-11-10 20:18), three slots left empty for the copywriter: saveFailed is shown while a save cannot be written (storage full, a private window, blocked)
   // until a save works again; landChanged while the save names a land (REALM_REV) other than the one this build makes; pageBroke when the page breaks, given the build number from build.json (an empty slot still shows it).
   notice: { saveFailed: "Can't save · leaving loses your game", landChanged: '', pageBroke: build => '' },
-  hold: { data: (n, cap) => 'of ' + cap },   // [copy] the cap beside a count held (Data, Energy, Essence): "12 of 20"
   startMorning: 'A Loika comes here in the morning',   // [copy] the first glint of the first set-out: a named Loika's own place (w5-day1-start-1)
   // [copy] the first walk's teaching line on coming near a named Loika (first-walk-teach-approach-1)
   teachWalk: { where: (land, dir) => 'A Loika keeps to the ' + land + ', ' + dir, herePlace: 'She comes here in the morning · wait where you can see',
@@ -43,13 +42,6 @@ export const WORDS = {
   glass: { take: 'Take the storm glass', sign: 'Storm glass · from lightning on sand', tile: 'Storm glass · from lightning', tileShort: 'Storm glass', left: ['a shard of storm glass', 'shards of storm glass'], takeWord: 'storm glass' },
   // the fruit sign and tile (finds-peek)
   fruitSign: 'Feed · press on stone or tree',
-  // the help page
-  help: {
-    veil: 'On high ground you see further: it lifts 6 tiles around you.',
-    dots: 'The dots top left are your reach, one per cell: a dot fills once you have walked most of that place; your cell is framed.',
-    call: 'Go down into a place and walk it. Call lifts the veil around you and shows what is there; once you have walked most of a place, its dot fills.',
-    data: 'Data comes from strike marks, dark streaks where lightning went into the ground: face one and ✓ Read the strike mark. A mark in the meadow or at the pond edge brings 2 Data, in the wood or the rock field 4, in the cave 5. A mibi brings 1 Data when it eats your fruit and 1 when it settles near you, once each trip. Your hold carries 20 Data. When it is full, you cannot read a mark: it stays where it is, and nothing is spent. A mibi still eats your fruit; it just brings no Data. A few marks on sand hold storm glass.',
-  },
   // the world turn's rule, said at End expedition when no place was entered
   waits: 'Nothing explored · the world waits',
 };
@@ -153,7 +145,6 @@ WORDS.w5 = {
   shedAway: 'Something left a tuft',
 };
 // [copy] the wind of the land, said in the bottom line's conditions slot until the art director signs a mark (rule 18): it blows toward the named way
-WORDS.wind = { N: 'wind to the north', E: 'wind to the east', S: 'wind to the south', W: 'wind to the west' };
 WORDS.windShort = { N: 'wind N', E: 'wind E', S: 'wind S', W: 'wind W' };
 // [copy] EDITORIAL (#147, bus 08:35 MX): the target line in the walk's top row. dir is dirWord's full word ('west', 'north-west') or 'here'; fits(str) says whether a string fits the band.
 // Full: 'Sorrel · last seen west, in the meadow'; short (when the full does not fit, or no place): 'Sorrel · last seen west'; 'here': 'Sorrel · last seen here'; no dir: 'Sorrel · last seen in the meadow'.
