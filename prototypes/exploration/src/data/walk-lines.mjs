@@ -2,6 +2,10 @@
 
 export const MAT = { e: 'Energy', d: 'Data', s: 'Essence' };
 
+// What the page says of land it is waiting for: the Probe is still reading it, or the Station has not put the place in the package yet (a Call or a walk into it).
+export const LAND_COMING = 'The Probe is reading the land';
+export const NOT_ON_COMPANION = 'This land is not on the Companion yet';
+
 // The line a field habit shows the first time it fires in a walk (the Loika's calm has its own line already).
 export const HABIT_LINE = {
   tiptoe: n => n + ' tiptoes softly', 'stone-sense': n => n + ' feels the stone for warmth', 'beacon-sit': n => n + ' sits by the beacon a while',

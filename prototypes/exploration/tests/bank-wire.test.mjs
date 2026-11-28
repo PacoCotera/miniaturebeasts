@@ -7,14 +7,15 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
+import { bankRegions } from '../src/logic/bank-regions.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url)), html = readFileSync(path.join(here, '../index.html'), 'utf8');
 
 function wiring(readyBanks) {
-  const src = html.match(/const BANK_WINDOW = [\s\S]*?\nfunction wantBanks\([\s\S]*?\n\}\n/);
-  assert.ok(src, 'bankRegions and wantBanks are in the page');
-  const PLACES = {}, PL = { ctx: { kit: 1 } }, MW = 16, MH = 20, ATLAS = 5, cxy = c => ({ x: c % MW, y: (c / MW) | 0 });
-  return { PLACES, run: vm.runInNewContext(`${src[0]}; wantBanks`, { PLACES, PL, MW, MH, ATLAS, cxy, readyBanks }) };
+  const src = html.match(/function wantBanks\([\s\S]*?\n\}\n/);
+  assert.ok(src, 'wantBanks is in the page');
+  const PLACES = {}, PL = { ctx: { kit: 1 } };
+  return { PLACES, run: vm.runInNewContext(`${src[0]}; wantBanks`, { PLACES, PL, bankRegions, readyBanks }) };
 }
 
 test('wantBanks asks the regions the reach touches, nearest first, each once; a refused ask is made again', () => {

@@ -238,7 +238,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 </script>
 <script type="module">
 "use strict";
-import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
+import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, TERR, genWorld, genPlace, placeTrees, depotCells as depotCellsIn } from "./src/world.mjs";
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf, makeHauntWalk } from "./src/world7.mjs";
 import { nightTable } from "./src/night.mjs";
 import { cardFrames, cardStep, rgbaOf } from "./src/card-motion.mjs";
@@ -506,7 +506,12 @@ function shedKnown(id) {
 const shedOf = p => p.shed != null ? { shed: p.shed, of: p.of, genome: p.genome } : p.own != null ? { own: p.own, of: p.of } : {};   // a shed pod keeps its line, a wild one's own pod its mother, wherever it is copied
 function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state === 'due' && S.turn >= r.due && !shedKnown(r.id)); }
 
-// ===================== 4. Patch layouts (pure: seed + cell) =====================
+// ===================== 4. Patch layouts =====================
+import { STONE_FILES, STONE_DIM, PROP_DY, PROP_FILES, LM_PIECE, PROP_SIZE, WALK_TEX, WALK_CS, WALK_FILES } from "./src/data/walk-art.mjs";
+import { LAND_COMING, NOT_ON_COMPANION } from "./src/data/walk-lines.mjs";
+import { bankRegions } from "./src/logic/bank-regions.mjs";
+import { routinePart, beforeDusk, clockLight } from "./src/logic/day.mjs";
+import { bankDecalsOn } from "./src/render/bank-decals.mjs";
 const layoutCache = new Map();
 // Generator 7's tile set and pieces (loaded once at boot; the tests give them at once as window.__places).
 // PL.ctx is what a cell is baked with in the page (src/bake7.mjs: the tile set, the terrain table, the dual grid's layer descriptors); PL.View draws one baked cell (a page without it draws the layout's tiles).
@@ -556,7 +561,7 @@ async function loadVeilKit(base) {
     PL.veil = kit; PL.veilMod = vm;
   } catch (e) { console.warn('the edge veil did not load', e); artWhy('veil', e); }
 }
-// The art desk's quartz stone family (art/stone/, signed in mibi-art ccbb3bb17; SOURCE.md there) and the look view's three stone marks (art/look/, same commit). The stones' colours are not all on the
+// The art desk's quartz stone family (art/stone/, SOURCE.md there) and the look view's three stone marks (art/look/). The stones' colours are not all on the
 // core palette (the quartz ramp, the warm glow): each file is kept as a canvas the page blits as it blits a sprite (dx, dy put a 48 px stone's foot where a 32 px sprite's foot stood), and its colours
 // join the screen's allowed set. A 16 px small stone is also kept doubled (32 x 32) for a sign or a card.
 const STONE_COLOURS = [], STONE_PIECES = new Map();
@@ -569,10 +574,6 @@ function placeTables() {
     const nm = nightTable(PT.rgb); while (nm.length < 256) nm.push(nm.length); PT.tabs.night = nm; ts.nightMap = nm; }   // the night's own colour table (places/src/lighttables.mjs nightTable), for the props and the baked places' ground
   return PT;
 }
-// The warm top of a warm stone goes to a dark warm in the storm and at night; the amber veins of a charged stone keep one lit step (the stone itself takes the places' grey-blue stone tones, lighttables STONE_TONES).
-const STONE_DIM = new Map([[0xfad58d, 0x9a7453], [0xdfb877, 0x82603f], [0xfff2d0, 0xb08a63], [0xfdf0dc, 0xb08a63], [0xf1ae41, 0xb36f3c], [0xffe166, 0xe9a73c], [0xfff4c2, 0xe9a73c]]);
-// NAMED EMPTY SLOT stone-small-b-charged-1 and -2 (@16, @48; the art desk to paint): a charged small b stone shows the signed charged small a frames (stoneArt)
-const STONE_FILES = ['tall', 'small', 'small-b'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].filter(s => !(k === 'small-b' && s.startsWith('charged'))).flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
 const STONE_LOOK = new Set([...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
 function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; look: kept at 1:1 with no offset (dy: a prop's foot-row offset)
   const mk = (w, h) => PL.mk ? PL.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h }), prop = dy !== undefined;
@@ -603,25 +604,9 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
     const W = f.width * k, H = f.height * k, d = new Uint8ClampedArray(W * H * 4); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) for (let c = 0; c < 4; c++) d[(y * W + x) * 4 + c] = f.data[((Math.floor(y / k)) * f.width + Math.floor(x / k)) * 4 + c];
     keep(W, H, d, pdx * k, pdy * k, name + 'x' + k); }
 }
-// The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
-// the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
-// cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
-const PROP_DY = { 'find-glint-1': 0, 'find-tuft-1': 0,'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'crate-sealed-lid': 0, 'crate-sealed-icon': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
-  // her night pod (signed, mibi-art ledger; pod-sleep-pixel-3): the 24 x 14 piece, the 32 x 32 land tile (foot on row 31; the pawn's foot is row 30, so -1) and the 32 x 18 Case cut
-  'night-pod-loika-24x14': 0, 'NIGHT_POD_LOIKA-tile-32x32': -1, 'night-pod-loika-case-32x18': 0,
-  // the walk cups (surface and cave, empty and full), the cave crystals (dim, lit), the mushroom ring and the burrow (open, closed; deep-shadow #141b1b): art/desk f66de6a16, 32 x 32; foot row as the code-drawn ones were
-  'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
-  // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (12 x 14, signed 1x, mibi-art 75f1ff195) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
-  ...Object.fromEntries(['walk-depot-dark', 'walk-depot-ember', 'walk-depot-half', 'walk-depot-full', 'walk-beacon-unlit', 'walk-beacon-lit', 'icon-depot-dark', 'icon-depot-ember', 'icon-depot-half', 'icon-depot-full', 'icon-beacon-unlit', 'icon-beacon-lit',
-    'pod-walk-bone', 'pod-walk-lime', 'pod-walk-ice', 'pod-walk-sand', 'pod-walk-sprout', 'pod-walk-lavender',
-    // the explorer: nine 32 x 32 frames, feet on row 30 (mibi-art 9c1bf9ece), blitted at the cell's top-left as the code-drawn one was
-    ...['down-0', 'down-1', 'up-0', 'up-1', 'left-0', 'left-1', 'creep-down', 'creep-up', 'creep-left'].map(n => 'pawn-' + n)].map(n => [n, 0])) };
-const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
-const PROP_SIZE = { 'night-pod-loika-24x14': [24, 14], 'NIGHT_POD_LOIKA-tile-32x32': [32, 32], 'night-pod-loika-case-32x18': [32, 18], 'heart-slab': [32, 20], 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'crate-sealed-lid': [48, 36], 'crate-sealed-icon': [16, 14], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32],
-  ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
-  ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-' + s, [12, 14]])), 'pod-walk-bone': [15, 16],
-  ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['walk-depot-' + s, [43, 47]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['walk-beacon-' + s, [20, 44]])) };
 const propPiece = name => STONE_PIECES.get(name) || walkPB(name, ...(PROP_SIZE[name] || [32, 32]));   // a named empty slot until the art is in: nothing is drawn
+// Every named file of an art folder (art/<dir>/<name>.png), fetched and decoded: each(name, pixels) as each one arrives.
+const artPixels = (dir, names, each) => Promise.all(names.map(n => pixelsOf(vurl(new URL('./art/' + dir + '/', location.href).href + n + '.png')).then(im => each(n, im))));
 // The unexplored dark's soft edge (owner #178 / #141; the art desk's signed pieces, art/props/fog-edge-*, src/fogedge.mjs): read as masks; until they are in, the dark keeps its straight cell edge.
 let FOGEDGE = null;
 const fogEdgeIn = files => { FOGEDGE = fogEdgeRead(files); landReset(); };
@@ -630,28 +615,19 @@ async function loadPropArt() {
     if (window.__propArt) { for (const [n, f] of Object.entries(window.__propArt)) stonePut(n, f, true, PROP_DY[n]); fogEdgeIn(window.__propArt); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     { const fe = {}; Promise.all(FOG_EDGE_FILES.map(n => pixelsOf(vurl(new URL('./art/props/', location.href).href + n + '.png')).then(im => { fe[n] = im; }))).then(() => fogEdgeIn(fe)).catch(e => { console.warn('the fog edge did not load', e); }); }
-    await Promise.all(PROP_FILES.map(n => pixelsOf(vurl(new URL('./art/props/', location.href).href + n + '.png')).then(im => {
-      stonePut(n, im, true, PROP_DY[n]); })));
+    await artPixels('props', PROP_FILES, (n, im) => stonePut(n, im, true, PROP_DY[n]));
   } catch (e) { console.warn('the props did not load', e); artWhy('props', e); }
 }
 async function loadStoneArt() {
   try {
     if (window.__stoneArt) { for (const [n, f] of Object.entries(window.__stoneArt)) stonePut(n, f, false, 0); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
-    await Promise.all(STONE_FILES.concat('stone-shadow@48').map(n => pixelsOf(vurl(new URL('./art/stone/', location.href).href + n + '.png')).then(im => {
-      stonePut(n, im, false, 0); })));
+    await artPixels('stone', STONE_FILES.concat('stone-shadow@48'), (n, im) => stonePut(n, im, false, 0));
   } catch (e) { console.warn('the stones did not load', e); artWhy('stones', e); }
 }
-// The art desk's walk art (art/walk/, signed in mibi-art ce97d1c19; SOURCE.md there): place marks, map terrain tiles, cliff and ramp marks,
+// The art desk's walk art (art/walk/, SOURCE.md there; the file names are WALK_FILES, src/data/walk-art.mjs): place marks, map terrain tiles, cliff and ramp marks,
 // the "!" notice card and the Curious bubble. Every file is loaded at boot and read into a palette-index buffer (every pixel is on the core palette), so the fog, storm and night tables
 // act on it as on any sprite. walkPB(name) is that buffer; until the files are in, a named empty one (nothing is drawn in code).
-const WALK_KINDS = ['windstep', 'reedpool', 'splitstone', 'hollowtree'], WALK_TEX = ['meadow', 'wood', 'rock', 'pondrim', 'beach', 'foam', 'water'], WALK_CS = [72, 48, 26];
-const WALK_FILES = [
-  ...WALK_KINDS.flatMap(k => ['found', 'been'].flatMap(s => [26, 18, 12].map(n => `mark-${k}-${s}-${n}`))),
-  ...WALK_TEX.flatMap(t => WALK_CS.map(c => `map-tex-${t}-${c}`)),
-  ...['cliff-face', 'cliff-lip-h', 'cliff-lip-v', 'cliff-side', 'ramp', 'ramp-side'].flatMap(e => WALK_CS.map(c => `edge-${e}-${c}`)),
-  'wade-mud-f0', 'wade-mud-f1',   // the place wade (bug #47): josehzz Mud&Water CC0, re-cut, 48 px, two frames (L2.wade48)
-  'bubble-curious-11x13'];
 const WART = { pb: new Map(), empty: new Map(), ready: false, src: null };   // src: the files last read, to read again when the palette's entries move (the set arrives, the atlas installs)
 function walkPB(name, w = 1, h = 1) {
   const pb = WART.pb.get(name); if (pb) return pb;
@@ -709,9 +685,8 @@ async function loadWalkArt() {
     if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); loadStoneArt(); loadPropArt(); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     fileOwe(WALK_FILES.length + LOOK_FILES.length);
-    const files = {}, load = (dir, names) => Promise.all(names.map(n => pixelsOf(vurl(new URL('./art/' + dir + '/', location.href).href + n + '.png')).then(im => {
-      files[n] = im; fileGot(); })));
-    await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES), loadStoneArt(), loadPropArt()]);
+    const files = {}, got = (n, im) => { files[n] = im; fileGot(); };
+    await Promise.all([artPixels('walk', WALK_FILES, got), artPixels('look', LOOK_FILES, got), loadStoneArt(), loadPropArt()]);
     walkRead(files);
   } catch (e) { console.warn('the walk art did not load', e); artWhy('walk', e); } finally { ART_DONE.walk = true; }
 }
@@ -722,28 +697,8 @@ function bakedView(lay) {
   if (v) { PL.views.delete(lay.baked.id); PL.views.set(lay.baked.id, v); }
   else if (PL.View) { v = new PL.View(PL.ts, lay.baked.place, { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL.mk, ring: PL.ring || null, veil: PL.veil }); PL.views.set(lay.baked.id, v);
     while (PL.views.size > PL_VIEWS_MAX) PL.views.delete(PL.views.keys().next().value); }
-  if (v && lay.banks) bankDecalsOn(v, lay);
+  if (v && lay.banks) bankDecalsOn(v, lay, (S.exp && S.exp.dug) || []);
   return v || null;
-}
-// An earth bank's art: the bake draws an undug bank with no decal of its own (today's rock face, the dither patch at the foot and the page's brackets); a bank Rupar has dug (its id in ex.dug) gets the dug piece (wayup-dug) as one decal added to the view's place,
-// at the draw order the bake would give it: after every cliff piece whose foot line (its top row + its height in rows - 1) is at or above the bank's lip row + 3, before any other decal. The view's ground renders are dropped once so the next frame draws it.
-// Run when a view is made and when a bank is dug (digBank); a no-op while the dug flags are as the view last saw them.
-function bankDecalsOn(v, lay) {
-  const dugIds = (S.exp && S.exp.dug) || [], sig = lay.banks.map(b => (dugIds.includes(b.ei) ? 1 : 0)).join('');
-  if (v.bankSig === sig) return;
-  const first = v.bankSig === undefined; v.bankSig = sig;
-  const dug = v.ts.sprites.findIndex(s => s.group === 'decal' && s.kind === 'wayup-dug');
-  if (dug < 0) return;
-  const isCliff = d => { const s = v.ts.sprites[d.kind]; return !!s && /^cliff-/.test(s.kind); }, lineOf = d => d.y / 48 + v.ts.sprites[d.kind].h48 / 48 - 1;
-  let changed = false;
-  for (const b of lay.banks) {
-    if (!dugIds.includes(b.ei)) continue;
-    const x = (b.x + 1) * 48, y = (b.y + 1) * 48, ds = v.place.decals;
-    if (ds.some(d => d.kind === dug && d.x === x && d.y === y)) continue;
-    let at = 0; while (at < ds.length && isCliff(ds[at]) && lineOf(ds[at]) <= b.y + 1 + 3) at++;
-    ds.splice(at, 0, { kind: dug, x, y, sortY: y }); changed = true;
-  }
-  if (changed && !first) { v.cache.key = null; v.cache.full = null; v.cache.frames.clear(); v.half.key = null; v.half.buf = null; v.last = null; }
 }
 const bakedColours = () => [...PL.views.values()].flatMap(v => v.paletteRgb()).concat(PL.ts && PL.ts.palette ? PL.ts.palette.map(c => [(c >> 16) & 255, (c >> 8) & 255, c & 255]) : [], STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS, CARE_COLOURS);   // the game set palette is the map's and the walk's palette
 // The sides of a cell that are shut now (past the range or closed), as a string: the reachable-only placement of a layout was made against this.
@@ -774,7 +729,7 @@ function warmPay() {   // each frame: the warm stones the set-out owed (its far 
   const saveId = S.wid;
   return WARM_PAYING = (async () => {   // each place is laid out in its own turn (no turn holds the page for more than about a frame), then the choice is made at once
     let t0 = performance.now();
-    for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER) continue; try { layout(String(c)); } catch (e) { /* the choice finds it */ } if (performance.now() - t0 > 12) { await yieldTurn(); t0 = performance.now(); } }
+    for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER) continue; try { layout(String(c)); } catch (e) { console.warn('place ' + c + ' was not laid out ahead of the warm stones, which make it again', e); } if (performance.now() - t0 > 12) { await yieldTurn(); t0 = performance.now(); } }
     if (S && S.wid === saveId && S.exp === ex && ex.warmOwed) { delete ex.warmOwed; chooseWarm(ex); ensureCharge(ex); save(); }
   })().finally(() => { WARM_PAYING = null; });
 }
@@ -787,7 +742,7 @@ function wantPlaces() {   // each frame: if the reach, the region or the walked 
   const R = hereRegion(); if (!R) return;
   if (PLACES.warmSeed !== S.regions[0].seed) {
     PLACES.warmSeed = S.regions[0].seed; const wseed = PLACES.warmSeed, warm = () => warmPlaces(wseed, { ctx: PL.ctx });   // the worker builds the world's decor while the player is on the Station's screens
-    if (S.exp) readyPlaces(wseed, R.slot, biomeVersion(S), [S.exp.pos, ...S.exp.reach].filter(c => passable(c)), { ctx: PL.ctx, first: true }).then(warm, warm);   // a page loaded straight into an expedition: the place and its reach are baked ahead of the decor warm (the neighbours' strips need them)
+    if (S.exp) readyPlaces(wseed, R.slot, biomeVersion(S), [S.exp.pos, ...S.exp.reach].filter(c => passable(c)), { ctx: PL.ctx, first: true }).catch(e => { console.warn('the reach was not asked for ahead of the decor', e); }).then(warm);   // a page loaded straight into an expedition: the place and its reach are baked ahead of the decor warm (the neighbours' strips need them)
     else warm();
   }
   const seed = S.regions[0].seed, ex = S.exp, v = biomeVersion(S), visited = [...Object.keys(S.visited || {}), ...Object.keys(S.cells || {})].map(Number);   // (a cell with state of its own is asked too: the map's beacon signs read its place)
@@ -799,17 +754,8 @@ function wantPlaces() {   // each frame: if the reach, the region or the walked 
   readyPlaces(seed, R.slot, v, list, { ctx: PL.ctx });
   wantBanks(seed, R.slot, list);   // after the places (the worker takes its messages in order, so the nearest cells are never held behind a slice)
 }
-// bank-wire-1: the Rupar's earth banks are made a region at a time (levels.mjs regionBanks); a place's window reads the lists of the regions it touches. Each region the reach's windows touch is asked of the worker once, the
+// The Rupar's earth banks are made a region at a time (levels.mjs regionBanks); a place's window reads the lists of the regions it touches (src/logic/bank-regions.mjs). Each region the reach's windows touch is asked of the worker once, the
 // nearest first; the lists come back through presetBanks (place-store.mjs), so a place made after them (or by the page itself) finds them made, and the place's banks (lay.banks) are in its baked layout either way.
-const BANK_WINDOW = 2;   // cells: a place's window reads this far round the cell (levels.mjs rule.window)
-function bankRegions(slot, cells) {
-  const seen = new Map(), here = slot;
-  for (const c of cells) { const q = cxy(c);
-    for (const dy of [-BANK_WINDOW, 0, BANK_WINDOW]) for (const dx of [-BANK_WINDOW, 0, BANK_WINDOW]) {
-      const ra = Math.floor((slot[0] * MW + q.x + dx) / MW), rb = Math.floor((slot[1] * MH + q.y + dy) / MH);
-      if (ra >= 0 && rb >= 0 && ra < ATLAS && rb < ATLAS) seen.set(ra * 100 + rb, [ra, rb]); } }
-  return [...seen.values()].sort((a, b) => Math.max(Math.abs(a[0] - here[0]), Math.abs(a[1] - here[1])) - Math.max(Math.abs(b[0] - here[0]), Math.abs(b[1] - here[1])));
-}
 function wantBanks(seed, slot, cells) {
   if (PLACES.bankSeed !== seed) { PLACES.bankSeed = seed; PLACES.banked = new Set(); }
   const todo = bankRegions(slot, cells).filter(r => !PLACES.banked.has(r[0] * 100 + r[1]));
@@ -827,12 +773,9 @@ function layout(key) {   // a land cell's layout from the generator (cached); a 
   return lay;
 }
 // ---------- Warming the next cells (no freeze at a cell boundary) ----------
-// A step into a cell used to build that place's pictures on the spot: the baked view, its ground (at 48 px and for the whole-place picture) and the sprite canvases of its props.
-// Now the cells a step can reach are warmed in idle time, the one faced first, a small step at a time (never more than one step when the page is busy); a cell entered before it is
-// warm is finished a step a frame behind the transition, the controls live, its paper sketch stands meanwhile, and past WARM_SIGN_MS (1.5 s) a calm line says the land is coming. The pictures live in the place's view
-// (one per template, at most eight), so memory stays flat however far the walk goes.
-const LAND_COMING = 'The Probe is reading the land';
-const NOT_ON_COMPANION = 'This land is not on the Companion yet';   // editorial 11-24 22:25: a place the Station has not put in the package yet (a Call or a walk into it)
+// The pictures of the cells a step can reach (the baked view, its ground at 48 px and for the whole-place picture, the sprite canvases of its props) are built in idle time, the one faced first,
+// a small step at a time (never more than one step when the page is busy); a cell entered before it is warm is finished a step a frame behind the transition, the controls live, its paper sketch
+// stands meanwhile, and past WARM_SIGN_MS a calm line says the land is coming. The pictures live in the place's view (one per template, at most PL_VIEWS_MAX), so memory stays flat however far the walk goes.
 const WARM_SIGN_MS = 1500, WARM_DONE = 3, RIM_STEP_MS = 3, WARM_EAGER_MS = 10;
 const WARM = { queue: [], first: null, firstDir: null, sig: '', cb: 0, cold: null, steps: 0, hit: 0, miss: 0 };   // hit, miss: the arrival pictures found warm, and built on the spot
 const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
@@ -994,8 +937,6 @@ function drawInkIn() {
   g.save(); g.globalAlpha = 1 - (NOW - k.at) / INK_IN_MS; g.drawImage(sketchCanvas(), 0, VIEW_Y); g.restore();   // a flat alpha fade of the sketch over the ready place
 }
 
-
-function beaconCells(seed) { return beaconCellsIn(G, seed); }
 function depotCells(seed) { return depotCellsIn(G, seed); }
 const everLit = c => { const cs = S.cells[String(c)]; if (!cs) return false; for (const id in cs) if (cs[id].lightT) return true; return false; };   // a depot lit once keeps its state in the cell; one never lit needs no place built to say so (a cold place takes a quarter second)
 function depotOf(c) { if (!passable(c) || G.gen === 7) return null; const key = String(c); return depotCells(S.seed).has(c) ? layout(key).feats.find(f => f.kind === 'h') || null : null; }   // generator 7's places hold no outpost feature (the region marks the cell: depotCells; traces are drawn on the place), so no place is made to say so; generator 4's place carries it
@@ -1004,18 +945,17 @@ const OUTPOST_TURNS = 3;
 // World turns are shown counting from 1 (turn 1 = the first expedition's world); S.turn keeps counting from 0 inside,
 // so the world's random draws and every save stay as they were and no save needs migrating.
 const wTurn = () => S.turn + 1;
-// The realm's day (walk W1): light spent since dawn (the day's 600 actions), the camps made in it, what the trips of the day left for the night's turn (their trails and charged stones), and where the last camp is.
+// The realm's day: light spent since dawn (the day's 600 actions), the camps made in it, what the trips of the day left for the night's turn (their trails and charged stones), and where the last camp is.
 // A save from before the day has none: its day starts at dawn.
-const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: W4, what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
+const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
-const BED_LIGHT = 20, hpart = () => { const p = dayPart(); return p === "dusk" && S.day && S.day.spent >= DAY.light - DAY.parts[DAY.parts.length - 1][1] - BED_LIGHT ? "dusk2" : p; };   // the part her ROUTINE reads: the last 20 light of dusk is "dusk2" (a late one beds down then); dayPart() stays the clock's
+const hpart = () => routinePart(S.day ? S.day.spent : 0);   // the part her routine reads (the last of dusk is "dusk2"); dayPart() stays the clock's
 const hintWord = (c, h) => { const w = h && (hpart() === "dusk2" && h === c.ind.hs.bed ? WORDS.her.bed : WORDS.haunt[h.k]); return w ? " · " + w : ""; };   // the hint under a wild one: her haunt's word; at dusk's end, at her bed, "her bed"
-// by day: before dusk (a far note's where-she-goes is a by-day, clear-air note); the hour is read from the DAY table
-const byDay = () => DAY.parts.findIndex(q => q[0] === dayPart()) < DAY.parts.findIndex(q => q[0] === 'dusk');
-// the lamp's night: the part of day named night, in an expedition's place (night step 4)
+// by day: before dusk (a far note's where-she-goes is a by-day, clear-air note)
+const byDay = () => beforeDusk(dayPart());
+// the lamp's night: the part of day named night, in an expedition's place
 const nightNow = () => !!S.exp && !!S.day && dayPart() === 'night';
-const dawnFirstHalf = () => S.day.spent < DAY.parts[0][1] / 2;   // bug #117: the night does not jump to full day; the first half of the dawn is the dusk's one-step table
-const clockLevel = lay => lay.cave || !S.day ? 0 : { night: 5, dusk: 6, dawn: dawnFirstHalf() ? 6 : 0 }[dayPart()] || 0;   // the place's light from the clock: night draws through the night table (5, darker and cooler than dark2), dusk through the one-step table (6) (a cave keeps its own light)
+const clockLevel = lay => lay.cave || !S.day ? 0 : clockLight(S.day.spent);   // the place's light from the clock (a cave keeps its own light)
 const untilNext = () => clockToNext(S.day ? S.day.spent : 0);
 const outpostLeft = (key, f) => { const st = fs(key, f.id); return st.lightT ? Math.max(0, st.lightT - S.turn) : 0; };
 const depotLit = c => { const f = depotOf(c); return !!f && outpostLeft(String(c), f) > 0; };
