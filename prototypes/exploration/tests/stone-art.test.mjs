@@ -65,5 +65,5 @@ test("no stone is drawn in code and no ring surrounds a warm stone", () => {
   assert.doesNotMatch(PAGE, /stonew3/, "the old warm stone with its ring");
   assert.doesNotMatch(PAGE, /ART_SLOTS/, "the old stone-standing slot");
   assert.doesNotMatch(PAGE, /pb\.poly\(\[\[4, 27\], \[6, 14\]/, "the old grey rock polygon");
-  assert.match(PAGE, /const STONE_FILES = /);
+  assert.deepEqual([...makePage({ console: "silent", els: true, canvas: true, raf: 1 }).run("STONE_FILES")].map((n) => n + ".png").sort(), files, "the page's stone list names exactly the placed files");
 });
