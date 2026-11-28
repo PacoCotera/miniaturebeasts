@@ -48,7 +48,7 @@ test("leaving a place and coming back in the same turn gives the same mibis, the
 // Where the far side cannot be crossed the side says which region lies there; a side facing land not yet open says more land opens as you explore.
 test("walking off a region side into an open neighbour goes on in the same expedition and back again: the hold, the clock and the place's mibis stay", () => {
   const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(13); TEST.calm = true; S.tier = 2;`);
-  const id = p.run(`openRegion([3, 2])`);   // the region east of region 1
+  const id = p.openRegion([3, 2]);   // the region east of region 1
   p.run(`startExpedition('weather', G.spawns[0]);`);
   const cell = p.run(`(() => { for (let y = 0; y < MH; y++) { const c = y * MW + MW - 1; if (!G.comp[c] || G.land[c] === L.WATER || G.island[c] || !seamCross(c, 'right')) continue;
     S.exp.pos = c; enterPatch(); if (RT.view) endView(); const ok = layout(String(c)).openings.some(o => o.side === 'E'); leavePatch(); if (ok) return c; } return -1; })()`);
@@ -88,7 +88,7 @@ test("walking off a region side into an open neighbour goes on in the same exped
 // The coast: from the beach or the shallows a step into the deep water is refused, row after row; the explorer never stands in water.
 test("on the coast a step from the beach or the shallows into the deep water is refused: every row ends on the shore, never in the water", () => {
   const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(13); TEST.calm = true; S.tier = 2;`);
-  const id = p.run(`openRegion([0, 2])`); p.run(`mountRegion(${JSON.stringify(id)})`);
+  const id = p.openRegion([0, 2]); p.run(`mountRegion(${JSON.stringify(id)})`);
   p.run(`S.seen.rev.fill(1); startExpedition('weather', 1); S.exp.range = 12; S.exp.reach = reachCells(1, 12); S.exp.pos = 1; enterPatch(); if (RT.view) endView();`);
   const r = p.run(`(() => { const lay = layout('1'), W = lay.w, P = S.exp.patch, wet = t => t === T.WATER || t === T.DEEP || t === T.ISLE, out = { rows: 0, wetStood: 0, refused: 0 };
     for (let y = 2; y < lay.h - 2; y++) {

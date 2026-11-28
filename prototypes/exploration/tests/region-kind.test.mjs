@@ -24,7 +24,7 @@ test("a new realm (kind version 3): region 1 is generator 7's home at its slot; 
   assert.equal(digestOf(p), digest(genWorld7(11, [2, 2])), "region 1 is the home");
   const seen = new Set();
   for (const [ax, ay] of [[2, 1], [3, 2], [2, 3], [1, 2], [2, 0], [4, 2]]) {
-    const id = p.run(`openRegion([${ax}, ${ay}])`), want = R.slotBiome(11, ax, ay, 2);
+    const id = p.openRegion([ax, ay]), want = R.slotBiome(11, ax, ay, 2);
     const rec = plain(p.run(`regionById(S, ${JSON.stringify(id)})`));
     assert.equal(rec.gen, 7); assert.equal(rec.biome, want);
     p.run(`mountRegion(${JSON.stringify(id)})`);
@@ -40,7 +40,7 @@ test("a new realm (kind version 3): region 1 is generator 7's home at its slot; 
 test("a region keeps its generator and kind through a save and a load, mounted or not", () => {
   const store = {}, p = makePage({ gen: 7, console: "silent", store });
   p.run("newWorld(11)");
-  const id = p.run("openRegion([2, 1])"); p.run(`mountRegion(${JSON.stringify(id)})`); p.run("save()");
+  const id = p.openRegion([2, 1]); p.run(`mountRegion(${JSON.stringify(id)})`); p.run("save()");
   const want = plain(p.run(`regionById(S, ${JSON.stringify(id)})`));
   const q = makePage({ gen: 7, console: "silent", store });   // boots from the save: the region is mounted
   assert.equal(q.run("S.here"), id); assert.equal(q.run("G.gen"), 7); assert.equal(q.run("G.biome"), want.biome);
@@ -53,7 +53,7 @@ test("a version 1 realm records its regions' kinds as it did (the older four), o
   const p = makePage({ gen: 7, console: "silent" });
   p.run("newWorld(11); delete S.biomeV");
   for (const [ax, ay] of [[2, 1], [3, 2], [2, 0]]) {
-    const id = p.run(`openRegion([${ax}, ${ay}])`), rec = plain(p.run(`regionById(S, ${JSON.stringify(id)})`));
+    const id = p.openRegion([ax, ay]), rec = plain(p.run(`regionById(S, ${JSON.stringify(id)})`));
     assert.equal(rec.gen, 7); assert.equal(rec.biome, R.slotBiome(11, ax, ay, 1)); assert.ok(R.BIOMES_V1.includes(rec.biome));
     p.run(`mountRegion(${JSON.stringify(id)})`);
     assert.equal(p.run("G.gen"), 7);
