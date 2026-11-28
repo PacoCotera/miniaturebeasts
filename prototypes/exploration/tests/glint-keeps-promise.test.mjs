@@ -41,12 +41,12 @@ test("his save (patch 8,3 tile 2,22): the left glint's find is there after the c
   const h = js(p, `hash(${dew.x}, ${dew.y}, 7) % 1600`), on = 1600 * 400 - h + 100, off = on + 800;
   const A = frame(p, on), B = frame(p, off);
   // the sparkle stands in both phases (bright on its pulse, dim between: bug 160); the fake canvas ignores alpha, so each phase is judged against the place with nothing glinting
-  p.run("globalThis.__was = [S.called[55], RT.pointed]; delete S.called[55]; RT.pointed = {};");
-  const N = frame(p, on); p.run("S.called[55] = __was[0]; RT.pointed = __was[1];");
+  p.run("globalThis.__was = [S.seen.walked[55], RT.pointed]; delete S.seen.walked[55]; RT.pointed = {};");
+  const N = frame(p, on); p.run("S.seen.walked[55] = __was[0]; RT.pointed = __was[1];");
   assert.ok(A.some((v, i) => v !== N[i]), "close by, the sparkle is drawn on its pulse");
   assert.ok(B.some((v, i) => v !== N[i]), "close by, the sparkle is still drawn between pulses");
   // a place that was never explored: only the mark makes its finds glint
-  p.run("delete S.called[55];");
+  p.run("delete S.seen.walked[55];");
   const C1 = frame(p, on); p.run("RT.pointed = {};"); const C2 = frame(p, on);
   assert.ok(C1.some((v, i) => v !== C2[i]), "in a place not yet explored, the pointed find still glints");
   p.run("RT.pointed = { 55: 1 };");
@@ -64,7 +64,7 @@ test("20 seeds: no find glint (a take or a buried-pod way) is drawn with nothing
     const p = mk();
     p.run(`newWorld(${seed}); startExpedition('weather', G.spawns[0]); S.exp.storm = null; S.exp.fog = null; enterPatch(); NOW = 5000;`);
     // let every place of the reach have been seen, so what is left in them counts
-    p.run("for (const c of S.exp.reach) { if (!passable(c)) continue; const k = String(c), l = layout(k); S.visited[c] = 1; S.veil[k] = new Array(l.h).fill(0).map(() => (2 ** l.w - 1) >>> 0); }");
+    p.run("for (const c of S.exp.reach) { if (!passable(c)) continue; const k = String(c), l = layout(k); S.seen.been[c] = 1; S.seen.tile[k] = new Array(l.h).fill(0).map(() => (2 ** l.w - 1) >>> 0); }");
     for (let n = 0; n < 4; n++) {
       p.run(`{ const P = S.exp.patch, l = layout(P.key); P.x = ${[0, 5, 12, 20][n]} % l.w; P.y = ${[0, 6, 14, 22][n]} % l.h; } RT.pl = null; RT.key = null; RT.lead = null; RT.leadPin = null; render(5); callPlace(); scr.px().fill(-1); render(5);`);
       const way = js(p, "leadWay(S.exp.patch, layout(S.exp.patch.key))");

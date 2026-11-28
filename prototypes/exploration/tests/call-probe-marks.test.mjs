@@ -14,15 +14,15 @@ test("#55 the held view draws a bush with fruit and a fruit on the ground, never
   p.run(`{ const lay = layout('${key}'); globalThis.__bush = lay.feats.find(f => f.kind === 'b' && !f.tree); }`);
   const hasBush = p.run("!!globalThis.__bush");
   if (hasBush) {
-    p.run(`S.veil['${key}'] = new Array(PH).fill(0);`);
+    p.run(`S.seen.tile['${key}'] = new Array(PH).fill(0);`);
     p.run("{ const f = globalThis.__bush; fs(S.exp.patch.key, f.id).bare = 0; }");
-    p.run(`S.veil['${key}'] = new Array(PH).fill(0x0fffffff);`);
+    p.run(`S.seen.tile['${key}'] = new Array(PH).fill(0x0fffffff);`);
     const seen = draw();
-    p.run(`S.veil['${key}'] = new Array(PH).fill(0); S.exp.live['${key}'].fr = [];`);
+    p.run(`S.seen.tile['${key}'] = new Array(PH).fill(0); S.exp.live['${key}'].fr = [];`);
     const veiled = draw();
     assert.ok(seen >= veiled, "a bush under the veil is not drawn");
   }
-  p.run(`S.veil['${key}'] = new Array(PH).fill(0x0fffffff); S.exp.live['${key}'].fr = [{ id: 1, x: 5, y: 5 }];`);
+  p.run(`S.seen.tile['${key}'] = new Array(PH).fill(0x0fffffff); S.exp.live['${key}'].fr = [{ id: 1, x: 5, y: 5 }];`);
   const withFruit = draw();
   p.run(`S.exp.live['${key}'].fr = [];`);
   const without = draw();
@@ -43,6 +43,6 @@ test("#56 after a Call with nothing to take in sight, any walk, the way to the n
   const w = p.run("leadWay(S.exp.patch, layout(S.exp.patch.key))");
   if (w) assert.ok(["out", "take"].includes(w.kind), "then a way out not yet walked (or a thing seen elsewhere)");
   // something to take in sight: no tab
-  p.run("{ const k = S.exp.patch.key, P = S.exp.patch; S.veil[k] = new Array(PH).fill(0x0fffffff); S.pods = [{ id: 'z', k, x: P.x + 1, y: P.y, sp: 0, h: 0, g: 'grass', how: 'ground' }]; RT.lead = null; }");
+  p.run("{ const k = S.exp.patch.key, P = S.exp.patch; S.seen.tile[k] = new Array(PH).fill(0x0fffffff); S.pods = [{ id: 'z', k, x: P.x + 1, y: P.y, sp: 0, h: 0, g: 'grass', how: 'ground' }]; RT.lead = null; }");
   assert.equal(p.run("leadWay(S.exp.patch, layout(S.exp.patch.key))"), null, "a pod in sight: no tab");
 });

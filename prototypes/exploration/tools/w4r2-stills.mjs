@@ -50,7 +50,7 @@ async function habit(mode) {
     for (const q of live.cr) if (q.id !== id && q.ind) q.hide = 1;   // the scene is hers alone: another named Loika shaking nearby would take the note
     const W = m.windAt(S.seed, lay.cell, S.day.spent), vec = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] }[W];
     for (let d = 1; d <= 4; d++) { const x = c.x + vec[0] * d, y = c.y + vec[1] * d; lay.tiles[y * lay.w + x] = m.T.REEDS; lay.reach[y * lay.w + x] = 1; }
-    m.unveil(key, c.x, c.y, 6); P.x = c.x + vec[0] * 4; P.y = c.y + vec[1] * 4; P.dir = vec[1] > 0 ? "up" : vec[1] < 0 ? "down" : vec[0] > 0 ? "left" : "right";
+    m.lightningLift(key, c.x, c.y, 6); P.x = c.x + vec[0] * 4; P.y = c.y + vec[1] * 4; P.dir = vec[1] > 0 ? "up" : vec[1] < 0 ? "down" : vec[0] > 0 ? "left" : "right";
     S.exp.storm = { x: col + .5 - 1.5 + 1.7 - 1.5, w: 3, dir: -1, v: .25, t: 0 }; window.__w4 = { id, vec }; }, pick);
   await page.waitForTimeout(600);
   const tick = async (allow) => page.evaluate((allow) => { const m = window.__mb, c = m.curLive().cr.find(q => q.id === window.__w4.id); m.curLive().strike = null; m.S.exp.stray = null; const a = m.patchAction(); if (allow && a.label === m.WORDS.habit.note) { a.run(); return "note"; } m.advance("patch", { noise: "act" }); return c.hb ? c.hb.k + c.hb.n : c.st; }, allow);
@@ -79,7 +79,7 @@ async function prints(spent, tag, phone) {
     const q = list[0], far = q.mark || q.stand, tryX = [far.x + 7, far.x - 7].find(x => x > 1 && x < lay.w - 2 && m.passable(x, far.y)) ?? far.x + 7;
     c.x = tryX; c.y = far.y; c.gone = null; c.ease = 0; c.st = "idle"; c.ind.go = { part: m.dayPart(), t: { x: c.x, y: c.y } };
     const side = [[1, 0, "left"], [-1, 0, "right"], [0, 1, "up"], [0, -1, "down"]].find(([dx, dy]) => m.passable(far.x + dx, far.y + dy));
-    m.unveil(key, far.x, far.y, 7); P.x = side ? far.x + side[0] * 2 : far.x; P.y = side ? far.y + side[1] * 2 : far.y; P.dir = side ? side[2] : "up";
+    m.lightningLift(key, far.x, far.y, 7); P.x = side ? far.x + side[0] * 2 : far.x; P.y = side ? far.y + side[1] * 2 : far.y; P.dir = side ? side[2] : "up";
     window.__pr = { mark: q.mark, st0: q.stand, stand: far, part: q.part, yday: q.yday, side: side && side.slice(0, 2) };
     return { stand: far, st0: q.stand, mark: q.mark, part: q.part, id }; }, { ...pick, spent });
   if (!r || r.none) { log["prints-" + tag] = "no prints " + JSON.stringify(r); await page.context().close(); return; }

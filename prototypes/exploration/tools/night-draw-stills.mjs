@@ -25,7 +25,7 @@ try {
     const errors = []; page.on("pageerror", (e) => errors.push(e.message));
     await page.goto(`http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html?seed=7`);
     await page.waitForFunction(() => window.__mb && window.__mb.TEST, null, { timeout: 60000 }); await page.waitForTimeout(1500);
-    await page.evaluate(() => { const m = window.__mb; m.TEST.calm = true; m.newWorld(7, 2); const pos = 13 * m.MW + 6; m.startExpedition("weather", pos); m.S.exp.fog = null; m.S.exp.storm = null; m.S.exp.pos = pos; m.enterPatch(); m.S.exp.patch.x = 12; m.S.exp.patch.y = 22; m.S.veil[m.S.exp.patch.key] = new Array(m.PH).fill(0x0fffffff); });
+    await page.evaluate(() => { const m = window.__mb; m.TEST.calm = true; m.newWorld(7, 2); const pos = 13 * m.MW + 6; m.startExpedition("weather", pos); m.S.exp.fog = null; m.S.exp.storm = null; m.S.exp.pos = pos; m.enterPatch(); m.S.exp.patch.x = 12; m.S.exp.patch.y = 22; m.S.seen.tile[m.S.exp.patch.key] = new Array(m.PH).fill(0x0fffffff); });
     // a step on the map, then each part of the day; the dusk and night lines come from the real advance
     const steps = [["1-day", 30, null], ["2-dusk", 160, "dusk"], ["3-night", 190, "night"]];
     for (const [name, spent, news] of steps) {

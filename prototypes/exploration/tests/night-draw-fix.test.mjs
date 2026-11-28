@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 
 const start = () => { const p = makePage({ gen: 7, console: "silent", canvas: true });
-  p.run("TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); S.exp.patch.x = 14; S.exp.patch.y = 14; S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);"); return p; };
+  p.run("TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); S.exp.patch.x = 14; S.exp.patch.y = 14; S.seen.tile[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);"); return p; };
 const shot = (p, spent) => { p.run(`S.day.spent = ${spent}; scr.px().fill(-1); RT.key = null; drawPatch(1);`); return Array.from(p.run("scr.px()")); };
 const darker = (p, a, b) => { const lum = i => { const h = p.run(`RGB[${i}]`); return Array.isArray(h) || ArrayBuffer.isView(h) ? h[0] + h[1] + h[2] : 0; };
   let n = 0, d = 0; for (let i = 0; i < a.length; i++) if (a[i] >= 0 && b[i] >= 0 && a[i] !== b[i]) { n++; if (lum(b[i]) <= lum(a[i])) d++; } return [n, d]; };

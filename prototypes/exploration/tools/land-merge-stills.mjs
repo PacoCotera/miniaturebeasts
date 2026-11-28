@@ -35,13 +35,13 @@ const info = await page.evaluate(([seed, cellArg, sp, pawnArg]) => { const m = w
   if (cellArg !== "start") { ex.start = cell; ex.pos = cell; ex.range = 4; if (ex.patch) m.leavePatch(); m.enterPatch(); } else if (!ex.patch) m.enterPatch();
   const key = ex.patch.key, lay = m.layout(key), P = ex.patch;
   if (pawnArg) { const [x, y, dir] = pawnArg.split(","); P.x = +x; P.y = +y; P.dir = dir; }
-  S.veil[key] = new Array(lay.h).fill(0x0fffffff);
+  S.seen.tile[key] = new Array(lay.h).fill(0x0fffffff);
   return { cell, key, w: lay.w, h: lay.h, pawn: [P.x, P.y, P.dir], banks: lay.banks || null }; }, [seed, cellArg, sp, pawnArg]);
 console.log(JSON.stringify(info));
 const cell = info.cell;
 const setLight = (light) => page.evaluate(([l, c]) => { const m = window.__mb, ex = m.S.exp; ex.storm = l === "storm" ? { x: (c % m.MW) - 1, dir: 1, w: 3, v: 0, t: 0 } : null; }, [light, cell]);
 const name = `s${seed}-c${cell}`;
-await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); m.walkLift && m.walkLift(); }); await page.waitForTimeout(1200);
+await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); m.walkSeen && m.walkSeen(); }); await page.waitForTimeout(1200);
 for (const light of ["day", "storm"]) {
   await setLight(light); await page.waitForTimeout(700);
   const d = await page.evaluate(() => window.__mb.capture()); writeFileSync(path.join(out, `${name}-walk-1x-${light}.png`), Buffer.from(d.split(",")[1], "base64"));

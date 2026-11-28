@@ -214,7 +214,7 @@ WORDS.book = {
 // A label tells only what the player was shown: a pod's species when known, never a trait value; "at the Station" names only the chapter the sample is for.
 WORDS.case = {
   title: 'Case', sealed: 'Sealed for home', tally: { title: 'Brought home', pods: 'pods', finds: 'finds', pages: 'pages' }, goesHome: ['It all goes home', 'when you dock'], page: 'Its page in the Log', field: 'field', pages: ['◀ Log, her pages · ▶ Riding', '◀ Log · ▶ Riding'], end: 'End expedition',
-  pod: 'A pod', podOf: n => n + ' pod', supply: { e: 'Energy', d: 'Data', s: 'Essence' }, supplyLine: n => n + ' in the hold', crate: n => 'Crate · expedition ' + n, crateNone: 'A crate with nothing in it', empty: 'nothing here yet', noPic: 'no picture yet',
+  pod: 'A pod', podOf: n => n + ' pod', supply: { e: 'Energy', d: 'Data', s: 'Essence' }, fruit: 'Fruit', fruitHeld: 'in your hand for her', fruitNone: 'none · a bush has some',supplyLine: n => n + ' in the hold', crate: n => 'Crate · expedition ' + n, crateNone: 'A crate with nothing in it', empty: 'nothing here yet', noPic: 'no picture yet',
   place: p => 'the ' + p, took: (how, place, d) => how + ' · ' + place + ' · day ' + d, noWhere: 'taken on an earlier walk',
   podHow: { ground: 'picked up', dug: 'dug up' }, sampleHow: { shake: 'shaken dry', calm: 'left while calm', sleep: 'left asleep' },
   forStation: { coat: 'her coat', face: 'her face', 'legs-tail': 'her legs and tail' }, atStation: w => 'reads ' + w + ' at home', podAt: 'goes to the nursery',
@@ -259,6 +259,7 @@ WORDS.pod = {
   bayFull: n => 'Bay full · ' + n + ' wakes here at first light · dock to empty the bay',
   wokeSet: n => n + ' woke where her pod lay',   // the dawn message where she lay; none at her bed
   wokeNursery: n => n + ' woke in the nursery',
+  fruitTeach: n => 'Fruit from a bush · ' + n + ' eats from your hand', fruitTeachShort: n => n + ' eats fruit · pick it from a bush',   // [copy] editorial, bus 2dd0bb (first-pod-fix-1): a named wild Loika met, no fruit in hand
   eatsTeach: n => n + ' eats fruit · creep beside her while she grazes', podTeach: n => n + ' · asleep in her pod · ✓ takes her up',   // [copy] put together from canon's strings
   fed: 'Fed today', asleepPage: 'asleep in her pod', inCase: 'in the Case', goneHome: d => 'Gone home · day ' + d, goneBack: d => 'Gone back · day ' + d,
 };

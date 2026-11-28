@@ -17,7 +17,7 @@ function cellPixels(f, c) {
   return out;
 }
 const night = (f, px) => px.filter((v) => v === f.run("C.night")).length;
-function toMap(f) { f.run("S.exp.patch = null; S.phase = 'map'; S.exp.fog = null; S.exp.storm = null; for (const c of S.exp.reach) S.revealed[c] = 1;"); }
+function toMap(f) { f.run("S.exp.patch = null; S.phase = 'map'; S.exp.fog = null; S.exp.storm = null; for (const c of S.exp.reach) S.seen.rev[c] = 1;"); }
 
 test("the three states: never been (one step darker, no dots), been in and not found (light dots, the same for 1 row lifted or 20), found (clear); no place, no dots", () => {
   assert.ok(FOG_NOT_BEEN === 0 && FOG_BEEN > 0, "never been is the dark table, not dots (dots over pale greens read grey)");
@@ -25,34 +25,34 @@ test("the three states: never been (one step darker, no dots), been in and not f
   f.run("S.exp.patch = { key: String(S.exp.pos), x: 14, y: 16, dir: 'up', noise: 'creep' }");
   toMap(f);
   const c = plain(f.run("S.exp.reach.find(c => c !== S.exp.pos && passable(c) && G.comp[c] && G.land[c] !== L.WATER && !gatedCell(c))")), key = String(c);
-  assert.equal(f.run(`fogState(${c})`), 2, "never entered: darker");
+  assert.equal(f.run(`cellFog(${c})`), 2, "never entered: darker");
   assert.equal(f.run(`reachRm(${c})`), 1, "never entered: drawn through the dark table");
   const dark = cellPixels(f, c), n2 = night(f, dark);
-  f.run(`S.visited[${c}] = 1`);
-  assert.equal(f.run(`fogState(${c})`), 2, "only crossed: still darker (standing on a cell on the map is not going down into it)");
+  f.run(`S.seen.been[${c}] = 1`);
+  assert.equal(f.run(`cellFog(${c})`), 2, "only crossed: still darker (standing on a cell on the map is not going down into it)");
   assert.equal(cellPixels(f, c).join(), dark.join());
-  const H = f.run(`layout('${key}').h`), rows = (n) => `S.veil['${key}'] = new Array(${H}).fill(0); for (let y = 0; y < ${n}; y++) S.veil['${key}'][y] = 0x0fffffff;`;
-  f.run(rows(1)); assert.equal(f.run(`fogState(${c})`), 1, "a place entered: light");
+  const H = f.run(`layout('${key}').h`), rows = (n) => `S.seen.into[${key}] = 1; S.seen.tile['${key}'] = new Array(${H}).fill(0); for (let y = 0; y < ${n}; y++) S.seen.tile['${key}'][y] = 0x0fffffff;`;
+  f.run(rows(1)); assert.equal(f.run(`cellFog(${c})`), 1, "a place entered: light");
   const one = cellPixels(f, c), n1 = night(f, one), N = f.run("C.night"), mask = (px) => px.map((v) => v === N ? 1 : 0).join("");   // (a sign may appear on a place whose rows are lifted; the dots may not change)
   f.run(rows(20)); const m20 = mask(cellPixels(f, c)), m1 = mask(one); let moved = 0; for (let i = 0; i < m1.length; i++) if (m1[i] !== m20[i]) moved++;
   assert.ok(moved <= 4, `the same dots for 1 row and 20 rows lifted: a state, not a measure (${moved} pixels differ; a sign's outline may blink in)`);
   assert.ok(n1 > n2, `been in carries light dots (${n1}); never been carries none of its own (${n2})`);
   assert.equal(f.run(`reachRm(${c})`), 0, "been in: full colour under the dots");
-  f.run(`(S.called = S.called || {})[${c}] = 1`);
-  assert.equal(f.run(`fogState(${c})`), 0, "found: clear");
+  f.run(`(S.seen.walked = S.seen.walked || {})[${c}] = 1`);
+  assert.equal(f.run(`cellFog(${c})`), 0, "found: clear");
   const clear = cellPixels(f, c);
   assert.notEqual(clear.join(), dark.join(), "never been differs from found: one step darker");
   f.run("FOGV.n = 0; FOGV.b = 0"); assert.equal(mask(cellPixels(f, c)), mask(clear), "a found cell carries no night dots at all"); f.run(`FOGV.n = ${FOG_NOT_BEEN}; FOGV.b = ${FOG_BEEN}`);
   // open water: no place, never dotted
   const w = plain(f.run("(() => { for (let c = 0; c < MW * MH; c++) if (!passable(c)) return c; return -1; })()"));
-  if (w >= 0) { f.run(`S.revealed[${w}] = 1`); assert.equal(f.run(`fogState(${w})`), 0); }
-  assert.equal(f.run("fogState(0) * 0 + (S.revealed[0] ? 0 : fogState(0))"), 0, "an unseen cell has no state");
+  if (w >= 0) { f.run(`S.seen.rev[${w}] = 1`); assert.equal(f.run(`cellFog(${w})`), 0); }
+  assert.equal(f.run("cellFog(0) * 0 + (S.seen.rev[0] ? 0 : cellFog(0))"), 0, "an unseen cell has no state");
 });
 
 test("the dots are on the screen's phase: two neighbouring heavy cells join with no seam", () => {
   const f = fixture({ canvas: true });
   toMap(f);
-  const two = plain(f.run("(() => { const q = reachGeom(); for (const c of S.exp.reach) { const d = c + 1; if (c % MW < MW - 1 && fogState(c) === 2 && fogState(d) === 2 && S.exp.reach.includes(d)) return [c, d]; } return null; })()"));
+  const two = plain(f.run("(() => { const q = reachGeom(); for (const c of S.exp.reach) { const d = c + 1; if (c % MW < MW - 1 && cellFog(c) === 2 && cellFog(d) === 2 && S.exp.reach.includes(d)) return [c, d]; } return null; })()"));
   if (!two) return;
   const a = plain(f.run(`${RECT}(${two[0]})`)), b = plain(f.run(`${RECT}(${two[1]})`));
   assert.equal(b.x - a.x, a.cs);
@@ -83,7 +83,7 @@ test("B6: the veil draws in a fresh generated place at 32 px and at 48 px, befor
     ["48 px", "newWorld(7); startExpedition('weather', G.spawns[0]); S.exp.fog = null; S.exp.storm = null; enterPatch();"]]) {
     const p = makePage({ console: "silent", els: true, raf: 1, canvas: true }); p.run("TEST.calm = true;"); p.run(setup);
     assert.equal(p.run("S.found.includes('callintro') || FX.pulse != null"), false, label + ": no Call yet");
-    const lay = plain(p.run("(() => { const k = S.exp.patch.key, lay = layout(k); let veiled = 0; for (let i = 0; i < lay.w * lay.h; i++) if (lay.reach[i] && !unveiled(k, i % lay.w, (i / lay.w) | 0)) veiled++; return { veiled }; })()"));
+    const lay = plain(p.run("(() => { const k = S.exp.patch.key, lay = layout(k); let veiled = 0; for (let i = 0; i < lay.w * lay.h; i++) if (lay.reach[i] && !isSeen(k, i % lay.w, (i / lay.w) | 0)) veiled++; return { veiled }; })()"));
     assert.ok(lay.veiled > 20, label + ": most of the place is under the veil: " + lay.veiled);
     p.run("FX.msg = ''; FX.notes = []; FX.sign = null; FX.lockUntil = 0;");
     assert.ok(veilPixels(p) > 200, label + ": night pixels of the veil are on the screen");

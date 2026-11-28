@@ -19,11 +19,11 @@ test("a Call on the east edge lifts the strip next door although it is outside t
   const { p, nk } = setup("layout(S.exp.patch.key).w - 1");
   p.run("callPlace();");
   const y = p.run("S.exp.patch.y");
-  assert.equal(p.run(`!!(S.veilPre && S.veilPre[${nk}] && (S.veilPre[${nk}][${y}] & 1))`), true);
+  assert.equal(p.run(`!!(S.seen.tile && S.seen.tile[${nk}] && (S.seen.tile[${nk}][${y}] & 1))`), true);
 });
 
 test("a Call off the edge still leaves a neighbour outside the reach veiled", () => {
   const { p, nk } = setup("layout(S.exp.patch.key).w - 2");
   p.run("callPlace();");
-  assert.equal(p.run(`!!(S.veilPre && S.veilPre[${nk}])`), false);
+  assert.equal(p.run(`!!(S.seen.tile && S.seen.tile[${nk}])`), false);
 });

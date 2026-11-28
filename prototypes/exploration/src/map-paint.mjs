@@ -11,8 +11,8 @@ export function makeMapPaint(env) {
   // (fx, fy): the spot as fractions of the cell. Returns { mk, x, y } for a cell at (cx, cy) of size cs, or null.
   function cellMark(c, cx, cy, cs, size, open) {   // open: the opening screen draws them between expeditions
     const S = env.S, G = env.G;
-    if ((!S.exp && !open) || !S.revealed[c] || !env.passable(c) || G.land[c] === L.WATER) return null;
-    const found = env.walkedCell(c), been = !!S.veil[String(c)]; if (!found && !been) return null;
+    if ((!S.exp && !open) || !S.seen.rev[c] || !env.passable(c) || G.land[c] === L.WATER) return null;
+    const found = env.walkedCell(c), been = !!S.seen.into[c]; if (!found && !been) return null;
     if (!env.placeHave(String(c))) return null;   // its place is still being made: no mark yet
     const lay = env.layout(String(c)), bk = lay.baked; if (!bk || !lay.landmark) return null;   // a mark stands only at a landmark: the land holds few
     const lm = { x: lay.landmark.x - bk.ox, y: lay.landmark.y - bk.oy }, mk = env.walkPB(`mark-${env.LM_MARK[lay.landmark.kind]}-${found ? 'found' : 'been'}-${size}`, size, size), pad = 2;

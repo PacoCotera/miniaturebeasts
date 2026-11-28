@@ -23,9 +23,9 @@ test("the Probe screen has no 'Quarter' sign", () => {
 // a visited cell, half under the veil, then fully lifted: no pixel of the map or the reach view moves with the veil (no quarter dither)
 test("no quarter is drawn on the reach view or the full map, whatever the veil lies on", () => {
   const f = fixture({ canvas: true }), run = f.run;
-  run("S.visited[S.exp.pos] = 1; FX.msg = ''; FX.notes = [];"); const key = run("S.exp.patch.key");
+  run("S.seen.been[S.exp.pos] = 1; FX.msg = ''; FX.notes = [];"); const key = run("S.exp.patch.key");
   const shot = (veil, full) => {
-    run(`S.veil[${JSON.stringify(key)}] = ${veil}; S.exp.patch = null; S.phase = 'map'; S.ui.mapFull = ${full}; FX.lockUntil = 0; RT.key = null; scr.px().fill(-1); render(5)`);
+    run(`S.seen.tile[${JSON.stringify(key)}] = ${veil}; S.exp.patch = null; S.phase = 'map'; S.ui.mapFull = ${full}; FX.lockUntil = 0; RT.key = null; scr.px().fill(-1); render(5)`);
     return Array.from(run("scr").px());
   };
   for (const full of [false, true]) {
@@ -40,20 +40,20 @@ test("the reach line counts places explored, and the world turn never veils a pl
   assert.match(run("reachLine()"), /^Explored 0 of \d+/);
   assert.doesNotMatch(run("reachLine()"), /urvey|found/i);
   // lift a whole place, walk it, and see the count and the dot move
-  run("S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff); TEST.exploreHere();");
+  run("S.seen.tile[S.exp.patch.key] = new Array(PH).fill(0x0fffffff); TEST.exploreHere();");
   assert.ok(run("explored(S.exp.pos)"), "the heart is found: the dot fills");
   assert.match(run("reachLine()"), /^Explored 1 of \d+/);
   // a world turn with a storm everywhere and new arrivals: every lifted veil stays lifted
-  const key = run("S.exp.patch.key"), before = JSON.stringify(plain(run("S.veil")));
+  const key = run("S.exp.patch.key"), before = JSON.stringify(plain(run("S.seen.tile")));
   run("worldTurn({ trail: [], storm: Array.from(G.comp).map((v, c) => v ? c : -1).filter(c => c >= 0) })");
-  assert.equal(JSON.stringify(plain(run("S.veil"))), before, "the veil is as it was");
-  assert.equal(run(`S.veil[${JSON.stringify(key)}].every(r => r === 0x0fffffff)`), true);
+  assert.equal(JSON.stringify(plain(run("S.seen.tile"))), before, "the veil is as it was");
+  assert.equal(run(`S.seen.tile[${JSON.stringify(key)}].every(r => r === 0x0fffffff)`), true);
   assert.ok(run("explored(S.exp.pos)"), "and the place stays found");
 });
 
 test("no completion push: the last dot filling says nothing, the menu does not jump to End expedition", () => {
   const f = fixture(), run = f.run;
-  run("for (const c of S.exp.reach) { S.visited[c] = 1; (S.called = S.called || {})[c] = 1; } FX.msg = ''; FX.notes = []; advance('patch', { noise: 'wait' });");
+  run("for (const c of S.exp.reach) { S.seen.been[c] = 1; (S.seen.walked = S.seen.walked || {})[c] = 1; } FX.msg = ''; FX.notes = []; advance('patch', { noise: 'wait' });");
   assert.equal(run("reachCounts().found"), run("reachCounts().total"), "every dot filled");
   assert.ok(!/explored/i.test(String(run("FX.msg"))), "no 'explored' line: " + run("FX.msg"));
   run("S.exp.patch = null; S.phase = 'map'; S.ui.from = 'map'; openMenu();");
