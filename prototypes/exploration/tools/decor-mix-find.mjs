@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { realm7 } from '../src/gen7/region.mjs';
 import { hash, L, MW, MH } from '../src/logic/world.mjs';
-import { ATLAS } from '../src/regions.mjs';
+import { ATLAS } from '../src/logic/regions.mjs';
 
 const [root, per, seedArg] = process.argv.slice(2), seed = +seedArg, N = +per;
 const { cellIR } = await import(pathToFileURL(path.join(path.resolve(root), 'prototypes/exploration/src/gen7/place.mjs')).href);

@@ -1,5 +1,5 @@
 // The painted land of the reach view and the full map, as plain data in and pixels out: the page gathers what it knows (which cells are seen, in fog, under a storm; the art desk's seamless tiles; the palette
-// and its dark and light tables) and src/realm-worker.mjs paints it off the page's thread (src/place-store.mjs landAsk); a page without a worker paints it here with the same function.
+// and its dark and light tables) and src/worker.mjs paints it off the page's thread (src/store/place-store.mjs landAsk); a page without a worker paints it here with the same function.
 // One continuous painting: each pixel takes the ground and tone of the block under it (the region's sector, world-topdown-spec-1 2.4: 4 x 4 blocks a place, each a ground class and a level bit, made from the realm
 // before any place is built); until the sector is here, the land of the cell under it after a soft displacement of value noise (±11 px at 72 px cells and ±2.5 px fine), so cell borders become coastlines, wood edges
 // and field edges and no grid lines are drawn. Fog keeps its three states on the same borders. Pure: no page state.

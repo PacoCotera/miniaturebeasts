@@ -9,7 +9,7 @@ import { canonical } from "../../core/base/written.mjs";
 import { sha256, pairFromSeed, generateKeyPair, sign, verify } from "../src/realm/keys.mjs";
 import { formatRecovery, recoveryPub, kid } from "../src/realm/recovery.mjs";
 import { MAGIC, MAX_BYTES, OLD_SAVE_LINE, fileHash, prepareSleep, assembleSleepFile, buildSleepFile, parseSleepFile, verifySleepFile, readBody, ledgerState, wakeCheck, wake } from "../src/realm/sleepfile.mjs";
-import { migrate8 } from "../../exploration/src/regions.mjs";
+import { migrate8 } from "../../exploration/src/logic/regions.mjs";
 
 const V = JSON.parse(readFileSync(new URL("../src/realm/vectors.json", import.meta.url), "utf8"));
 const GOLDEN = new URL("./fixtures/sleep-v2-golden.mbr", import.meta.url);   // from a v10 save (the release)

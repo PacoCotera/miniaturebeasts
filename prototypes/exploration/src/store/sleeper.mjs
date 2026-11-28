@@ -10,12 +10,12 @@
 //
 // The tombstone is `mb-sleep-pending@<companion id>` = { wid, sha, newSeed, newWid, state: "pending" | "committed" | "done" }. While it is pending or committed
 // nothing writes the save (the lock is taken again at boot). A page that boots, or is lifted, with a committed tombstone finishes the clear on its own.
-import { canonical } from "../../core/base/written.mjs";
-import { hexEncode, utf8 } from "../../play/src/realm/b64.mjs";
-import { sha256, sign, companionKey, idbStore } from "../../play/src/realm/keys.mjs";
+import { canonical } from "../../../core/base/written.mjs";
+import { hexEncode, utf8 } from "../../../play/src/realm/b64.mjs";
+import { sha256, sign, companionKey, idbStore } from "../../../play/src/realm/keys.mjs";
+import { keptCompanion, keepCompanionAs } from "./companion.mjs";
 
 export const TOMB_PREFIX = "mb-sleep-pending@";
-export const OPS = ["lock", "sign", "clear", "unlock"];
 const MAGIC = "MBR1", KIND = "mb-realm-sleep";
 const HEX64 = /^[0-9a-f]{64}$/, WID_RE = /^w[0-9a-z]{1,40}$/;
 const sha256Hex = async (s) => hexEncode(await sha256(utf8(s)));
@@ -23,9 +23,9 @@ const sha256Hex = async (s) => hexEncode(await sha256(utf8(s)));
 // host: { store (localStorage-like), rt (the page's RT: readOnly, sleepLock), companion() -> { id, slot }, wid() -> the live realm's wid, saveKey() -> string,
 //         save(), newRealm(seed, wid), keyStore() (a store of key pairs; none gives IndexedDB), onPub(pub) }
 export function makeSleeper(host) {
-  const { rt } = host;
-  const store = host.store;
+  const { rt, store } = host;
   let seated = false, chain = Promise.resolve(), keyFor = null, keyId = null;
+  const queue = (run) => { const p = chain.then(run, run); chain = p.catch(() => {}); return p; };   // requests run one at a time
   const id = () => host.companion().id;
   const tombKey = () => TOMB_PREFIX + id();
 
@@ -57,8 +57,8 @@ export function makeSleeper(host) {
   async function publish() {
     const k = await ownKey(); if (!k) return null;
     try {
-      const key = "mb-companion-" + host.companion().slot, had = JSON.parse(store.getItem(key) || "null");
-      if (had && typeof had.id === "string" && had.pub !== k.pub) store.setItem(key, JSON.stringify({ ...had, pub: k.pub }));
+      const had = keptCompanion(store, host.companion().slot);
+      if (had && had.pub !== k.pub) keepCompanionAs(store, { ...had, pub: k.pub });
     } catch { /* storage unavailable: the pub travels in the message anyway */ }
     if (host.onPub) host.onPub(k.pub);
     return k.pub;
@@ -138,28 +138,26 @@ export function makeSleeper(host) {
   return {
     // The request from the Station (through the shell). Requests run one at a time. Always answers { ok, why? ... }.
     handle(m) {
-      const run = async () => {
+      return queue(async () => {
         try {
-          if (!m || typeof m !== "object" || !OPS.includes(m.op)) return no("bad request");
+          if (!m || typeof m !== "object" || typeof m.op !== "string" || !Object.hasOwn(ops, m.op)) return no("bad request");
           if (rt.readOnly) return no("read-only");
           if (!seated) return no("lifted");
           if (typeof m.wid !== "string") return no("bad request");
           if (m.op !== "clear" && m.wid !== host.wid()) return no("wid");
           return await ops[m.op](m);
         } catch { return no("error"); }
-      };
-      const p = chain.then(run, run); chain = p.catch(() => {}); return p;
+      });
     },
     // The Caddy's cradle: seated, or lifted. Lifted before anything was signed lets go of the lock (nothing is at risk and there is no screen for it); with a committed
     // tombstone the Companion finishes the clear on its own; a pending one keeps the lock until the Station rolls back or commits.
     seat(on) {
       seated = !!on; if (seated) return Promise.resolve();
-      const run = async () => {
+      return queue(async () => {
         const t = readTomb();
         if (!holding(t) && rt.sleepLock) rt.sleepLock = false;
         else if (t && t.state === "committed") await rollForward(t);
-      };
-      const p = chain.then(run, run); chain = p.catch(() => {}); return p;
+      });
     },
     // Boot, before the first write: a sleep still pending or committed keeps the page from writing.
     holdAtBoot() { const t = readTomb(); if (holding(t)) rt.sleepLock = t.wid; return !!rt.sleepLock; },

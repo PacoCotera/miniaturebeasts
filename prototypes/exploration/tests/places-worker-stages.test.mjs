@@ -6,7 +6,7 @@ import { Worker as NodeWorker } from "node:worker_threads";
 import { PLACES } from "./page-harness.mjs";
 import { MW, MH } from "../src/logic/world.mjs";
 import { realm7 } from "../src/gen7/world7.mjs";
-import { BAKE_STAGES } from "../src/waitpips.mjs";
+import { BAKE_STAGES } from "../src/logic/waitpips.mjs";
 
 const SHIM = new URL("./places-worker-shim.mjs", import.meta.url), threads = [], seen = [];
 class FakeWorker {
@@ -19,7 +19,7 @@ class FakeWorker {
   terminate() { return this.w.terminate(); }
 }
 globalThis.Worker = FakeWorker;
-const store = await import("../src/place-store.mjs");
+const store = await import("../src/store/place-store.mjs");
 
 test("a place made in the worker reports its stages, in order, before it is made", async (t) => {
   t.after(() => { for (const w of threads) w.terminate(); });

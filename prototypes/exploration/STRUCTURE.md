@@ -60,12 +60,9 @@ Reads every module under `src/`, takes its layer from its folder, and fails with
 
 | Layer | Modules in `src/` today |
 | --- | --- |
-| data | `words`, `playtest-seeds`, `playtest`, `riding-cut` |
-| logic | `regions`, `habits`, `ease`, `watch`, `map-rules`, `waitpips`, all of `gen7/` |
-| store | `place-store`, `realm-store`, `package-store`, `package-dock`, `sleeper`, `options` |
-| render | `view`, `landpaint`, `map-paint`, `mapkinds`, `fogedge`, `night`, `dusk`, `card-motion`, `font`, `fetchretry` |
-| ui | `breakline` |
-| main | `realm-worker` (becomes `worker.mjs`) |
+| logic | all of `gen7/` |
+
+The stores start the places worker (`src/worker.mjs`) by its address, never by an import.
 
 Moved out of the root: generator 7's page entry, bake, layout and shore line are in `src/gen7/` (`world7`, `bake7`, `adapt7`, `shore7`); the retired generators 1 to 5 with the grid's constants and the seeded hash are `src/logic/world.mjs`; `walk-data` is in `src/data/`; `atlas`, `trees48` and `pngdecode` are in `src/render/`. `src/gen7/` itself is still logic by `notMoved`: its move to `src/logic/gen7/` is one folder rename.
 

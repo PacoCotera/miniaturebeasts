@@ -1,7 +1,7 @@
 // The map rules both pages agree on, in one place (map-room build, rule 21: moved out of exploration/index.html, never copied).
 // The Companion's page and the Station's map room call these; neither keeps a copy. Pure: the world (G), the save's parts and the
 // partner's abilities are passed in, nothing is read from a page.
-import { MW, MH, DIRS, canStepIn, cxy } from './logic/world.mjs';
+import { MW, MH, DIRS, canStepIn, cxy } from './world.mjs';
 
 // Probe tiers: range in cells from the expedition's start, pods carried, shield bars.
 export const TIER = { 1: { range: 2, hold: 2, shield: 3 }, 2: { range: 4, hold: 3, shield: 4 } };

@@ -6,7 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { makePage, PAGE } from "./page-harness.mjs";
-import { migrate8 } from "../src/regions.mjs";
+import { migrate8 } from "../src/logic/regions.mjs";
 
 const SCHEMA_V8 = readFileSync(new URL("../../station/tests/fixtures/save-v8-schema1.json", import.meta.url), "utf8");   // the Station's schema fixture: a flat v8 save
 const FLAT = Object.assign(JSON.parse(SCHEMA_V8), { gen: 5 }), flat = () => JSON.parse(JSON.stringify(FLAT));   // its world as generator 5: since the release's reset every world is

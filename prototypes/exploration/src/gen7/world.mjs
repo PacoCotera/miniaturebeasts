@@ -7,7 +7,7 @@
 import FastNoiseLite from 'fastnoise-lite';
 import FlatQueue from 'flatqueue';
 import { hash, clamp, MW, MH, L, G2, BIOME_GROUND } from '../logic/world.mjs';
-import { slotBiome, ATLAS } from '../regions.mjs';
+import { slotBiome, ATLAS } from '../logic/regions.mjs';
 import { windGrid, gridAt, WIND, erodeHeight, spineRanges } from './shape.mjs';
 import { planCuts } from './features.mjs';
 

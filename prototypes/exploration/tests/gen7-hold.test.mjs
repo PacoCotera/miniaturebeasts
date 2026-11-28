@@ -10,7 +10,7 @@ import { LANDMARK_NAMES } from '../src/gen7/landmark-names.mjs';
 import { holdVector, SEEDS, SLOTS } from '../tools/gen7-vectors.mjs';
 import { bakeIR } from '../tools/gen7-render.mjs';
 import { hash, L, MW, MH } from '../src/logic/world.mjs';
-import { ATLAS } from '../src/regions.mjs';
+import { ATLAS } from '../src/logic/regions.mjs';
 
 const VECTORS = JSON.parse(readFileSync(new URL('./gen7-vectors.json', import.meta.url), 'utf8'));
 const FIND_KINDS = new Set(['pod', 'fruit', 'dew', 'stone', 'material']);

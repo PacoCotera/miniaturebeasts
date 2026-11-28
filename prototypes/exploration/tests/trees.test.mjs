@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { makePage } from "./page-harness.mjs";
 import { genWorld, genPlace, placeTrees, treeKindAt, MW, MH, PW, PH, T, L } from "../src/logic/world.mjs";
-import { mapHooks } from "../src/mapkinds.mjs";
+import { mapHooks } from "../src/render/mapkinds.mjs";
 import { KINDS, treeSprites, shadeMossLut } from "../src/render/trees48.mjs";
 
 const SEEDS = [3, 4, 9, 12];

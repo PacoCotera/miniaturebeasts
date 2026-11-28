@@ -16,7 +16,7 @@ import { makeSleep, makeShellAsk, JOURNAL_KEY, INDEX_KEY, LEDGER_KEY, COPY_PREFI
 import { sleepClient } from "../src/caddy.mjs";
 import * as C from "../src/companions.mjs";
 import * as S from "../src/state.mjs";
-import { migrate8 } from "../../exploration/src/regions.mjs";
+import { migrate8 } from "../../exploration/src/logic/regions.mjs";
 import { pairFromSeed, memoryStore } from "../../play/src/realm/keys.mjs";
 import { hexDecode } from "../../play/src/realm/b64.mjs";
 import { kid } from "../../play/src/realm/recovery.mjs";

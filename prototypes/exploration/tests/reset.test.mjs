@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { resetPlan, keepPre10, oldGenOf, RESET_V, migrate8 } from "../src/regions.mjs";
+import { resetPlan, keepPre10, oldGenOf, RESET_V, migrate8 } from "../src/logic/regions.mjs";
 import { makePage } from "./page-harness.mjs";
 
 const store = (init = {}, { failSet = false } = {}) => { const m = new Map(Object.entries(init)); return { m, getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => { if (failSet) throw new Error("full"); m.set(k, String(v)); }, removeItem: (k) => { m.delete(k); } }; };

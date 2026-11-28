@@ -11,10 +11,10 @@ import { blank } from "../../face/tools/blank.mjs";
 import { detail } from "../../core/base/noise.mjs";
 import { NOISE_VECTORS } from "./noise-vectors.mjs";
 import * as W from "../src/logic/world.mjs";
-import { PLAYTEST_SEEDS, PLAYTEST_REALM_REV, PLAYTEST_BIOME_V } from "../src/playtest-seeds.mjs";
+import { PLAYTEST_SEEDS, PLAYTEST_REALM_REV, PLAYTEST_BIOME_V } from "../src/data/playtest-seeds.mjs";
 import { REALM_REV } from "../src/gen7/region.mjs";
 import { WORDS } from "../src/data/words.mjs";
-import * as R from "../src/regions.mjs";
+import * as R from "../src/logic/regions.mjs";
 import * as A from "../src/render/atlas.mjs";
 import * as V from "../src/render/view.mjs";
 import * as SHAPE from "../src/render/edge.mjs";
@@ -1700,7 +1700,7 @@ test("finds: fruit and an unlit beacon are not takes; a place with a full cup re
 // lock-playtest-world (owner 2026-11-10 20:18): the playtest seed list, the land version on the save, the three notice slots.
 test("a new world takes its seed from the playtest list only, and the list is made on this build's land", () => {
   assert.ok(PLAYTEST_SEEDS.length >= 1);
-  assert.equal(PLAYTEST_REALM_REV, REALM_REV, "src/playtest-seeds.mjs is made again (tools/playtest-world-check.mjs --list) when REALM_REV changes");
+  assert.equal(PLAYTEST_REALM_REV, REALM_REV, "src/data/playtest-seeds.mjs is made again (tools/playtest-world-check.mjs --list) when REALM_REV changes");
   assert.equal(PLAYTEST_BIOME_V, R.REALM_BIOME_V);
   const p = page({});
   for (let i = 0; i < 6; i++) assert.ok(PLAYTEST_SEEDS.includes(p.run("randomSeed()")), "randomSeed is a seed of the list");

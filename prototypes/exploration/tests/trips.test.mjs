@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import * as W from "../src/logic/world.mjs";
-import * as R from "../src/regions.mjs";
+import * as R from "../src/logic/regions.mjs";
 import { makePage } from "./page-harness.mjs";
 import { holdEmpty, exploredAny, TRIP_KINDS, tripPlace, tripRecord, tripsWith } from "../src/logic/expedition.mjs";
 import { MAT } from "../src/data/walk-lines.mjs";

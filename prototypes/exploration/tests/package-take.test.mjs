@@ -2,14 +2,14 @@
 //   node --test prototypes/exploration/tests/package-take.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { memKv, deflateCell, openPackage, putCell, finishPackage, bytesOfCell, cellOfBytes } from "../src/package-store.mjs";
+import { memKv, deflateCell, openPackage, putCell, finishPackage, bytesOfCell, cellOfBytes } from "../src/store/package-store.mjs";
 import { PLACES } from "./page-harness.mjs";
 import { bakedCell } from "../src/gen7/world7.mjs";
-import { offerOf, takePackage, heldOf } from "../src/package-dock.mjs";
+import { offerOf, takePackage, heldOf } from "../src/store/package-dock.mjs";
 
 const asked = [];
 globalThis.Worker = class { constructor() { asked.push("worker made"); } postMessage(m) { asked.push(m.op); } terminate() {} };
-const store = await import("../src/place-store.mjs");
+const store = await import("../src/store/place-store.mjs");
 const seed = 36, slot = [2, 2], v = 3, region = { seed, slot, v }, REAL = new Map(), real = (c) => REAL.get(c) || (REAL.set(c, bakedCell(PLACES.ctx, seed, slot, c, v)), REAL.get(c));
 // a package cell is .mbplace bytes (baked-package-8): a real cell's, its name made k so the packages of one test tell apart
 const cellOf = (c, k) => bytesOfCell(seed, c, real(c).ir, { ...real(c).place, names: [k] }), expectOf = (c, k) => cellOfBytes(cellOf(c, k)), order = { cells: [89, 90], floor: 1 };

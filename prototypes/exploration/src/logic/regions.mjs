@@ -5,9 +5,9 @@
 //   save v10 on disk: { v: 10, seed (= regions[0].seed), began, here, regions: [Region …], resetFrom?, …the realm's fields… }
 //   Region = { id, n, kind: "home", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
 //              closes, closed, exploredN, seenN, map: { …MAP_KEYS… } }
-import { MW, MH, GENS, hash, ROSTER, FAMILY_GROUND } from "./logic/world.mjs";
-import { LANGUAGE, kindLands } from "../../species/framework/language.mjs";
-import { newSeen, isRecord, seenFromOld } from "./logic/seen.mjs";
+import { MW, MH, GENS, NEW_GEN, hash, ROSTER, FAMILY_GROUND } from "./world.mjs";
+import { LANGUAGE, kindLands } from "../../../species/framework/language.mjs";
+import { newSeen, isRecord, seenFromOld } from "./seen.mjs";
 
 export const REALM_SAVE_V = 10;
 // the fields of a region's own map state: on S while the region is mounted, in regions[i].map when it is not.
@@ -130,13 +130,11 @@ export function slotBiome(seed, ax, ay, version = 1) {
   if (version < 2) return BIOMES_V1[hash(seed, "slot", ax, ay) % BIOMES_V1.length];
   return realmSlots(seed).get(ax + "," + ay);
 }
-// The generator a realm opens a new home region with: generator 7 (the realm's land at the slot, the life by land). Every save since the generator 7 reset is a version 2 realm of generator 7.
+// A new home region's record for a free slot: the slot's kind (by the realm's kind version), the generator new worlds are made with (the realm's land at the slot, the life by land), its own seed.
 // A region keeps the generator and kind it was opened with, in its record.
-export const openGen = () => 7;
-// A new home region's record for a free slot: the slot's kind (by the realm's kind version), the realm's generator rule, its own seed.
 export function openHome(realm, slot, { n = realm.regions.length + 1, opened = Date.now(), openedTurn = realm.turn || 0 } = {}) {
   const seed1 = realm.regions[0].seed;
-  return regionRecord({ n, kind: "home", biome: slotBiome(seed1, slot[0], slot[1], biomeVersion(realm)), slot, seed: regionSeed(seed1, n), gen: openGen(realm), opened, openedTurn });
+  return regionRecord({ n, kind: "home", biome: slotBiome(seed1, slot[0], slot[1], biomeVersion(realm)), slot, seed: regionSeed(seed1, n), gen: NEW_GEN, opened, openedTurn });
 }
 const homes = regions => regions.filter(r => r.kind === "home" && r.slot);
 // The slots a new region can open in: free, inside the 5 x 5, and sharing an edge with an open home region. Row by row.
@@ -158,7 +156,6 @@ export function canOpen(S, every = REGION_EVERY) {
   if (n >= MAX_HOME || !freeSlots(S.regions).length) return false;
   return hs.reduce((a, r) => a + exploredOf(S, r), 0) >= every * n;
 }
-export const exploredAcross = S => homes(S.regions).reduce((a, r) => a + exploredOf(S, r), 0);
 
 // A home region is named by its side of region 1 and its biome: "the Meadows", "North Woods", and "Far East Cliffs" for the second on a side.
 // A home region off the four axes has no name yet: the copywriter owes the words.
@@ -247,16 +244,4 @@ export function realmStatus(s, gens = GENS) {
   return s.regions.every(r => gens.includes(r.gen)) ? "ok" : "newer";
 }
 
-// The page's copy of the v8 bytes: written once, untouched, before the first v9 write, and kept until the next save version. `store` is a
-// localStorage-like adapter (getItem, setItem). Returns true when the copy is in place and equal to `raw`; false when it could not be made
-// (the save is then opened read-only, and never migrated). A copy already there is kept: it is the oldest v8 bytes.
-export function keepPre9(store, key, raw) {
-  const k = key + ".pre9";
-  try {
-    if (store.getItem(k) != null) return true;
-    store.setItem(k, raw);
-    return store.getItem(k) === raw;
-  } catch (e) { return false; }
-}
-
-export { RESET_V, RESET_FROM, resetPlan, keepPre10, keepGen, oldGenOf } from "../../play/src/realm/reset.mjs";   // the release's save reset, shared with the Station (release 21b)
+export { RESET_V, RESET_FROM, resetPlan, keepPre10, keepGen, oldGenOf } from "../../../play/src/realm/reset.mjs";   // the release's save reset, shared with the Station (release 21b)

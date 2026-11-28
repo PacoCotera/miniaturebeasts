@@ -3,13 +3,13 @@
 //   node --test prototypes/exploration/tests/package-read.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { memKv, deflateCell, openPackage, putCell, putRegion, finishPackage, bytesOfCell, cellOfBytes } from "../src/package-store.mjs";
+import { memKv, deflateCell, openPackage, putCell, putRegion, finishPackage, bytesOfCell, cellOfBytes } from "../src/store/package-store.mjs";
 import { PLACES } from "./page-harness.mjs";
 import { bakedCell } from "../src/gen7/world7.mjs";
 
 const asked = [];
 globalThis.Worker = class { constructor() { asked.push("worker made"); } postMessage(m) { asked.push(m.op); } terminate() {} };
-const store = await import("../src/place-store.mjs");
+const store = await import("../src/store/place-store.mjs");
 const seed = 36, slot = [2, 2], v = 3, meta = { seed, slot, v, tag: "" }, REAL = new Map(), real = (c) => REAL.get(c) || (REAL.set(c, bakedCell(PLACES.ctx, seed, slot, c, v)), REAL.get(c));
 const cellOf = (c) => bytesOfCell(seed, c, real(c).ir, real(c).place), expectOf = (c) => cellOfBytes(cellOf(c));   // a package cell is .mbplace bytes (baked-package-8)
 const order = { cells: [89, 90, 73, 74, 75], floor: 3 };
@@ -58,7 +58,7 @@ test("a package of another region or version is not this one's", async (t) => {
 
 test("baked-package-8: a package of format 1 (the object record) is another id and never read as bytes; a cell of the wrong seed or cell is not taken", async (t) => {
   t.after(() => store.placesReset());
-  const { packageId, PACKAGE_FORMAT } = await import("../src/package-store.mjs"), kv = memKv();
+  const { packageId, PACKAGE_FORMAT } = await import("../src/store/package-store.mjs"), kv = memKv();
   assert.equal(PACKAGE_FORMAT, 2); assert.match(packageId(meta), /^pkg7:f2\./, "the format is in the id");
   const oldId = packageId(meta).replace("pkg7:f2.", "pkg7:");   // what a format 1 package's id was: no format in it
   await kv.set(oldId + "#head", { format: 1, id: oldId, seed, slot, v, realmRev: 1, placeRev: 1, tag: "", order: [73], floor: 1, done: 1, whole: true, sha: { 73: "x" }, ms: {} });

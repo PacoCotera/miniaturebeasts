@@ -7,16 +7,16 @@
 //       is reached by (b): taking every counted item brings leftCounts to 0, nothing counted out of reach or never takeable.
 // A failing seed lists its first failing place and item.
 //   node tools/playtest-world-check.mjs --from 1 --to 200 --dir rows --worker 0 --of 4 --max-min 90   (one seed-N.json per seed the moment it ends; a rerun skips them; each seed is minutes: the realm's 1500 places are built)
-//   node tools/playtest-world-check.mjs --list rows                                    (the rows merged, the passing seeds written to src/playtest-seeds.mjs)
+//   node tools/playtest-world-check.mjs --list rows                                    (the rows merged, the passing seeds written to src/data/playtest-seeds.mjs)
 import { writeFileSync, readFileSync, readdirSync, statSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { firstTrip } from "./first-trip-bot.mjs";
 import { makePage } from "../tests/page-harness.mjs";
 import { REALM_REV } from "../src/gen7/region.mjs";
-import { REALM_BIOME_V } from "../src/regions.mjs";
+import { REALM_BIOME_V } from "../src/logic/regions.mjs";
 
 export const RING1 = [[2, 1], [3, 2], [2, 3], [1, 2]];   // the four slots round region 1 (slot 2,2)
-export const LIST_FILE = new URL("../src/playtest-seeds.mjs", import.meta.url);
+export const LIST_FILE = new URL("../src/data/playtest-seeds.mjs", import.meta.url);
 
 // The ground walked from every way in the pawn can come by (and from where a walk with no side starts), in the page: reachOf(lay, key) gives at(x, y), the tile is reached.
 // the ways in: the tile the pawn arrives on from each side (entryPoint) and every tile along each opening that is not closed (a gate takes the partner), as adapt7.mjs floods them
@@ -126,7 +126,7 @@ if (import.meta.url === new URL(process.argv[1], "file:").href) {
     const ok = rows.filter((r) => r.ok), bad = rows.filter((r) => !r.ok);
     for (const r of bad) console.log(`seed ${r.seed}: ` + [!r.trip.ok ? "first trip: " + r.trip.why : "", r.reach.fail ? `region ${r.reach.fail.region} place ${r.reach.fail.cell}: ${r.reach.fail.why}` : "", r.haunts && r.haunts.fail ? `haunts, region ${r.haunts.fail.region} place ${r.haunts.fail.cell}: ${r.haunts.fail.why}` : ""].filter(Boolean).join(" | "));
     writeFileSync(LIST_FILE, listText(ok.map((r) => r.seed), rows[0].seed, rows[rows.length - 1].seed));
-    console.log(`${ok.length} of ${rows.length} seeds pass; list written to src/playtest-seeds.mjs`);
+    console.log(`${ok.length} of ${rows.length} seeds pass; list written to src/data/playtest-seeds.mjs`);
   } else {
     // Resumable and bounded: --dir <rows dir> gets one seed-N.json the moment a seed finishes; a rerun skips the seeds already there.
     // --worker k --of n takes the seeds s with s % n == k (run up to 4 workers); --max-min m stops starting seeds after m minutes of wall time (90 is the brief's).

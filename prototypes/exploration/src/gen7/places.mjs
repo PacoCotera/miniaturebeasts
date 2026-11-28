@@ -6,7 +6,7 @@
 // Every plan is in the cell's IR frame (the cell and its one-tile apron: (CW + 2) x (CH + 2) tiles, tile (lx, ly) = world (x0 + lx, y0 + ly); the cell's own tiles are 1 .. CW by 1 .. CH).
 import FlatQueue from 'flatqueue';
 import { hash, L, MW, MH, groundName } from '../logic/world.mjs';
-import { ATLAS } from '../regions.mjs';
+import { ATLAS } from '../logic/regions.mjs';
 import { realm7 } from './region.mjs';
 import { CW, CH, RW } from './world.mjs';
 import { cellTerrain, decorOf } from './place.mjs';

@@ -4,7 +4,7 @@
 import { genWorld, genPlace, softGround, bankEdges, ALL_BIOMES } from "../src/logic/world.mjs";
 import { realm7 } from "../src/gen7/region.mjs";
 import { cellIR } from "../src/gen7/place.mjs";
-import { ATLAS } from "../src/regions.mjs";
+import { ATLAS } from "../src/logic/regions.mjs";
 import { newTally, auditGen7, auditGenerated, setGenPlace, report } from "./views-audit.mjs";
 
 const args = process.argv.slice(2), flag = n => args.includes(n), val = n => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : null; };

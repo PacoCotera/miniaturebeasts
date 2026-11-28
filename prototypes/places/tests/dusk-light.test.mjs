@@ -1,12 +1,12 @@
 // dusk-mesh-fix-5 (PR 563; owner bug #127 'grass tiles incorrect for the night', #120 trees chopped at night, #113 night darker): pins the dusk light.
 //   node --test prototypes/places/tests/dusk-light.test.mjs
-// The dusk (level 6) is one source (exploration/src/dusk.mjs): the veil over it is flat (no dither dots, no checker), the seen land is lighter than the unseen,
+// The dusk (level 6) is one source (exploration/src/render/dusk.mjs): the veil over it is flat (no dither dots, no checker), the seen land is lighter than the unseen,
 // trees keep their crowns (the seen land's colours are never snapped onto each other), and night (level 5) with the lamp circle is as it was.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { applyLight, lightState, tablesOf, renderGround, duskOf, duskLitOf } from '../src/ground.mjs';
 import { blitPlaced } from '../src/sprites.mjs';
-import { duskLitRgb, DUSK_LEAN, DUSK_LIT_STEP } from '../../exploration/src/dusk.mjs';
+import { duskLitRgb, DUSK_LEAN, DUSK_LIT_STEP } from '../../exploration/src/render/dusk.mjs';
 import { ts, place, pal, NIGHT, cells } from './render-helpers.mjs';
 import { BAYER4 } from '../../exploration/src/render/view.mjs';
 

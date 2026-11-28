@@ -6,7 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 import * as W from "../src/logic/world.mjs";
-import { regionKinds } from "../src/regions.mjs";
+import { regionKinds } from "../src/logic/regions.mjs";
 
 const SEEDS = Array.from({ length: 1000 }, (_, i) => i);
 const worldOf = {};   // gen -> seed -> G, built once

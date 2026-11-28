@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { genWorld, genWorld5, genLife, genLife5, HERD, MW, MH, L } from "../src/logic/world.mjs";
-import { regionKinds, SP_ORDER, STARTERS, BIOMES, BIOME_KINDS } from "../src/regions.mjs";
+import { regionKinds, SP_ORDER, STARTERS, BIOMES, BIOME_KINDS } from "../src/logic/regions.mjs";
 
 const SEEDS = Array.from({ length: 50 }, (_, i) => 1000 + i * 7919);
 const worlds = new Map(), worldOf = (seed, biome) => { const k = seed + biome; if (!worlds.has(k)) worlds.set(k, genWorld5(seed, biome)); return worlds.get(k); };
