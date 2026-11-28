@@ -484,7 +484,7 @@ test("a newer build's save stored while this page plays: the next press writes n
   assert.ok(p.run("__said.join('|')").includes("Newer save · untouched · reload plays it"));
 });
 test("bytes that are no save stored while this page plays: the next press writes nothing over them; ✓ ✓ keeps them under their own key and starts a new world", () => {
-  for (const bad of ["{not json", "[]", "7"]) {
+  for (const bad of ["{not json", "[]", "7", '{"seed":1}']) {   // the last: an object with no numeric v is broken to boot too
     const p = playing(); p.store[p.KEY] = bad;
     p.key("down");
     assert.equal(p.store[p.KEY], bad, "unchanged: " + bad); assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("RT.broken"), true); assert.equal(savedLines(p), 1);

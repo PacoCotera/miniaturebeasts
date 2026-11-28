@@ -1511,7 +1511,8 @@ function storedSave() {
   if (!raw) return { st: null };
   let o; try { o = JSON.parse(raw); } catch (e) { return { held: 'broken' }; }
   if (!o || typeof o !== 'object' || Array.isArray(o)) return { held: 'broken' };
-  if (typeof o.v === 'number' && o.v > SAVE_V) return { held: 'newer' };
+  if (typeof o.v !== 'number') return { held: 'broken' };   // no numeric v: broken to boot too (resetPlan)
+  if (o.v > SAVE_V) return { held: 'newer' };
   return { st: o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null };
 }
 function save(how) {   // save({ noWrite: true }) is the storage event's call: the Station's part is read and synced, the bytes are left as they are
