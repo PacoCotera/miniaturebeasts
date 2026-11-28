@@ -304,7 +304,7 @@ soundOff(OPT.mute);
 // ===================== 1. Constants =====================
 import { SCR_W, SCR_H, HUD_H, HUD_T, LINE_H, VIEW_Y, VIEW_H, CELL, MAP_X, MAP_Y } from "./src/data/screen.mjs";
 import { BAY, CAP, STRIKE_DATA, PLACE_TIER, CAVE_TIER, PRICE, SAFE_AFTER_HIT, STRAY, WARM_MIN, WARM_MAX, WARM_NEAR, SHED_BOND, SHED_MAX, POD_SHELL } from "./src/data/tuning.mjs";
-import { LAND_NAME, TIER_NAME, DEPOT_NAME, WHY_WORD, WHY_SETTLE, PIN_TEXT, SIGN_NAME } from "./src/data/field-words.mjs";
+import { LAND_NAME, TIER_NAME, DEPOT_NAME, WHY_WORD, WHY_SETTLE, PIN_TEXT, SIGN_NAME, PRESS_TEXT } from "./src/data/field-words.mjs";
 import { placeTier, noteTier, walkTier, walkYield, dataLadder } from "./src/logic/tiers.mjs";
 import { SPECIES, spOf } from "./src/logic/species.mjs";
 import { REALM_SAVE_V as SAVE_V } from "./src/regions.mjs";
@@ -8007,7 +8007,7 @@ function caseKey(k) {
   else if (k === 'up' || k === 'down' || k === 'left' || k === 'right') caseMove(k);
   else if (k === 'confirm') {
     if (end && canSend() && sealsCrate(S.exp) && tallyElapsed() < TALLY_MS) { S.ui.tally.at = NOW - TALLY_MS; S.ui.tally.seen = tallyTotals(); }   // ✓ while it counts: skip to the end of the tally (the settle chord sounds on the next frame); the next ✓ ends the expedition
-    else if (end) { if (canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); } else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
+    else if (end) { if (canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); } else { fxMsg(PRESS_TEXT.endFar(sendHint()), 3); FX.bumpAt = NOW; } }
     else { const t = caseThing(caseSel(caseCells())), en = caseEntry(t.thing); if (en) { S.ui.logDay = en.di; S.ui.logTop = en.ri; S.ui.logMark = null; S.phase = 'log'; transition(); } }   // its page in the Log, opened on that entry
   }
 }
@@ -8547,38 +8547,35 @@ function frame(t) {
 }
 
 // ===================== 16. Input: Companion controls =====================
+import { keyOf, REPEAT_DELAY, REPEAT_EVERY } from "./src/input/keys.mjs";
+import { hopToward } from "./src/input/cursor.mjs";
 // the sweep done (the reveal ends at +1400 ms): back beside the beacon, from a timer the beacon's press set, never from a frame
 const BEACON_MS = 1700;
-function beaconDone() { if (S && S.exp && S.exp.beaconView) { beaconBack(); save(); } }
-function beaconBack() { const ex = S.exp; if (!ex || !ex.beaconView) return; delete ex.beaconView; if (ex.patch) { S.phase = 'patch'; transition(); } }
+function beaconDone() { if (S.exp && S.exp.beaconView) beaconBack(); }
+function beaconBack() { const ex = S.exp; delete ex.beaconView; if (ex.patch) { S.phase = 'patch'; transition(); } save(); }
 function openMenu() { S.ui.from = S.phase; S.ui.menuSel = 0; S.ui.nwArm = 0; S.ui.waiting = 0; S.phase = 'menu';
   if (fieldFrozen()) S.ui.menuSel = Math.max(0, menuItems().findIndex(i => !i.frz)); }   // docked: the first row that is not frozen
 // Expeditions start only undocked (lift the Companion at the Station page), and not with a broken Probe.
 function startBlock() {
-  if (isDocked()) return 'Docked · lift the Companion to explore';
-  if (S.shield != null && S.shield <= 0) return 'The Probe is broken · docking mends it free';
+  if (isDocked()) return PRESS_TEXT.docked;
+  if (S.shield != null && S.shield <= 0) return PRESS_TEXT.broken;
   return '';
 }
+// A start that is blocked says why and bumps; true when it was.
+function startRefused() { const why = startBlock(); if (why) { fxMsg(why, 3); FX.bumpAt = NOW; } return !!why; }
 function chooseType() {
-  { const b = startBlock(); if (b) { fxMsg(b, 3); FX.bumpAt = NOW; return; } }
-  if (S.ui.sel === 1 && !digger()) { fxMsg('Deep ground starts down a narrow burrow · a Tuikis digs it out'); FX.bumpAt = NOW; return; }
+  if (startRefused()) return;
+  if (S.ui.sel === 1 && !digger()) { fxMsg(PRESS_TEXT.deepNeeds); FX.bumpAt = NOW; return; }
   S.ui.type = S.ui.sel === 1 ? 'deep' : 'weather';
-  const first = firstPlacement();
-  let cur = S.ui.lastPos != null ? S.ui.lastPos : null;
-  if (first) cur = startPlaces()[0];
+  let cur = S.ui.lastPos;
+  if (firstPlacement()) cur = startPlaces()[0];
   else if (S.ui.type === 'deep') { revealCell(G.gate); addPin(G.gate, 'burrow'); cur = G.gate; }   // Deep ground starts at the burrow under the cliff
   else if (cur == null || !placeValid(cur)) { cur = 0; for (let c = 0; c < MW * MH; c++) if (placeValid(c)) { cur = c; break; } }
   S.ui.cur = cur; S.phase = 'place'; transition();
 }
 function moveCursor(dir) {
-  const [dx, dy] = DIRS[dir], p = cxy(S.ui.cur);
-  if (firstPlacement()) { // hop between the glints
-    let best = null, bd = 1e9;
-    for (const c of startPlaces()) { const q = cxy(c), vx = q.x - p.x, vy = q.y - p.y, along = vx * dx + vy * dy; if (along <= 0) continue;
-      const d = along + Math.abs(vx * dy + vy * dx) * 2; if (d < bd) { bd = d; best = c; } }
-    if (best != null) S.ui.cur = best; else FX.bumpAt = NOW; return;
-  }
-  const x = clamp(p.x + dx, 0, MW - 1), y = clamp(p.y + dy, 0, MH - 1); S.ui.cur = y * MW + x;
+  if (firstPlacement()) { const to = hopToward(S.ui.cur, dir, startPlaces()); if (to == null) FX.bumpAt = NOW; else S.ui.cur = to; return; }   // a first expedition: between the start places
+  const to = stepCell(S.ui.cur, dir); if (to >= 0) S.ui.cur = to;   // at the map's edge the cursor stays
 }
 // Docked mid-expedition: the presses that would move you, spend, act in a place, wait or leave (the ruling's refused list).
 // ← in a place, menu browsing, the views, End expedition and the mibi pages still work.
@@ -8604,11 +8601,11 @@ function act(k, mode) {
   if (RT.readOnly) { actReadOnly(k); return; }   // a save that cannot be shown: the one way out is a new world, the old save kept
   if (RT.notice) { actNotice(k); return; }
   const refused = frozenRefuses(k);
-  if (k !== 'confirm' && S && S.ui && !refused) S.ui.depotArm = 0;
+  if (k !== 'confirm' && !refused) S.ui.depotArm = 0;
   NOW = performance.now(); if (FX.lockUntil - NOW > LOCK_MAX) FX.lockUntil = NOW + LOCK_MAX;
   if (NOW < FX.lockUntil) return;
-  if (S.exp && S.exp.caveDue) digDone();   // a dug burrow's entry still due completes before the press (a press inside the lock is ignored, as before)
-  if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
+  if (S.exp && S.exp.caveDue) digDone();   // a dug burrow's entry still due completes before the press (a press inside the lock is ignored)
+  if (S.exp && S.exp.beaconView) { beaconBack(); return; }   // any press: back beside the beacon
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
   if (RT.view && S.phase === 'patch') { if (!viewPress(k)) return; }   // a view over the place (arrival look, Look) takes the press: consumed, never queued, no action spent
   if (k === 'call' && !['setup', 'map', 'patch', 'riding'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
@@ -8628,7 +8625,7 @@ function act(k, mode) {
       break;
     case 'place':
       if (isDir) moveCursor(k);
-      else if (k === 'confirm') { const b = startBlock(); if (b) { fxMsg(b, 3); FX.bumpAt = NOW; } else if (placeValid(S.ui.cur)) startExpedition(S.ui.type || 'weather', S.ui.cur); else { fxMsg(placeReason(S.ui.cur)); FX.bumpAt = NOW; } }
+      else if (k === 'confirm') { if (startRefused()) break; if (placeValid(S.ui.cur)) startExpedition(S.ui.type || 'weather', S.ui.cur); else { fxMsg(placeReason(S.ui.cur)); FX.bumpAt = NOW; } }
       else if (k === 'back') { S.phase = 'setup'; }
       break;
     case 'map':
@@ -8636,8 +8633,7 @@ function act(k, mode) {
       break;
     case 'patch':
       if (S.ui.swap) { const sw = swapState(); if (!sw) S.ui.swap = null;
-        else if (k === 'up' || k === 'down') { }
-        else if (k === 'left' || k === 'right') sw.held.length && (S.ui.swap.sel = (sw.sel + (k === 'right' ? 1 : sw.held.length - 1)) % sw.held.length);
+        else if (k === 'left' || k === 'right') { if (sw.held.length) S.ui.swap.sel = (sw.sel + (k === 'right' ? 1 : sw.held.length - 1)) % sw.held.length; }
         else if (k === 'confirm') { S.ui.swap = null; takePod(sw.p, sw.night ? undefined : sw.sel); }   // her confirm's ✓ is one action: into the Case (a full hold opens the built chooser)
         else if (k === 'back') { S.ui.swap = null; if (!sw.night) fxMsg(SWAP_TEXT.kept); }   // ← leaves her asleep: nothing is spent
         break; }
@@ -8649,19 +8645,19 @@ function act(k, mode) {
     case 'menu': { const items = menuItems(), n = items.length; if (k !== 'confirm') S.ui.nwArm = 0;
       // while waiting the menu is folded to the bottom strip: Confirm waits again, Back or the pad bring the full menu back
       if (S.ui.waiting) { if (k === 'confirm') { menuWait(S.ui.from); if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; } else S.ui.waiting = 0; break; }
-      if (k === 'up' || k === 'down') { const d = k === 'up' ? n - 1 : 1; do S.ui.menuSel = (S.ui.menuSel + d) % n; while (items[S.ui.menuSel].dis); }   // a dimmed row keeps its place but focus skips it
-      else if (k === 'confirm' && !(items[S.ui.menuSel] || {}).dis) { const id = (items[S.ui.menuSel] || items[0]).id;
+      if (k === 'up' || k === 'down') S.ui.menuSel = (S.ui.menuSel + (k === 'up' ? n - 1 : 1)) % n;
+      else if (k === 'confirm') { const id = (items[S.ui.menuSel] || items[0]).id;   // a focus past a list that grew shorter reads as the first row, as the bottom line shows it
         if (id === 'wait') { menuWait(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; }   // folds to a strip: Confirm again waits again
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
         else if (id === 'look') { S.phase = 'patch'; startView('look', curLay()); }   // Look over the place: spends no action; ← closes
         else if (id === 'cargo') openCase(false);   // the Case: reads the hold and the bay, writes nothing
-        else if (id === 'send') { if (canSend()) openCase(true); else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
+        else if (id === 'send') { if (canSend()) openCase(true); else { fxMsg(PRESS_TEXT.endFar(sendHint()), 3); FX.bumpAt = NOW; } }
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
         else if (id === 'worldmap') { S.phase = 'worldmap'; transition(); }
         else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
         else if (id === 'log') { openLog(); transition(); }   // the Log: reads S.book, writes nothing; light, clock and the wild ones stay as they are
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorldLive(); }
-          else { S.ui.nwArm = 1; fxMsg('Only the map changes. Your mibis and everything else stay · Confirm again' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : ''), 3); } }
+          else { S.ui.nwArm = 1; fxMsg(PRESS_TEXT.newWorld(urlSeed()), 3); } }
         else if (id === 'riding') openRiding();   // Riding: who is with you; reads only, light and clock stay as they are
         else if (id === 'her') openHer(herNamed(), 'patch');
         else { S.phase = id; S.ui.nw = 0; } }
@@ -8672,11 +8668,12 @@ function act(k, mode) {
     case 'watch': if (!mode || mode === 'creep') watchKey(k); break;   // a held arrow is one press: the repeat does not walk on (each press is one light and one beat)
     case 'card': cardKey(k); break;
     case 'probe':   // patching spends Energy: two presses, the first only arms it
-      if (k === 'confirm' && !patchShown()) { }   // no offer, no press
-      else if (k === 'confirm' && !patchOn()) { S.ui.patchArm = 0; FX.bumpAt = NOW; }   // shown but short of Energy: a refusal bump, nothing arms
-      else if (k === 'confirm' && !S.ui.patchArm) S.ui.patchArm = 1;   // the arm shows once, on the bottom line
-      else if (k === 'confirm') { const ex = S.exp; S.ui.patchArm = 0; ex.cargo.e -= PRICE.patch; ex.shield++; logEv('Patched the shield (3 Energy)'); fxMsg('Shield patched'); }
-      else if (k === 'back') { S.ui.patchArm = 0; S.phase = 'menu'; } else { S.ui.patchArm = 0; if (isDir) probeMove(k); } break;
+      if (k !== 'confirm') { S.ui.patchArm = 0; if (k === 'back') S.phase = 'menu'; else if (isDir) probeMove(k); }
+      else if (patchShown()) {   // no offer, no press
+        if (!patchOn()) { S.ui.patchArm = 0; FX.bumpAt = NOW; }   // shown but short of Energy: a refusal bump, nothing arms
+        else if (!S.ui.patchArm) S.ui.patchArm = 1;   // the arm shows once, on the bottom line
+        else { const ex = S.exp; S.ui.patchArm = 0; ex.cargo.e -= PRICE.patch; ex.shield++; logEv(PRESS_TEXT.patchedLog(PRICE.patch)); fxMsg(PRESS_TEXT.patched); } }
+      break;
     case 'cargo': caseKey(k); break;
     case 'riding': ridingKey(k); break;
     case 'worldmap': if (k === 'back') { S.phase = 'menu'; transition(); } break;
@@ -8697,9 +8694,7 @@ function act(k, mode) {
   save();
 }
 
-// Tap = one creeping step. Holding repeats as walking at a steady rate that matches the slide.
-const REPEAT_DELAY = 230, REPEAT_EVERY = 150;
-const repeat = { dir: null, timer: null };
+const repeat = { dir: null, timer: null };   // the held direction that is repeating (src/input/keys.mjs has the rate)
 function stopRepeat() { clearTimeout(repeat.timer); repeat.timer = null; repeat.dir = null; }
 // The peek (walk scheme B4 amendment): hold Call PEEK_MS = the whole place on one screen for as long as it is held; release = back to the walk at once.
 // A press under the hold time is Call, fired on release. Free: no action, no Energy, nothing moves (the view draws no creatures and the clock of the game is its actions),
@@ -8760,7 +8755,7 @@ function panRaw(lay, c0, hero, f, d) {
   return { x: f * cap(lay.w * 48 - SCR_W / 2 - c0.x, hero.x - PAN_MARGIN), y: 0 };
 }
 function press(k) {
-  if (FX.card) { if (k === 'confirm') cardPass(); return; }   // a card is up (dusk, night, dawn): only ✓ passes it (owner 11-25, #169); the pad, ← and other keys do nothing
+  if (FX.card) { if (k === 'confirm') cardPass(); return; }   // a card is up (dusk, night, dawn): only ✓ passes it; the pad, ← and other keys do nothing
   if (PAN.dir && k !== PAN.dir) panEnd();   // another key ends the peek, then acts as usual
   if (k === 'call') {
     NOW = performance.now();
@@ -8789,7 +8784,8 @@ const deviceEl = document.getElementById('device');
 document.querySelectorAll('.key').forEach(btn => {
   const k = btn.dataset.key;
   btn.addEventListener('pointerdown', e => {
-    e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch (_) { }
+    e.preventDefault();
+    try { btn.setPointerCapture(e.pointerId); } catch (err) { console.warn('key ' + k + ': the pointer was not captured, a release off the key may be missed', err); }
     btn.classList.add('is-down'); heldDown(k); press(k);
   });
   const up = () => { if (!btn.classList.contains('is-down')) return; btn.classList.remove('is-down'); heldUp(k); release(k); };
@@ -8800,7 +8796,7 @@ deviceEl.addEventListener('contextmenu', e => e.preventDefault());
 ['touchstart', 'touchmove', 'gesturestart', 'gesturechange', 'dblclick'].forEach(type => deviceEl.addEventListener(type, e => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
 
 // The directions that are down now, in the order they went down (a press dropped during a stall is still down until its key comes up): after a stall or a crossing slide, only a
-// direction still held walks on; presses made meanwhile and let go are gone (owner walk note 12).
+// direction still held walks on; presses made meanwhile and let go are gone.
 const HELD = [];
 function heldDown(k) { if (k in DIRS) { const i = HELD.indexOf(k); if (i >= 0) HELD.splice(i, 1); HELD.push(k); } }
 function heldUp(k) { const i = HELD.indexOf(k); if (i >= 0) HELD.splice(i, 1); }
@@ -8809,10 +8805,6 @@ function resumeHeld() {   // each frame, once the lock is over: a held direction
   FX.resume = false;
   if (S && S.phase === 'patch' && !RT.view && !RT.readOnly && HELD.length && !repeat.dir) press(HELD[HELD.length - 1]);
 }
-const KEYMAP = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', KeyW: 'up', KeyS: 'down', KeyA: 'left', KeyD: 'right',
-  Enter: 'confirm', NumpadEnter: 'confirm', Space: 'confirm', Escape: 'back', Backspace: 'back', KeyC: 'call' };
-const KEYMAP2 = { w: 'up', s: 'down', a: 'left', d: 'right', W: 'up', S: 'down', A: 'left', D: 'right', ' ': 'confirm', Enter: 'confirm', Escape: 'back', Backspace: 'back', c: 'call', C: 'call' };
-function keyOf(e) { return KEYMAP[e.code] || KEYMAP2[e.key] || KEYMAP[e.key] || null; }
 window.addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = keyOf(e); if (!k) return;
