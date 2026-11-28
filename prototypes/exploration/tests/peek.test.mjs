@@ -171,7 +171,7 @@ for (const side of ["up", "down", "left", "right"]) {
 }
 
 test("the next-door message line: nothing, one find, several (words.mjs, editor 11-24)", async () => {
-  const { WORDS } = await import("../src/words.mjs");
+  const { WORDS } = await import("../src/data/words.mjs");
   assert.equal(WORDS.callNextDoor(0), "The Call lifted the land next door · no finds");
   assert.equal(WORDS.callNextDoor(1), "The Call lifted the land next door · 1 find");
   assert.equal(WORDS.callNextDoor(3), "The Call lifted the land next door · 3 finds");

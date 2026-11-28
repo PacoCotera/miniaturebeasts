@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { decodePNG } from "../../ui/png.mjs";
-import { cardFrames, cardStep, gridOf, CARD_BEAT } from "../src/card-motion.mjs";
+import { cardFrames, cardStep, gridOf, CARD_BEAT } from "../src/render/card-motion.mjs";
 
 const load = (k) => decodePNG(readFileSync(new URL(`../art/cards/${k}-card-450x600.png`, import.meta.url))).data;
 const key = (a, i) => a[i] << 16 | a[i + 1] << 8 | a[i + 2];

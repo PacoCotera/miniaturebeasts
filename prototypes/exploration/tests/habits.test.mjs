@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 import { rangeOf, givesAt, clearAir, wantOf, tellOf, rainEndsIn, calmWindow, noteIn, blank, leftHaunts, dewLies, HABITS, SAMPLE, BEATS } from "../src/habits.mjs";
-import { DAY, WORDS } from "../src/words.mjs";
+import { DAY, WORDS } from "../src/data/words.mjs";
 import { ROUTINE } from "../src/gen7/haunts.mjs";
 
 test("range: far beyond 5 tiles, mid 3 to 5, near 2 or closer", () => {

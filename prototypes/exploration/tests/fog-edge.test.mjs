@@ -2,7 +2,7 @@
 // start radius wobbling round the hero.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import * as V from "../src/view.mjs";
+import * as V from "../src/render/view.mjs";
 import * as EDGE from "../src/render/edge.mjs";
 import { applyLight, lightState } from "../../places/src/ground.mjs";
 

@@ -2,7 +2,7 @@
 // Each draws only from its arguments: an empty top bar over the plain ground, its lines centred, and a bottom line that carries only ✓'s word.
 // The pixel core and the bottom line are still the page's: it hands them in once as `env` (R, text, viewBg, drawLine and the palette C).
 import { PIPS } from "../waitpips.mjs";
-import { textW } from "../font.mjs";
+import { textW } from "../render/font.mjs";
 import { breakLines, buildTag } from "../breakline.mjs";
 import { RESET_TEXT, KEPT_TEXT, LOAD_FAILED } from "../data/boot-words.mjs";
 

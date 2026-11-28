@@ -1,7 +1,7 @@
 // W6b: the watch view's pure rules (plan v6 S3 Release B). The page keeps the state (c.hb on the live creature); nothing is stored here.
 // The pose of her picture follows the beat of the play; the chip says the range, the tiles and what this range gives now (the range rule: it gives by range only).
 import { BEATS, givesAt } from './habits.mjs';
-import { WORDS } from './words.mjs';
+import { WORDS } from './data/words.mjs';
 
 // the current beat of a play: -1 while the tell goes on, else 0..3 (habitTick: beat = n - tell, a play ends at BEATS)
 export const beatOf = h => Math.max(-1, Math.min(BEATS - 1, (h.n | 0) - (h.tell | 0)));

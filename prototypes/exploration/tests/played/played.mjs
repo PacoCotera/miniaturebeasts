@@ -11,7 +11,7 @@ import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { decodePNG, encodePNG } from "../../../ui/png.mjs";
-import { cardFrames, CARD_W, CARD_H } from "../../src/card-motion.mjs";
+import { cardFrames, CARD_W, CARD_H } from "../../src/render/card-motion.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
@@ -1802,7 +1802,7 @@ for (const size of SCALE_SIZES.filter((s) => s.w === 412 || s.w === 390)) {
 }
 
 // OWNER #178 / #141 (fog-edge-1): the unexplored dark has a soft, irregular edge, not the cell's straight line ("I dont like that the water is so blocky, very long straight shores, and deep water is just full map cells. needs to be more naturally shaped";
-// 11-27 15:4x "ok, queue water fix then"). The dark is flat night (#29253a, in the reach view ink under night dots); where it meets seen land the edge is the art desk's signed pieces, laid by the build (src/fogedge.mjs).
+// 11-27 15:4x "ok, queue water fix then"). The dark is flat night (#29253a, in the reach view ink under night dots); where it meets seen land the edge is the art desk's signed pieces, laid by the build (src/render/fogedge.mjs).
 // His 178.save (seed 20, cell 186) and his 141.save (seed 64, place 172), at his size 412x915, by presses: hold Call for the look-around; for 178 also ← then Leave this place for the map (the reach view). The verdict is the pixels:
 // along each strip where seen land meets the dark, per row (or column) the first pixel that is not dark: how many different positions, and how long it keeps one (within 2 device px): a straight cell-long cut keeps one for the whole strip (a cell is
 // 384 device px in the look-around). Each strip is also set against a crop of it (refs/s39-*.png, cut from the shipped build by PLAYED_MAKE_REFS=1 PLAYED_WRITE_CROPS=1); two shots a moment apart must match first.

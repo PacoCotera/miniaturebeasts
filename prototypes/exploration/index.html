@@ -242,7 +242,7 @@ import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, clamp, cheb, m
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf, makeHauntWalk } from "./src/world7.mjs";
 import { nightTable } from "./src/night.mjs";
 import { newSeen, seenFromOld, reveal as seenReveal, markWalked, markBeen, walkedCell as seenWalked, fogState as seenFog, veilable, anySeen, tileBit, unveiled as seenUnveiled, unveiledRows, rowsCopy, liftRound, liftSquare, liftLine, liftFlood, walkLift as seenWalkLift, liftWhere, seenShare, liftAll, veilMask } from "./src/logic/seen.mjs";
-import { cardStep } from "./src/card-motion.mjs";
+import { cardStep } from "./src/render/card-motion.mjs";
 import { duskTable, duskLitRgb } from "./src/dusk.mjs";
 import { cutName, kindId, CUT_DIR } from "./src/riding-cut.mjs";
 import { beatOf, poseOf, stripPoses, chipOf, givesNow, drawsCut } from "./src/watch.mjs";
@@ -250,13 +250,13 @@ import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
 import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, packageUse, packageState, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
-import { paintLand } from "./src/landpaint.mjs";
-import { fogEdgeRead, fogEdges, FOG_EDGE_FILES } from "./src/fogedge.mjs";
+import { paintLand } from "./src/render/landpaint.mjs";
+import { fogEdgeRead, fogEdges, FOG_EDGE_FILES } from "./src/render/fogedge.mjs";
 import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from "./src/shore7.mjs";
-import { makeMapPaint } from "./src/map-paint.mjs";
+import { makeMapPaint, markSizeFor } from "./src/render/map-paint.mjs";
 import { makeMapSigns } from "./src/render/map-signs.mjs";
 import { NB9, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, edgeFade, fogFade, pickE } from "./src/render/edge.mjs";
-import { viewOf, camAt, visTiles, sprOff, BAYER4, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/render/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
 import { TAB, TAG, findTabY, rectsMeet, tabPointer, tabRect } from "./src/render/cues.mjs";
 import { POSE, CR_MOVING } from "./src/render/creature-poses.mjs";
@@ -267,9 +267,9 @@ const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
-import { GLYPHS, glyphOf, textW, textWT, wrapText, clipText, cutLine } from "./src/font.mjs";
+import { GLYPHS, glyphOf, textW, textWT, wrapText, clipText, cutLine } from "./src/render/font.mjs";
 import { SPECIES_ART, JUVENILE_ART, STEP_ART, SADDLED_ART, WILD_BEAT, HOPPER_SP } from "./src/data/tokens.mjs";
-import { WORDS, DAY, DAY_TEXT, CARD_TEXT, partOfDay, clockToNext, restTarget } from "./src/words.mjs";
+import { WORDS, DAY, DAY_TEXT, CARD_TEXT, partOfDay, clockToNext, restTarget } from "./src/data/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { HABITS, BEATS, SAMPLE, SATCHEL, stacks as sampleStacks, stackRoom, capStacks,rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, sleeperGives, isSleeper, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
@@ -278,7 +278,7 @@ import { FIELD, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
 // the rules the Station's map room shares (map-room build): reach, where a start may go, the marks
 import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBook } from "./src/map-rules.mjs";
-import { readOptions } from "./src/options.mjs";
+import { readOptions } from "./src/store/options.mjs";
 import { SOUNDS, tallyTick, playNotes, soundOff } from "./src/sound/blips.mjs";
 import { PALETTE, DARK_OF, LIGHT_OF } from "./src/data/palette.mjs";
 import { SHELTER_ROWS, OPEN_TEXT, HUD_NAMES, DIR_ABBR, OPEN_COLOURS, OPEN_FRAMES, OPEN_VARIANTS, OPEN_TILE, OPEN_FILES, MOMENT_KINDS } from "./src/data/screens.mjs";
@@ -524,7 +524,7 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 const propPiece = name => STONE_PIECES.get(name) || walkPB(name, ...(PROP_SIZE[name] || [32, 32]));   // a named empty slot until the art is in: nothing is drawn
 // Every named file of an art folder (art/<dir>/<name>.png), fetched and decoded: each(name, pixels) as each one arrives.
 const artPixels = (dir, names, each) => Promise.all(names.map(n => pixelsOf(vurl(new URL('./art/' + dir + '/', location.href).href + n + '.png')).then(im => each(n, im))));
-// The unexplored dark's soft edge (owner #178 / #141; the art desk's signed pieces, art/props/fog-edge-*, src/fogedge.mjs): read as masks; until they are in, the dark keeps its straight cell edge.
+// The unexplored dark's soft edge (owner #178 / #141; the art desk's signed pieces, art/props/fog-edge-*, src/render/fogedge.mjs): read as masks; until they are in, the dark keeps its straight cell edge.
 let FOGEDGE = null;
 const fogEdgeIn = files => { FOGEDGE = fogEdgeRead(files); landReset(); };
 async function loadPropArt() {
@@ -1635,7 +1635,7 @@ function cupFull(key, f) { const s = fs(key, f.id); return s.full != null ? s.fu
 // ---------- Strike marks: the land's record of lightning, read for Data ----------
 // A strike mark is a dark glassy streak where lightning went into bare ground (nothing burns). The generator places them (lay.strikes, with an age in world turns) and each world turn's storm
 // adds fresh ones (S.cells[key]['sf...'], kept with the cell). A mark fades STRIKE_FADE turns after the strike. Reading one is a press: it adds the Data of the
-// place's tier (STRIKE_DATA), once a mark, and takes nothing from the land; only the hold limits it. Words: src/words.mjs.
+// place's tier (STRIKE_DATA), once a mark, and takes nothing from the land; only the hold limits it. Words: src/data/words.mjs.
 const STRIKE_FADE = 12;   // [tune] world turns a mark stays on the land
 const strikeFaded = f => S.turn - f.born >= STRIKE_FADE;
 const strikeIsRead = (key, f) => fs(key, f.id).read != null;
@@ -1703,7 +1703,6 @@ import { reachableTile } from "./src/logic/place-rules.mjs";
 import { isNightPod, nightOf } from "./src/logic/wild-rules.mjs";
 import { CURLED_LOIKA } from "./src/data/tokens.mjs";
 import { CARD_ART, CARD_LOOP, loadCardArt } from "./src/render/night-cards.mjs";
-import { markSizeFor } from "./src/map-paint.mjs";
 // What the Probe's sweep reads in a cell: tracks (3+ creatures), a slow beat (a pod, buried or not),
 // storm charge (a charged stone) and the deep "?".
 function cellSigns(c) {
@@ -1784,12 +1783,12 @@ function viewPress(k) {
 // ---------- Place marks (the map's key for place kinds: the art desk's marks) ----------
 // One mark per kind of place, one landmark each: meadow Windstep, wood the Hollow Tree, rock the Split Stone, pond the Reedpool. state 'found': full colour; 'been': the slate silhouette
 // (ink kept). size: 26 (the reach view, tier 1 and the reveal's card), 18 (tier 2), 12 (the full map).
-// The game lays a place's mark through cellMark (src/map-paint.mjs), by its landmark; placeMark, by its land, is what the tests of the marks' files ask.
+// The game lays a place's mark through cellMark (src/render/map-paint.mjs), by its landmark; placeMark, by its land, is what the tests of the marks' files ask.
 const MARK_SIZES = [26, 18, 12];
 const MARK_OF = { [L.MEADOW]: 'windstep', [L.POND]: 'reedpool', [L.ROCK]: 'splitstone', [L.WOOD]: 'hollowtree' };
 function placeMark(land, state, size = 26) { return walkPB(`mark-${MARK_OF[land] || MARK_OF[L.POND]}-${state}-${size}`, size, size); }
 // The place's part of the bottom line, after its name: "a pod north · 2 more to take", "3 to take", "explored · a pod north · 2 more to take", "explored · nothing left to take", and when nothing is in sight,
-// "nothing in sight to take". Nothing is promised that the land does not show. The words are src/words.mjs's.
+// "nothing in sight to take". Nothing is promised that the land does not show. The words are src/data/words.mjs's.
 function placeLine(lay, P, noKinds) {
   const c = lay.cell, n = leftTotal(c), done = walkedCell(c);
   if (!n) return done ? WORDS.explored + ' · ' + WORDS.left : WORDS.nothingSeen;
@@ -1810,7 +1809,7 @@ const cellFog = c => seenFog(S.seen, c, passable(c) && G.land[c] !== L.WATER && 
 // been in is full colour under light dots; found is clear; unvisited ground with no place (open water, cliff) keeps the fade; the storm's dark table over all.
 const reachRm = c => (!S.seen.been[c] && !passable(c)) ? 4 : ((S.exp && S.exp.storm && stormCovers(c % MW)) || cellFog(c) === 2) ? 1 : 0;
 const FOGV = { n: FOG_NOT_BEEN, b: FOG_BEEN };   // the dot levels, a plain object so a still can try other values
-// The band under the reach view: the place you stand in ("Meadow · explored · 1 pod waits there", "Meadow · not explored yet"). The words are src/words.mjs's.
+// The band under the reach view: the place you stand in ("Meadow · explored · 1 pod waits there", "Meadow · not explored yet"). The words are src/data/words.mjs's.
 function bandCell() {
   const ex = S.exp, c = ex.pos, B = WORDS.band, name = cap(landWord(c));
   if (gatedCell(c) || !S.seen.been[c] || !passable(c)) return name;
@@ -2067,7 +2066,7 @@ function cardShow(k) {
 }
 // ✓ passes the card (every other press is spent on it and does nothing); its line goes to the message box then.
 function cardPass() { const k = FX.card.k; FX.card = null; const t = CARD_TEXT[k]; if (t && t[1]) fxMsg(t[1], 3); }
-// The card moves a little, from its own pixels (src/card-motion.mjs); the still is the fallback and what reduced motion keeps
+// The card moves a little, from its own pixels (src/render/card-motion.mjs); the still is the fallback and what reduced motion keeps
 function drawDuskCard() { const k = FX.card && FX.card.k, c = k && CARD_ART[k]; if (c) { g.imageSmoothingEnabled = false; const L = CARD_LOOP[k]; g.drawImage(L && motion() ? L[cardStep(k, NOW - FX.card.at)] : c, 0, 0); } }
 // ---------- A named wild Loika fed from the hand sleeps in her pod for the night ----------
 // Her record in S.cr says where she is: w.slept = 1 while she is a pod (off the place's creatures), w.home = 1 once she has gone home with a sealed crate (the realm never spawns her again, whatever REALM_REV is).
@@ -3252,7 +3251,7 @@ function patchAction() {
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
       const eaters = SPECIES.map((_, i) => i).filter(sp => spOf(sp).eats && S.known.includes(sp)).map(sp => spOf(sp).plural);
       fxMsg(fruit ? cap(spOf(o.c.sp).plural) + ' don’t eat fruit' + (eaters.length ? ' · ' + eaters.join(' and ') + ' do' : '') : 'The ' + spName(o.c.sp) + ' watches you · ' + watchTail(o.c), 2); } };
-    return fruit ? { label: 'Offer fruit' + nm(o.c.sp), run: () => offer(o.c) }
+    return fruit ? { label: WORDS.fruit.offer + nm(o.c.sp), run: () => offer(o.c) }
       : { label: 'Bring fruit, or Call', run: () => { fxMsg('The ' + spName(o.c.sp) + ' watches you · bring fruit, or Call', 2); FX.bumpAt = NOW; } }; }
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
   if (o && o.type === 'slabLeft') return { label: o.f.under === 'mat' ? WORDS.slabTake.mat : WORDS.slabTake.find, run: () => takeSlabLeft(o.f) };
@@ -5547,7 +5546,7 @@ function landPatchPB(c, cs, fr) {
     return pb; });
 }
 // ---------- The painted land (reach view and full map in an expedition) ----------
-// One continuous painting (src/landpaint.mjs): each pixel takes the land of the cell under it, fog keeps its three states on the same soft borders, no grid lines are drawn. The painting is made once per change of
+// One continuous painting (src/render/landpaint.mjs): each pixel takes the land of the cell under it, fog keeps its three states on the same soft borders, no grid lines are drawn. The painting is made once per change of
 // state, off the page's thread (the places worker, src/place-store.mjs landAsk): the page gathers what the painting is made from (landInputs), and draws the last painting, laid where the new one will stand, until the new one
 // arrives. A page without a worker paints it here, whole, with the same function.
 // The region's sector: 4 x 4 blocks a place (ground class, level bit) and the realm's lines, the land every map is painted from (null until it is made: the cell labels draw the land meanwhile). A page without a worker
@@ -5614,7 +5613,7 @@ function landStand(spec) {
 }
 function landPixels(cv, u) { const cg = cv.getContext('2d'), id = cg.createImageData(cv.width, cv.height); new Uint32Array(id.data.buffer).set(u); cg.putImageData(id, 0, 0); }   // a painting's pixels onto its canvas
 function landImage(spec) { return landTry(spec) || landStand(spec); }
-// landPaint, cellMark, cellSignAt and openFrame are src/map-paint.mjs; the page's state is handed in as getters (read each time, never copied).
+// landPaint, cellMark, cellSignAt and openFrame are src/render/map-paint.mjs; the page's state is handed in as getters (read each time, never copied).
 const { landPaint, cellMark, cellSignAt, openFrame } = makeMapPaint({
   get S() { return S; }, get G() { return G; }, landTry: spec => landTry(spec), passable: c => passable(c), walkedCell: c => walkedCell(c), placeHave: k => placeHave(k),
   layout: k => layout(k), walkPB: (n, w, h) => walkPB(n, w, h), openRect: () => openRect(), firstPlacement: () => firstPlacement(), startPlaces: () => startPlaces(), tierOf: () => tierOf() });
@@ -6189,10 +6188,10 @@ function peekWaterFront(r, dx, dy, Tp, key, ap, lay, bk, pox, poy) {
     else { const dgs = dgLo ? -1 : 1; place('inner', (dx ? sx : dgs) < 0, (dx ? dgs : sy) < 0, false, a.x + off(dx ? sx : dgs), a.y + off(dx ? dgs : sy)); }   // deep only past the corner
   }
 }
-// The map's unseen land (src/landpaint.mjs): ink under sparse night dots, the Bayer matrix on the screen's pixels, so cells of unlike sizes join with no seam.
+// The map's unseen land (src/render/landpaint.mjs): ink under sparse night dots, the Bayer matrix on the screen's pixels, so cells of unlike sizes join with no seam.
 function peekFog(x, y, w, h) { R(x, y, w, h, C.ink); ditherFill(x, y, w, h, 'night', 3); }
 // owner #178 / #141: the dark of the look-around (the slots peekFog fills: land not seen, a place not here yet, past the realm's edge, and all beyond the nine cells) meets the seen land on the signed soft edge, not the slot's
-// straight line: the look-around's runs along the sides, the map's rounded corners at the corners (src/fogedge.mjs), laid on the seen side, over the picture and under the marks. The slots are the place's cell size; (0,0) is the place.
+// straight line: the look-around's runs along the sides, the map's rounded corners at the corners (src/render/fogedge.mjs), laid on the seen side, over the picture and under the marks. The slots are the place's cell size; (0,0) is the place.
 const FE_PB = new WeakMap(); let feId = 0;
 function fogPiece(it) {
   let e = FE_PB.get(it.m); if (!e) { e = { id: feId++ }; FE_PB.set(it.m, e); }
@@ -7309,7 +7308,7 @@ function digger() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'd
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
-  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: WORDS.case.title }, { id: 'riding', label: WORDS.riding.title }, { id: 'log', label: WORDS.book.title }], send = { id: 'send', label: 'End expedition' };
+  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: WORDS.case.title }, { id: 'riding', label: WORDS.riding.title }, { id: 'log', label: WORDS.book.title }], send = { id: 'send', label: WORDS.case.end };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   const frz = fieldFrozen() ? { frz: 1 } : {};   // docked mid-expedition: Wait and Leave stay in place, dimmed, and refuse
   if (from === 'patch' && S.exp && S.exp.patch) return (herNamed() ? [{ id: 'her', label: WORDS.her.row(S.named[herNamed()]) }] : []).concat([Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz)])).concat(base);

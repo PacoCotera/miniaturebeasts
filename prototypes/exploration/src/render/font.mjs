@@ -1,5 +1,4 @@
-// The bitmap font and the text measure: moved whole from index.html (audit step 7, split 1). Pure: no page state.
-// ---------- Bitmap font: 5×7 caps, 2-row descenders. Drawn at 2× minimum (14 px caps) so it stays readable on a phone. ----------
+// The bitmap font and the text measure. Pure: no page state. 5×7 caps, 2-row descenders; drawn at 2× minimum (14 px caps) so it stays readable on a phone.
 export const GLYPHS = {
   A: '.###.|#...#|#...#|#####|#...#|#...#|#...#', B: '####.|#...#|#...#|####.|#...#|#...#|####.', C: '.###.|#...#|#....|#....|#....|#...#|.###.',
   D: '####.|#...#|#...#|#...#|#...#|#...#|####.', E: '#####|#....|#....|####.|#....|#....|#####', F: '#####|#....|#....|####.|#....|#....|#....',
@@ -32,8 +31,7 @@ export const GLYPHS = {
   '×': '.....|.....|#...#|.#.#.|..#..|.#.#.|#...#', '✓': '......#|.....##|....##.|##.##..|.###...|..#....|.......', '%': '##..#|##.#.|...#.|..#..|.#...|.#.##|#..##', '#': '.#.#.|#####|.#.#.|.#.#.|.#.#.|#####|.#.#.',
 };
 export const GLYPH_ALIAS = { '’': "'", '‘': "'", '“': '"', '”': '"', '–': '-', '—': '-' };
-export const FONT = {};
-for (const ch in GLYPHS) { const rows = GLYPHS[ch].split('|'); FONT[ch] = { w: rows[0].length, rows }; }
+export const FONT = Object.fromEntries(Object.entries(GLYPHS).map(([ch, g]) => { const rows = g.split('|'); return [ch, { w: rows[0].length, rows }]; }));
 export function glyphOf(ch) { return FONT[ch] || FONT[GLYPH_ALIAS[ch]] || FONT['?']; }
 export function textW(str, s) { s = s || 2; let w = 0; for (const ch of str) w += (glyphOf(ch).w + 1) * s; return Math.max(0, w - s); }
 // The width of the tight setting: glyphs keep their pixels but sit 1 px apart, so the bottom line holds its three parts.

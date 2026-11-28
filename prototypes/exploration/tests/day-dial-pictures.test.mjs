@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { DAY, partOfDay } from "../src/words.mjs";
+import { DAY, partOfDay } from "../src/data/words.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 // The signed shas, copied from the art ledger lines (mibi-art signed.jsonl) with these ids: dawn d0f6911e75, morning 0dca3108bd, midday e888a73ecb, afternoon b842e156ba, dusk 0928ab9c1e, night ba19e2e9d6.

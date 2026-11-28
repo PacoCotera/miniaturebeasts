@@ -3,7 +3,7 @@
 // The page owns the creatures, the partner, the explorer and the overlays; this module never draws them.
 import { readPlace, readTileSet } from './format/read.mjs';
 import { PlaceGroundCache, GroundCache, duskOf, duskLitOf, applyLight, lightState, tablesOf, LEVELS, renderHalfView, renderViewSteps, wholeScale } from './ground.mjs';
-import { BAYER4 } from '../../exploration/src/view.mjs';
+import { BAYER4 } from '../../exploration/src/render/view.mjs';
 import { cutOut, scaleTo, walkFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
 import { stepCamera, newCam, TILE } from './camera.mjs';

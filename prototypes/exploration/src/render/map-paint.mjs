@@ -1,13 +1,14 @@
-// The map's painting, in one module (map-paint-module-1; moved out of index.html, not copied; no behaviour change):
-// landPaint (the opening's painting as a generator), cellMark (a place's mark on the land), cellSignAt (a sign's spot in its cell), openFrame (the land the opening frame holds).
+// The map's painting: landPaint (the opening's painting as a generator), cellMark (a place's mark on the land), cellSignAt (a sign's spot in its cell), openFrame (the land the opening frame holds).
 // The page's state (S, G, the layout and the walk pictures) is not owned here: the page hands it in once as `env`, an object of getters
 // (env.S reads the page's S every time, so a new world or a loaded save is seen at once).
-import { MW, MH, L, clamp, cxy } from "./world.mjs";
+import { MW, MH, L, clamp, cxy } from "../world.mjs";
 
 // the map mark of each landmark kind
 const LM_MARK = { windstep: 'windstep', 'hollow-tree': 'hollowtree', 'split-stone': 'splitstone', reedpool: 'reedpool' };
 // The size of a place's mark in a cell of cs px: 26 on the reach view's 72 px cells, 18 on its 48 px cells, 12 on the full map.
 export const markSizeFor = cs => cs >= 72 ? 26 : cs >= 48 ? 18 : 12;
+// Where a piece size px long starts along a cell that starts at c0 and is cs long: centred on the fraction f of the cell, kept 2 px inside it.
+const inCell = (c0, cs, size, f) => Math.round(Math.max(c0 + 2, Math.min(c0 + cs - size - 2, c0 + f * cs - size / 2)));
 
 export function makeMapPaint(env) {
   // The opening's painting as a generator (a screen waits for it across frames): each next() is one frame of waiting; the last returns the canvas.
@@ -20,14 +21,11 @@ export function makeMapPaint(env) {
     const found = env.walkedCell(c), been = !!S.seen.into[c]; if (!found && !been) return null;
     if (!env.placeHave(String(c))) return null;   // its place is still being made: no mark yet
     const lay = env.layout(String(c)), bk = lay.baked; if (!bk || !lay.landmark) return null;   // a mark stands only at a landmark: the land holds few
-    const lm = { x: lay.landmark.x - bk.ox, y: lay.landmark.y - bk.oy }, mk = env.walkPB(`mark-${LM_MARK[lay.landmark.kind]}-${found ? 'found' : 'been'}-${size}`, size, size), pad = 2;
-    return { mk, x: Math.round(Math.max(cx + pad, Math.min(cx + cs - mk.w - pad, cx + (lm.x + .5) / bk.w * cs - mk.w / 2))), y: Math.round(Math.max(cy + pad, Math.min(cy + cs - mk.h - pad, cy + (lm.y + .5) / bk.h * cs - mk.h / 2))) };
+    const lm = { x: lay.landmark.x - bk.ox, y: lay.landmark.y - bk.oy }, mk = env.walkPB(`mark-${LM_MARK[lay.landmark.kind]}-${found ? 'found' : 'been'}-${size}`, size, size);
+    return { mk, x: inCell(cx, cs, mk.w, (lm.x + .5) / bk.w), y: inCell(cy, cs, mk.h, (lm.y + .5) / bk.h) };
   }
   // A sign's spot in its cell: at the heart's spot in the place (the others beside it), not in corner slots.
-  function cellSignAt(c, cx, cy, cs, w, h, n) {
-    const pad = 2, fx = .5 + n * .3, fy = .5;
-    return { x: Math.round(Math.max(cx + pad, Math.min(cx + cs - w - pad, cx + fx * cs - w / 2))), y: Math.round(Math.max(cy + pad, Math.min(cy + cs - h - pad, cy + fy * cs - h / 2))) };
-  }
+  function cellSignAt(c, cx, cy, cs, w, h, n) { return { x: inCell(cx, cs, w, .5 + n * .3), y: inCell(cy, cs, h, .5) }; }
   // The land you know, as the frame holds it (430 × 316 at (10, 40) inside the panel): the Probe's reach round the last start plus half a cell each side (the first time, the five lights and half a cell round them),
   // at the largest whole cell size up to 72 that fits, centred and clamped to the world.
   function openFrame() {

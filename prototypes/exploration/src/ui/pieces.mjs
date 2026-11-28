@@ -1,6 +1,6 @@
 // Small pieces the screens are composed from (UI): a dashed outline, the Case's wood, brass and hollows, contact shadows. Each draws only from its arguments.
 // The pixel core is still the page's: it hands in what these draw with once as `env` (R, panel, ditherFill and the palette C).
-const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+import { BAYER4 as BAYER } from "../render/view.mjs";
 
 export function makePieces(env) {
   const { R, panel, ditherFill, C } = env;
