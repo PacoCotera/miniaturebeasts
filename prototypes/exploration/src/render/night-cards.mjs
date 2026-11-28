@@ -1,6 +1,6 @@
 // The dusk, night and dawn cards: each is the art director's signed painting, 450 x 600 (the Companion's whole frame, drawn 1:1 and never redrawn),
 // with a loop of four frames made from its own pixels (card-motion.mjs).
-import { cardFrames, rgbaOf } from "../card-motion.mjs";
+import { cardFrames, rgbaOf } from "./card-motion.mjs";
 
 export const NIGHT_CARDS = { dusk: { file: 'art/cards/dusk-card-450x600.png' }, night: { file: 'art/cards/night-card-450x600.png' }, dawn: { file: 'art/cards/dawn-card-450x600.png' } };
 export const CARD_ART = {};   // kind -> the file's canvas, as loaded

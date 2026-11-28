@@ -13,16 +13,16 @@ import { NOISE_VECTORS } from "./noise-vectors.mjs";
 import * as W from "../src/world.mjs";
 import { PLAYTEST_SEEDS, PLAYTEST_REALM_REV, PLAYTEST_BIOME_V } from "../src/data/playtest-seeds.mjs";
 import { REALM_REV } from "../src/gen7/region.mjs";
-import { WORDS } from "../src/words.mjs";
+import { WORDS } from "../src/data/words.mjs";
 import * as R from "../src/regions.mjs";
 import * as A from "../src/atlas.mjs";
-import * as V from "../src/view.mjs";
+import * as V from "../src/render/view.mjs";
 import * as SHAPE from "../src/render/edge.mjs";
 import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs, viewOut, ATLAS_CASES, atlasCaseOut, atlasPlaces, syntheticPieces, SYNTH_TONE, NO_MACRO, PROOF_GRID, proofStates, fnv as fnvStr } from "../tools/world-vectors.mjs";
 
 const VECTORS = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
 const MODULE_SRC = readFileSync(new URL("../src/world.mjs", import.meta.url), "utf8");
-const VIEW_SRC = readFileSync(new URL("../src/view.mjs", import.meta.url), "utf8");
+const VIEW_SRC = readFileSync(new URL("../src/render/view.mjs", import.meta.url), "utf8");
 const ATLAS_SRC = readFileSync(new URL("../src/atlas.mjs", import.meta.url), "utf8");
 const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
 const LIFE = { roster: W.ROSTER, genLife: (G, seed) => W.genLife(G, seed, W.ROSTER) };   // the roster column
@@ -227,10 +227,10 @@ test("generator 2: the key list is complete, generator 1's G gains no field, and
   assert.equal(W.depotCells(G, 7), G.depots.set, "the eager outposts are the memo");
 });
 
-// ---- src/view.mjs: the place camera and coordinates ----
-test("view: src/view.mjs gives every literal case in world-vectors.json, and the file holds every case", () => {
+// ---- src/render/view.mjs: the place camera and coordinates ----
+test("view: src/render/view.mjs gives every literal case in world-vectors.json, and the file holds every case", () => {
   assert.deepEqual(VECTORS.view.map(c => c.name), VIEW_CASES.map(c => c.name), "the case list");
-  for (const c of VECTORS.view) assert.deepEqual(viewOut(V, c), c.out, c.name);
+  for (const c of VECTORS.view) assert.deepEqual(viewOut({ ...V, ...SHAPE }, c), c.out, c.name);
   const at = n => VECTORS.view.find(c => c.name === n).out;
   assert.deepEqual(at("camAt at 32 (today's value)"), { x: 239, y: 492 }, "today's camera on main at 32 px");
   assert.deepEqual(at("visTiles at spawn"), { tx0: 9, ty0: 20, tx1: 19, ty1: 31 }, "11 × 12 tiles");
@@ -378,11 +378,11 @@ test("atlas: pure and integer only, by source; its only import is ./world.mjs; n
   const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
   for (const k of Object.keys(A)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
 });
-test("view: pure and integer only, by source; its only import is ./world.mjs; no export shadows a page identifier", () => {
+test("view: pure and integer only, by source; its only import is ../world.mjs; no export shadows a page identifier", () => {
   const code = blank(VIEW_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /Math\.round/, /Math\.hypot/, /Math\.sqrt/]) assert.doesNotMatch(code, re, String(re));
   assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
-  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["./world.mjs"]);
+  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["../world.mjs"]);
   assert.equal((code.match(/\bimport\b/g) || []).length, 1, "one import");
   const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
   for (const k of Object.keys(V)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
@@ -1083,7 +1083,7 @@ test("the warned-tile card in a 48 px place shows the cell's sprite box (columns
 
 // ---- the edges at 48: coverage fades, the storm step, the place's own tables ----
 const BAYER_ = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-// The eighth rule from its definition, independent of src/view.mjs: brute force over a 12 px grid with the exact disc (a far eighth within 8 cells keeps a cell out of the core,
+// The eighth rule from its definition, independent of src/render/view.mjs: brute force over a 12 px grid with the exact disc (a far eighth within 8 cells keeps a cell out of the core,
 // a core cell within 8 opens it), cut-only, and the quarter look for a near tile the opening empties. `far(x, y)` is the tile far bit (off the place: not far).
 const NB8_ = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
 function refGrid(far, w = 28, h = 32, noFallback = false) {

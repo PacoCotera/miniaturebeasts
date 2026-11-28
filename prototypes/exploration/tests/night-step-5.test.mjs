@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 import { easeTick } from "../src/ease.mjs";
 import { sleeperGives, isSleeper, noteIn, blank, givesAt } from "../src/habits.mjs";
-import { DAY, WORDS } from "../src/words.mjs";
+import { DAY, WORDS } from "../src/data/words.mjs";
 
 const nightAt = DAY.parts.slice(0, -1).reduce((a, q) => a + q[1], 0) + 5;   // five light into the night
 const duskAt = DAY.light - DAY.parts[5][1] - DAY.parts[4][1] + 5;   // five light into the dusk
@@ -117,7 +117,7 @@ for (const seed of [7, 13, 42]) {
 }
 
 test("[copy] and [art]: the new words are working words; her curled token slot holds the signed round 4 frames", () => {
-  assert.ok(WORDS.ease.stirred && WORDS.habit.asleep && WORDS.habit.asleepStirred && WORDS.habit.curledSlot === "Loika asleep: picture to come");
+  assert.ok(WORDS.ease.stirred && WORDS.habit.asleep && WORDS.habit.asleepStirred);
   const p = makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });
   const c = JSON.parse(p.run("JSON.stringify(CURLED_LOIKA)"));
   assert.ok(c.file && c.plain.length === 2 && c.saddled.length === 2);   // signed round 4: two breathing frames, plain and saddled

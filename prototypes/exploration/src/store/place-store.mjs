@@ -159,7 +159,7 @@ export const bakedWhen = (seed, slot, v, cell) => new Promise(resolve => {
 
 // A baked place's ground, rendered in the ground worker: its 48 px frames (by clock) and the whole-place picture's. groundTake hands it over once; the page's view holds it from then on.
 export const groundAsk = (id, place, kit) => askMade('ground', id, { place }, kit), groundPending = id => MADE.ground.asked.has(id), groundTake = id => takeMade('ground', id);   // kit as readyPlaces'
-// A painting of the map's land (src/landpaint.mjs), painted in the same worker: landAsk sends the plain inputs, landTake hands the pixels over once.
+// A painting of the map's land (src/render/landpaint.mjs), painted in the same worker: landAsk sends the plain inputs, landTake hands the pixels over once.
 export const landAsk = (id, inp, kit) => askMade('land', id, { inp }, kit), landPending = id => MADE.land.asked.has(id), landTake = id => takeMade('land', id);
 function askMade(kind, id, msg, kit) {
   const J = MADE[kind];

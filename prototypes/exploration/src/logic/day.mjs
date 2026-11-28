@@ -1,5 +1,5 @@
 // The day's clock as rules: what a count of light spent since dawn means for her routine and for a place's light. The count is handed in; no game state.
-import { DAY, partOfDay } from "../words.mjs";
+import { DAY, partOfDay } from "../data/words.mjs";
 
 const BED_LIGHT = 20;
 // The part of day her routine reads: the last BED_LIGHT light of dusk is "dusk2" (a late one beds down then); every other part is the clock's.

@@ -8,7 +8,7 @@ import { applyLight, lightState, tablesOf, renderGround, duskOf, duskLitOf } fro
 import { blitPlaced } from '../src/sprites.mjs';
 import { duskLitRgb, DUSK_LEAN, DUSK_LIT_STEP } from '../../exploration/src/dusk.mjs';
 import { ts, place, pal, NIGHT, cells } from './render-helpers.mjs';
-import { BAYER4 } from '../../exploration/src/view.mjs';
+import { BAYER4 } from '../../exploration/src/render/view.mjs';
 
 const lum = (c) => 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2];
 const T0 = tablesOf(ts);

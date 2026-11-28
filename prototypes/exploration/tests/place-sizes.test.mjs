@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fixture, plain } from "./walk-fixture.mjs";
 import { makePage } from "./page-harness.mjs";
-import { viewOf, camAt } from "../src/view.mjs";
+import { viewOf, camAt } from "../src/render/view.mjs";
 import { slideOffsets } from "../src/render/slide.mjs";
 
 const W = 18, H = 22;

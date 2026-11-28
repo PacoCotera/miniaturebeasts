@@ -8,7 +8,7 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { DAY } from "../src/words.mjs";
+import { DAY } from "../src/data/words.mjs";
 
 const require = createRequire(import.meta.url);
 let chromium; try { ({ chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright")); } catch { chromium = null; }

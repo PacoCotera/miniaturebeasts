@@ -2,6 +2,7 @@
 // pixels it already has moved or re-toned back to its own palette. One motion a card, a gentle loop of 4 steps, one rhythm:
 //   night: the fireflies blink and drift a pixel;  dusk: the sun's soft halo breathes wider by up to 10%;  dawn: the mist slides up to 8 grid px (#175 round 5: seen within 2 s at 412).
 // Pure: grids are Uint8Array RGB on the card's 225 x 300 grid (the 450 x 600 file is 2x nearest).
+import { BAYER4 } from "./view.mjs";
 export const CARD_W = 225, CARD_H = 300;
 // ms a step lasts, and the order the frames play (ping-pong where the motion is a breath or a drift)
 export const CARD_BEAT = { night: { ms: 300, seq: [0, 1, 2, 3] }, dusk: { ms: 500, seq: [0, 1, 2, 1] }, dawn: { ms: 400, seq: [0, 1, 2, 1] } };
@@ -22,14 +23,14 @@ export function rgbaOf(a) {   // the grid -> 450 x 600 RGBA bytes, 2x nearest
   }
   return o;
 }
-const at = (a, x, y) => (y * CARD_W + x) * 3;
+const at = (x, y) => (y * CARD_W + x) * 3;
 const palOf = (a) => { const s = new Map(); for (let i = 0; i < a.length; i += 3) s.set(a[i] << 16 | a[i + 1] << 8 | a[i + 2], [a[i], a[i + 1], a[i + 2]]); return [...s.values()]; };
 function snapTo(pal, r, g, b) { let best = pal[0], bd = 1e9; for (const p of pal) { const d = (p[0] - r) ** 2 + (p[1] - g) ** 2 + (p[2] - b) ** 2; if (d < bd) { bd = d; best = p; } } return best; }
 const put = (a, i, c) => { a[i] = c[0]; a[i + 1] = c[1]; a[i + 2] = c[2]; };
 
 function nightFrames(a) {
   const pal = palOf(a), warm = new Uint8Array(CARD_W * CARD_H);
-  for (let y = 131; y < CARD_H; y++) for (let x = 0; x < CARD_W; x++) { const i = at(a, x, y), r = a[i], g = a[i + 1], b = a[i + 2]; if (r > 150 && g > 120 && b < 0.75 * g) warm[y * CARD_W + x] = 1; }
+  for (let y = 131; y < CARD_H; y++) for (let x = 0; x < CARD_W; x++) { const i = at(x, y), r = a[i], g = a[i + 1], b = a[i + 2]; if (r > 150 && g > 120 && b < 0.75 * g) warm[y * CARD_W + x] = 1; }
   const seen = new Uint8Array(warm.length), flies = [];
   for (let s = 0; s < warm.length; s++) {
     if (!warm[s] || seen[s]) continue;
@@ -43,7 +44,7 @@ function nightFrames(a) {
     for (let y = Math.min(...ys) - 2; y <= Math.max(...ys) + 2; y++) for (let x = Math.min(...xs) - 2; x <= Math.max(...xs) + 2; x++) {
       if (x < 0 || y < 0 || x >= CARD_W || y >= CARD_H || own.has(y * CARD_W + x)) continue;
       let near = false; for (let dy = -1; dy <= 1 && !near; dy++) for (let dx = -1; dx <= 1; dx++) if (own.has((y + dy) * CARD_W + x + dx)) { near = true; break; }
-      if (!near) ring.push(at(a, x, y));
+      if (!near) ring.push(at(x, y));
     }
     const med = (o) => { const v = ring.map(i => a[i + o]).sort((p, q) => p - q); return v.length ? v[v.length >> 1] : 0; };
     flies.push({ c, bg: snapTo(pal, med(0), med(1), med(2)) });   // the surround's tone, as the card's own colour
@@ -57,14 +58,14 @@ function nightFrames(a) {
   const out = [];
   for (let f = 0; f < 4; f++) {
     const o = a.slice();
-    for (const fl of flies) for (const [x, y] of fl.c) put(o, at(o, x, y), fl.bg);
+    for (const fl of flies) for (const [x, y] of fl.c) put(o, at(x, y), fl.bg);
     flies.forEach((fl, i) => {
       const [s, dx, dy] = cycles[i % 4][(f + i) % 4];
       if (!s) return;
       for (const [x, y] of fl.c) {
         const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= CARD_W || ny >= CARD_H) continue;
-        const j = at(a, x, y);
-        put(o, at(o, nx, ny), s < 1 ? snapTo(pal, (a[j] + fl.bg[0]) >> 1, (a[j + 1] + fl.bg[1]) >> 1, (a[j + 2] + fl.bg[2]) >> 1) : [a[j], a[j + 1], a[j + 2]]);
+        const j = at(x, y);
+        put(o, at(nx, ny), s < 1 ? snapTo(pal, (a[j] + fl.bg[0]) >> 1, (a[j + 1] + fl.bg[1]) >> 1, (a[j + 2] + fl.bg[2]) >> 1) : [a[j], a[j + 1], a[j + 2]]);
       }
     });
     out.push(o);
@@ -75,15 +76,14 @@ function nightFrames(a) {
 // Dusk: the sun's own soft halo widens a little and comes back (AD round 5: no rings, no flat fill, nothing over cloud or tree line, peak <= the halo + 10%).
 // Each halo pixel takes the colour the halo has a little nearer the sun (a radial stretch of up to 10%), only where both pixels are the halo's own colours
 // (the colours found straight above the sun), faded out at its edge by the house 4 x 4 Bayer dither. Only colours the card already has; the disc, clouds and tree line are never read or written.
-const BAYER4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 function duskFrames(a) {
   let cx = 0, cy = 0, best = -1, n = 0;   // the sun: the brightest pixels in its box
-  for (let y = 125; y < 170; y++) for (let x = 100; x < 200; x++) { const i = at(a, x, y), l = a[i] + a[i + 1] + a[i + 2]; if (l > best) best = l; }
-  for (let y = 125; y < 170; y++) for (let x = 100; x < 200; x++) { const i = at(a, x, y); if (a[i] + a[i + 1] + a[i + 2] >= best - 6) { cx += x; cy += y; n++; } }
+  for (let y = 125; y < 170; y++) for (let x = 100; x < 200; x++) { const i = at(x, y), l = a[i] + a[i + 1] + a[i + 2]; if (l > best) best = l; }
+  for (let y = 125; y < 170; y++) for (let x = 100; x < 200; x++) { const i = at(x, y); if (a[i] + a[i + 1] + a[i + 2] >= best - 6) { cx += x; cy += y; n++; } }
   cx = Math.floor(cx / n); cy = Math.floor(cy / n);
   const RD = 16, RMAX = 44, key = (i) => a[i] << 16 | a[i + 1] << 8 | a[i + 2];
   const halo = new Set();   // the halo's colours: the ones straight above the sun, past its disc
-  for (let d = RD; d <= RMAX; d++) for (let dx = -6; dx <= 6; dx++) { const x = cx + dx, y = cy - d; if (y >= 0) halo.add(key(at(a, x, y))); }
+  for (let d = RD; d <= RMAX; d++) for (let dx = -6; dx <= 6; dx++) { const x = cx + dx, y = cy - d; if (y >= 0) halo.add(key(at(x, y))); }
   return [0, 0.05, 0.1, 0.05].map(k => {
     const o = a.slice();
     if (k) for (let y = 0; y < CARD_H; y++) for (let x = 0; x < CARD_W; x++) {
@@ -92,7 +92,7 @@ function duskFrames(a) {
       if (BAYER4[(y & 3) * 4 + (x & 3)] / 16 >= w) continue;
       const sx = Math.round(cx + (x - cx) / (1 + k)), sy = Math.round(cy + (y - cy) / (1 + k));
       if (Math.hypot(sx - cx, sy - cy) < RD) continue;
-      const i = at(a, x, y), j = at(a, sx, sy);
+      const i = at(x, y), j = at(sx, sy);
       if (halo.has(key(i)) && halo.has(key(j))) put(o, i, [a[j], a[j + 1], a[j + 2]]);
     }
     return o;
@@ -105,12 +105,12 @@ const MIST = [[160, 155, 151], [102, 120, 120], [119, 135, 137], [111, 120, 132]
 const RIVER = [[210, 173, 147], [226, 201, 172], [232, 202, 174]];
 function dawnFrames(a) {
   const M = new Uint8Array(CARD_W * CARD_H), is = (l, i) => l.some(m => m[0] === a[i] && m[1] === a[i + 1] && m[2] === a[i + 2]);
-  for (let y = 130; y <= 235; y++) for (let x = 0; x < CARD_W; x++) { const i = at(a, x, y); if (is(MIST, i) || (y >= 190 && is(RIVER, i))) M[y * CARD_W + x] = 1; }
+  for (let y = 130; y <= 235; y++) for (let x = 0; x < CARD_W; x++) { const i = at(x, y); if (is(MIST, i) || (y >= 190 && is(RIVER, i))) M[y * CARD_W + x] = 1; }
   return [0, 4, 8, 4].map(s => {
     const o = a.slice();
     if (s) for (let y = 130; y <= 235; y++) for (let x = 0; x < CARD_W; x++) {
       const sx = (x - s + CARD_W) % CARD_W;
-      if (M[y * CARD_W + x] && M[y * CARD_W + sx]) put(o, at(o, x, y), [a[at(a, sx, y)], a[at(a, sx, y) + 1], a[at(a, sx, y) + 2]]);
+      if (M[y * CARD_W + x] && M[y * CARD_W + sx]) put(o, at(x, y), [a[at(sx, y)], a[at(sx, y) + 1], a[at(sx, y) + 2]]);
     }
     return o;
   });
