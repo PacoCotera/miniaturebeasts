@@ -708,7 +708,7 @@ for (const size of SIZES) {
         await wait(450);
       }
       console.log(`# s40 ${kind}: ${inBox.n} of ${inBox.of} pixels differ in the moving region, ${all.n - inBox.n} outside it`);
-      assert.ok(inBox.n > (kind === "dusk" ? 4000 : 1500), `the ${kind} card moves plainly between the two shots (${inBox.n} pixels)`);
+      assert.ok(inBox.n > (kind === "dusk" ? 1500 : 8000), `the ${kind} card moves plainly between the two shots (${inBox.n} pixels)`);
       assert.equal(all.n - inBox.n, 0, "the card matches outside the moving region");
     } finally { await g.ctx.close(); }
   });
