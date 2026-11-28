@@ -58,14 +58,16 @@ test("what the page posts to the places worker crosses by structured clone, and 
       assert.equal(digest(w.ir), digest(here[i].ir), `seed ${seed} cell ${c}: the IR is the page's, tile for tile`);
       assert.equal(digest(w.place), digest(here[i].place), `seed ${seed} cell ${c}: the baked place is the page's, tile for tile`);
     });
-    assert.equal(store.readySites(seed, [slot], kit), true, `seed ${seed}: a background slice of Hollow Tree sites is accepted`);
     const id = store.bakedGet(seed, slot, v, cells[0]).place.id;
     assert.equal(store.groundAsk(id, store.bakedGet(seed, slot, v, cells[0]).place, kit), true, `seed ${seed}: a ground is accepted`);
     await until(() => !store.groundPending(id), "the ground of seed " + seed);
     const g = store.groundTake(id); assert.ok(g && g.frames.length > 0, `seed ${seed}: the ground came back`);
   }
   assert.ok(withCache >= 1, "the test reaches the realm's caches (at least one seed had made its width classes before the realm was posted)");
-  for (const op of ["init", "seed", "bake", "sites", "ground"]) assert.ok(posted.includes(op), `a '${op}' message was posted and cloned`);
+  for (const op of ["init", "seed", "bake", "ground"]) assert.ok(posted.includes(op), `a '${op}' message was posted and cloned`);
+  // a ground the worker cannot render: the wait for it ends, nothing comes, and it is not asked again (the page renders it itself)
+  assert.equal(store.groundAsk("no-place", null, kit), true); await until(() => !store.groundPending("no-place"), "the failed ground's answer");
+  assert.equal(store.groundTake("no-place"), null); assert.equal(store.groundAsk("no-place", null, kit), false, "a ground that failed is not asked twice");
 });
 
 // play-freeze-1 (live, 2026-11-17: Firefox "slowing down" on a played save): telling the worker which sites the page has made never makes the page's decor (its land is seconds of work on the page thread).

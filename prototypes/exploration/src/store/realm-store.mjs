@@ -1,5 +1,5 @@
-// A new world takes seconds to make (generator 7's realm: the region labels, the levels at tile scale, the stairs; and the Hollow Tree sites its first cell needs), and the page must not freeze
-// while it does. readyRealm(seed) makes sure they are in the generator's cache before the page asks for them:
+// A new world takes seconds to make (generator 7's realm: the region labels, the levels at tile scale, the stairs), and the page must not freeze
+// while it does. readyRealm(seed) makes sure it is in the generator's cache before the page asks for it:
 //   - already there: nothing to do;
 //   - kept from an earlier visit in the browser's IndexedDB (idb-keyval): read back, so a returning player waits once;
 //   - else made in a module Web Worker (src/worker.mjs), kept in IndexedDB for the next visit, and handed to the generator's cache.
@@ -7,7 +7,6 @@
 // Only the newest few worlds are kept (KEEP): a realm is about 0.3 MB.
 import { get, set, del } from 'idb-keyval';
 import { REALM_REV, REALM_STEPS, hasRealm7, setRealm7 } from '../gen7/region.mjs';
-import { presetHollowSites } from '../gen7/place.mjs';
 import { presetSector, hasSector } from '../world7.mjs';
 
 const KEEP = 3, INDEX = 'realm7:index', keyOf = seed => `realm7:${REALM_REV}:${seed}`;
@@ -17,12 +16,11 @@ function inWorker(seed, onStep) {
     const w = new Worker(new URL('../worker.mjs', import.meta.url), { type: 'module' });
     const end = (f, v) => { w.terminate(); f(v); };
     w.onmessage = e => { if (e.data && e.data.step != null) { if (onStep) onStep(e.data.step, e.data.of); return; }   // a stage of the making: passed on to the wait's pips
-      return e.data && e.data.realm ? end(resolve, { realm: e.data.realm, sites: e.data.sites }) : end(reject, new Error((e.data && e.data.error) || 'the realm was not made')); };
+      return e.data && e.data.realm ? end(resolve, e.data.realm) : end(reject, new Error((e.data && e.data.error) || 'the realm was not made')); };
     w.onerror = e => end(reject, new Error((e && e.message) || 'the realm worker failed'));
     w.postMessage({ seed });
   });
 }
-const give = (seed, made) => { setRealm7(seed, made.realm); presetHollowSites(seed, made.sites); };
 
 // Returns how the realm came: 'cached' (already in the generator), 'stored' (IndexedDB), 'worker' (made off the page), 'page' (left to the page: no worker). `times` collects the milliseconds of each step.
 // onStep(done, of): the real stages, for the wait's pips; a realm that is cached or read back from the browser's store jumps to full at once.
@@ -31,20 +29,20 @@ export async function readyRealm(seed, times = {}, onStep) {
   if (hasRealm7(seed)) { full(); return 'cached'; }
   const t0 = performance.now(), idb = typeof indexedDB !== 'undefined';
   if (idb) {
-    try { const hit = await get(keyOf(seed)); if (hit && hit.realm && hit.sites) { give(seed, hit); times.stored = performance.now() - t0; full(); return 'stored'; } } catch (e) { /* no storage: made again */ }
+    try { const hit = await get(keyOf(seed)); if (hit && hit.realm) { setRealm7(seed, hit.realm); times.stored = performance.now() - t0; full(); return 'stored'; } } catch (e) { console.warn('the kept realm could not be read: it is made again', e); }
   }
   if (typeof Worker === 'undefined') return 'page';
-  let made;
-  try { made = await inWorker(seed, onStep); } catch (e) { console.warn('the realm worker did not run; the page makes the realm', e); return 'page'; }
+  let realm;
+  try { realm = await inWorker(seed, onStep); } catch (e) { console.warn('the realm worker did not run; the page makes the realm', e); return 'page'; }
   times.worker = performance.now() - t0;
-  give(seed, made); full();
+  setRealm7(seed, realm); full();
   if (idb) {
     try {
-      await set(keyOf(seed), made);
+      await set(keyOf(seed), { realm });
       const seen = (await get(INDEX)) || [], next = [seed, ...seen.filter(s => s !== seed)];
       for (const old of next.slice(KEEP)) await del(keyOf(old));
       await set(INDEX, next.slice(0, KEEP));
-    } catch (e) { /* the realm is kept for this visit only */ }
+    } catch (e) { console.warn('the realm was not kept in the browser: it is here for this visit only', e); }
   }
   return 'worker';
 }
@@ -68,7 +66,6 @@ export async function readySector(seed, slot, realm, cells, onWhole) {
     w.onerror = e => fail((e && e.message) || 'the sector worker failed');
     if (cells && cells.length) w.postMessage({ op: 'sector', seed, slot, realm, cells });
     w.postMessage({ op: 'sector', seed, slot, realm });
-  }).catch(() => null);
+  }).catch(e => { console.warn('the sector worker did not run; the page makes the sector', e); return null; });
   return sec ? 'worker' : 'page';
 }
-
