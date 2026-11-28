@@ -6,10 +6,21 @@
 // The terrain values are the signed ones (TV); the bake lays the signed layers for them (fill-sand + over-sand-beach, fill-water + over-water, fill-deep), the same layers and order as a land place's
 // shore. No piece is drawn here. Pure: a function of the seed's realm and the cell.
 import { contextOf, cellTerrain, TV } from './place.mjs';
-import { shoreValue, SHORE_SHALLOW } from '../shore7.mjs';
+import { shoreValue, SHORE_SHALLOW } from './shore7.mjs';
+import { realm7 } from './region.mjs';
+import { ATLAS } from '../logic/regions.mjs';
+import { MW, MH, passableIn, softGround } from '../logic/world.mjs';
 
-// is the cell a wide-water cell (a map cell of water that is no ford)?
-export const isSeaCell = (seed, X, Y) => contextOf(seed).wideAt(X, Y);
+// is the cell sea: wide water (a map cell of water that is no ford) that no reach can name? A cell a step can enter, with any partner (passableIn with sure:
+// a ford, or a wade the Tuliko crosses), keeps its place (cellIR): the sea route changes the picture only, never where he can walk or what is there.
+export const isSeaCell = (seed, X, Y) => {
+  if (!contextOf(seed).wideAt(X, Y)) return false;
+  if (X < 0 || Y < 0 || X >= ATLAS * MW || Y >= ATLAS * MH) return true;   // past the realm's edge: nobody steps there
+  const G = realm7(seed).regions[Math.floor(Y / MH) * ATLAS + Math.floor(X / MW)], c = (Y % MH) * MW + (X % MW);
+  if (!G) return true;
+  G.soft = G.soft || softGround(G, seed);   // as the hold reads it (hold.mjs softOf)
+  return !passableIn(G, c, { sure: true });
+};
 
 // the cell's terrain with its one-tile apron (the shape cellTerrain gives a land cell): { x0, y0, w, h, terrain }
 export function seaTerrain(seed, X, Y) {

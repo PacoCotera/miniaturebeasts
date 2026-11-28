@@ -3,11 +3,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { PLACES, makePage } from "./page-harness.mjs";
-import { bakedCell, genWorld7, cellWorldXY } from "../src/world7.mjs";
-import { cellTerrain, TV } from "../src/gen7/place.mjs";
+import { bakedCell, genWorld7, cellWorldXY } from "../src/gen7/world7.mjs";
+import { cellTerrain, contextOf, TV } from "../src/gen7/place.mjs";
 import { seaTerrain, isSeaCell } from "../src/gen7/sea.mjs";
-import { MW, MH, L, softGround, bankEdges } from "../src/world.mjs";
-import { reachCellsIn, TIER } from "../src/map-rules.mjs";
+import { MW, MH, L, softGround, bankEdges } from "../src/logic/world.mjs";
+import { reachCellsIn, TIER } from "../src/logic/map-rules.mjs";
 
 const ctx = PLACES.ctx, v = 3;
 // seeds 13 and 7, and the seed of his 178 save (seed 20, region 2,2)
@@ -59,19 +59,28 @@ test("a sea cell bakes: shallows along the line, deep beyond it, deep never besi
   assert.ok(land.ir.hearts && land.ir.terrain.length === cellTerrain(seed, b.X2, b.Y2).terrain.length && land.ir.terrain.every(k => k !== TV.DEEP || cellTerrain(seed, b.X2, b.Y2).terrain.includes(TV.DEEP)), "a land cell is baked through its own IR (cellIR), as before");
 });
 
-// nothing asks for a sea cell yet: every cell the reach (the worker's list, the Station's package) can name, from every spawn and both tiers, is a land cell
+// the sea route changes no place he can walk: every cell a reach (the worker's list, the Station's package) can name, from every spawn and both tiers, with no partner and with a
+// swimmer riding, keeps its own place (cellIR). A wide-water wade cell (water with land on two opposite sides, the Tuliko's crossing) is the case: it is wide water, and it stays a place.
+const wadesNamed = {};
 for (const seed of [13, 7, 20]) {
-  test(`seed ${seed}: no reach list names a sea cell (no partner); a swimmer's names only wades`, () => {
-    const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(${seed});`); const slot = JSON.parse(p.run("JSON.stringify(G.slot)")), G = genWorld7(seed, slot), seen = new Set(), sea = [];
+  test(`seed ${seed}: no reach list names a sea cell, with no partner or with a swimmer; the swimmer's wide-water wades keep their place`, () => {
+    const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(${seed});`); const slot = JSON.parse(p.run("JSON.stringify(G.slot)")), G = genWorld7(seed, slot), seen = new Set();
     // opts {} (no partner), and the opts the page passes with a swimmer riding (abOpts: sure + bank 'all', over the soft ground and banks the page attaches in worldOf)
     G.soft = softGround(G, seed); G.banks = bankEdges(G, seed);
-    const swim = [], keysOf = opts => { const out = new Set(); for (const s of G.spawns) for (const t of [1, 2]) for (const c of reachCellsIn(G, s, TIER[t].range, opts)) { seen.add(c); const [X, Y] = cellWorldXY(slot, c); if (isSeaCell(seed, X, Y)) out.add(c); } return [...out]; };
-    sea.push(...keysOf({}));
+    const wide = contextOf(seed).wideAt, wades = new Set(), keysOf = opts => { const out = new Set(); for (const s of G.spawns) for (const t of [1, 2]) for (const c of reachCellsIn(G, s, TIER[t].range, opts)) { seen.add(c); const [X, Y] = cellWorldXY(slot, c); if (isSeaCell(seed, X, Y)) out.add(c); else if (wide(X, Y)) wades.add(c); } return [...out]; };
+    const sea = keysOf({});
     assert.ok(seen.size > 5, "reach cells were listed");
-    assert.deepEqual(sea, [], "sea keys in the reach with no partner");
-    // FOUND by the swimmer case: a swimmer's reach (sure) can name a wide-water cell, only through a soft-ground wade (a water cell with land on two opposite sides). 1b owns that caller: it gets the new sea IR.
-    swim.push(...keysOf({ sure: true, bank: "all" }));
-    assert.ok(swim.every(c => G.soft.wade[c] === 1 && G.land[c] === L.WATER && !G.ford[c]), "every sea key a swimmer's reach names is a wade cell");
-    console.log(`seed ${seed}: sea keys in the reach, no partner ${sea.length}, swimmer ${swim.length} [${swim.join(",")}]`);
+    assert.deepEqual(sea, [], "sea-routed keys in the reach with no partner");
+    const swim = keysOf({ sure: true, bank: "all" });
+    assert.deepEqual(swim, [], "sea-routed keys in a swimmer's reach");
+    for (const c of wades) {
+      assert.ok(G.soft.wade[c] === 1 && G.land[c] === L.WATER && !G.ford[c], `cell ${c}: a wide-water cell a reach names is a wade`);
+      const b = bakedCell(ctx, seed, slot, c, v); assert.ok(b.ir.openings.length > 0, `cell ${c}: the wade is baked as its own place (cellIR: its ways in), not as sea`);
+    }
+    wadesNamed[seed] = wades.size;
+    console.log(`seed ${seed}: wide-water cells a reach names (all wades, all on cellIR) ${wades.size} [${[...wades].join(",")}]`);
   });
 }
+test("the case is reached: a swimmer's reach names a wide-water wade on seed 13 or 20 (fix-2 found 1 and 2)", () => {
+  assert.ok((wadesNamed[13] || 0) + (wadesNamed[20] || 0) > 0, `wades named: ${JSON.stringify(wadesNamed)}`);
+});
