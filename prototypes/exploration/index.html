@@ -273,7 +273,7 @@ import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, sta
 import { mapHooks } from "./src/mapkinds.mjs";
 import { HABITS, BEATS, SAMPLE, SATCHEL, stacks as sampleStacks, stackRoom, capStacks,rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, sleeperGives, isSleeper, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
-import { BUILT, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN, routineBase, wariness1 } from "./src/walk-data.mjs";
+import { FIELD, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN, routineBase, wariness1 } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
 // the rules the Station's map room shares (map-room build): reach, where a start may go, the marks
 import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBook } from "./src/map-rules.mjs";
@@ -297,109 +297,47 @@ soundOff(OPT.mute);
    ===================================================================== */
 
 // ===================== 1. Constants =====================
-const SCR_W = 450, SCR_H = 600, HUD_H = 32, LINE_H = 36, VIEW_Y = HUD_H, VIEW_H = SCR_H - HUD_H - LINE_H; // view 450×532
-const HUD_T = 3;   // the HUD's padding above (and below) its 26 px of contents
-const CELL = 26, MAP_X = 17, MAP_Y = VIEW_Y + 6;   // map 416×520 px, its 4 px frame on rows 34–561
-const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'ford', 'cliff'];   // [copy] the place names (a place is named by its ground, never "rock" alone); [4] is a walkable water cell: a ford (a wade is "muddy water" where it is named, landWord and the place line)
-// Save format v8, shared with the Station page (prototypes/station). The Companion owns every top-level field
-// except `st`, which the Station owns; each page re-reads the stored save before writing and keeps the other's part.
-// The Companion is the player's identity: the save lives under this Companion's own key, mb-save-v8@<its id>
-// (station/src/companions.mjs holds the Station's side and the same rules). The id is made once per Companion, a stable
-// random id kept under mb-companion-<slot> (the play page's second Companion is slot B, ?companion=B), and stored with
-// the first write. The single shared save of earlier builds (LEGACY_KEY) moves under Companion A's key with its first
-// write once it has loaded; bytes this page cannot load stay where they are and open read-only, as before.
+import { SCR_W, SCR_H, HUD_H, HUD_T, LINE_H, VIEW_Y, VIEW_H, CELL, MAP_X, MAP_Y } from "./src/data/screen.mjs";
+import { BAY, CAP, STRIKE_DATA, PLACE_TIER, CAVE_TIER, PRICE, SAFE_AFTER_HIT, STRAY, WARM_MIN, WARM_MAX, WARM_NEAR, SHED_BOND, SHED_MAX, POD_SHELL } from "./src/data/tuning.mjs";
+import { LAND_NAME, TIER_NAME, DEPOT_NAME, WHY_WORD, WHY_SETTLE, PIN_TEXT, SIGN_NAME } from "./src/data/field-words.mjs";
+import { placeTier, noteTier, walkTier, walkYield, dataLadder } from "./src/logic/tiers.mjs";
+import { SPECIES, spOf } from "./src/logic/species.mjs";
+import { REALM_SAVE_V as SAVE_V } from "./src/regions.mjs";
+import { LEGACY_KEY, keyOfCompanion, keptCompanion, newCompanion, keepCompanionAs } from "./src/store/companion.mjs";
+// The save is shared with the Station page (prototypes/station): the Companion owns every top-level field except `st`, which the Station owns;
+// each page re-reads the stored save before writing and keeps the other's part. Bytes this page cannot load stay where they are and open read-only.
 const OLD_GENS = [5, 6].filter(g => !GENS.includes(g));   // a save of an older generator is reset, not played: its bytes are kept under <key>.gen<N>
 let RESET_CARRY = null;   // set by load() when the save found was reset (or the Station reset first); the new realm takes it (newRealm)
-const LEGACY_KEY = 'mb-save-v8', SAVE_V = 10, V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
+const V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
 let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
 let SAVE_KEY = keyOfCompanion(COMPANION.id);
-function keyOfCompanion(id) { return 'mb-save-v8@' + id; }
+// The Companion's identity (src/store/companion.mjs): the one kept for this slot, or a new one, kept with its first write.
 function companionIdentity() {
-  let slot = OPT.companion === 'B' ? 'B' : 'A';
-  try { const had = JSON.parse(localStorage.getItem('mb-companion-' + slot) || 'null'); if (had && /^c[0-9a-z]{12}$/.test(had.id)) { companionKept = true; return had; } } catch (e) { }
-  const b = new Uint8Array(12); try { crypto.getRandomValues(b); } catch (e) { for (let i = 0; i < 12; i++) b[i] = Math.floor(Math.random() * 256); }
-  let id = 'c'; for (const x of b) id += '0123456789abcdefghijklmnopqrstuvwxyz'[x % 36];
-  return { id, name: 'Companion ' + slot, slot, at: Date.now() };
+  const slot = OPT.companion === 'B' ? 'B' : 'A';
+  try { const had = keptCompanion(localStorage, slot); if (had) { companionKept = true; return had; } } catch (e) { console.error('the kept Companion could not be read: this page starts as a new one', e); }
+  return newCompanion(slot, Date.now());
 }
 // The id is kept with the Companion's first write (never by a read-only boot). Made meanwhile by the Station page (one origin in the sandbox): that one is taken.
 function keepCompanion() {
   if (companionKept) return; companionKept = true;
-  try { const key = 'mb-companion-' + COMPANION.slot, had = JSON.parse(localStorage.getItem(key) || 'null');
-    if (had && /^c[0-9a-z]{12}$/.test(had.id)) { if (had.id !== COMPANION.id && SAVE_KEY === keyOfCompanion(COMPANION.id)) SAVE_KEY = keyOfCompanion(had.id); COMPANION = had; }
-    else localStorage.setItem(key, JSON.stringify(COMPANION)); } catch (e) { }
+  try { const had = keptCompanion(localStorage, COMPANION.slot);
+    if (had) { if (had.id !== COMPANION.id && SAVE_KEY === keyOfCompanion(COMPANION.id)) SAVE_KEY = keyOfCompanion(had.id); COMPANION = had; }
+    else keepCompanionAs(localStorage, COMPANION); } catch (e) { console.error('the Companion could not be kept: the next page load starts as a new one', e); }
 }
-const BAY = 3;   // the sealed bay holds three consignments, one per expedition
-// Probe tiers: range in cells from the expedition's start, pods carried, shield bars. Sweep is one ring at both.
-const CAP = 20;                                  // each material caps at 20 carried
-// Data from a strike mark is fixed by the tier of the place it lies in: 2 / 3 / 4 / 5 (starter / early / mid / late); the hold (CAP) is the
-// only limit on a trip. A place's tier follows its land: meadow and pond edge are starter places (1), wood and rock field mid places (3),
-// the cave behind the burrow a late place (4, behind a gate); no land in this prototype is an early place (2) yet.
-const STRIKE_DATA = [0, 2, 3, 4, 5], PLACE_TIER = [1, 1, 3, 3, 0, 0], CAVE_TIER = 4, TIER_NAME = ['', 'starter', 'early', 'mid', 'late'];
-function placeTier(lay) { return lay.cave ? CAVE_TIER : PLACE_TIER[lay.land] || 1; }
-function noteTier(ex, lay) { ex.placeTier = Math.max(ex.placeTier || 0, placeTier(lay)); }   // the expedition's highest tier entered: reported, limits nothing
-const walkTier = ex => ex.placeTier || 0;
-const walkYield = ex => STRIKE_DATA[walkTier(ex)] || 0;                                     // reporting only: what a mark pays at the highest tier entered
-const dataLadder = () => STRIKE_DATA.slice(1).join(' / ');
-// Station stand-in prices.
-const DEPOT_NAME = 'outpost';   // placeholder name, one place to rename it
-const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
-const SAFE_AFTER_HIT = 24;   // actions of quiet after a strike: more than a pass of rain lasts, so one hit a pass at most
-const STRAY = { strong: 1 / 20, peak: 1 / 10 };   // stray strike odds per action in the open
 const PLAYTEST_ON = playtestOn(OPT);   // the Playtest waits option: the playtest preset (play/src/playtest.mjs), the one place of the shortened waits
 const JUVENILE_TURNS = PLAYTEST_ON ? PLAYTEST.settings.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON ? PLAYTEST.settings.elderTurns : 16;     // young for 2 world turns; elder after 16 more as an adult (an elder at turn 18); the preset: 1 and 4
-// Warm stones: at each world turn the sun warms a few of the stones lightning didn't strike (+1, never more):
-// 6 to 8 in the Probe's reach (was 3 to 5; tuned 2026-10-09, 6 to 8 after the first measure, so a calm walk earns about 3 Energy, research-economy.md §9), chosen when the expedition sets out. Each still holds +1, never more.
-const WARM_MIN = 6, WARM_MAX = 8, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
 // Call lifts the veil CALL_R tiles around you (CALL_R_FOG in a fog bank).
 const CALL_R = CALL_R_PLACE, CALL_R_FOG = CALL_R_FOG_PLACE,   // the Call's range in a place: a round 7 tiles (4 in a fog bank, 6 with a glowing partner); its ring IS the unveil
       CALL_R_CAVE = 11;   // the cave behind the burrow keeps today's Call
 // Sight inside a fog bank, in tiles (a glowing partner widens it).
 const SIGHT_FOG = 4, SIGHT_GLOW = 6, SIGHT_NIGHT = 3;   // night sight is the lamp's three tiles, on any ground (night step 4, *greybox*)
 
-// Three wild species. notice = [creep, walk] distance in tiles at which they notice you.
-// how = the shed trigger; ab = what a partner of this species can do.
-const SPECIES = [
-  { name: 'Loika', plural: 'Loikas', hab: ROSTER[0].hab, notice: [2, 5], flee: 2, eats: true, shedP: .1, how: 'shake',
-    ab: 'calm', abText: 'calms wary creatures', born: 'a long-eared Loika', learn: 'Loikas sometimes shed when they shake dry, more often for someone they trust.',
-    col: { body: 'lilac', light: 'lavender', shade: 'plum', dark: 'plumD' } },
-  { name: 'Tuikis', plural: 'Tuikis', hab: ROSTER[1].hab, notice: [2, 4], flee: 2, eats: false, shedP: .1, how: 'calm',
-    ab: 'dig', abText: 'digs out narrow burrows', abCard: 'digs out burrows', born: 'a small burrower', learn: 'Tuikis sometimes shed when they feel safe by their burrow, more often for someone they trust.', learnCurl: 'Tuikis sometimes shed when they curl up out of the rain, more often for someone they trust.',
-    col: { body: 'aqua', light: 'mint', shade: 'teal', dark: 'tealD' } },
-  { name: 'Untuva', plural: 'Untuvas', hab: ROSTER[2].hab, notice: [1, 3], flee: 1, eats: true, shedP: .1, how: 'meal',
-    ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas sometimes shed after a full meal, more often for someone they trust.',
-    col: { body: 'coral', light: 'peach', shade: 'red', dark: 'wine' } },
-];
-// The other seventeen kinds (the language frames, by the game's species list): name and plural from the frame, ground from the family, plain defaults the game designer tunes later
-// (notice 2 to 4, flee 2, eats, shed chance 0.1 at a calm moment) and no field ability: their abilities wait for the game designer, so no line about one is shown (ab, abText null).
-// L2b: the shared row and the tuned kinds' own are in src/walk-data.mjs (WALK_DEFAULT, WALK); the three built kinds take their new fields from BUILT.
-KIND_INFO.slice(3).forEach((k, i) => SPECIES.push({ name: k.name, plural: k.plural, hab: k.hab, ...walkRow(i + 3),
-  ab: null, abText: null, born: null, learn: null, col: { body: 'bone', light: 'bone', shade: 'bone', dark: 'bone' } }));
-for (const sp of [0, 1, 2]) Object.assign(SPECIES.at(sp), BUILT[sp]);
-// L2c: Rupar (sp 7) digs earth banks, Tuliko (sp 19) crosses mud and scree and walks farther (the Companion's own art for both is still to come, so their colours stay plain)
-Object.assign(SPECIES.at(7), { ab: 'bank', abText: 'digs a way up or down earth banks', abCard: 'digs up or down banks' });
-Object.assign(SPECIES.at(19), { ab: 'sure', abText: 'crosses mud and scree; reaches one ring further', abCard: 'mud and scree · one ring further', abCardShort: 'one ring further' });
-// Shedding is rare unless the creature is special: shedP is a plain creature's chance at its moment; a creature
-// fed or settled this expedition sheds at SHED_BOND; one of a species not yet known always does; at most SHED_MAX pods from creature
-// moments an expedition (a returned line's pod is apart). Tune.
-const SHED_BOND = .5, SHED_MAX = 1;
-// Why a shed pod is special, as the Companion's line says it (the pod carries the key as `why`; a plain pod carries none).
-// A bond pod names its act: fed, or settled with you (a Tuikis does not eat).
-const WHY_WORD = { new: 'a new species', bond: 'you fed it' }, WHY_SETTLE = 'it settled with you';
 const whyOf = p => p.why ? { why: p.why } : {};   // a pod keeps its why wherever it is copied
-// A species the Companion has no entry for (a Station species beyond the three): no habitat, no diet, no ability, no art.
-const SP_OTHER = Object.freeze({ other: true, name: null, plural: null, hab: [], notice: [2, 4], flee: 2, eats: false, shedP: 0, how: null, drinks: false, settle: null, shed: null, wander: .4,
-  ab: null, abText: null, born: null, learn: null, col: null });
-// The one lookup into SPECIES: any other value (the Station's sp -1) is SP_OTHER.
-const spOf = sp => (Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? SPECIES[sp] : SP_OTHER);
 // The species name of a mibi: the Companion's own, else the one the Station wrote on it, else the slot.
 const mibiSpName = m => spOf(m.sp).name ?? m.spName ?? CARE_TEXT.spOther;
 const abTextOf = sp => spOf(sp).abText ?? CARE_TEXT.abOther;
 // The card forms of an ability line, for the cards that clip the full one: abCard (both halves where they fit), abCardShort (the tight one, where a stage word is added); each falls back to the one before.
 const abCardOf = (sp, short) => { const s = spOf(sp); return (short ? s.abCardShort : null) ?? s.abCard ?? abTextOf(sp); };
-const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
-const PIN_TEXT = { burrow: 'too narrow', water: 'needs a swimmer', soft: 'needs a rambler', bank: 'needs a digger', deep: 'needs Probe tier 2', own: 'your pin' };
-// The five map signs, each explained once the first time the line names it.
-const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'too narrow', water: 'fast water', soft: 'needs a rambler', bank: 'needs a digger', deep: 'deep ?' };
 
 // ===================== 2. Seeded RNG and noise =====================
 const NUM_WORD = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];

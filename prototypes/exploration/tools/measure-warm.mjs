@@ -1,12 +1,12 @@
 // The warm-stone supply of a calm expedition (research-economy.md §9), measured on the page: 30 fresh worlds, the first calm expedition of each, the warm stones it stores against its
-// reach, and the draw modelled as 6 or 7 reach cells entered at random (200 choices an expedition). `--old` patches the page back to 3 to 5 stones to check the model against the old
+// reach, and the draw modelled as 6 or 7 reach cells entered at random (200 choices an expedition). `--old` patches the tuning (src/data/tuning.mjs) back to 3 to 5 stones to check the model against the old
 // bot's measured median of 1 drawn. Not the scripted bot: that one is not in the repository.   node prototypes/exploration/tools/measure-warm.mjs [--old]   (PW_DIR for playwright)
 import { createRequire } from "node:module"; import { createServer } from "node:http"; import { readFileSync, existsSync, statSync } from "node:fs"; import path from "node:path"; import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url); const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.."); const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
 const OLD = process.argv.includes("--old"), N = 30, CELLS = +(process.argv.find((a) => a.startsWith("--cells="))?.slice(8) || 7);
 const server = createServer((req, res) => { let p = path.join(root, decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/")); if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html"); if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
-  let body = readFileSync(p); if (OLD && p.endsWith("exploration/index.html")) body = Buffer.from(body.toString().replace("const WARM_MIN = 6, WARM_MAX = 8", "const WARM_MIN = 3, WARM_MAX = 5"));
+  let body = readFileSync(p); if (OLD && p.endsWith("exploration/src/data/tuning.mjs")) body = Buffer.from(body.toString().replace("const WARM_MIN = 6, WARM_MAX = 8", "const WARM_MIN = 3, WARM_MAX = 5"));
   res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(body); });
 await new Promise((r) => server.listen(0, "127.0.0.1", r)); const port = server.address().port;
 const b = await chromium.launch(), rows = [];
