@@ -12,10 +12,6 @@ const digest = G => JSON.stringify({ land: [...G.land], level: [...G.level], edg
 
 const digestOf = p => p.run("JSON.stringify({ land: [...G.land], level: [...G.level], edge: [...G.edge], comp: [...G.comp], gate: G.gate, mouth: G.mouth, spawns: [...G.spawns] })");
 
-test("openGen: every realm opens its regions with generator 7", () => {
-  assert.equal(R.openGen({ biomeV: 2 }), 7); assert.equal(R.openGen({}), 7); assert.equal(R.openGen({ biomeV: 1 }), 7);
-});
-
 test("a new realm (kind version 3): region 1 is generator 7's home at its slot; every region opened is generator 7 in its slot's kind", () => {
   const p = makePage({ gen: 7, console: "silent" });
   p.run("newWorld(11)");
