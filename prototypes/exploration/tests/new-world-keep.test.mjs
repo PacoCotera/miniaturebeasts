@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 import { freshSt } from "../../station/src/state.mjs";
-import { PLAYTEST_SEEDS } from "../src/playtest-seeds.mjs";
+import { PLAYTEST_SEEDS } from "../src/data/playtest-seeds.mjs";
 
 const J = (p, src) => JSON.parse(p.run("JSON.stringify(" + src + ")"));
 const page = (store = {}) => makePage({ gen: 7, store, console: "collect", els: true, canvas: true, raf: "count" });

@@ -20,7 +20,7 @@ test("wantPlaces on a resumed expedition: first bake of pos + reach (first: true
 test("the worker gets the bake (first: true) before the warm", async () => {
   const msgs = [];
   globalThis.Worker = class { constructor() {} postMessage(m) { msgs.push(m); } terminate() {} };
-  const store = await import("../src/place-store.mjs");
+  const store = await import("../src/store/place-store.mjs");
   const { PLACES } = await import("./page-harness.mjs");
   const { realm7 } = await import("../src/world7.mjs");
   store.placesOn(true);

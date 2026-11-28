@@ -60,12 +60,13 @@ Reads every module under `src/`, takes its layer from its folder, and fails with
 
 | Layer | Modules in `src/` today |
 | --- | --- |
-| data | `words`, `walk-data`, `playtest-seeds`, `playtest`, `riding-cut` |
+| data | `words`, `walk-data`, `riding-cut` |
 | logic | `world`, `world7`, `adapt7`, `bake7`, `regions`, `habits`, `ease`, `watch`, `map-rules`, `shore7`, `waitpips`, all of `gen7/` |
-| store | `place-store`, `realm-store`, `package-store`, `package-dock`, `sleeper`, `options` |
-| render | `atlas`, `view`, `landpaint`, `map-paint`, `mapkinds`, `trees48`, `fogedge`, `night`, `dusk`, `card-motion`, `font`, `pngdecode`, `fetchretry` |
+| store | `sleeper`, `options` |
+| render | `atlas`, `view`, `landpaint`, `map-paint`, `mapkinds`, `trees48`, `fogedge`, `night`, `dusk`, `card-motion`, `font`, `pngdecode` |
 | ui | `breakline` |
-| main | `realm-worker` (becomes `worker.mjs`) |
+
+The stores start the places worker (`src/worker.mjs`) by its address, never by an import.
 
 ## Where the page's script goes
 

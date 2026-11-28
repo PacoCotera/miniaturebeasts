@@ -26,13 +26,7 @@
     "waitpips.mjs": "logic",
     "words.mjs": "data",
     "walk-data.mjs": "data",
-    "playtest-seeds.mjs": "data",
-    "playtest.mjs": "data",
     "riding-cut.mjs": "data",
-    "place-store.mjs": "store",
-    "realm-store.mjs": "store",
-    "package-store.mjs": "store",
-    "package-dock.mjs": "store",
     "sleeper.mjs": "store",
     "options.mjs": "store",
     "atlas.mjs": "render",
@@ -47,9 +41,7 @@
     "card-motion.mjs": "render",
     "font.mjs": "render",
     "pngdecode.mjs": "render",
-    "fetchretry.mjs": "render",
-    "breakline.mjs": "ui",
-    "realm-worker.mjs": "main"
+    "breakline.mjs": "ui"
   },
   "outside": {
     "about": "Code the Companion shares with other pages, by path under prototypes/ (longest match wins), and the packages.",

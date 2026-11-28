@@ -1,5 +1,5 @@
 // places-worker-clone-1 (live, 2026-11-16: "the places worker did not run DataCloneError ... i=>t[i]<o?2:t[i]<s?3:4 could not be cloned"): everything the page posts to the places worker
-// (src/place-store.mjs) is plain data, so it crosses by structured clone, and a place made in the worker is the place the page would make, tile for tile.
+// (src/store/place-store.mjs) is plain data, so it crosses by structured clone, and a place made in the worker is the place the page would make, tile for tile.
 // The real worker module runs in a node worker thread (tests/places-worker-shim.mjs); the page thread makes places of the seed first, which is what leaves caches on the realm.
 //   node --test prototypes/exploration/tests/places-worker-clone.test.mjs
 import test from "node:test";
@@ -20,7 +20,7 @@ class FakeWorker {
   terminate() { return this.w.terminate(); }
 }
 globalThis.Worker = FakeWorker;
-const store = await import("../src/place-store.mjs");
+const store = await import("../src/store/place-store.mjs");
 
 // a canonical digest (FNV-1a 32 bits): keys sorted, typed arrays by their bytes, Maps and Sets by their entries; a function anywhere is refused
 function digest(v) {

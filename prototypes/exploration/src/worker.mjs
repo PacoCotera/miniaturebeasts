@@ -1,4 +1,4 @@
-// Generator 7, made off the page's thread (src/realm-store.mjs starts this as a module worker). It is plain data in, plain data out (typed arrays, sets, numbers), so everything crosses as it is.
+// Generator 7, made off the page's thread (src/store/realm-store.mjs starts this as a module worker). It is plain data in, plain data out (typed arrays, sets, numbers), so everything crosses as it is.
 //   { seed }                       the realm (the Hollow Tree sites are made per region, later);
 //   { op: 'sites', seed, slots }   the Hollow Tree sites of these regions [[ax, ay], ...], answered { op: 'sites', sites } with the ones not yet sent;
 //   { op: 'sector', seed, slot, realm, cells? }  that region's sector (4 x 4 blocks of ground and level a place, and the realm's lines: world7.mjs sectorOfRegion), made from the realm alone, so no place is built; with cells, only those cells (the places in view), answered at once;

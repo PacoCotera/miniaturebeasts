@@ -2,19 +2,19 @@
 // while it does. readyRealm(seed) makes sure they are in the generator's cache before the page asks for them:
 //   - already there: nothing to do;
 //   - kept from an earlier visit in the browser's IndexedDB (idb-keyval): read back, so a returning player waits once;
-//   - else made in a module Web Worker (src/realm-worker.mjs), kept in IndexedDB for the next visit, and handed to the generator's cache.
+//   - else made in a module Web Worker (src/worker.mjs), kept in IndexedDB for the next visit, and handed to the generator's cache.
 // Where there is no Worker (a test's sandbox) or the worker fails, the caller's own first use makes the realm on the page's thread, as it always did.
 // Only the newest few worlds are kept (KEEP): a realm is about 0.3 MB.
 import { get, set, del } from 'idb-keyval';
-import { REALM_REV, REALM_STEPS, hasRealm7, setRealm7 } from './gen7/region.mjs';
-import { presetHollowSites } from './gen7/place.mjs';
-import { presetSector, hasSector } from './world7.mjs';
+import { REALM_REV, REALM_STEPS, hasRealm7, setRealm7 } from '../gen7/region.mjs';
+import { presetHollowSites } from '../gen7/place.mjs';
+import { presetSector, hasSector } from '../world7.mjs';
 
 const KEEP = 3, INDEX = 'realm7:index', keyOf = seed => `realm7:${REALM_REV}:${seed}`;
 
 function inWorker(seed, onStep) {
   return new Promise((resolve, reject) => {
-    const w = new Worker(new URL('./realm-worker.mjs', import.meta.url), { type: 'module' });
+    const w = new Worker(new URL('../worker.mjs', import.meta.url), { type: 'module' });
     const end = (f, v) => { w.terminate(); f(v); };
     w.onmessage = e => { if (e.data && e.data.step != null) { if (onStep) onStep(e.data.step, e.data.of); return; }   // a stage of the making: passed on to the wait's pips
       return e.data && e.data.realm ? end(resolve, { realm: e.data.realm, sites: e.data.sites }) : end(reject, new Error((e.data && e.data.error) || 'the realm was not made')); };
@@ -57,7 +57,7 @@ export async function readySector(seed, slot, realm, cells, onWhole) {
   if (typeof Worker === 'undefined') return 'page';
   let first = null;
   const sec = await new Promise((resolve, reject) => {
-    const w = new Worker(new URL('./realm-worker.mjs', import.meta.url), { type: 'module' });
+    const w = new Worker(new URL('../worker.mjs', import.meta.url), { type: 'module' });
     const end = (f, v) => { w.terminate(); f(v); }, fail = msg => { if (first) { w.terminate(); return; } end(reject, new Error(msg)); };
     w.onmessage = e => {
       const d = e.data || {};

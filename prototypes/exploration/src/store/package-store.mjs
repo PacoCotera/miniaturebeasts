@@ -5,11 +5,11 @@
 //            { ir, place } object that layout() (adapt7.mjs) reads (place-store.mjs packageRead), the one read path. The header's sha256 of a cell is the bytes' own.
 //   region   { sites, banks }: the Hollow Tree sites and earth banks the worker sends with its cells
 // The unit is the REGION: the cells are written in bake order as they land (a package is usable while it grows: `done` of `order`), and a package of another rev or tile set is another id, removed once the new one is whole.
-import { REALM_REV } from './gen7/region.mjs';
+import { REALM_REV } from '../gen7/region.mjs';
 import { PLACE_REV } from './place-store.mjs';
-import { MW, MH, DIRS, cxy, cheb, passableIn, canStepIn } from './world.mjs';
-import { reachCellsIn, tierOf } from './map-rules.mjs';
-import { writeBaked, readBaked } from '../../places/src/format/baked.mjs';
+import { MW, MH, DIRS, cxy, cheb, passableIn, canStepIn } from '../world.mjs';
+import { reachCellsIn, tierOf } from '../map-rules.mjs';
+import { writeBaked, readBaked } from '../../../places/src/format/baked.mjs';
 export const cellOfBytes = readBaked;   // the one read path: the bytes to the { ir, place } layout() reads
 
 import { PACKAGE_FORMAT, PKG, heldOf, packageSummary, offerOf, takePackage } from './package-dock.mjs';

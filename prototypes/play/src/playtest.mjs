@@ -1,6 +1,6 @@
 // The playtest preset (plan row 3.13, GD L4b): ONE place for every wait cut so an outside tester finishes the whole loop (walk, carry home, read, grow, hatch, care, cross, out again with a
 // partner) in about an hour. The play page's Options panel turns it on (options.mjs; both devices read it); the game's own defaults (state.mjs DEFAULT_SETTINGS, the Companion's constants)
-// are untouched for normal play. Both devices read this file: the Station through game.mjs (loadSettings), the Companion through exploration/src/playtest.mjs.
+// are untouched for normal play. Both devices read this file: the Station through game.mjs (loadSettings), the Companion through exploration/src/data/playtest.mjs.
 //   settings   what the Station's developer settings become while the preset is on (in memory only; never written to the settings key)
 // A wait nobody can cut (an expedition itself, a Dock) is not here; Probe prices and the economy stay the game's own.
 import { readOptions } from "./options.mjs";

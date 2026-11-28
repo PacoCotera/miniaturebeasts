@@ -1,12 +1,12 @@
-// The places of the reach: each cell's IR and baked place (world7.mjs bakedCell), made in a worker (src/realm-worker.mjs) beside the realm (src/realm-store.mjs).
+// The places of the reach: each cell's IR and baked place (world7.mjs bakedCell), made in a worker (src/worker.mjs) beside the realm (src/store/realm-store.mjs).
 // The Companion asks for them at set-out (the reach is known then); the page's layout(key) only looks one up and adapts it to the sides that are shut. A cell made is kept in memory for the world
 // and in IndexedDB (the newest PLACE_KEEP) beside the realm, so a returning player waits for nothing. PLACE_REV names the generator's place output: bump it with any change to src/gen7, src/bake7.mjs
 // or the tile set. Where there is no Worker (the test sandbox, a page served from the source tree) the page bakes the cell itself with the same function (world7.mjs bakedCell).
 // A second worker renders a place's ground (the pixel work of places/src/ground.mjs, which the page did a frame at a time): groundAsk, groundTake. It is a second one so that a ground is not queued behind the reach.
 import { get, set, del } from 'idb-keyval';
-import { REALM_REV, realm7 } from './gen7/region.mjs';
-import { BAKE_STAGES } from './waitpips.mjs';
-import { decorSites, presetHollowSites, madeBanks, presetBanks } from './gen7/place.mjs';
+import { REALM_REV, realm7 } from '../gen7/region.mjs';
+import { BAKE_STAGES } from '../waitpips.mjs';
+import { decorSites, presetHollowSites, madeBanks, presetBanks } from '../gen7/place.mjs';
 
 export const PLACE_REV = 6;   // exported for the baked package's id (package-store.mjs); the number and its rule are the same
 const PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
@@ -72,7 +72,7 @@ export const bakedPut = (seed, slot, v, cell, b) => { BAKED.set(memKey(seed, slo
 function worker(name, ctx) {
   let w = W[name];
   if (!w) {
-    w = W[name] = new Worker(new URL('./realm-worker.mjs', import.meta.url), { type: 'module' }); CTXS[name] = null; if (name === 'bake') PW_SEED = null;
+    w = W[name] = new Worker(new URL('../worker.mjs', import.meta.url), { type: 'module' }); CTXS[name] = null; if (name === 'bake') PW_SEED = null;
     w.onmessage = e => {
       const m = e.data || {};
       if (m.sites) presetHollowSites(m.seed, m.sites);   // sites the worker made for a place: now the page's too
