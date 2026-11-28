@@ -4468,7 +4468,7 @@ function shedPod(c, X) {
   const id = 'p' + (S.nextId++);
   const why = !S.known.includes(c.sp) ? 'new' : bonded(c) ? 'bond' : null;
   if (ANON_PODS) S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how, ...(why ? { why } : {}) });
-  else X.live.tf.push({ id: X.live.fid++, x: p.x, y: p.y });   // W5: the moment leaves a tuft, not an anonymous pod
+  else if (!X.live.tf.some(q => q.x === p.x && q.y === p.y)) X.live.tf.push({ id: X.live.fid++, x: p.x, y: p.y });   // W5: the moment leaves a tuft, not an anonymous pod; bug #144: one tuft per tile at most
   if (how === 'dig') (X.live.holes = X.live.holes || []).push({ x: p.x, y: p.y, g: groundName(X.lay.land, X.lay.cave), at: NOW });   // the Rupar's fresh hole stays for the expedition
   const w = crById.get(c.id) || c.stub; if (w) w.s = S.exp.n;
   S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');

@@ -1,6 +1,6 @@
 // The dusk, night and dawn cards move a little (#175, "minimalistic animation"). No new art: every frame is the signed card with
 // pixels it already has moved or re-toned back to its own palette. One motion a card, a gentle loop of 4 steps, one rhythm:
-//   night: the fireflies blink and drift a pixel;  dusk: the sun's glow rings breathe;  dawn: the pond's mist drifts a pixel.
+//   night: the fireflies blink and drift a pixel;  dusk: the sun's soft halo breathes wider by up to 10%;  dawn: the mist slides up to 8 grid px (#175 round 5: seen within 2 s at 412).
 // Pure: grids are Uint8Array RGB on the card's 225 x 300 grid (the 450 x 600 file is 2x nearest).
 export const CARD_W = 225, CARD_H = 300;
 // ms a step lasts, and the order the frames play (ping-pong where the motion is a breath or a drift)
@@ -72,31 +72,43 @@ function nightFrames(a) {
   return out;
 }
 
+// Dusk: the sun's own soft halo widens a little and comes back (AD round 5: no rings, no flat fill, nothing over cloud or tree line, peak <= the halo + 10%).
+// Each halo pixel takes the colour the halo has a little nearer the sun (a radial stretch of up to 10%), only where both pixels are the halo's own colours
+// (the colours found straight above the sun), faded out at its edge by the house 4 x 4 Bayer dither. Only colours the card already has; the disc, clouds and tree line are never read or written.
+const BAYER4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 function duskFrames(a) {
   let cx = 0, cy = 0, best = -1, n = 0;   // the sun: the brightest pixels in its box
   for (let y = 125; y < 170; y++) for (let x = 100; x < 200; x++) { const i = at(a, x, y), l = a[i] + a[i + 1] + a[i + 2]; if (l > best) best = l; }
   for (let y = 125; y < 170; y++) for (let x = 100; x < 200; x++) { const i = at(a, x, y); if (a[i] + a[i + 1] + a[i + 2] >= best - 6) { cx += x; cy += y; n++; } }
   cx = Math.floor(cx / n); cy = Math.floor(cy / n);
-  const pal = palOf(a), steps = [-0.12, 0, 0.14], g3 = [];
-  for (const k of steps) {
+  const RD = 16, RMAX = 44, key = (i) => a[i] << 16 | a[i + 1] << 8 | a[i + 2];
+  const halo = new Set();   // the halo's colours: the ones straight above the sun, past its disc
+  for (let d = RD; d <= RMAX; d++) for (let dx = -6; dx <= 6; dx++) { const x = cx + dx, y = cy - d; if (y >= 0) halo.add(key(at(a, x, y))); }
+  return [0, 0.05, 0.1, 0.05].map(k => {
     const o = a.slice();
     if (k) for (let y = 0; y < CARD_H; y++) for (let x = 0; x < CARD_W; x++) {
-      const d = Math.hypot(x - cx, y - cy); if (d < 14 || d > 40) continue;
-      const t = k * (1 - (d - 14) / 26), tgt = t > 0 ? 255 : 0, i = at(a, x, y);
-      put(o, i, snapTo(pal, a[i] + Math.trunc(Math.abs(t) * (tgt - a[i])), a[i + 1] + Math.trunc(Math.abs(t) * (tgt - a[i + 1])), a[i + 2] + Math.trunc(Math.abs(t) * (tgt - a[i + 2]))));
+      const d = Math.hypot(x - cx, y - cy); if (d < RD || d > RMAX) continue;
+      const w = (RMAX - d) / (RMAX - RD) * (k / 0.1);   // 1 at the disc at the peak, 0 at the halo's edge
+      if (BAYER4[(y & 3) * 4 + (x & 3)] / 16 >= w) continue;
+      const sx = Math.round(cx + (x - cx) / (1 + k)), sy = Math.round(cy + (y - cy) / (1 + k));
+      if (Math.hypot(sx - cx, sy - cy) < RD) continue;
+      const i = at(a, x, y), j = at(a, sx, sy);
+      if (halo.has(key(i)) && halo.has(key(j))) put(o, i, [a[j], a[j + 1], a[j + 2]]);
     }
-    g3.push(o);
-  }
-  return [g3[0], g3[1], g3[2], g3[1]];
+    return o;
+  });
 }
 
-const MIST = [[160, 155, 151], [102, 120, 120], [119, 135, 137], [111, 120, 132], [187, 196, 174]];
-function dawnFrames(a) {   // the mist band's own pixels take the colour of the mist pixel one step left, only where both are mist
-  const M = new Uint8Array(CARD_W * CARD_H);
-  for (let y = 150; y <= 200; y++) for (let x = 0; x < CARD_W; x++) { const i = at(a, x, y); if (MIST.some(m => m[0] === a[i] && m[1] === a[i + 1] && m[2] === a[i + 2])) M[y * CARD_W + x] = 1; }
-  return [0, 1, 2, 1].map(s => {
+// Dawn: the mist's own pixels slide. Cool mist colours over the river and far field, and the river's pale reflection low down, take the colour of the mist
+// 4 / 8 px to their left (the same source stretch, wrapped), only where both are mist; the sun and sky are never touched. About 16 px at the peak at 412.
+const MIST = [[160, 155, 151], [102, 120, 120], [119, 135, 137], [111, 120, 132], [168, 185, 197], [131, 123, 130]];
+const RIVER = [[210, 173, 147], [226, 201, 172], [232, 202, 174]];
+function dawnFrames(a) {
+  const M = new Uint8Array(CARD_W * CARD_H), is = (l, i) => l.some(m => m[0] === a[i] && m[1] === a[i + 1] && m[2] === a[i + 2]);
+  for (let y = 130; y <= 235; y++) for (let x = 0; x < CARD_W; x++) { const i = at(a, x, y); if (is(MIST, i) || (y >= 190 && is(RIVER, i))) M[y * CARD_W + x] = 1; }
+  return [0, 4, 8, 4].map(s => {
     const o = a.slice();
-    if (s) for (let y = 150; y <= 200; y++) for (let x = 0; x < CARD_W; x++) {
+    if (s) for (let y = 130; y <= 235; y++) for (let x = 0; x < CARD_W; x++) {
       const sx = (x - s + CARD_W) % CARD_W;
       if (M[y * CARD_W + x] && M[y * CARD_W + sx]) put(o, at(o, x, y), [a[at(a, sx, y)], a[at(a, sx, y) + 1], a[at(a, sx, y) + 2]]);
     }
