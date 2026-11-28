@@ -1,13 +1,13 @@
 // The one harness for the Companion page: its module script runs in a vm sandbox with the browser stubbed, and every
 // `import { … } from "./src/<module>.mjs"` line of the page is bound to that module's real exports. The imports are read from the
-// page itself, so a new ./src/ module the page imports needs no change here or in any test.
+// page itself, so a new ./src/ module the page imports, in a layer's folder or not (STRUCTURE.md), needs no change here or in any test.
 //   import { loadPage, makePage, PAGE, MODULE, SCRIPT } from "./page-harness.mjs";
 import { readFileSync, readdirSync } from "node:fs";
 import vm from "node:vm";
 
 export const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 export const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-export const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/([\w-]+)\.mjs";$/gm;
+export const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/([\w/-]+)\.mjs";$/gm;
 // [module, exported name, name on the page] for every imported name
 export const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
 export const SCRIPT = MODULE.replace(IMPORT_RE, "");
