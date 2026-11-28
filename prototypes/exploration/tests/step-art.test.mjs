@@ -1,9 +1,14 @@
 // L2b: the 2-frame step slot. STEP_ART is empty today; with it empty every frame is drawn exactly as before, and a kind with both frames of an age
 // painted steps in them while it moves (a tween under way and a moving state): the first half of the tween in the first frame, the second in the second.
 //   node --test prototypes/exploration/tests/step-art.test.mjs
-import { test } from "node:test";
+import { test, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { fixture, plain } from "./walk-fixture.mjs";
+import { STEP_ART } from "../src/data/tokens.mjs";
+
+// The table is one module for every page of the run, and these tests write fixture frames into it: each test gets the signed table back.
+const SIGNED = STEP_ART.map(e => structuredClone(e));
+afterEach(() => { SIGNED.forEach((e, sp) => { STEP_ART[sp] = structuredClone(e); }); });
 
 const STEPPERS = [0, 1, 3, 4, 7, 11, 16, 19];
 const px = (f, src) => f.run(`Array.from(${src}.p).join()`);

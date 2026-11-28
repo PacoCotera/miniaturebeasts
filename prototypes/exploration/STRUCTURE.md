@@ -78,7 +78,7 @@ Sizes are the script's characters by its own section headings, in thousands.
 | 5 state and effects hooks, the first ten minutes, signs | 79 | `logic/state.mjs` and `logic/events.mjs`; teaching and sign rules to `logic/`; the sound table to `sound/`; save, load and migrations to `store/` |
 | 6 signs, fog, map states and map rules | 43 | `logic/` (the seen record, reach, the storm, the fog bank) |
 | 7 patch rules, 8 creatures and the partner, 9 expedition end and world turn | 202 | `logic/` |
-| 10 pixel graphics core, 11 the frame | 129 | `render/` |
+| 10 pixel graphics core, 11 the frame | 129 | `render/`; the mibis' token strings to `data/` (`data/tokens.mjs`) |
 | 12 world map, 13 living patch | 130 | `render/` |
 | 14 HUD, bottom line, mode screens | 131 | `ui/` |
 | 15 screen dispatch | 20 | `ui/` (which screen draws); the frame loop to main |
