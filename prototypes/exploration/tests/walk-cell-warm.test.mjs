@@ -47,7 +47,7 @@ const STEP = `async ({ settle, first }) => {
   if (!first) {
     if (ex.patch) { m.leavePatch(); await raf(); await raf(); }
     const dirs = ["up", "right", "down", "left"].filter((d) => m.canStep(ex.pos, d)), at = (d) => ex.pos + ({ up: -m.MW, down: m.MW, left: -1, right: 1 })[d];
-    const dir = dirs.find((d) => !m.S.visited[at(d)]) || dirs[0]; m.act(dir); await raf(); await raf(); await wait(settle);
+    const dir = dirs.find((d) => !m.S.seen.been[at(d)]) || dirs[0]; m.act(dir); await raf(); await raf(); await wait(settle);
   }
   const key = String(ex.pos), warm = m.warmReady(key), h0 = m.WARM.hit, t0 = performance.now();
   m.act("confirm"); await raf(); const ms = performance.now() - t0;

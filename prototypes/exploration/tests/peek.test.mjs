@@ -88,7 +88,7 @@ test("a short press is Call, fired on release; the keyboard holds the same way",
 // The staged scene (seed 7's first place): the lower half uncovered; returns the tiles used. `what`: which of pod, tuft, fruit, buried to lay.
 const stage = (page, what) => page.evaluate((what) => {
   const m = window.__mb, S = m.S, P = S.exp.patch, key = P.key, lay = m.layout(key), live = S.exp.live[key];
-  const veil = S.veil[key] = S.veil[key] || new Array(lay.h).fill(0);
+  const veil = S.seen.tile[key] = S.seen.tile[key] || new Array(lay.h).fill(0);
   for (let y = 13; y < lay.h; y++) veil[y] = 0x0fffffff;
   const free = (x, y) => x > 0 && y > 0 && x < lay.w - 1 && y < lay.h - 1 && lay.reach[y * lay.w + x] && !m.occupant(key, x, y) && !(P.x === x && P.y === y);
   const near = (x0, y0) => { for (let r = 0; r < 8; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r && free(x0 + dx, y0 + dy)) return { x: x0 + dx, y: y0 + dy }; return null; };
@@ -97,7 +97,7 @@ const stage = (page, what) => page.evaluate((what) => {
   if (what.includes("buried")) S.pods.push({ id: "mock:buried", k: key, x: buried.x, y: buried.y, sp: 0, h: 1, g: "meadow", how: "mock" });
   if (what.includes("tuft")) live.tf.push({ id: 900, x: tuft.x, y: tuft.y });
   if (what.includes("fruit")) live.fr.push({ id: live.fid++, x: fruit.x, y: fruit.y });
-  S.called[lay.cell] = 1;
+  S.seen.walked[lay.cell] = 1;
   return { pod, tuft, fruit, buried };
 }, what);
 const heldShot = async (page) => {
@@ -155,14 +155,14 @@ for (const side of ["up", "down", "left", "right"]) {
         const [dx, dy] = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[side], X = col + dx, Y = row + dy;
         if (X < 0 || Y < 0 || X >= m.MW || Y >= m.MH) return null;   // the realm's edge: no place there
         P.x = dx < 0 ? 0 : dx > 0 ? lay.w - 1 : 6; P.y = dy < 0 ? 0 : dy > 0 ? lay.h - 1 : 6;
-        const nk = String(Y * m.MW + X); m.S.exp.reach = [...new Set([...(m.S.exp.reach || []), Y * m.MW + X])]; if (m.S.veilPre) delete m.S.veilPre[nk]; return nk; }, side);
+        const nk = String(Y * m.MW + X); m.S.exp.reach = [...new Set([...(m.S.exp.reach || []), Y * m.MW + X])]; if (m.S.seen.tile) delete m.S.seen.tile[nk]; return nk; }, side);
       if (nk === null) { t.skip("no place that side of this one"); return; }
       const n0 = (await st(page)).calls;
       await page.evaluate(() => { window.__mb.press("call"); window.__mb.release("call"); });
       const s = await st(page);
       assert.equal(s.view, null, "a short Call at the edge never opens the hold or the zoom-out");
       assert.equal(s.calls, n0 + 1, "the Call was made");
-      assert.equal(await page.evaluate((nk) => { const v = (window.__mb.S.veilPre || {})[nk] || window.__mb.S.veil[nk]; return !!v && v.some((r) => r !== 0); }, nk), true, "the place next door has lifted tiles");
+      assert.equal(await page.evaluate((nk) => { const v = (window.__mb.S.seen.tile || {})[nk] || window.__mb.S.seen.tile[nk]; return !!v && v.some((r) => r !== 0); }, nk), true, "the place next door has lifted tiles");
       assert.match(await page.evaluate(() => window.__mb.FX.msg), /^The Call lifted the land next door · (no finds|\d+ finds?)$/, "the message box says the Call lifted the land next door");
       await page.waitForTimeout(1900); assert.equal((await st(page)).view, null, "and no view opens later either");
       assert.deepEqual(errors, []);
@@ -210,7 +210,7 @@ test("a quick press of Call inside the place is the Call only: no zoomed-out vie
   } finally { await browser.close(); server.close(); }
 });
 
-// owner #136 round 2 and #142: the edge Call lifted the place next door (S.veilPre) but the peek DREW it only when that place was never walked; his place was "visited" with no veil record of its own, so it drew dark fog.
+// owner #136 round 2 and #142: the edge Call lifted the place next door (S.seen.tile) but the peek DREW it only when that place was never walked; his place was "visited" with no veil record of its own, so it drew dark fog.
 // On every edge (left, right, top, bottom) the strip must be DRAWN: the peek with the lifted rows differs from the same peek without them.
 for (const how of ["never walked (a fresh game)", "visited, with no veil record of its own (his save)"]) {
   test("the edge Call's peek draws the strip it lifted next door, on every edge: " + how + " (owner #136, #142)", { skip }, async (t) => {
@@ -225,7 +225,7 @@ for (const how of ["never walked (a fresh game)", "visited, with no veil record 
           const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key), [dx, dy] = m.DIRS[side], k = P.key * 1 + dx + dy * m.MW, X = (P.key * 1 % m.MW) + dx;
           if (X < 0 || X >= m.MW || k < 0 || !m.passable(k)) return null;
           P.x = dx < 0 ? 0 : dx > 0 ? lay.w - 1 : 4; P.y = dy < 0 ? 0 : dy > 0 ? lay.h - 1 : 4; m.S.exp.reach = [...new Set([...(m.S.exp.reach || []), k])];
-          delete m.S.veilPre?.[k]; delete m.S.veil[k]; if (visited) m.S.visited[k] = 1; else delete m.S.visited[k]; m.S.revealed[k] = 0; m.RT.view = null; return k; }, [side, visited]);
+          delete m.S.seen.tile?.[k]; delete m.S.seen.tile[k]; if (visited) m.S.seen.been[k] = 1; else delete m.S.seen.been[k]; m.S.seen.rev[k] = 0; m.RT.view = null; return k; }, [side, visited]);
         if (nb == null) continue;
         await page.waitForTimeout(1600);   // the last peek ended, the place next door is made
         await page.evaluate(() => { window.__mb.press("call"); window.__mb.release("call"); });   // a short Call: the Call only (owner #143), it lifts the strip next door
@@ -234,8 +234,8 @@ for (const how of ["never walked (a fresh game)", "visited, with no veil record 
         await page.evaluate(() => window.__mb.press("call")); await page.waitForTimeout(700);   // a long press: the zoom-out, which must draw that strip
         assert.equal((await st(page)).view, "peek", side + ": a long press at the edge opens the peek");
         const lifted = await still(page);
-        assert.equal(await page.evaluate((k) => !!(window.__mb.S.veilPre && window.__mb.S.veilPre[k]) && !!window.__mb.S.revealed[k], nb), true, side + ": the place next door is lifted and its map cell revealed");
-        await page.evaluate((k) => { delete window.__mb.S.veilPre[k]; }, nb);
+        assert.equal(await page.evaluate((k) => !!(window.__mb.S.seen.tile && window.__mb.S.seen.tile[k]) && !!window.__mb.S.seen.rev[k], nb), true, side + ": the place next door is lifted and its map cell revealed");
+        await page.evaluate((k) => { delete window.__mb.S.seen.tile[k]; }, nb);
         await page.waitForTimeout(300);
         assert.equal((await st(page)).view, "peek", side + ": still in the peek");
         const bare = await still(page);

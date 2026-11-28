@@ -21,7 +21,7 @@ try {
   const page = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
   await page.goto(`http://127.0.0.1:${server.address().port}${process.env.URLPATH || "/play/exploration/?seed=7"}`);
   await page.waitForFunction(() => window.__mb && window.__mb.TEST, null, { timeout: 60000 }); await page.waitForTimeout(1500);
-  await page.evaluate(() => { const m = window.__mb; m.TEST.calm = true; m.newWorld(7, 2); const pos = 13 * m.MW + 9; m.startExpedition("weather", pos); m.S.exp.fog = null; m.S.exp.storm = null; m.S.exp.pos = pos; m.enterPatch(); m.S.exp.patch.x = 5; m.S.exp.patch.y = 20; m.S.veil[m.S.exp.patch.key] = new Array(m.PH).fill(0x0fffffff); });
+  await page.evaluate(() => { const m = window.__mb; m.TEST.calm = true; m.newWorld(7, 2); const pos = 13 * m.MW + 9; m.startExpedition("weather", pos); m.S.exp.fog = null; m.S.exp.storm = null; m.S.exp.pos = pos; m.enterPatch(); m.S.exp.patch.x = 5; m.S.exp.patch.y = 20; m.S.seen.tile[m.S.exp.patch.key] = new Array(m.PH).fill(0x0fffffff); });
   // boxes in screen px (450x600): grass, sand, water
   const boxes = { grass: [190, 330, 20, 20], sand: [138, 100, 14, 30], water: [60, 200, 30, 30], reeds: [310, 300, 14, 14], g2: [150, 420, 20, 20], g3: [250, 200, 20, 20], g4: [200, 480, 20, 20], g5: [215, 120, 16, 16] };
   for (const [name, spent] of [["day", 91], ["dusk", 161], ["night", 186], ["night190", 190]]) {

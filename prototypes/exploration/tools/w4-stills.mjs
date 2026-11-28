@@ -37,7 +37,7 @@ async function run(mode) {
     lay.easeG = { cov: new Set(), blk: new Set() };
     const W = m.windAt(S.seed, lay.cell, S.day.spent), vec = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] }[W];
     for (let d = 1; d <= 4; d++) { const x = c.x + vec[0] * d, y = c.y + vec[1] * d; lay.tiles[y * lay.w + x] = m.T.REEDS; lay.reach[y * lay.w + x] = 1; }
-    m.unveil(key, c.x, c.y, 6); P.x = c.x + vec[0] * 4; P.y = c.y + vec[1] * 4; P.dir = vec[1] > 0 ? "up" : vec[1] < 0 ? "down" : vec[0] > 0 ? "left" : "right";
+    m.lightningLift(key, c.x, c.y, 6); P.x = c.x + vec[0] * 4; P.y = c.y + vec[1] * 4; P.dir = vec[1] > 0 ? "up" : vec[1] < 0 ? "down" : vec[0] > 0 ? "left" : "right";
     S.exp.storm = { x: col + .5 - 1.5 + 1.7 - 1.5, w: 3, dir: -1, v: .25, t: 0 }; window.__w4 = { id, vec }; }, pick);
   await page.waitForTimeout(600);
   const tick = async (allow) => page.evaluate((allow) => { const m = window.__mb, c = m.curLive().cr.find(q => q.id === window.__w4.id); m.curLive().strike = null; m.S.exp.stray = null; const a = m.patchAction(); if (allow && a.label === m.WORDS.habit.note) { a.run(); return "note"; } m.advance("patch", { noise: "act" }); return c.hb ? c.hb.k + c.hb.n : c.st; }, allow);

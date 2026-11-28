@@ -35,7 +35,7 @@ const log = [];
 for (const [id, cx, cy, tx, ty] of SPOTS) {
   const cell = cy * 16 + cx;
   const info = await page.evaluate(([cell, tx, ty]) => { const m = window.__mb; if (m.S.exp.patch) m.leavePatch(); m.S.exp.pos = cell; m.S.exp.start = cell; m.enterPatch(); if (m.RT.view) m.endView();
-    const P = m.S.exp.patch, lay = m.layout(P.key); P.x = tx; P.y = ty; m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); m.walkLift(); m.FX.notes.length = 0; m.FX.msg = null;
+    const P = m.S.exp.patch, lay = m.layout(P.key); P.x = tx; P.y = ty; m.S.seen.tile[P.key] = new Array(lay.h).fill(0x0fffffff); m.walkSeen(); m.FX.notes.length = 0; m.FX.msg = null;
     const blocked = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h ? "edge" : m.T_BLOCK[lay.tiles[y * lay.w + x]] ? "BLOCK t" + lay.tiles[y * lay.w + x] : m.occupant(P.key, x, y, "player") ? "occupied" : "free";
     return { pieces: lay.pieces, around: { up: blocked(tx, ty - 1), down: blocked(tx, ty + 1), left: blocked(tx - 1, ty), right: blocked(tx + 1, ty), here: blocked(tx, ty) } }; }, [cell, tx, ty]);
   await settle(900); await shot(`${id}-0-the-spot.png`);
@@ -45,7 +45,7 @@ for (const [id, cx, cy, tx, ty] of SPOTS) {
       const P = m.S.exp.patch; P.x = tx; P.y = ty; m.FX.msg = null; m.patchStep(dir, "creep"); const Q = m.S.exp.patch;
       return { moved: !!Q && (Q.x !== tx || Q.y !== ty) || m.S.exp.pos !== cell, msg: m.FX.msg && (m.FX.msg.text || m.FX.msg), pos: m.S.exp.pos, x: Q && Q.x, y: Q && Q.y }; }, [dir, cell, tx, ty]);
     await settle(1200);
-    if (r.moved) { await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; if (P) { const lay = m.layout(P.key); m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); m.walkLift(); m.FX.msg = null; if (m.RT.view) m.endView(); } }); await settle(500); }
+    if (r.moved) { await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; if (P) { const lay = m.layout(P.key); m.S.seen.tile[P.key] = new Array(lay.h).fill(0x0fffffff); m.walkSeen(); m.FX.msg = null; if (m.RT.view) m.endView(); } }); await settle(500); }
     await shot(`${id}-1-step-${dir}-${r.moved ? "walks" : "refused"}.png`);
     steps.push({ dir, ...r });
   }

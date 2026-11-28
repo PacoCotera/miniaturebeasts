@@ -17,7 +17,7 @@ const hereCell = (run) => run(`(() => {
 for (const state of ["not explored", "explored"]) {
   test("the micromap marks the player's cell in the player's orange (" + state + ")", () => {
     const f = fixture({ canvas: true }), run = f.run;
-    if (state === "explored") run("S.visited[S.exp.pos] = 1; (S.called = S.called || {})[S.exp.pos] = 1;");
+    if (state === "explored") run("S.seen.been[S.exp.pos] = 1; (S.seen.walked = S.seen.walked || {})[S.exp.pos] = 1;");
     const { out, orange } = hereCell(run);
     assert.ok(out.length >= 4);
     const hits = out.filter(v => v === orange).length;

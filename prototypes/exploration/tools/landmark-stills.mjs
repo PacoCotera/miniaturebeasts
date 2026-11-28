@@ -43,7 +43,7 @@ for (let i = 0; i < 4; i++) { await page.evaluate(() => window.__mb.act("confirm
 await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); });
 // to the map, on the cell asked, its neighbourhood revealed
 await page.evaluate(([c, f]) => { const m = window.__mb, ex = m.S.exp; if (ex.patch) m.leavePatch(); ex.pos = c; ex.start = c; ex.lastDir = null; ex.face = f;
-  for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const X = (c % m.MW) + dx, Y = ((c / m.MW) | 0) + dy; if (X >= 0 && Y >= 0 && X < m.MW && Y < m.MH) m.S.revealed[Y * m.MW + X] = 1; } }, [cell, face]);
+  for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const X = (c % m.MW) + dx, Y = ((c / m.MW) | 0) + dy; if (X >= 0 && Y >= 0 && X < m.MW && Y < m.MH) m.S.seen.rev[Y * m.MW + X] = 1; } }, [cell, face]);
 await page.waitForTimeout(1800);
 // The page's own light on a walk or map still is day (0) or the storm (1): it has no clear night outside caves, so --both makes day and storm (the biome stills tool has the night level).
 // A still is made once per light; the storm is set over the cell's column the way the page counts it (stormCovers) and taken away after.
@@ -68,13 +68,13 @@ await save(`s${seed}-c${cell}-cell-arrival.png`);
 // walk the pawn to the way out on the face side: the stair's entry (or the opening's middle) and the picture
 await page.evaluate(([f]) => { const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key), st = (lay.stairs || []).find((q) => q.dir === f), o = (lay.openings || []).find((q) => ({ N: "up", S: "down", W: "left", E: "right" })[q.side] === f);
   if (st) { P.x = st.entry.x; P.y = st.entry.y; } else if (!o) { P.x = f === "left" ? 4 : f === "right" ? lay.w - 5 : lay.w >> 1; P.y = f === "up" ? 4 : f === "down" ? lay.h - 5 : lay.h >> 1; } else if (o) { const k = (o.from + o.to) >> 1; P.x = f === "left" ? 1 : f === "right" ? lay.w - 2 : k; P.y = f === "up" ? 1 : f === "down" ? lay.h - 2 : k; }
-  P.dir = f; m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); }, [face]);
+  P.dir = f; m.S.seen.tile[P.key] = new Array(lay.h).fill(0x0fffffff); }, [face]);
 await page.waitForTimeout(700);
 await save(`s${seed}-c${cell}-cell-${face}.png`);
 // --at x,y: the pawn three tiles below the landmark's tile (layout tiles, from the cell's IR), facing it: the walking view with the landmark in frame
 if (arg("at", null)) {
   const [ax, ay] = arg("at", "").split(",").map(Number);
-  await page.evaluate(([x, y]) => { const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key); P.x = x; P.y = y; P.dir = "up"; m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); m.walkLift && m.walkLift(); }, [ax, ay + 3]);
+  await page.evaluate(([x, y]) => { const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key); P.x = x; P.y = y; P.dir = "up"; m.S.seen.tile[P.key] = new Array(lay.h).fill(0x0fffffff); m.walkSeen && m.walkSeen(); }, [ax, ay + 3]);
   await page.waitForTimeout(900);
   await save(`s${seed}-c${cell}-walk-landmark.png`);
 }

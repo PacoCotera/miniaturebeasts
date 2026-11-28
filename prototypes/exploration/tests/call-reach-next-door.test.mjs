@@ -31,19 +31,17 @@ test("the Call lifts the neighbour's veil inside its circle, not outside it, and
   const p = setup();
   p.run("callPlace();");
   const nk = p.run("String(S.exp.patch.key * 1 + 1)"), y = p.run("S.exp.patch.y");
-  assert.equal(p.run(`!!(S.veilPre[${nk}][${y}] & 1)`), true, "tile 0 next door (1 tile from the Call) is lifted");
-  assert.equal(p.run(`!!((S.veilPre[${nk}][${y}] >>> (CALL_R + 4)) & 1)`), false, "a tile past the circle stays veiled");
-  assert.equal(p.run(`!!S.veil[${nk}]`), false, "the map still reads the place as never entered");
-  p.run(`takeCallVeil(${nk}, layout(${nk}));`);
-  assert.equal(p.run(`!!(S.veil[${nk}][${y}] & 1)`), true, "on entering, the lifted strip is part of its veil");
-  assert.equal(p.run(`S.veilPre[${nk}]`), undefined);
+  assert.equal(p.run(`!!(S.seen.tile[${nk}][${y}] & 1)`), true, "tile 0 next door (1 tile from the Call) is lifted");
+  assert.equal(p.run(`!!((S.seen.tile[${nk}][${y}] >>> (CALL_R + 4)) & 1)`), false, "a tile past the circle stays veiled");
+  assert.equal(p.run(`!!S.seen.been[${nk}]`), false, "the map still reads the place as never entered (been-in is its own flag)");
+  assert.equal(p.run(`!!(S.seen.tile[${nk}][${y}] & 1)`), true, "the same rows a walk would write: they are already there on entering");
 });
 
 test("a neighbour outside the Probe's reach keeps its veil", () => {
   const p = setup(false);
   p.run("callPlace();");
   const nk = p.run("String(S.exp.patch.key * 1 + 1)");
-  assert.equal(p.run(`!!(S.veilPre && S.veilPre[${nk}])`), false);
+  assert.equal(p.run(`!!(S.seen.tile && S.seen.tile[${nk}])`), false);
 });
 
 test("a place outside the Probe's reach is not lit", () => {

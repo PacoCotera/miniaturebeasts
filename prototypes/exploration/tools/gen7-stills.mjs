@@ -46,8 +46,8 @@ await settle(page); await save(page, "1-first-trip-start-cell.png");
 const lm = await page.evaluate(() => { const m = window.__mb; let best = null; for (let c = 0; c < m.MW * m.MH; c++) { if (!m.G.comp[c] || m.G.land[c] === m.L.WATER) continue; const lay = m.layout(String(c)); if (lay.landmark && (!best || (lay.landmark.kind === "hollow-tree" && best.kind !== "hollow-tree"))) best = { c, kind: lay.landmark.kind, name: lay.landmark.name }; } return best; });
 console.log("landmark", JSON.stringify(lm));
 if (lm) {
-  await page.evaluate((c) => { const m = window.__mb; m.leavePatch(); m.S.exp.pos = c; m.S.exp.start = c; m.enterPatch(); const P = m.S.exp.patch, lay = m.layout(P.key), L = lay.landmark; m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff);
-    let best = null, bd = 1e9; for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) { if (!lay.reach[y * lay.w + x]) continue; const d = Math.abs(x - L.x - 1) + Math.abs(y - L.y - 3); if (d < bd) { bd = d; best = { x, y }; } } if (best) { P.x = best.x; P.y = best.y; } m.walkLift(); }, lm.c);
+  await page.evaluate((c) => { const m = window.__mb; m.leavePatch(); m.S.exp.pos = c; m.S.exp.start = c; m.enterPatch(); const P = m.S.exp.patch, lay = m.layout(P.key), L = lay.landmark; m.S.seen.tile[P.key] = new Array(lay.h).fill(0x0fffffff);
+    let best = null, bd = 1e9; for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) { if (!lay.reach[y * lay.w + x]) continue; const d = Math.abs(x - L.x - 1) + Math.abs(y - L.y - 3); if (d < bd) { bd = d; best = { x, y }; } } if (best) { P.x = best.x; P.y = best.y; } m.walkSeen(); }, lm.c);
   await settle(page, 1500); await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); }); await settle(page); await save(page, "2-landmark-cell.png");
 }
 
@@ -55,9 +55,9 @@ if (lm) {
 const mk = await page.evaluate(() => { const m = window.__mb; for (let c = 0; c < m.MW * m.MH; c++) { if (!m.G.comp[c] || m.G.land[c] === m.L.WATER) continue; const lay = m.layout(String(c)); const q = lay.feats.find((f) => f.kind === "q"); if (q) return { c, x: q.x, y: q.y }; } return null; });
 console.log("mark", JSON.stringify(mk));
 if (mk) {
-  await page.evaluate((o) => { const m = window.__mb; if (m.S.exp.patch) m.leavePatch(); m.S.exp.pos = o.c; m.S.exp.start = o.c; m.enterPatch(); const P = m.S.exp.patch, lay = m.layout(P.key); m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff);
+  await page.evaluate((o) => { const m = window.__mb; if (m.S.exp.patch) m.leavePatch(); m.S.exp.pos = o.c; m.S.exp.start = o.c; m.enterPatch(); const P = m.S.exp.patch, lay = m.layout(P.key); m.S.seen.tile[P.key] = new Array(lay.h).fill(0x0fffffff);
     const free = [[0, 1, "up"], [0, -1, "down"], [1, 0, "left"], [-1, 0, "right"]].find(([dx, dy]) => { const x = o.x + dx, y = o.y + dy; return x >= 0 && y >= 0 && x < lay.w && y < lay.h && lay.reach[y * lay.w + x]; });
-    P.x = o.x + free[0]; P.y = o.y + free[1]; P.dir = free[2]; m.walkLift(); if (m.RT.view) m.endView(); }, mk);
+    P.x = o.x + free[0]; P.y = o.y + free[1]; P.dir = free[2]; m.walkSeen(); if (m.RT.view) m.endView(); }, mk);
   await settle(page, 600); for (let i = 1; i <= 5; i++) { await save(page, `3a-strike-mark-before-${i}.png`); await settle(page, 330); }
   await page.evaluate(() => window.__mb.act("confirm")); await settle(page, 900); await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); }); await save(page, "3b-strike-mark-after.png");
   // ---- the full hold: Data at 20, the next mark refused ----

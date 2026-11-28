@@ -688,7 +688,7 @@ test("generator 2 play: Ahead names the edge, the edge word alone comes before h
   for (const k of ["S up", "S down"]) { const r = CROSSINGS[k], q = g2At(r.seed, r.a); q.run(`S.exp.face = ${JSON.stringify(r.dir)}`); ctx = q.run("mapContext()");
     const w = r.up ? "stairs up" : "stairs down"; assert.ok(ctx[0].includes("Ahead: " + w), ctx[0]); assert.equal(ctx[ctx.length - 2], w); }
   const open = es.length && (() => { for (let c = 0; c < NC; c++) if (G.comp[c] && c % MW < MW - 1 && G.comp[c + 1] && G.edge[2 * c] === EDGE.OPEN) return c; })();
-  const o = g2At(seed, open); o.run("S.exp.face = 'right'; S.revealed[S.exp.pos + 1] = 1;"); ctx = o.run("mapContext()");
+  const o = g2At(seed, open); o.run("S.exp.face = 'right'; S.seen.rev[S.exp.pos + 1] = 1;"); ctx = o.run("mapContext()");
   assert.ok(ctx[0].includes("Ahead: " + o.run("landWord(S.exp.pos + 1)")), ctx[0]); assert.equal(ctx.length, 5, "no edge word");
 });
 
@@ -697,7 +697,7 @@ test("fix F4 note 17: a cliff refusal says what stops you and names the nearest 
   const cliff = es.find(e => e.kind === EDGE.CLIFF && G.comp[e.a] && G.comp[e.b] && !W.bankEdges(G, seed)[W.edgeIndex(e.a, e.dir)] && !W.softGround(G, seed).scree[W.edgeIndex(e.a, e.dir)]);
   const p = g2At(seed, cliff.a), d = JSON.stringify(cliff.dir);
   assert.equal(p.run(`cliffMapWords(${cliff.a}, ${d})`), "Cliff · too steep · no stairs seen yet", "nothing revealed round it yet");
-  p.run("for (let c = 0; c < MW * MH; c++) S.revealed[c] = 1;"); const s = p.run(`stairsNear(${cliff.a}, ${d})`), w = p.run(`cliffMapWords(${cliff.a}, ${d})`);
+  p.run("for (let c = 0; c < MW * MH; c++) S.seen.rev[c] = 1;"); const s = p.run(`stairsNear(${cliff.a}, ${d})`), w = p.run(`cliffMapWords(${cliff.a}, ${d})`);
   assert.match(w, s ? /^Cliff · too steep · (stairs \d+ cells? (north|south|east|west)|stairs here, to the (north|south|east|west))$/ : /no stairs seen yet$/);
   if (s) assert.equal(p.run(`edgeKind(${s.cur}, ${JSON.stringify(s.d)})`), EDGE.RAMP, "the stairs it names are a stair edge");
   p.run("S.phase = 'map'"); assert.equal(p.run("lineBase().ok"), "Go in");
@@ -769,7 +769,7 @@ const withOldGens = fn => { const was = [...W.GENS]; W.GENS.splice(0, W.GENS.len
 const g1Page = () => G1P || (G1P = withOldGens(() => page(g1Save(), undefined, { canvas: true })));
 const g2Page = () => { if (!G2P) { G2P = page({}, undefined, { canvas: true }); G2P.run("newWorld(1, 2)"); } return G2P; };
 const g1Map = () => { const p = g1Page();
-  p.run("S.exp = null; S.phase = 'setup'; S.pins = []; S.opened = {}; S.pods = []; S.cr = []; S.signs = {}; S.skulls = {}; for (let c = 0; c < MW * MH; c++) { S.revealed[c] = 1; S.visited[c] = c === G.gate || c === G.mouth ? 1 : 0; } mapCv = null; scr.px().fill(-1); drawMap('view', 0);");
+  p.run("S.exp = null; S.phase = 'setup'; S.pins = []; S.opened = {}; S.pods = []; S.cr = []; S.signs = {}; S.skulls = {}; for (let c = 0; c < MW * MH; c++) { S.seen.rev[c] = 1; S.seen.been[c] = c === G.gate || c === G.mouth ? 1 : 0; } mapCv = null; scr.px().fill(-1); drawMap('view', 0);");
   return p; };
 
 test("M3: the lip on lime ground stays lime in the place lip at 32 (no cream pixel); the map's edge marks are the art desk's pieces, laid by walk-art.test.mjs", () => {
@@ -788,16 +788,16 @@ test("M3: generator 2's burrow hole draws on the gate cell's face each frame, th
   const px = ox + (G.gate % MW) * CELL, py = oy + ((G.gate / MW) | 0) * CELL;
   const inE = (X, Y, cx, cy, rx, ry) => ((X + .5 - cx) / rx) ** 2 + ((Y + .5 - cy) / ry) ** 2 <= 1;
   const want = (X, Y) => Y >= py + 4 ? -1 : inE(X, Y, px + 13, py + 5, 5, 13) ? C.void : inE(X, Y, px + 13, py + 4, 7, 15) ? C.bark : -1;
-  const frame = setup => { p.run(`for (let c = 0; c < MW * MH; c++) { S.revealed[c] = 1; S.visited[c] = c === G.gate || c === G.mouth ? 1 : 0; } ${setup}; ensureMap(); scr.px().fill(-1); drawMap('view', 0);`); return p.run("scr").px(); };
+  const frame = setup => { p.run(`for (let c = 0; c < MW * MH; c++) { S.seen.rev[c] = 1; S.seen.been[c] = c === G.gate || c === G.mouth ? 1 : 0; } ${setup}; ensureMap(); scr.px().fill(-1); drawMap('view', 0);`); return p.run("scr").px(); };
   const W_ = p.run("SCR_W");
   const check = (f, lut, label) => { let n = 0, rows = new Set();
     for (let Y = py - CELL; Y < py + CELL; Y++) for (let X = px; X < px + CELL; X++) { const w = want(X, Y); if (w < 0) continue; n++; rows.add(Y); assert.equal(f[Y * W_ + X], lut ? lut[w] : w, `${label} (${X}, ${Y})`); }
     return { n, top: Math.min(...rows), bottom: Math.max(...rows) }; };
   const a = check(frame(""), null, "visited");
   assert.equal(a.bottom, py + 3, "its base on the face's foot row (row 3)"); assert.equal(a.top, py - 11, "rising 11 rows into the mouth cell");
-  check(frame("S.visited[G.gate] = 0"), p.run("REMAP[4]"), "the gate seen, not visited: the gate's light, the mouth part too");
+  check(frame("S.seen.been[G.gate] = 0"), p.run("REMAP[4]"), "the gate seen, not visited: the gate's light, the mouth part too");
   // not drawn unless both cells are seen: with the mouth in fog the gate's top rows show the face, not the hole
-  const f = frame("S.revealed[G.mouth] = 0");
+  const f = frame("S.seen.rev[G.mouth] = 0");
   let holes = 0; for (let Y = py; Y < py + 4; Y++) for (let X = px; X < px + CELL; X++) if (want(X, Y) === C.void && f[Y * W_ + X] === C.void) holes++;
   assert.equal(holes, 0, "the mouth unseen: no hole");
   // never baked: the map image (which the inset reads) holds no void pixel anywhere
@@ -993,7 +993,7 @@ test("the wood place's T.DARK lawn receives the cast shadow, darkened after it",
 function place48(seed, cell, x, y, setup = "", over, paint = false) {
   const p = page48(seed, undefined, over, paint);
   p.run(`TEST.calm = true; startExpedition('weather', ${cell}); S.exp.fog = null; S.exp.storm = null; FX.lockUntil = 0; S.exp.pos = ${cell}; enterPatch(); S.exp.patch.x = ${x}; S.exp.patch.y = ${y};
-    S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff); ${setup}`);
+    S.seen.tile[S.exp.patch.key] = new Array(PH).fill(0x0fffffff); ${setup}`);
   return p;
 }
 const frame48 = (p, n = 3) => { for (let i = 0; i < n; i++) { p.clock && (p.clock.t += 16); p.run(`scr.px().fill(-1); render(${2000 + i * 16})`); } return Int16Array.from(p.run("scr").px()); };
@@ -1043,7 +1043,7 @@ const GOLDEN48 = { faceStair: 1210323685, gen1: 3991414949, corner: 1880541008 }
 function place48g1(seed, cell, x, y, paint = false) {
   const p = page48(seed, undefined, undefined, paint);
   p.run(`layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; G = genWorld(${seed}, 1); S = worldFields(${seed}, 1); const life = genLife(${seed}); S.cr = life.cr; S.pods = life.pods; indexCreatures();
-    TEST.calm = true; startExpedition('weather', ${cell}); S.exp.fog = null; S.exp.storm = null; FX.lockUntil = 0; S.exp.pos = ${cell}; enterPatch(); S.exp.patch.x = ${x}; S.exp.patch.y = ${y}; S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);`);
+    TEST.calm = true; startExpedition('weather', ${cell}); S.exp.fog = null; S.exp.storm = null; FX.lockUntil = 0; S.exp.pos = ${cell}; enterPatch(); S.exp.patch.x = ${x}; S.exp.patch.y = ${y}; S.seen.tile[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);`);
   return p;
 }
 test("golden frames: 32 px stays byte-identical to main (the cave, a place with no atlas, the reach view)", () => {
@@ -1068,7 +1068,7 @@ test("the warned-tile card in a 48 px place shows the cell's sprite box (columns
   p.ctx.__stoneArt = STONE_ART; p.run("loadStoneArt()");   // the quartz family, decoded, as a browser loads it
   const key = p.run("S.exp.patch.key");
   const st = p.run(`(() => { const lay = layout(${JSON.stringify(key)}), P = S.exp.patch; let f = lay.feats.find(q => q.kind === 'k'); if (!f) { f = { kind: 'k', id: 'zz', x: P.x + 1, y: P.y, ch: 0 }; lay.feats.push(f); } return { x: f.x, y: f.y }; })()`);
-  p.run("unveiled = () => true; globalThis.__t48 = 0; globalThis.__tp = 0; globalThis.__b = []; { const t0 = tile48; tile48 = function () { __t48++; return t0.apply(this, arguments); }; const t1 = tilePB; tilePB = function () { __tp++; return t1.apply(this, arguments); };"
+  p.run("isSeen = () => true; globalThis.__t48 = 0; globalThis.__tp = 0; globalThis.__b = []; { const t0 = tile48; tile48 = function () { __t48++; return t0.apply(this, arguments); }; const t1 = tilePB; tilePB = function () { __tp++; return t1.apply(this, arguments); };"
     + " const s0 = stoneArt; stoneArt = function () { globalThis.__stone = s0.apply(this, arguments); return __stone; }; const d0 = g.drawImage; g.drawImage = function (c, x, y) { __b.push([x, y]); return d0.apply(this, arguments); }; } RT.remap = REMAP;");
   p.run(`PIC.warn(100, 200, { key: ${JSON.stringify(key)}, x: ${st.x}, y: ${st.y} })`);
   assert.equal(p.run("__t48 + ',' + __tp"), "1,0", "the 48 px tile, not the 32 px one");
@@ -1144,9 +1144,9 @@ test("48 px edges: a quarter of a tile is far where its tile is far, or where bo
     assert.equal(q, want, "own " + own + " m8 " + m8); }
 });
 test("48 px edges: a veiled column beside the lifted view draws each pixel on the far side exactly where the eighth rule says; a lone unveiled tile falls back to its quarters and draws whole", () => {
-  const p = place48(7, 176, 14, 14, "layout(S.exp.patch.key).vbl = new Uint8Array(PW * PH).fill(1); S.veil[S.exp.patch.key] = new Array(PH).fill(0); unveilRound(S.exp.patch.key, 14, 14, 4); layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
+  const p = place48(7, 176, 14, 14, "layout(S.exp.patch.key).vbl = new Uint8Array(PW * PH).fill(1); S.seen.tile[S.exp.patch.key] = new Array(PH).fill(0); callLift(S.exp.patch.key, 14, 14, 4); layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
   const px = frame48(p), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
-  const uv = (x, y) => p.run(`unveiled('${key}', ${x}, ${y})`), far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !uv(x, y), G = refGrid(far);
+  const uv = (x, y) => p.run(`isSeen('${key}', ${x}, ${y})`), far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !uv(x, y), G = refGrid(far);
   let checked = 0, edge = 0;
   for (let ty = 10; ty <= 16; ty++) for (let tx = 10; tx <= 18; tx++) {   // whole tiles in view, above the message box
     const f = wantFar(G, tx, ty), mixed = f.some(v => v) && f.some(v => !v);
@@ -1161,9 +1161,9 @@ test("48 px edges: a veiled column beside the lifted view draws each pixel on th
     assert.ok(ok, "tile " + tx + "," + ty); checked++; }
   assert.ok(edge >= 4 && checked >= edge, "edge tiles checked: " + edge + " of " + checked);
   // a lone unveiled tile among veiled ones stays whole (the guard)
-  const lone = place48(7, 176, 14, 14, "layout(S.exp.patch.key).vbl = new Uint8Array(PW * PH).fill(1); S.veil[S.exp.patch.key] = new Array(PH).fill(0); S.veil[S.exp.patch.key][12] = 1 << 16; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
+  const lone = place48(7, 176, 14, 14, "layout(S.exp.patch.key).vbl = new Uint8Array(PW * PH).fill(1); S.seen.tile[S.exp.patch.key] = new Array(PH).fill(0); S.seen.tile[S.exp.patch.key][12] = 1 << 16; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
   const lpx = frame48(lone), lkey = lone.run("S.exp.patch.key"), lcam = lone.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)");
-  assert.equal(lone.run(`unveiled('${lkey}', 16, 12)`), true); assert.equal(lone.run(`unveiled('${lkey}', 15, 12) || unveiled('${lkey}', 17, 12) || unveiled('${lkey}', 16, 11) || unveiled('${lkey}', 16, 13)`), false);
+  assert.equal(lone.run(`isSeen('${lkey}', 16, 12)`), true); assert.equal(lone.run(`isSeen('${lkey}', 15, 12) || isSeen('${lkey}', 17, 12) || isSeen('${lkey}', 16, 11) || isSeen('${lkey}', 16, 13)`), false);
   const lpb = lone.run(`tile48(layout('${lkey}'), ${12 * 28 + 16}, 0)`), lx = 16 * 48 - lcam.x, ly = vy + 12 * 48 - lcam.y; let whole = 0, n = 0;
   let centre = 0; for (let i = 0; i < 2304; i++) { const c = lpb.p[i]; if (c < 0) continue; n++; const same = lpx[(ly + ((i / 48) | 0)) * W_ + lx + (i % 48)] === c; if (same) whole++; const x = i % 48, y = (i / 48) | 0; if (x >= 12 && x < 36 && y >= 12 && y < 36 && !same) centre++; }
   assert.equal(centre, 0, "the lone unveiled tile keeps its centre clear (the fallback to the quarter look); only the 6 px of dither at its sides are veiled"); assert.ok(whole > n * 0.6, "and most of it: " + whole + " of " + n);
@@ -1442,7 +1442,7 @@ for (const ts of [32, 48]) {
 
   test(`cues at ${ts}: the name tag refuses a find (a pod, a stone, fruit, the crack) as it refuses a creature, never draws over one, and is not drawn when all five positions are refused`, () => {
     const p = cuePlace(ts, { partner: true }), h2 = ts >> 1;
-    p.run("var SPOT = 'none'; const __dt = drawTag; drawTag = s => { SPOT = s; __dt(s); }; curLive().pt = { x: 14, y: 16, st: 'idle', face: 1 }; RT.pt = null; S.exp.ptTagUntil = 9; S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);");
+    p.run("var SPOT = 'none'; const __dt = drawTag; drawTag = s => { SPOT = s; __dt(s); }; curLive().pt = { x: 14, y: 16, st: 'idle', face: 1 }; RT.pt = null; S.exp.ptTagUntil = 9; S.seen.tile[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);");
     const o = js(p, `sprOff(${ts})`), zx1 = Math.max(ts - 1, o.x + 29) + 4, H = o.y + p.run("tagTop(0)");
     const cell = () => { const pl = js(p, "RT.plScr"); return { x: pl.x - h2, y: pl.y - h2 + 3 * ts }; };   // the partner, 3 below the pawn
     const pod = (x, y, out) => `S.pods.push({ k: S.exp.patch.key, x: ${x}, y: ${y}, h: 0, g: 0, sp: 0, id: 'f${x}_${y}', out: ${out ? 1 : 0} });`;
@@ -1480,7 +1480,7 @@ test("the name tag in a cave at 32 px keeps off a seen crack's whole ring: its z
   const p = cuePlace(32, { partner: true });
   p.run("var SPOT = 'none'; const __dt = drawTag; drawTag = s => { SPOT = s; __dt(s); }; S.phase = 'patch'; enterCave(); S.phase = 'patch'; RT.key = null; RT.pl = null;");
   assert.equal(p.run("curLay().cave"), true);
-  p.run("{ const P = S.exp.patch, L = curLive(); P.x = 14; P.y = 13; L.cr = []; L.fr = []; L.pt = { x: 14, y: 16, st: 'idle', face: 1 }; RT.pt = null; S.exp.ptTagUntil = S.exp.actions + 9; L.seen.d = 1; curLay().feats.push({ kind: 'd', id: 'zd', x: 14, y: 17 }); S.veil[P.key] = new Array(PH).fill(0x0fffffff); FX.msg = ''; }");
+  p.run("{ const P = S.exp.patch, L = curLive(); P.x = 14; P.y = 13; L.cr = []; L.fr = []; L.pt = { x: 14, y: 16, st: 'idle', face: 1 }; RT.pt = null; S.exp.ptTagUntil = S.exp.actions + 9; L.seen.d = 1; curLay().feats.push({ kind: 'd', id: 'zd', x: 14, y: 17 }); S.seen.tile[P.key] = new Array(PH).fill(0x0fffffff); FX.msg = ''; }");
   frameOf(p); const s = js(p, "SPOT"), pl = js(p, "RT.plScr"), cx = pl.x - 16, cy = pl.y - 16 + 3 * 32, zone = { x: cx - 10, y: cy + 32 - 10, w: 53, h: 53 };
   const meets = r => r.x < zone.x + zone.w && zone.x < r.x + r.w && r.y < zone.y + zone.h && zone.y < r.y + r.h;
   assert.ok(s, "a tag is drawn (right or left)"); assert.ok(!meets(s.ptr) && !meets(s.panel), "clear of the crack's zone");
@@ -1559,7 +1559,7 @@ test("start-pick header at T10: 'Expedition N' and the note, unclipped up to Exp
   p.rec("text", "drawTop");
   for (const [type, revealed, note] of [["weather", false, "storm start"], ["deep", false, "pick a start"], ["deep", true, "any seen cell"]]) {
     for (const n of [1, 12, 999]) {
-      p.run(`S.turn = 9; S.expN = ${n}; S.ui.type = '${type}'; S.ui.cur = G.spawns[0]; S.revealed.fill(0); ${revealed ? "S.revealed[G.spawns[0]] = 1;" : ""} S.phase = 'place'; FX.msg = '';`);
+      p.run(`S.turn = 9; S.expN = ${n}; S.ui.type = '${type}'; S.ui.cur = G.spawns[0]; S.seen.rev.fill(0); ${revealed ? "S.seen.rev[G.spawns[0]] = 1;" : ""} S.phase = 'place'; FX.msg = '';`);
       p.clear(); p.run("render(0)");
       assert.equal(p.run("'T' + wTurn()"), "T10");
       const top = p.calls("drawTop")[0], rx = top.r, title = "Expedition " + n;
@@ -1586,7 +1586,7 @@ test("bottom line in a place: the place's state leads the middle and is never dr
   // the state is in every candidate, so it can never be the part that goes
   for (const c of JSON.parse(JSON.stringify(L.ctx)).filter(c => c !== p.run("dayPart()"))) assert.match(c, /explored/);   // (the part of day alone is the one form that names no place: walk W1)
   // before the place is walked: only what is there to take, and "nothing in sight to take" when nothing is
-  p.run("S.called = {}; S.veil[curLay().key] = new Array(curLay().h).fill(0);"); const L0 = p.run("lineFor()");
+  p.run("S.seen.walked = {}; S.seen.tile[curLay().key] = new Array(curLay().h).fill(0);"); const L0 = p.run("lineFor()");
   for (const c of JSON.parse(JSON.stringify(L0.ctx))) assert.doesNotMatch(c, /explored/, c);
   p.run("TEST.exploreHere();");
   // after a Call, drawn: the name and the count stay (the kinds drop first when they do not fit)
@@ -1684,7 +1684,7 @@ test("walk B2: after the find the band names the nearest takeable and its way, t
 
 test("fruit in hand: ✓ presses only on a stone, a rock or a tree; anything else that blocks is dimmed and spends nothing; a free tile puts it down", () => {
   const p = inPlace();
-  p.run("S.exp.carry = 'fruit'; S.exp.cargo.s = 0; unveiled = () => true; stoneSeen = () => true; stormCharge = () => 0; stoneWarm = () => false; occupant = () => globalThis.OCC; curLay().press = null; globalThis.OCC = null;");
+  p.run("S.exp.carry = 'fruit'; S.exp.cargo.s = 0; isSeen = () => true; stoneSeen = () => true; stormCharge = () => 0; stoneWarm = () => false; occupant = () => globalThis.OCC; curLay().press = null; globalThis.OCC = null;");
   const lab = () => p.run("(() => { const a = patchAction(); return { label: a.label, dim: !!a.dim }; })()");
   const act = () => ({ label: lab().label, dim: lab().dim });   // the page runs in another realm: copy the plain object over
   const ess = () => p.run("S.exp.cargo.s"), acts = () => p.run("S.exp.actions");
