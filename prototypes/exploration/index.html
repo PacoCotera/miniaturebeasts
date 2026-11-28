@@ -2362,7 +2362,7 @@ function easeLoika(c, X) {
   // holding her own food, his walking (creep) steps toward a named Loika at ease 0 are not heard; running (walk gait), a Call and any other noise still count
   const fruitSteps = S.exp.carry === 'fruit' && c.ease === 0 && X.noise === 'creep' && X.prevP && easeCheb(P, c) <= easeCheb(X.prevP, c);
   if (X.moved && c.st !== 'eat' && !fruitSteps) heard = easeHeardAt(env, c, P.x, P.y, X.noise === 'walk' ? 'walk' : 'creep', w);
-  if (!heard && !fruitSteps && stayTick(env, c, P)) { heard = true; e5.crowded++; }
+  if (!heard && !fruitSteps && !fedToday(c) && stayTick(env, c, P)) { heard = true; e5.crowded++; }
   else if (heard && easeCheb(P, c) > 2) c.crowd = 0;
   if (heard) RT.ringHeard = NOW;   // the carry ring turns to its heard frame for a beat
   // the circle and the back-off of E5: a step made with her in sight within 5 tiles that keeps the distance round her, or lengthens it
