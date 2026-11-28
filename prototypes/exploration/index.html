@@ -8808,68 +8808,91 @@ window.addEventListener('keyup', e => {
 window.addEventListener('blur', () => { stopRepeat(); HELD.length = 0; if (peek.held) { peek.held = false; peekEnd(); } document.querySelectorAll('.key.is-down').forEach(b => b.classList.remove('is-down')); });
 
 // ===================== 17. Page: fit, build footer, observer =====================
-const fitEl = document.getElementById('deviceFit');
-const EMBED = document.documentElement.classList.contains('embed');
-// ?embed on the play page: this Companion tells the page who it is and what it carries (its id and name, its world, the crates in its bay), and answers
+const EMBED = document.documentElement.classList.contains('embed');   // ?embed, the play page's frame: the screen alone (the class is set in <head>)
+
+// ---- The play page's shell (?embed). This Companion tells the page who it is and what it carries (its id and name, its world, the crates in its bay), and answers
 // the Caddy's seat with that word for the seat's number (the page's stand-in for the hold). The developer's "Companion silent" holds the answer back.
 const SHELL = EMBED && window.parent && window.parent !== window ? window.parent : null;
-let shellSeat = 0, shellSilent = false, shellSaid = '';
+let shellSeat = 0, shellSilent = false, shellSaid = '', shellLost = false;
 // Putting a realm to sleep, the Companion's side (src/sleeper.mjs): its signing key (made once, at the first boot, kept in IndexedDB and never exported), its public key
 // in `mb-companion-<slot>` and in what it tells the shell, and the answers to the Station's `mb-sleep` requests. Nothing here is on a screen.
 let KEY_STORE = null;   // a test hands in a store for the key pairs here; the page uses IndexedDB
-const LS = { getItem: k => localStorage.getItem(k), setItem: (k, v) => localStorage.setItem(k, v), removeItem: k => localStorage.removeItem(k) };
+const LS = { getItem: k => localStorage.getItem(k), setItem: (k, v) => localStorage.setItem(k, v), removeItem: k => localStorage.removeItem(k) };   // storage is reached at each call, never as the page loads: a browser that blocks it throws on reaching it
 const SLEEP = makeSleeper({ store: LS, rt: RT, keyStore: () => KEY_STORE, companion: () => COMPANION, wid: () => S.wid, saveKey: () => SAVE_KEY, save,
   newRealm: (seed, wid) => { newRealm(seed, NEW_GEN, wid); RT.mp = null; RT.key = null; mapCv = null; transition(); },
   onPub: pub => { if (COMPANION.pub !== pub) { COMPANION = { ...COMPANION, pub }; tellShell(true); } } });
+// Every message to the shell leaves here. One that cannot be sent says why once: the beat below would say it four times a second.
+function toShell(m) {
+  try { SHELL.postMessage(m, location.origin); }
+  catch (e) { if (!shellLost) console.warn('a message to the play page was not sent', e); shellLost = true; }
+}
 function tellShell(force) {
   if (!SHELL || shellSilent) return;
-  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, pub: COMPANION.pub || null, wid: S && !RT.readOnly ? S.wid : null, region: S && S.regions && S.regions[0] && typeof S.regions[0].seed === 'number' && hereRegion() ? { seed: S.regions[0].seed, slot: hereRegion().slot, v: biomeVersion(S) } : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, bay: BAY, seat: shellSeat };
-  const k = JSON.stringify(m); if (!force && k === shellSaid) return; shellSaid = k;
-  try { SHELL.postMessage(m, location.origin); } catch (e) { }
+  const here = S && S.regions && S.regions[0] && typeof S.regions[0].seed === 'number' && hereRegion();
+  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, pub: COMPANION.pub || null, wid: S && !RT.readOnly ? S.wid : null,
+    region: here ? { seed: S.regions[0].seed, slot: here.slot, v: biomeVersion(S) } : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, bay: BAY, seat: shellSeat };
+  const k = JSON.stringify(m); if (!force && k === shellSaid) return;
+  shellSaid = k; toShell(m);
 }
 if (SHELL) {
   window.addEventListener('message', e => {
-    if (e.origin !== location.origin || e.source !== SHELL) return; const m = e.data || {};
+    if (e.origin !== location.origin || e.source !== SHELL) return;
+    const m = e.data || {};
     if (m.t === 'mb-seat' && !shellSilent) { shellSeat = m.seat | 0; SLEEP.seat(true); tellShell(true); }
     else if (m.t === 'mb-lift') SLEEP.seat(false);   // the cradle is empty: no request is answered (and an unsigned lock lets go)
-    else if (m.t === 'mb-sleep' && !shellSilent) SLEEP.handle(m).then(a => { try { SHELL.postMessage({ t: 'mb-sleep-ack', nonce: m.nonce, op: m.op, ...a }, location.origin); } catch (e) { } });
-    else if (m.t === 'mb-note-ask') { try { SHELL.postMessage({ t: 'mb-note-state', id: m.id, state: playNoteState() }, location.origin); } catch (e) { } }   // a play note's details (see playNoteState)
+    else if (m.t === 'mb-sleep' && !shellSilent) SLEEP.handle(m).then(a => toShell({ t: 'mb-sleep-ack', nonce: m.nonce, op: m.op, ...a }));
+    else if (m.t === 'mb-note-ask') { try { toShell({ t: 'mb-note-state', id: m.id, state: playNoteState() }); } catch (err) { console.warn('the play note has no details from the Companion', err); } }   // the note goes without them
     else if (m.t === 'mb-silent') { shellSilent = !!m.on; if (!shellSilent) tellShell(true); }
-    else if (m.t === 'mb-caddy') RT.caddy = { podHome: typeof m.podHome === 'boolean' ? m.podHome : undefined, goal: m.goal || null };   // the Station's dock state, passed on by the play page (first-ten): "first pod home" and the Station's goal
+    else if (m.t === 'mb-caddy') RT.caddy = { podHome: typeof m.podHome === 'boolean' ? m.podHome : undefined, goal: m.goal || null };   // the Station's dock state, passed on by the play page: "first pod home" and the Station's goal
   });
   const beat = () => { tellShell(false); setTimeout(beat, 250); }; beat();
 }
-// Scale the depicted device to the window. When the screen would land close to a whole number of
-// physical pixels per device pixel, snap to it so the pixel grid stays even.
-function fit() {
-  if (EMBED) return;
-  const W = 522, H = 832, s = window.__mbDeviceScale ? window.__mbDeviceScale() : 1;   // the head's function (before the first paint): the one formula (the test harness runs the module without the head)
-  fitEl.style.width = (W * s) + 'px'; fitEl.style.height = (H * s) + 'px';
-  deviceEl.style.transform = `scale(${s})`;
-}
+
+// ---- The page's size. Standalone, the device follows the window: the head's function is the one formula (it ran before the first paint) and the styles size the device from --device-s.
+function fit() { if (!EMBED) window.__mbDeviceScale(); }
 window.addEventListener('resize', fit);
-// ?embed (the play page's frame): the screen alone; the class is set in <head>. The size of the Companion on /play is decided once, in play/src/layout.mjs (plan().screen); the shell gives this page a frame 450 x k0 / dpr CSS px wide
-// and scales the frame by k / k0 as a whole. The screen here fills the frame exactly: scale = the frame's width over 450, no snapping, no min (one scale function, code-audit step 6; owner #27, #123, #134, #135).
+// ?embed: the size of the Companion on /play is decided once, in play/src/layout.mjs (plan().screen); the shell gives this page a frame 450 x k0 / dpr CSS px wide
+// and scales the frame by k / k0 as a whole. The screen here fills the frame exactly: scale = the frame's width over the screen's, no snapping, no min.
 // A dpr change makes the shell resize the frame, so the resize event is the only trigger.
-const setEmbedS = () => { document.documentElement.style.setProperty('--embed-s', String((window.innerWidth || 450) / 450)); };
+const setEmbedS = () => { document.documentElement.style.setProperty('--embed-s', String((window.innerWidth || SCR_W) / SCR_W)); };
 if (EMBED) { setEmbedS(); window.addEventListener('resize', setEmbedS); }
 
-const footEl = document.getElementById('buildFoot');
-import('../station/src/genome.mjs').then(async g => { const L = await import('../station/src/looks.mjs'), fr = await (await fetch('../species/frames/language/species-S01.json')).json();
-  { const SD = await import('../station/src/stands.mjs'), more = await Promise.all(Object.keys(SD.COAT_TRAITS).filter(k => k !== 'S01').map(async k => { try { return await (await fetch('../species/frames/language/species-' + k + '.json')).json(); } catch (e) { console.warn('the frame of ' + k + ' did not load', e); return null; } }));   // a frame that fails leaves that kind on its painted cut; Riding draws a home mibi in her own coat: the frames of the kinds that have coats
-    g.setFrames([fr, ...more.filter(Boolean)]); RIDE.coatOf = SD.coatOf; RIDE.ownLooks = L.ownLooks; RIDE.frameOf = g.frameOf; }
-  WILD.shows = (seed, id) => L.saddleShown(fr, { genome: g.wildGenome(fr, seed, id, g.markedLoika(seed, markedCandidates())), read: ['coat'] });   // one Loika of the realm shows it (wild-marking-named-2); the wild Loika's marking, her coat taken as read (the walk keeps the read apart)
-  WILD.partner = id => { const st = stPart(), m = st && (st.mibis || []).find(q => q.id === id); return !!m && !!m.genome && m.species === 'S01' && L.saddleShown(fr, m); };   // the Station's own drawnLooks on the partner: shown and read
-  WILD.ok = true; }).catch(e => { console.warn('the coats and the wild marking did not load', e); });   // a failed load leaves every token plain and the walk goes on
-import('../play/src/footer.mjs').then(m => { window.__mbNotice = NOTE.ui = m.mountNotice(document.getElementById('notice'), WORDS.notice, { buildUrl: '../../build.json' });   // the notice line: a save that cannot be written, a land that changed, a page that broke (the head's script saw it first)
+// ---- The riders' coats and the wild Loika's marking, from the Station's modules and the species' frames. A failed load leaves every token plain and the walk goes on;
+// a frame that fails leaves that kind on its painted cut.
+async function loadCoats() {
+  const frame = async k => (await fetch('../species/frames/language/species-' + k + '.json')).json();
+  const genome = await import('../station/src/genome.mjs'), looks = await import('../station/src/looks.mjs'), loika = await frame('S01'), stands = await import('../station/src/stands.mjs');
+  const coated = await Promise.all(Object.keys(stands.COAT_TRAITS).filter(k => k !== 'S01').map(k => frame(k).catch(e => { console.warn('the frame of ' + k + ' did not load', e); return null; })));
+  genome.setFrames([loika, ...coated.filter(Boolean)]);
+  RIDE.coatOf = stands.coatOf; RIDE.ownLooks = looks.ownLooks; RIDE.frameOf = genome.frameOf;   // Riding draws a home mibi in her own coat: the frames of the kinds that have coats
+  WILD.shows = (seed, id) => looks.saddleShown(loika, { genome: genome.wildGenome(loika, seed, id, genome.markedLoika(seed, markedCandidates())), read: ['coat'] });   // one Loika of the realm shows the marking; her coat is taken as read (the walk keeps the read apart)
+  WILD.partner = id => { const st = stPart(), m = st && (st.mibis || []).find(q => q.id === id); return !!m && !!m.genome && m.species === 'S01' && looks.saddleShown(loika, m); };   // the Station's own drawnLooks on the partner: shown and read
+  WILD.ok = true;
+}
+loadCoats().catch(e => { console.warn('the coats and the wild marking did not load', e); });
+
+// ---- The notice line (a save that cannot be written, a land that changed, a page that broke: the head's script saw that first) and the build footer
+// (page chrome, always shown: build, save version, whether the Caddy service answers).
+import('../play/src/footer.mjs').then(m => {
+  const buildUrl = '../../build.json';
+  window.__mbNotice = NOTE.ui = m.mountNotice(document.getElementById('notice'), WORDS.notice, { buildUrl });
   for (const k of Object.keys(NOTE.flags)) if (NOTE.flags[k]) NOTE.ui.set(k, true);
   if (window.__mbBroke) noteSet('pageBroke', true);
   window.addEventListener('error', e => { if (e.error) noteSet('pageBroke', true); }); window.addEventListener('unhandledrejection', () => noteSet('pageBroke', true));
-  m.mountFooter(footEl, { buildUrl: '../../build.json', schema: SAVE_V, caddy: m.caddyAnswers }); }).catch(e => { console.warn('the notice line and the build footer did not load', e); });   // the build footer (page chrome, always shown): build, save version, whether the Caddy service answers
+  m.mountFooter(document.getElementById('buildFoot'), { buildUrl, schema: SAVE_V, caddy: m.caddyAnswers });
+}).catch(e => { console.warn('the notice line and the build footer did not load', e); });
 
+// ---- The Observer: the developer panel beside the device. Its rows are read from the game after every change, while it is open.
 const obsBtn = document.getElementById('obsToggle'), obsEl = document.getElementById('obs');
-function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
+function setObserver(on) {
+  obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on;
+  try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { console.warn('the Observer switch was not kept', e); }
+  onStateChanged();
+}
 obsBtn.addEventListener('click', e => { setObserver(obsBtn.getAttribute('aria-pressed') !== 'true'); if (e.detail) obsBtn.blur(); });   // a mouse click hands the keys back to the game
+{ const el = document.getElementById('oPal');   // the palette's swatches, made once
+  for (const [n, h] of PALETTE) { const i = document.createElement('i'); i.style.background = h; i.title = n + ' ' + h; el.appendChild(i); }
+  document.getElementById('palHead').textContent = 'Palette · ' + PALETTE.length + ' colours'; }
 // What this expedition yields: its tier, the Data it earns, how much the moments have brought in so far.
 function yieldText() {
   const ex = S.exp, r = S.report;
@@ -8877,11 +8900,6 @@ function yieldText() {
   if (S.phase === 'sealed' && r && r.yield) return 'last expedition: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' creature act' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' from strike marks | ladder ' + dataLadder();
   return 'ladder ' + dataLadder() + ' by tier (starter / early / mid / late)';
 }
-(function buildPalette() {
-  const el = document.getElementById('oPal');
-  PALETTE.forEach(([n, h]) => { const i = document.createElement('i'); i.style.background = h; i.title = n + ' ' + h; el.appendChild(i); });
-  document.getElementById('palHead').textContent = 'Palette · ' + PALETTE.length + ' colours';
-})();
 function whereText() {
   const ex = S.exp; let where = S.phase;
   if (ex && S.phase === 'map') { const p = cxy(ex.pos); where = 'map ' + p.x + ',' + p.y; }
@@ -8893,7 +8911,7 @@ function mapCounts() {
   return 'whole map ' + all.visited + ' visited · ' + all.found + ' found · ' + all.seen + ' seen · ' + all.fog + ' fog' +
     (rc ? ' | in reach ' + rc.found + '/' + rc.total + ' found · ' + rc.visited + ' visited · ' + rc.seen + ' seen' : '');
 }
-// The heart of the cell you are in, and the reach count (the observer's line).
+// The heart of the cell you are in, and the reach count.
 function heartText() {
   const ex = S.exp; if (!ex) return '–';
   const c = ex.patch ? layout(ex.patch.key).cell : ex.pos, st = passable(c) && S.seen.been[c] ? (walkedCell(c) ? 'explored' : 'not explored') : 'not visited';
@@ -8908,31 +8926,37 @@ function energyText() {
     for (const f of layout(key).feats) if (f.kind === 'k') { if (stormCharge(key, f) > 0) { k++; if (isSeen(key, f.x, f.y)) kf++; } else if (stoneWarm(key, f)) { w++; if (isSeen(key, f.x, f.y)) wf++; } } }
   return 'in reach: ' + w + ' warm stones (' + wf + ' seen) · ' + k + ' storm-charged (' + kf + ' seen) · drawn from warm this expedition ' + (ex.stats.warm || 0);
 }
-function onStateChanged() {
-  if (!obsEl || obsEl.hidden || !S || RT.readOnly) return;
-  const ex = S.exp;
-  document.getElementById('oExp').textContent = ex ? ex.n + ' · ' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') : (S.phase === 'sealed' && S.report) ? S.report.n + ' · ended' : S.expN + ' · not started';
-  document.getElementById('oTurn').textContent = wTurn();
-  document.getElementById('oYield').textContent = yieldText();
-  document.getElementById('oAct').textContent = ex ? ex.actions + ' (total ' + S.totalActions + ')' : 'total ' + S.totalActions;
-  document.getElementById('oWhere').textContent = whereText();
-  const cm = carriedMibis(), pm = ex ? ex.pt : partnerMibi(), home = homeMibis();
+// What each row says, by the row's id in the page.
+function observerRows() {
+  const ex = S.exp, t = tierOf(), st = stPart(), h = S.hold, cm = carriedMibis(), pm = ex ? ex.pt : partnerMibi(), home = homeMibis();
   const careOf = m => ' (plays ' + (m.plays || 0) + (m.bonded ? ', bonded' : '') + (m.grownTurn != null ? ', grown T' + m.grownTurn : '') + ')';   // the observer only: no screen shows care
-  document.getElementById('oPartner').textContent = (cm.length ? 'with you (' + cm.length + ' of ' + CARRY_MAX + '): ' + cm.map(m => m.name + ' · ' + mibiSpName(m) + ' ' + mibiStage(m) + (pm && pm.id === m.id ? ' · partner' : '') + (S.lead === m.id ? ' · lead' : '') + careOf(m)).join('; ') : S.mibis.length ? 'no one with you' : 'none yet') + (home.length ? ' · at home: ' + home.map(m => m.name + ' ' + mibiStage(m) + careOf(m)).join(', ') : '');
-  document.getElementById('oSeed').textContent = S.seed;
-  const t = tierOf();
-  document.getElementById('oProbe').textContent = 'tier ' + S.tier + ' · range ' + t.range + ' · hold ' + t.hold + ' · shield ' + (ex ? ex.shield + '/' + ex.smax : t.shield) + (ex ? ' · storm ' + stormLevel() + ' bolt' + (stormLevel() === 1 ? '' : 's') : '');
-  document.getElementById('oCarry').textContent = ex ? ex.cargo.e + ' Energy, ' + ex.cargo.d + ' Data, ' + ex.cargo.s + ' Essence, ' + ex.cargo.pods.length + ' pod' + (ex.cargo.pods.length === 1 ? '' : 's') : '–';
-  { const st = stPart(), h = S.hold; document.getElementById('oHome').textContent = (isDocked() ? 'docked' : 'away') + ' · bay ' + S.bay.length + '/' + BAY + (S.bay.length ? ' (' + S.bay.map(c => 'E' + c.n + ': ' + c.pods.length + ' pods').join(', ') + ')' : '') + ' · hold ' + (h ? h.e + 'E ' + h.d + 'D ' + h.s + 'S ' + h.pods.length + ' pods' : 'empty') + (st ? ' · Station store ' + st.e + 'E ' + st.d + 'D ' + st.s + 'S' : ' · no Station yet'); }
-  document.getElementById('oMap').textContent = mapCounts();
-  document.getElementById('oHeart').textContent = heartText();
-  document.getElementById('oEnergy').textContent = energyText();
+  return {
+    oExp: ex ? ex.n + ' · ' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') : (S.phase === 'sealed' && S.report) ? S.report.n + ' · ended' : S.expN + ' · not started',
+    oTurn: wTurn(),
+    oYield: yieldText(),
+    oAct: ex ? ex.actions + ' (total ' + S.totalActions + ')' : 'total ' + S.totalActions,
+    oWhere: whereText(),
+    oPartner: (cm.length ? 'with you (' + cm.length + ' of ' + CARRY_MAX + '): ' + cm.map(m => m.name + ' · ' + mibiSpName(m) + ' ' + mibiStage(m) + (pm && pm.id === m.id ? ' · partner' : '') + (S.lead === m.id ? ' · lead' : '') + careOf(m)).join('; ') : S.mibis.length ? 'no one with you' : 'none yet') + (home.length ? ' · at home: ' + home.map(m => m.name + ' ' + mibiStage(m) + careOf(m)).join(', ') : ''),
+    oSeed: S.seed,
+    oProbe: 'tier ' + S.tier + ' · range ' + t.range + ' · hold ' + t.hold + ' · shield ' + (ex ? ex.shield + '/' + ex.smax : t.shield) + (ex ? ' · storm ' + stormLevel() + ' bolt' + (stormLevel() === 1 ? '' : 's') : ''),
+    oCarry: ex ? ex.cargo.e + ' Energy, ' + ex.cargo.d + ' Data, ' + ex.cargo.s + ' Essence, ' + ex.cargo.pods.length + ' pod' + (ex.cargo.pods.length === 1 ? '' : 's') : '–',
+    oHome: (isDocked() ? 'docked' : 'away') + ' · bay ' + S.bay.length + '/' + BAY + (S.bay.length ? ' (' + S.bay.map(c => 'E' + c.n + ': ' + c.pods.length + ' pods').join(', ') + ')' : '') + ' · hold ' + (h ? h.e + 'E ' + h.d + 'D ' + h.s + 'S ' + h.pods.length + ' pods' : 'empty') + (st ? ' · Station store ' + st.e + 'E ' + st.d + 'D ' + st.s + 'S' : ' · no Station yet'),
+    oMap: mapCounts(),
+    oHeart: heartText(),
+    oEnergy: energyText(),
+  };
+}
+function onStateChanged() {
+  if (obsEl.hidden || !S || RT.readOnly) return;
+  for (const [id, words] of Object.entries(observerRows())) document.getElementById(id).textContent = words;
   const ol = document.getElementById('oLog'); ol.textContent = '';
   for (const s of S.log.slice(-8)) { const li = document.createElement('li'); li.textContent = s; ol.appendChild(li); }
 }
-// A play note's details from this device (the play page asks with `mb-note-ask`, play/src/notes.mjs): world, place, turn, expedition, carried, map counts and the last 12 events. Never a name or address.
-// The Companion's save for this slot, as stored (what a replay loads); '' when storage cannot be read.
-function playNoteSave() { try { return localStorage.getItem(SAVE_KEY) || ''; } catch (e) { return ''; } }
+
+// ---- A play note's details from this device (the play page asks with `mb-note-ask`, play/src/notes.mjs): world, place, turn, expedition, carried, map counts,
+// the last 12 events and what a replay loads. Never a name or address.
+// The Companion's save for this slot, as stored; '' when storage cannot be read.
+function playNoteSave() { try { return localStorage.getItem(SAVE_KEY) || ''; } catch (e) { console.warn('the play note carries no save: storage could not be read', e); return ''; } }
 function playNoteState() {
   if (!S || RT.readOnly) return { world: 'not loaded' };   // a newer page's save: no world was read
   const ex = S.exp;

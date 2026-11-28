@@ -6,6 +6,7 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import * as W from "../src/world.mjs";
 import * as R from "../src/regions.mjs";
+import { makePage } from "./page-harness.mjs";
 const REGIONS = { migrate8: R.migrate8, mount: R.mount, unmount: R.unmount, serialize: R.serialize, realmStatus: R.realmStatus, resetPlan: R.resetPlan, keepPre10: R.keepPre10, regionKinds: R.regionKinds, KIND_INFO: R.KIND_INFO, prefixPods: R.prefixPods, RESET_CARRY: null };   // what the page imports from regions.mjs
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
@@ -207,8 +208,8 @@ test("End expedition while docked at the start", () => {
   assert.deepEqual(sv().carried, [1, 2]);
 });
 
-// ?embed (the play page's frame; station-w1-x3-ready.md §3.1, C1): the screen alone, scaled to whole physical pixels.
-test("?embed shows the screen alone, fit() stands aside and the scale follows a dpr change", () => {
+// ?embed (the play page's frame): the screen alone, as wide as its frame. The size is decided once, in play/src/layout.mjs; the page only fills the frame it is given.
+test("?embed shows the screen alone, fit() stands aside and the screen fills its frame", () => {
   assert.ok(PAGE.includes('<script>if (new URLSearchParams(location.search).has("embed")) { document.documentElement.classList.add("embed"); document.addEventListener("contextmenu", e => e.preventDefault()); }</script>'));
   for (const rule of [
     "html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}",
@@ -216,63 +217,21 @@ test("?embed shows the screen alone, fit() stands aside and the scale follows a 
     "html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450px; height:auto; max-width:none; border-radius:0; transform:scale(var(--embed-s,1)); transform-origin:0 0}",
   ]) assert.ok(PAGE.includes(rule + "\n"), rule);
   assert.ok(PAGE.indexOf("html.embed #screen") < PAGE.indexOf("</style>"));
-  assert.equal(source("EMBED"), "const EMBED = document.documentElement.classList.contains('embed');");
-  assert.match(source("fit"), /^function fit\(\) \{\n  if \(EMBED\) return;\n/);
 
-  // fit() under embed touches nothing; setEmbedS() sets --embed-s to k/dpr
-  assert.ok(PAGE.includes("\nlet dprQuery = null;\n"));
-  assert.equal(source("armDpr"), "function armDpr() {\n  if (dprQuery) dprQuery.removeEventListener('change', onDpr);\n  dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);\n  dprQuery.addEventListener('change', onDpr);\n}");
-  assert.equal(source("onDpr"), "function onDpr() { setEmbedS(); armDpr(); }");
-  assert.ok(PAGE.includes("\nif (EMBED) { setEmbedS(); armDpr(); window.addEventListener('resize', setEmbedS); }\n"));
-  const touch = new Proxy({}, { get() { throw new Error("fit() ran under embed"); } });
-  for (const [dpr, want] of [[1, "1"], [2, "1"], [1.25, "0.8"], [3, "1"], [1.5, "0.6666666666666666"]]) {
-    const set = {};
-    const t = load(["fit", "setEmbedS"], {
-      EMBED: true, fitEl: touch, deviceEl: touch, matchMedia: touch,
-      window: { devicePixelRatio: dpr, innerHeight: 600 },
-      document: { documentElement: { clientWidth: 450, style: { setProperty: (k, v) => { set[k] = v; } } } },
-    });
-    t.fit();
-    t.setEmbedS(); t.setEmbedS();
-    assert.deepEqual(set, { "--embed-s": want }, "dpr " + dpr);
-  }
-
-  // owner #123: the play page's frame is 450 x k / dpr CSS px wide (300 x 400 at 1.5, 409 x 545 at 2.2): the screen fills it, not shrunk a second time
-  for (const [dpr, w, h, want] of [[1.5, 300, 400, "0.6666666666666666"], [2.2, 409, 545, String(2 / 2.2)]]) {
-    const set = {};
-    const t = load(["setEmbedS"], { window: { devicePixelRatio: dpr, innerWidth: w, innerHeight: h }, document: { documentElement: { style: { setProperty: (k, v) => { set[k] = v; } } } } });
-    t.setEmbedS();
-    assert.deepEqual(set, { "--embed-s": want }, "frame at dpr " + dpr);
-  }
-
-  // a viewport smaller than the 450x600 frame shrinks the whole frame to fit (390x844 phone, 844x390 landscape), so the message box stays inside
-  for (const [w, h, want] of [[390, 844, String(390 / 450)], [844, 390, String(390 / 600)], [450, 600, "1"], [1000, 900, "1"]]) {
-    const set = {};
-    const t = load(["setEmbedS"], { window: { devicePixelRatio: 1, innerWidth: w, innerHeight: h }, document: { documentElement: { style: { setProperty: (k, v) => { set[k] = v; } } } } });
-    t.setEmbedS();
+  // the page itself, run: the harness's document answers yes to every class, so this page reads itself as embedded
+  const p = makePage({ console: "silent" });
+  let set = {}, scaled = 0;
+  p.ctx.document = { documentElement: { style: { setProperty: (k, v) => { set[k] = v; } } } };
+  p.ctx.__mbDeviceScale = () => { scaled++; };
+  p.run("fit()");
+  assert.equal(scaled, 0, "fit() leaves the standalone page's scale alone under embed");
+  assert.deepEqual(set, {}, "and sets nothing");
+  // the frame the shell gives is 450 x k / dpr CSS px wide (300 at dpr 1.5, 409 at 2.2, 390 on a narrow phone): the screen is scaled to that width, nothing else
+  for (const [w, h, want] of [[450, 600, "1"], [300, 400, String(300 / 450)], [409, 545, String(409 / 450)], [390, 844, String(390 / 450)], [900, 1200, "2"], [844, 390, String(844 / 450)]]) {
+    set = {}; p.ctx.innerWidth = w; p.ctx.innerHeight = h;
+    p.run("setEmbedS(); setEmbedS()");
     assert.deepEqual(set, { "--embed-s": want }, w + "x" + h);
   }
-
-  // a dpr change with no resize: the query for the old dpr fires, the scale follows, the old listener goes and a new query is armed
-  const set = [], queries = [], win = { devicePixelRatio: 1 };
-  win.matchMedia = q => {
-    const mq = { q, on: new Set(), addEventListener(e, f) { assert.equal(e, "change"); this.on.add(f); }, removeEventListener(e, f) { assert.equal(e, "change"); this.on.delete(f); } };
-    queries.push(mq); return mq;
-  };
-  const t = load(["setEmbedS", "armDpr", "onDpr"], {
-    window: win, dprQuery: null,
-    document: { documentElement: { style: { setProperty: (k, v) => { assert.equal(k, "--embed-s"); set.push(v); } } } },
-  });
-  t.setEmbedS(); t.armDpr();
-  for (const dpr of [1.25, 2, 1]) {
-    const live = queries.at(-1);
-    win.devicePixelRatio = dpr;
-    for (const f of [...live.on]) f();
-    assert.equal(live.on.size, 0, "old listener removed at " + dpr);
-    assert.equal(queries.at(-1).q, `(resolution: ${dpr}dppx)`);
-    assert.equal(queries.at(-1).on.size, 1);
-  }
-  assert.deepEqual(queries.map(m => m.q), ["(resolution: 1dppx)", ...[1.25, 2, 1].map(d => `(resolution: ${d}dppx)`)]);
-  assert.deepEqual(queries.map(m => m.on.size), [0, 0, 0, 1], "listeners never pile up");
-  assert.deepEqual(set, ["1", "0.8", "1", "1"]);
+  set = {}; p.ctx.innerWidth = 0; p.run("setEmbedS()");
+  assert.deepEqual(set, { "--embed-s": "1" }, "a frame with no width yet: the screen at its own size");
 });
