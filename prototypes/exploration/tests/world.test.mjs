@@ -230,7 +230,7 @@ test("generator 2: the key list is complete, generator 1's G gains no field, and
 // ---- src/render/view.mjs: the place camera and coordinates ----
 test("view: src/render/view.mjs gives every literal case in world-vectors.json, and the file holds every case", () => {
   assert.deepEqual(VECTORS.view.map(c => c.name), VIEW_CASES.map(c => c.name), "the case list");
-  for (const c of VECTORS.view) assert.deepEqual(viewOut(V, c), c.out, c.name);
+  for (const c of VECTORS.view) assert.deepEqual(viewOut({ ...V, ...SHAPE }, c), c.out, c.name);
   const at = n => VECTORS.view.find(c => c.name === n).out;
   assert.deepEqual(at("camAt at 32 (today's value)"), { x: 239, y: 492 }, "today's camera on main at 32 px");
   assert.deepEqual(at("visTiles at spawn"), { tx0: 9, ty0: 20, tx1: 19, ty1: 31 }, "11 × 12 tiles");
@@ -378,11 +378,11 @@ test("atlas: pure and integer only, by source; its only import is ./world.mjs; n
   const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
   for (const k of Object.keys(A)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
 });
-test("view: pure and integer only, by source; its only import is ./world.mjs; no export shadows a page identifier", () => {
+test("view: pure and integer only, by source; its only import is ../world.mjs; no export shadows a page identifier", () => {
   const code = blank(VIEW_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /Math\.round/, /Math\.hypot/, /Math\.sqrt/]) assert.doesNotMatch(code, re, String(re));
   assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
-  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["./world.mjs"]);
+  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["../world.mjs"]);
   assert.equal((code.match(/\bimport\b/g) || []).length, 1, "one import");
   const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
   for (const k of Object.keys(V)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");

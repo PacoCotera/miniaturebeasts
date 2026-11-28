@@ -253,7 +253,7 @@ import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesRese
 import { paintLand } from "./src/render/landpaint.mjs";
 import { fogEdgeRead, fogEdges, FOG_EDGE_FILES } from "./src/render/fogedge.mjs";
 import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from "./src/shore7.mjs";
-import { makeMapPaint } from "./src/render/map-paint.mjs";
+import { makeMapPaint, markSizeFor } from "./src/render/map-paint.mjs";
 import { makeMapSigns } from "./src/render/map-signs.mjs";
 import { NB9, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, edgeFade, fogFade, pickE } from "./src/render/edge.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/render/view.mjs";
@@ -1703,7 +1703,6 @@ import { reachableTile } from "./src/logic/place-rules.mjs";
 import { isNightPod, nightOf } from "./src/logic/wild-rules.mjs";
 import { CURLED_LOIKA } from "./src/data/tokens.mjs";
 import { CARD_ART, CARD_LOOP, loadCardArt } from "./src/render/night-cards.mjs";
-import { markSizeFor } from "./src/render/map-paint.mjs";
 // What the Probe's sweep reads in a cell: tracks (3+ creatures), a slow beat (a pod, buried or not),
 // storm charge (a charged stone) and the deep "?".
 function cellSigns(c) {
@@ -3252,7 +3251,7 @@ function patchAction() {
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
       const eaters = SPECIES.map((_, i) => i).filter(sp => spOf(sp).eats && S.known.includes(sp)).map(sp => spOf(sp).plural);
       fxMsg(fruit ? cap(spOf(o.c.sp).plural) + ' don’t eat fruit' + (eaters.length ? ' · ' + eaters.join(' and ') + ' do' : '') : 'The ' + spName(o.c.sp) + ' watches you · ' + watchTail(o.c), 2); } };
-    return fruit ? { label: 'Offer fruit' + nm(o.c.sp), run: () => offer(o.c) }
+    return fruit ? { label: WORDS.fruit.offer + nm(o.c.sp), run: () => offer(o.c) }
       : { label: 'Bring fruit, or Call', run: () => { fxMsg('The ' + spName(o.c.sp) + ' watches you · bring fruit, or Call', 2); FX.bumpAt = NOW; } }; }
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
   if (o && o.type === 'slabLeft') return { label: o.f.under === 'mat' ? WORDS.slabTake.mat : WORDS.slabTake.find, run: () => takeSlabLeft(o.f) };
@@ -7309,7 +7308,7 @@ function digger() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'd
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
-  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: WORDS.case.title }, { id: 'riding', label: WORDS.riding.title }, { id: 'log', label: WORDS.book.title }], send = { id: 'send', label: 'End expedition' };
+  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: WORDS.case.title }, { id: 'riding', label: WORDS.riding.title }, { id: 'log', label: WORDS.book.title }], send = { id: 'send', label: WORDS.case.end };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   const frz = fieldFrozen() ? { frz: 1 } : {};   // docked mid-expedition: Wait and Leave stay in place, dimmed, and refuse
   if (from === 'patch' && S.exp && S.exp.patch) return (herNamed() ? [{ id: 'her', label: WORDS.her.row(S.named[herNamed()]) }] : []).concat([Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz)])).concat(base);

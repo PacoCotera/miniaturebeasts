@@ -10,10 +10,10 @@ import { CW as CWT, CH as CHT } from '../gen7/world.mjs';   // the tiles of a ce
 
 const VN_LAT = new Map();   // the lattice values of the value noise, by (s, a, b): the same numbers as hash gives, found once (a painting asks for each of them thousands of times)
 const vnLat = (s, a, b) => { if (a < 0 || b < 0 || a > 8191 || b > 8191 || s < 0 || s > 15) return (hash(9, s, a, b) % 1000) / 1000; const k = ((s * 8192 + a) * 8192) + b; let v = VN_LAT.get(k); if (v === undefined) { v = (hash(9, s, a, b) % 1000) / 1000; VN_LAT.set(k, v); } return v; };
-export function vnoise(x, y, s) { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, h = (a, b) => vnLat(s, a, b), sm = t => t * t * (3 - 2 * t);
+function vnoise(x, y, s) { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, h = (a, b) => vnLat(s, a, b), sm = t => t * t * (3 - 2 * t);
   const a = h(xi, yi), b = h(xi + 1, yi), c = h(xi, yi + 1), d = h(xi + 1, yi + 1), u = sm(xf), w = sm(yf); return a + (b - a) * u + (c - a) * w + (a - b - c + d) * u * w; }
 // The painting's cell borders: the cell under a world pixel (-1 off the map). straight: the region's sector is there, so the borders are the straight lines its blocks fall on; else displaced by value noise.
-export function landCellOf(cs, straight) {
+function landCellOf(cs, straight) {
   if (straight) return (wx, wy) => { const X = Math.floor(wx / cs), Y = Math.floor(wy / cs); return (X < 0 || Y < 0 || X >= MW || Y >= MH) ? -1 : Y * MW + X; };
   const k = cs / 72;
   const disp = (wx, wy) => [wx + (vnoise(wx / (13 * k), wy / (13 * k), 1) - .5) * 22 * k + (vnoise(wx / (5 * k), wy / (5 * k), 3) - .5) * 5 * k,

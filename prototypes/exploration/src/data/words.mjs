@@ -6,7 +6,7 @@ export const WORDS = {
   explored: 'explored', left: 'nothing left to take', leftN: n => n + ' to take', moreN: n => n + ' more to take',
   nothingSeen: 'nothing in sight to take',
   band: { unexplored: 'not explored yet', podWaits: n => n === 1 ? '1 pod waits there' : n + ' pods wait there' },
-  reachLine: (n, total, tail) => 'Explored ' + n + ' of ' + total + (tail || ' in reach'), worldLine: (n, all) => 'Explored ' + n + ' of ' + all + ' places',
+  reachLine: (n, total, tail) => 'Explored ' + n + ' of ' + total + (tail || ' in reach'),
   // taking things (✓ labels, at most 24 characters)
   takeDew: 'Take the dew',
   slabTake: { mat: 'Pick up the Essence', find: 'Pick up the find' },   // [copy] editorial (bus b3562f, row slab.take): ✓ on the old tile of a pushed slab, what lay under it; 19 characters max
@@ -17,13 +17,12 @@ export const WORDS = {
   },
   pressNoRoom: (n, cap) => 'Essence ' + n + ' of ' + cap + ' · no room to press the fruit',
   pressLost: cap => 'Essence full (' + cap + ' of ' + cap + ') · the rest is lost',   // [copy] owner note #15: a press with room for 1 fills to the cap
-  stoneKeeps: 'the stone keeps the rest', holdsNoMore: 'the Probe holds no more',
+  stoneKeeps: 'the stone keeps the rest',
   full: (supply, cap, keeps) => 'Your ' + supply + ' is full (' + cap + ' of ' + cap + ') · ' + (keeps || 'the Probe holds no more'),   // [copy] owner note #75: said the same way as the refusal
   // pressing fruit (✓ labels and the bump line)
   press: { stone: 'Press fruit on the stone', tree: 'Press fruit on the tree', dim: 'Press on a stone or tree', bump: 'Press fruit on a stone or tree · or put it down' },
   // [copy] the HUD line when a step in a place is refused and nothing else says why (placeholders say the meaning only; bug #14)
   block: { stone: 'Stone · in the way', tree: 'Tree · in the way', water: 'Water · no way across', rock: 'Steep rock · no way over', slab: 'A slab · in the way', thing: 'In the way', mibi: 'A mibi is there', partner: 'Your partner is there', pod: 'A pod is there' },
-  // [copy] the Data hold is the only limit on a trip; the copywriter writes the words behind these slots (placeholders say the meaning only)
   // [copy] the notice line (lock-playtest-world, owner 2026-11-10 20:18), three slots left empty for the copywriter: saveFailed is shown while a save cannot be written (storage full, a private window, blocked)
   // until a save works again; landChanged while the save names a land (REALM_REV) other than the one this build makes; pageBroke when the page breaks, given the build number from build.json (an empty slot still shows it).
   notice: { saveFailed: "Can't save · leaving loses your game", landChanged: '', pageBroke: build => '' },
@@ -105,11 +104,9 @@ WORDS.habit = {
   fed: n => n + ' takes the fruit from your hand. Tonight she sleeps in her pod, if she is left in peace.',   // editorial's line, said when he feeds a named Loika
   rooms: { place: 'where she goes', coat: 'her coat', face: 'her face' },
   asleep: 'asleep, curled up', asleepStirred: ' · she is stirring · no keepsake until she settles',   // [copy] night step 5: a sleeper's note (name, and the tail while she is stirred)
-  curledSlot: 'Loika asleep: picture to come',   // [art] night step 5: the named empty slot of her curled token (night-camp piece 11), not signed yet
   sleepPlace: 'where she goes at first light',   // night step 4 [copy]: sleep-curled's last card line, which the dew's prints at her bed give
   // the card line, one per habit, on the forecast line: what the Station still lacks
   card: (habit, want, filled) => habit + ' · ' + (filled ? 'learned: ' : 'still to learn: ') + want,
-  cardTail: (want, filled) => (filled ? 'learned: ' : 'still to learn: ') + want,   // the card line's tail, after a note says the habit already
   cardKnown: habit => habit + ' · learned',
   range: { far: 'from far', mid: 'from mid range', near: 'from near' },
   sampleName: { tuft: 'tuft', whisker: 'whisker', claw: 'shed claw' },
@@ -120,7 +117,7 @@ WORDS.watch = {
   tiles: n => n + (n === 1 ? ' tile' : ' tiles'),
   gives: { shape: 'only her shape from here', place: 'where she goes', coat: 'her coat', face: 'her face, and a sample' },
   strip: (habit, n) => habit + '|' + n + ' of 4', tell: 'the sign',
-  note: 'Note', leave: 'leave', nearer: 'closer',   // the bottom line: ✓ Note, ← leave, ▲▼ closer
+  note: 'Note', leave: 'leave',   // the bottom line: ✓ Note, ← leave
   card: 'Field note', keep: 'Keep', back: 'back to her', data: '+1 Data',
   sampleTaken: item => 'You took a ' + item + ' · it goes home in the Case', sampleNone: 'No sample', sampleCome: 'get within 2 tiles for a sample',
   onPage: name => 'on ' + name + '’s page',   // the field card's line, back now her page exists (her-page-ui-1; withheld by owner bug #118 until then)
@@ -196,10 +193,10 @@ export function clockToNext(spent) {
   const s = Math.max(0, spent | 0), nightAt = DAY.light - DAY.parts[DAY.parts.length - 1][1];
   return s < nightAt ? nightAt - s : Math.max(0, DAY.light - s);
 }
-// The Log (companion-device-build-1): the Companion's notebook. [copy] WORKING WORDS: the copywriter's job replaces every string here.
 // [copy] her-fruit-build-1 (editorial's canon-her-page strings): the fruit from the hand of a named wild Loika
 // [copy] working words (bug179-hand-fruit-5): the dim line says what to do.
 WORDS.fruit = { offer: 'Offer fruit', refuse: 'Back off and keep still', log: name => name + ' took fruit from your hand.' };
+// The Log (companion-device-build-1): the Companion's notebook. [copy] WORKING WORDS: the copywriter's job replaces every string here.
 WORDS.book = {
   title: 'Log', day: n => 'Day ' + n, earlier: 'earlier pages', field: 'field', moves: '▲▼', empty: 'Nothing written yet.',
   atFlag: 'at the flag', fromFlag: dir => dir + ' of the flag', place: p => 'the ' + p,
@@ -232,7 +229,6 @@ WORDS.riding = {
   rested: 'rested · she slept at camp',   // a fact, shown only when it happened (night-step-6-1); absent until then
   empty: 'No one rides', emptyHow: 'A mibi rides with you once it is home.',
 };
-// [copy] words for the copywriter's round (they say the meaning only)
 // night step 4 [copy]: the three cards' words (the art director's paintings carry them when signed; until then the message-box lines stay)
 export const CARD_TEXT = { dusk: ['Dusk', 'Dusk. The wild ones are going to their beds.'], night: ['Night', 'Night falls.'], dawn: ['Dawn', ''] };
 export const DAY_TEXT = {

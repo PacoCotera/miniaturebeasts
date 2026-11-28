@@ -1,11 +1,10 @@
 // The Companion's place view (C2a): tile size, the centred camera, the visible range, tile and screen coordinates, the
-// sprite anchor, and the two tests the edge cues use. Pure and integer only: no page state, DOM, clock, storage, randomness, float,
-// rounding to nearest or square root. Inputs are integers (the caller rounds the tween); division is Math.floor on integers.
+// sprite anchor, and the two tests the edge cues use. No page state, DOM, clock, storage or randomness. The camera and the coordinates are integer only
+// (the caller rounds the tween; division is Math.floor on integers); the storm, fog and puff shapes further down are not.
 import { PW, PH } from '../world.mjs';
 
-export const TS = 48, TS_OLD = 32, SPR = 32;                       // the place tile; the cave and fallback tile; today's sprite box
+export const TS = 48, SPR = 32;                                    // the place tile; today's sprite box
 export const ON_SCREEN = { x0: 17, y0: 49, x1: 433, y1: 547 };     // a 32 px creature centred in its cell shows whole
-export const ON_SCREEN_48 = { x0: 25, y0: 57, x1: 425, y1: 539 };  // the box once the 48 px frames land (unused in C2a)
 export function viewOf(ts, x, y, w, h, tw = PW, th = PH) {         // the page passes 0, VIEW_Y, SCR_W, VIEW_H (0, 32, 450, 532) and the place's own width and height in tiles
   return { ts, x, y, w, h, pw: tw * ts, ph: th * ts };
 }
@@ -23,7 +22,6 @@ export function visTiles(v, cam) { return { tx0: Math.floor(cam.x / v.ts), ty0: 
   tx1: Math.floor((cam.x + v.w - 1) / v.ts), ty1: Math.floor((cam.y + v.h - 1) / v.ts) }; }
 export function tileScr(v, cam, tx, ty) { return { x: v.x + tx * v.ts - cam.x, y: v.y + ty * v.ts - cam.y }; }
 export function scrTile(v, cam, sx, sy) { return { tx: Math.floor((sx - v.x + cam.x) / v.ts), ty: Math.floor((sy - v.y + cam.y) / v.ts) }; }
-export function sprOrigin(v, cam, px, py) { const o = sprOff(v.ts); return { x: v.x + px - cam.x + o.x, y: v.y + py - cam.y + o.y }; }   // px, py: a tile origin in place px (tweened)
 
 // The cues' hooks: whether a cell's centre, camera applied, is inside box (inclusive); and where the ray from screen point A to B
 // meets box (null if B is inside), with the side it leaves by.
