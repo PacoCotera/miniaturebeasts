@@ -11,6 +11,7 @@ import vm from "node:vm";
 import { makePage } from "./page-harness.mjs";
 import { decodePNG } from "../tools/atlas-check.mjs";
 import { decodeExact } from "../src/atlas.mjs";
+import { SPECIES, SP_OTHER, spOf } from "../src/logic/species.mjs";
 import { numWord } from "../src/data/text.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
@@ -35,8 +36,9 @@ function source(name) {
   throw new Error("not found in index.html: " + name);
 }
 const plain = x => JSON.parse(JSON.stringify(x));
-// The one species accessor (SP_OTHER, spOf, mibiSpName, abTextOf), for the checks that run a few functions on their own.
-const ACCESSOR = () => PAGE.match(/^const SP_OTHER = [^]*?\n(?=\/\/)/m)[0] + ["spOf", "mibiSpName", "abTextOf"].map(source).join("\n") + "\n";
+// For the checks that run a few of the page's functions on their own over a stub species table (SPECIES in their context): the lookup over that table
+// (the real SP_OTHER for any other value) and the page's two accessors.
+const ACCESSOR = () => "const SP_OTHER = " + JSON.stringify(SP_OTHER) + ";\nconst spOf = sp => SPECIES[sp] ?? SP_OTHER;\n" + ["mibiSpName", "abTextOf"].map(source).join("\n") + "\n";
 
 // The Station's side, when it has landed.
 const ST = await import("../../station/src/state.mjs");
@@ -293,7 +295,9 @@ test("normalizeCare: defaults for the additive fields; ids not in S.mibis droppe
 test("a new world: the carried set, no `with`; SAVE_V is 10 and the storage key keeps its name", () => {
   assert.match(source("worldFields"), /mibis: \[\], carried: \[\], lead: null, carrySeen: 0, carryRefused: \[\]/);
   assert.ok(!/\bwith: null\b|withSeen: 0, probeSeen/.test(source("worldFields")));
-  assert.match(PAGE, /LEGACY_KEY = 'mb-save-v8', SAVE_V = 10/);
+  const p = makePage({ console: "silent" }); p.run("newWorld(7)");
+  assert.equal(p.sv().v, 10, "a new world is written as version 10"); assert.equal(p.run("SAVE_V"), 10);
+  assert.equal(p.KEY, "mb-save-v8@" + p.run("COMPANION.id"), "under the Companion's own key"); assert.equal(p.run("LEGACY_KEY"), "mb-save-v8", "and the shared key of earlier builds keeps its name");
 });
 
 // ---- §1: the Station's requests, applied at the dock (T3 and T7, the Companion's half) ----
@@ -804,9 +808,9 @@ test("X1 5: with no spName in the save (a Station save from before it), the name
 
 test("X1 6: every SPECIES lookup goes through spOf; the two plates are in the register and the plate table", () => {
   const script = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-  const hits = script.split("\n").filter(l => /SPECIES\[/.test(l));
-  assert.equal(hits.length, 1, "SPECIES[ appears once: " + hits.join("\n")); assert.match(hits[0], /^const spOf = sp => /);
-  assert.match(source("spOf"), /: SP_OTHER\);$/);
+  assert.deepEqual(script.split("\n").filter(l => /SPECIES\[/.test(l)), [], "the page never indexes SPECIES itself");
+  SPECIES.forEach((row, sp) => assert.equal(spOf(sp), row, "a known kind: " + sp));
+  for (const sp of [-1, SPECIES.length, 1.5, "0", null, undefined]) assert.equal(spOf(sp), SP_OTHER, "any other value is SP_OTHER: " + sp);
   const reg = vm.runInContext(PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m)[0] + "\n;CARE_ASSETS", vm.createContext({ PLAYTEST_ON: false }));
   const plate = vm.runInContext(PAGE.match(/^const PLATE = \{[^]*?\};/m)[0] + "\n;PLATE", vm.createContext({ PLAYTEST_ON: false }));
   for (const [id, w] of [["c-sprite-other-32", 32], ["c-mini-other-12", 12]]) {
