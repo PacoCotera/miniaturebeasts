@@ -109,7 +109,7 @@ test("bug #37: a real step off the edge, up, down, left and right, lands on the 
 });
 
 test("bug #37: the slide scrolls the view by what keeps the pawn on its line of the map: a screen when both places are flush, a few tiles more or less when their cameras differ", () => {
-  const off = (dir, pl0, pl1) => slideOffsets({ dx: dir[0], dy: dir[1], pl: pl0 }, pl1, 48, 450, 500);   // the rule itself (src/render/slide.mjs), at the 48 px tile
+  const off = (dir, pl0, pl1) => plain(slideOffsets({ dx: dir[0], dy: dir[1], pl: pl0 }, pl1, 48, 450, 500));   // the rule itself (src/render/slide.mjs), at the 48 px tile
   // right, pawn in the right column of the old screen (x 402 of 450) and one tile on, in the left column of the new one (x 24): the plain screen; the pawn rides between its two spots
   assert.deepEqual(off([1, 0], { x: 426, y: 200 }, { x: 24, y: 200 }), { old: { x: -450, y: 0 }, nw: { x: 450, y: 0 }, rides: true });
   // the next place's camera is 30 px off along the edge (it is wider, so the pawn is further from its edge): the layers shift along the edge by the difference, the old one by it at the end, the new one at the start
