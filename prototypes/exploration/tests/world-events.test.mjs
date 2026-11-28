@@ -2,7 +2,6 @@
 // carries them as `world` and keeps `lines`. Run through the page itself (the whole script in a sandbox, as freeze.test.mjs), on seeded turns.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { makePage } from "./page-harness.mjs";
 import * as W from "../src/world.mjs";
 
@@ -80,9 +79,12 @@ test("every turn: at most three events, valid shapes, one for each line and in t
   assert.ok(seen.has("grown") && seen.has("stirring") && seen.has("young") && seen.has("herd"), [...seen].join(" ")); assert.ok(capped, "a turn with more than three things to say keeps the first three");
 });
 
-test("the crate carries world { v: 1, turn, ev } beside its lines; a crate sealed before this has neither field changed; the page's other readers of lines are untouched", () => {
-  const src = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-  assert.match(src, /lines: worldLines\.slice\(\), world: \{ v: 1, turn: S\.turn, ev: turned\.ev \}/);
-  assert.match(src, /rep\.lines = worldLines\.slice\(\)/, "the Companion's own report keeps its lines");
+test("the crate carries world { v: 1, turn, ev } beside its lines, and the Companion's own report keeps its lines", () => {
+  const p = page(); p.run(`newWorld(${SEED}); startExpedition('weather', G.spawns[0]); enterPatch(); leavePatch(); S.exp.cargo.e = 1; endExpedition('night')`);
+  const { crate, report, turn } = JSON.parse(p.run("JSON.stringify({ crate: S.bay[0], report: S.report, turn: S.turn })"));
+  assert.ok(crate && crate.lines.length > 0, "the case is reached: the night's end turned the world and sealed a crate");
+  assert.deepEqual(Object.keys(crate.world), ["v", "turn", "ev"]); assert.equal(crate.world.v, 1); assert.equal(crate.world.turn, turn, "the crate's own turn, after the world turned");
+  assert.equal(crate.world.ev.length, crate.lines.length, "one event beside each line"); assert.ok(crate.world.ev.every(valid));
+  assert.deepEqual(report.lines, crate.lines, "the Companion's own report keeps its lines");
   assert.equal(KINDS.length, 11);
 });

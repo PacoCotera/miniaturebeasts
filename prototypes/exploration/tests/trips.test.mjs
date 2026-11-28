@@ -1,5 +1,5 @@
-// The Companion's trips (top-level `trips` in the shared save): the real functions are read out of index.html and run
-// in a sandbox with the rest of the page stubbed, so the test follows the page as it changes.
+// The Companion's trips (top-level `trips` in the shared save). The trip rules are src/logic/expedition.mjs, imported here; the page's own
+// functions (endExpedition and the rest) are read out of index.html and run in a sandbox with the rest of the page stubbed.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -7,6 +7,10 @@ import vm from "node:vm";
 import * as W from "../src/world.mjs";
 import * as R from "../src/regions.mjs";
 import { makePage } from "./page-harness.mjs";
+import { holdEmpty, exploredAny, TRIP_KINDS, tripPlace, tripRecord, tripsWith } from "../src/logic/expedition.mjs";
+import { MAT } from "../src/data/walk-lines.mjs";
+import { PRESS_TEXT } from "../src/data/field-words.mjs";
+const RULES = { holdEmpty, exploredAny, tripPlace, tripRecord, tripsWith, MAT, sendSleepersHome: () => {}, leaveSleepers: () => {} };   // what endExpedition takes from the modules; no Loika sleeps in these holds
 const REGIONS = { migrate8: R.migrate8, mount: R.mount, unmount: R.unmount, serialize: R.serialize, realmStatus: R.realmStatus, resetPlan: R.resetPlan, keepPre10: R.keepPre10, regionKinds: R.regionKinds, KIND_INFO: R.KIND_INFO, prefixPods: R.prefixPods, RESET_CARRY: null };   // what the page imports from regions.mjs
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
@@ -38,20 +42,18 @@ function load(names, stubs) {
 
 // values made in the sandbox carry its own Array and Object, so they are compared as plain data
 const plain = x => JSON.parse(JSON.stringify(x));
-const TRIP = ["TRIP_KINDS", "tripPlace", "tripRecord", "tripsWith"];
-const LAND = [];   // groundName is src/world.mjs's now (the page imports it): handed to the sandbox as it is
 
-// endExpedition with the world stubbed: `explored` decides the branch, worldTurn moves the counter as the page does.
+// endExpedition with the world stubbed: `explored` decides the branch, the night's turn moves the counter as the page does.
 const ARRIVED = { pods: [], young: [], bloom: -1, charged: [] };   // what worldTurn hands back for the opening's pips
 function ending({ explored, trips, ex, world = { lines: [], ev: [], arrived: ARRIVED } }) {
   ex = { cargo: { e: 0, d: 0, s: 0, pods: [] }, ...ex };
-  const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [], mibis: [], carried: [], day: { spent: 9, camps: 0, pend: { trail: [], storm: [] }, camp: null } };
+  const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, seen: { been: {} }, mibis: [], carried: [], day: { spent: 9, camps: 0, pend: { trail: [], storm: [] }, camp: null } };
   const turned = [];
-  const t = load(["endExpedition", "freshDay", "holdEmpty", ...TRIP], {
-    S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3, RIPE_PENDING: [], emptyLead: () => null,
+  const t = load(["endExpedition", "turnPending", "newsCells", "freshDay"], {
+    ...RULES, S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3, emptyLead: () => null,
     carriedMibis: () => [], exploredAny: () => explored, reachCounts: () => ({ found: explored ? 1 : 0, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { turned.push(S.expN); S.turn++; return { arrived: { pods: [], young: [], bloom: -1, charged: [] }, ...world }; },
+    worldTurnQuick: () => { turned.push(S.expN); S.turn++; return { arrived: { pods: [], young: [], bloom: -1, charged: [] }, ...world }; },
     logEv: () => {}, transition: () => {}, save: () => {},
   });
   t.endExpedition(ex.reason || "night");   // the world turns only at the night's end (walk W1); any other end is a camp
@@ -100,23 +102,22 @@ test("the walk with the mibi writes no trip", () => {
 test("partner: a juvenile is never the Probe partner; no partner gives null", () => {
   const juvenile = { id: 4, born: 3 }, adult = { id: 7, born: 0 };
   const S = { turn: 3, carried: [4], lead: null, mibis: [juvenile, adult] };
-  const t = load(["partnerMibi", "carriedMibis", "mibiById", "isAdult", "mibiStage", "stageAt", ...TRIP], { S, JUVENILE_TURNS: 2, ELDER_TURNS: 10 });
+  const t = load(["partnerMibi", "carriedMibis", "mibiById", "isAdult", "mibiStage", "stageAt"], { S, JUVENILE_TURNS: 2, ELDER_TURNS: 10 });
   assert.equal(t.partnerMibi(), null, "a juvenile with you is not the partner");
   S.carried = [7]; assert.equal(t.partnerMibi().id, 7);
-  assert.equal(t.tripRecord(expedition({ pt: null })).partner, null);
-  assert.equal(t.tripRecord(expedition({ pt: { id: 7, elder: false } })).partner, 7);
+  assert.equal(tripRecord(expedition({ pt: null })).partner, null);
+  assert.equal(tripRecord(expedition({ pt: { id: 7, elder: false } })).partner, 7);
 });
 
 test("places: the kinds entered, each once, only the five", () => {
-  const t = load([...TRIP, ...LAND], {});
-  assert.deepEqual(plain(t.TRIP_KINDS), ["meadow", "pond", "rock", "wood", "cave"]);
+  assert.deepEqual(TRIP_KINDS, ["meadow", "pond", "rock", "wood", "cave"]);
   // every land the page has (meadow, pond edge, rock field, wood, shallows, cliff) names one of the five
-  for (let land = 0; land < 6; land++) assert.ok(t.TRIP_KINDS.includes(W.groundName(land, false)), "land " + land);
+  for (let land = 0; land < 6; land++) assert.ok(TRIP_KINDS.includes(W.groundName(land, false)), "land " + land);
   const ex = expedition();
-  for (const land of [3, 0, 3, 1, 4, 2, 5]) t.tripPlace(ex, W.groundName(land, false));
-  t.tripPlace(ex, "cave"); t.tripPlace(ex, "cave"); t.tripPlace(ex, "shallows"); t.tripPlace(ex, undefined);
-  assert.deepEqual(plain(t.tripRecord(ex).places), ["wood", "meadow", "pond", "rock", "cave"]);
-  assert.deepEqual(plain(t.tripRecord(expedition({ tripPlaces: ["wood", "wood", "lava"] })).places), ["wood"]);
+  for (const land of [3, 0, 3, 1, 4, 2, 5]) tripPlace(ex, W.groundName(land, false));
+  tripPlace(ex, "cave"); tripPlace(ex, "cave"); tripPlace(ex, "shallows"); tripPlace(ex, undefined);
+  assert.deepEqual(tripRecord(ex).places, ["wood", "meadow", "pond", "rock", "cave"]);
+  assert.deepEqual(tripRecord(expedition({ tripPlaces: ["wood", "wood", "lava"] })).places, ["wood"]);
 });
 
 test("entering a place or the cave adds its kind", () => {
@@ -128,33 +129,31 @@ test("entering a place or the cave adds its kind", () => {
 test("storm: over the Probe outside the cave on any action; never in the cave", () => {
   const ex = expedition({ pos: 4, storm: { x: 3.5, w: 2 }, patch: null });
   const S = { exp: ex };
-  const t = load(["tripStormTick", "stormOverProbe", "stormCovers", ...TRIP], {
+  const t = load(["tripStormTick", "stormOverProbe", "stormCovers"], {
     S, cxy: c => ({ x: c % 16, y: Math.floor(c / 16) }), layout: key => ({ cave: key[0] === "c" }),
   });
   ex.patch = { key: "c4" };
   assert.equal(t.tripStormTick(ex), false, "the band covers the column but the Probe is in the cave");
-  assert.equal(t.tripRecord(ex).storm, false);
+  assert.equal(tripRecord(ex).storm, false);
   ex.patch = { key: "4" };
   assert.equal(t.tripStormTick(ex), true, "the same column, in a place under the open sky");
   ex.patch = { key: "c4" }; t.tripStormTick(ex);
-  assert.equal(t.tripRecord(ex).storm, true, "once on any action is enough");
+  assert.equal(tripRecord(ex).storm, true, "once on any action is enough");
   const away = expedition({ pos: 10, storm: { x: 3.5, w: 2 } }); S.exp = away;
-  t.tripStormTick(away); assert.equal(t.tripRecord(away).storm, false, "the band elsewhere");
+  t.tripStormTick(away); assert.equal(tripRecord(away).storm, false, "the band elsewhere");
   S.exp = expedition({ storm: null }); assert.equal(t.tripStormTick(S.exp), false, "no storm");
 });
 
 test("the last 40 trips are kept, oldest first", () => {
-  const t = load(TRIP, {});
   let trips = [];
-  for (let n = 1; n <= 45; n++) trips = t.tripsWith(trips, t.tripRecord(expedition({ n })));
+  for (let n = 1; n <= 45; n++) trips = tripsWith(trips, tripRecord(expedition({ n })));
   assert.equal(trips.length, 40);
   assert.equal(trips[0].n, 6); assert.equal(trips[39].n, 45);
 });
 
 test("old saves: no trips list, an expedition without the new fields", () => {
-  const t = load(TRIP, {});
-  assert.deepEqual(plain(t.tripRecord({ n: 3 })), { v: 1, n: 3, partner: null, places: [], storm: false, carried: [] });
-  assert.equal(t.tripsWith(undefined, t.tripRecord({ n: 3 })).length, 1);
+  assert.deepEqual(tripRecord({ n: 3 }), { v: 1, n: 3, partner: null, places: [], storm: false, carried: [] });
+  assert.equal(tripsWith(undefined, tripRecord({ n: 3 })).length, 1);
   // a save without `trips` is given an empty list by the page's load (worldFields: expN 1, trips []): the next test
 });
 
@@ -174,13 +173,13 @@ test("End expedition while docked at the start", () => {
   S.day = { spent: 4, camps: 0, pend: { trail: [], storm: [] }, camp: null };
   const writeSt = () => { store["mb-save-v8"] = JSON.stringify(Object.assign({}, S, { st })); };
   const sv = () => JSON.parse(store["mb-save-v8"]);
-  const t = load(["endExpedition", "freshDay", "holdEmpty", "exploredAny", "carriedMibis", "mibiById", "save", "storedSave", "stPart", "isDocked", "syncStation", "carryApply",
-    "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "fieldFrozen", ...TRIP], {
-    S, window: {}, RT: {}, FX: {}, NOW: 0, noteSet: () => {}, keepCompanion: () => {}, legacyTo: null, onStateChanged: () => {}, RIPE_PENDING: [], emptyLead: () => null, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
+  const t = load(["endExpedition", "turnPending", "newsCells", "freshDay", "carriedMibis", "mibiById", "save", "storedSave", "stPart", "isDocked", "syncStation", "carryApply",
+    "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "fieldFrozen"], {
+    ...RULES, PRESS_TEXT, S, window: {}, RT: {}, FX: {}, NOW: 0, noteSet: () => {}, keepCompanion: () => {}, legacyTo: null, onStateChanged: () => {}, emptyLead: () => null, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
     CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ found: 1, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},
-    worldTurn: () => { S.turn++; return { lines: [], ev: [], arrived: ARRIVED }; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
+    worldTurnQuick: () => { S.turn++; return { lines: [], ev: [], arrived: ARRIVED }; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
   });
   // start an expedition, undocked
   writeSt(); t.save();

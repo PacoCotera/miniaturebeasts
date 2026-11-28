@@ -2117,12 +2117,10 @@ function wakeSleepers() {
 }
 // The day's light is spent: the world turns once (as the night's end did), a fresh day starts, and the walk goes on in the same place with everything as it was.
 function nightPasses() {
-  const ex = S.exp, pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
-  S.lastEntered = (ex.entered || []).slice(); RIPE_LATER = []; let turned, ripeLater;
-  try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
+  const ex = S.exp, pending = turnPending(ex);
+  S.lastEntered = (ex.entered || []).slice(); const turned = worldTurnQuick(pending);
   S.day = freshDay(); ex.stormCells = {}; ex.nights = (ex.nights || 0) + 1;   // the trail and the storm marks are spent in this turn; the end card counts the days
-  RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(ripeLoop, 250);
-  const a = turned.arrived; ex.nightNews = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] };
+  ex.nightNews = { cells: newsCells(turned.arrived) };
   for (const l of wakeSleepers()) fxMsg(l, 3);   // a pod of hers on the ground opens at first light; a pod in the Case stays asleep to the walk's end
   fxMsg(DAY_TEXT.nightPassed(partOfDay(0)), 4);
   for (const l of turned.lines) fxMsg(l, 3);   // the world turn's news, one line at a time in the message box
@@ -4169,44 +4167,30 @@ function partnerTick(X) {
 }
 
 // ===================== 9. Expedition end, the sealed bay, world turn =====================
+import { holdEmpty, exploredAny, tripPlace, tripRecord, tripsWith } from "./src/logic/expedition.mjs";
+import { dirWord } from "./src/logic/compass.mjs";
+import { DARK_TEXT, sealedWords, PLACE_KIND, PLACE_PHRASE, DIR_CODE } from "./src/data/expedition-lines.mjs";
 // End expedition ends this expedition and seals the hold (pods and materials) as one consignment into the Companion's
 // sealed bay (three at most, one per expedition, never topped up). Nothing is teleported: the Station accepts each
-// consignment once, when the Companion is docked (prototypes/station). The world turns once per expedition ended.
-// Guards: an expedition that explored nothing seals nothing and turns nothing; an empty hold seals no consignment;
+// consignment once, when the Companion is docked (prototypes/station). The world turns at the night's end; a camp leaves the day waiting.
+// Guards: an expedition that explored nothing seals nothing; an empty hold seals no consignment;
 // with the bay full the finds stay in the hold and ride along unsealed. A break seals nothing.
-const holdEmpty = h => !h || (!h.e && !h.d && !h.s && !(h.pods && h.pods.length) && !(h.samples && h.samples.length));
-const exploredAny = ex => (ex.entered || []).length > 0;   // the walk turns the world when it entered at least one place (or dug a bank): a walk that went into no place changes nothing
-// The trips the Station reads at the dock (top-level `trips` in the save): one record per expedition that turned the world,
-// oldest first, the last 40 kept. The expedition gathers its kinds of place (ex.tripPlaces) and whether a storm was over
-// the Probe (ex.tripStorm) as it goes; both are optional, so an expedition saved before them still ends cleanly. `carried` is
-// a copy of S.carried at the expedition's end (`[]` allowed); a reader of an older record takes [partner].
-const TRIP_KINDS = ['meadow', 'pond', 'rock', 'wood', 'cave'], TRIPS_KEPT = 40;
-function tripPlace(ex, kind) { if (!TRIP_KINDS.includes(kind)) return; if (!Array.isArray(ex.tripPlaces)) ex.tripPlaces = []; if (!ex.tripPlaces.includes(kind)) ex.tripPlaces.push(kind); }
-function tripRecord(ex, carried) { const places = Array.isArray(ex.tripPlaces) ? [...new Set(ex.tripPlaces.filter(k => TRIP_KINDS.includes(k)))] : [];
-  return { v: 1, n: ex.n, partner: ex.pt ? ex.pt.id : null, places, storm: !!ex.tripStorm, carried: Array.isArray(carried) ? carried.slice() : [] }; }
-function tripsWith(trips, rec) { return (Array.isArray(trips) ? trips : []).concat([rec]).slice(-TRIPS_KEPT); }
 function bayLine() { const n = S.bay.length; return !n ? '' : isDocked() ? DOCK_TEXT.bay(n) : n + ' crate' + (n === 1 ? '' : 's') + ' sealed · dock to transfer'; }
-// What a hold seals, in words, from its contents: "two pods" + `join` + "supplies", or `alone` ("supplies") when no pod is in it. Every crate carries the walk's Data, so the pods-only form is never shown.
-function sealedWords(h, join, alone) { const n = h.pods ? h.pods.length : 0; return n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + join + 'supplies' : alone; }
-// The Cargo screen's preview of what End expedition will do.
-// What End does with the hold, decided in one place (rule 16b): 'nothing' (nothing explored), 'empty', 'full' (bay full), 'night' (seals, naming her) or 'seal' (seals a crate). The tally draws only on 'night' and 'seal'.
+// What End does with the hold: 'nothing' (nothing explored or dug), 'empty', 'full' (bay full), 'night' (seals, naming her) or 'seal' (seals a crate). The tally draws only on 'night' and 'seal'.
 function sealBranch(ex) {
   if (!exploredAny(ex) && !(ex.dug && ex.dug.length)) return 'nothing';
   if (holdEmpty(ex.cargo)) return 'empty';
   if (S.bay.length >= BAY) return 'full';
-  return (ex.cargo.pods || []).some(isNightPod) ? 'night' : 'seal';
+  return ex.cargo.pods.some(isNightPod) ? 'night' : 'seal';
 }
 function sealsCrate(ex) { const b = sealBranch(ex); return b === 'night' || b === 'seal'; }
+// The Cargo screen's preview of what End expedition will do: the hold as it is (Data comes only from readings and creature acts).
 function sealPreview() {
-  const ex = S.exp, out = [], br = sealBranch(ex);
-  if (br === 'nothing') { out.push(WORDS.waits); out.push('your finds stay in the hold'); return out; }
-  const h = Object.assign({}, ex.cargo);   // what End will seal: the hold as it is (Data comes only from readings and creature acts)
-  if (br === 'empty') { /* nothing to seal (only a save from before places had a tier): no line */ }
-  else if (br === 'full') { const np = (h.pods || []).find(isNightPod); if (np) out.push(WORDS.pod.bayFull(np.nm)); else { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); } }
-  else if (br === 'night') { const np = h.pods.find(isNightPod), n = h.pods.length - 1;   // pod-sleep-build-1: the preview names her (editorial's join for the rest of the hold)
-    out.push(WORDS.pod.seal(np.nm, (n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + ' + ' : '') + 'supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY); out.push(WORDS.pod.sealTail); }
-  else { out.push('Seals ' + sealedWords(h, ' + ', 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
-    out.push('The Station takes it when you dock'); }
+  const ex = S.exp, br = sealBranch(ex), pods = ex.cargo.pods, np = pods.find(isNightPod), crate = ' · crate ' + (S.bay.length + 1) + ' of ' + BAY, out = [];
+  if (br === 'nothing') return [WORDS.waits, 'your finds stay in the hold'];
+  if (br === 'full') { if (np) out.push(WORDS.pod.bayFull(np.nm)); else out.push('Bay full · your finds stay in the hold', 'dock to free it'); }
+  else if (br === 'night') out.push(WORDS.pod.seal(np.nm, sealedWords({ pods: pods.filter(p => p !== np) }, ' + ', 'supplies')) + crate, WORDS.pod.sealTail);   // the preview names her, then the rest of the hold
+  else if (br === 'seal') out.push('Seals ' + sealedWords(ex.cargo, ' + ', 'the supplies') + crate, 'The Station takes it when you dock');
   if (ex.shield < ex.smax) out.push('Docking mends the Shield');
   return out;
 }
@@ -4223,25 +4207,28 @@ function dropPods(ex, rep) {
   logEv('Probe broke at ' + rep.at.x + ',' + rep.at.y + ' · ' + rep.dropped + ' pod' + (rep.dropped === 1 ? '' : 's') + ' left there (skull on the map)');
   ex.cargo.pods = [];
 }
-// The Probe's last plate is gone: it goes dark where you stand and the expedition goes on (night step 1). The pods fall here under the skull, the unsealed supplies are lost, sealed crates are untouched.
+// The Probe's last plate is gone: it goes dark where you stand and the expedition goes on. The pods fall here under the skull, the unsealed supplies are lost, sealed crates are untouched.
 // While ex.dark: no Call, nothing taken or carried, no strike marks read, no storm strike; walking, seeing, keeping still, a habit noted and End expedition at the flag all work.
 function goDark(ex) {
   const rep = {}; ex.dark = 1; S.shield = 0;
-  dropPods(ex, rep); ex.darkRep = { dropped: rep.dropped, lost: ['e', 'd', 's'].filter(k => ex.cargo[k]).map(k => ({ k, text: ex.cargo[k] + ' ' + { e: 'Energy', d: 'Data', s: 'Essence' }[k] })) };   // the end card at the flag says what the break cost
+  dropPods(ex, rep); ex.darkRep = { dropped: rep.dropped, lost: Object.keys(MAT).filter(k => ex.cargo[k]).map(k => ({ k, text: ex.cargo[k] + ' ' + MAT[k] })) };   // the end card at the flag says what the break cost
   ex.cargo.e = ex.cargo.d = ex.cargo.s = 0; if (ex.carry) ex.carry = null; S.hold = null;
   logEv('Probe dark · carried supplies lost');
-  if (typeof stopRepeat === 'function') stopRepeat();
+  stopRepeat();
   fxMsg(DARK_TEXT.goes, 4);
 }
-const DARK_TEXT = { goes: 'The Probe goes dark. Your pods fall here. Walk back to the flag.', refuse: 'The Probe is dark · walk back to the flag', line: 'Probe dark' };   // [copy]
 const isDark = () => !!(S && S.exp && S.exp.dark);
 // A dark Probe refuses what needs it: says so, spends nothing. True when refused.
 function darkRefuse() { if (!isDark()) return false; FX.bumpAt = NOW; fxMsg(DARK_TEXT.refuse, 3); return true; }
+// What the day's trips left for the night's turn: the camps' trails and charged stones wait in the day and join this trip's.
+const turnPending = ex => ({ trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] });
+// The cells a turn left something new on: where pods and young arrived, the bloom's centre, the stones the storm charged.
+const newsCells = a => [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])];
 function endExpedition(reason) {
-  const ex = S.exp; if (!ex) return;
+  const ex = S.exp;
   if (ex.dark && reason !== 'night') reason = 'break';   // a dark Probe's end is the break's card at the flag
-  const broke = reason === 'break' || !!ex.dark, night = reason === 'night'; S.ui.lastPos = ex.pos;   // any end but the night's is making camp: the day waits where it is (walk W1)
-  const explored = exploredAny(ex), rc = reachCounts();
+  const broke = reason === 'break' || !!ex.dark, night = reason === 'night'; S.ui.lastPos = ex.pos;   // any end but the night's is making camp: the day waits where it is
+  const explored = exploredAny(ex), dug = !!(ex.dug && ex.dug.length), tier = walkTier(ex), rc = reachCounts();
   let notch = null;   // a notch earned is named on Expedition ended as its own row of the outcome block (and logged), never with a count, never a world line
   { const n = {}, mud = c => !!(G.soft && G.soft.wade[c]);   // a wade the partner crossed counts as 'mud', apart from a ford (both are L.WATER)
     for (const c of new Set(ex.trail)) if (S.seen.been[c] && (passable(c) || mud(c))) { const k = mud(c) ? 'mud' : G.land[c]; n[k] = (n[k] || 0) + 1; }   // every mibi with you remembers where you went most
@@ -4251,47 +4238,44 @@ function endExpedition(reason) {
       if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name, spOf(w.sp).ab, w.notches)); notch = { id: w.id, name: w.name, sp: w.sp, ab: spOf(w.sp).ab, n: w.notches }; } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.found, of: rc.total };
   if (explored && !broke) {   // what the walk brought in: Data from strike marks (read by a press) and from creature acts; nothing is added here
-    const tier = walkTier(ex);
     rep.yield = { tier, data: (ex.dField || 0) + (ex.dAct || 0), moments: ex.moments.length, early: ex.dAct || 0, late: ex.dField || 0 };
     logEv('Walk Data · ' + (ex.dField || 0) + ' from strike marks · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · plus ' + (ex.dAct || 0) + ' from creature acts'); }
-  for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
+  for (const k in MAT) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + MAT[k] });
   if (ex.carry === 'fruit') ex.carry = null;
   if (ex.dark && ex.darkRep) { rep.dropped = ex.darkRep.dropped; rep.lost = ex.darkRep.lost.slice(); S.shield = 0; S.hold = null; }   // already dropped and lost where the Probe went dark
   else if (broke) { S.shield = 0; dropPods(ex, rep); S.hold = null; logEv('Probe broke · carried supplies lost'); }   // a break seals nothing; the Station mends it free at the dock
   else S.shield = ex.shield;
-  // what the day's trips left for the night's turn: the camps' trails and charged stones wait in the day and join this trip's
-  const pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
+  const pending = turnPending(ex);
   const tripOfDay = S.day.camps;   // 0 for the first trip of the day: a later trip's crate id carries it (the expedition number holds until the world turns)
   if (!night) { S.day.pend = pending; S.day.camp = ex.pos; S.day.camps++; }
   S.hist.push({ n: ex.n, reason, actions: ex.actions, e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, pods: ex.cargo.pods.length, rev: ex.stats.rev, lit: ex.stats.lit,
     hits: ex.stats.hits, reach: rc, putFeeds: ex.stats.putFeeds, handFeeds: ex.stats.handFeeds, maxLvl: ex.stats.maxLvl, openStormActs: ex.stats.openStormActs, moments: ex.moments.length,
-    warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, dTier: walkTier(ex), dYield: explored && !broke ? walkYield(ex) : 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
+    warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, dTier: tier, dYield: explored && !broke ? walkYield(ex) : 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
   if (S.hist.length > 40) S.hist.shift();
   rep.days = (ex.nights || 0) + 1; rep.places = (ex.entered || []).length; rep.habits = Object.keys(ex.habits || {}).length;   // what the days gave, for the end card
-  if (!explored && !(ex.dug && ex.dug.length) && !night && !ex.nights) {   // nothing explored (and no night passed: a night turned the world): nothing sealed, and the finds stay in the hold (a break loses them); only the night's end turns the world
+  const sealedScreen = () => { S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); };   // a line from the walk does not linger over the sealed screen
+  if (!explored && !dug && !night && !ex.nights) {   // nothing explored (and no night passed: a night turned the world): nothing sealed, and the finds stay in the hold (a break loses them); only the night's end turns the world
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
-    S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); return; }
+    sealedScreen(); return; }
   S.expN++;   // the number counts expeditions (an outing that explored or dug, at a camp or at night), not world turns: the next set-out is one more
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
-  if (explored || (ex.dug && ex.dug.length)) S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // this expedition is a trip for the Station
-  RIPE_LATER = []; let turned, ripeLater;
+  if (explored || dug) S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // this expedition is a trip for the Station
+  let turned = { lines: [], ev: [], arrived: { pods: [], young: [], bloom: -1, charged: [] } };   // a camp: the day waits, the world does not turn
   if (night) {   // the night's end: the world turns, once for the day's light; the pawn wakes at the last camp and the next day starts at dawn
-    try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
+    turned = worldTurnQuick(pending);
     if (S.day.camp != null) S.ui.lastPos = S.day.camp;
     S.day = freshDay();
-  } else { turned = { lines: [], ev: [], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; ripeLater = []; RIPE_LATER = null; }   // a camp: the day waits, the world does not turn
-  const worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
-  RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(ripeLoop, 250);   // after the sealed screen's first frames, a step at a time; the next set-out finishes what is left
-  { const a = turned.arrived; rep.news = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] }; }   // where it happened: the opening puts a pip on these cells until the next set-out
+  }
+  rep.lines = turned.lines.slice();
+  rep.news = { cells: newsCells(turned.arrived) };   // the opening puts a pip on these cells until the next set-out
   if (!broke) {
-    if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
+    if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction
     else if (S.bay.length >= BAY) { rep.kept = true; leaveSleepers(ex); S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n + (tripOfDay ? 'c' + tripOfDay : ''),...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, ...((ex.cargo.samples || []).length ? { samples: ex.cargo.samples.map(q => ({ ...q })) } : {}),
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), ...(q.dv ? { dv: q.dv } : {}), k: q.k || null, ...(q.got ? { got: q.got } : {}), ...shedOf(q), ...nightOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), ...(q.dv ? { dv: q.dv } : {}), k: q.k || null, ...(q.got ? { got: q.got } : {}), ...shedOf(q), ...nightOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: turned.lines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; sendSleepersHome(ex); logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
-  S.exp = null; S.report = rep;
-  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save();   // a line from the walk does not linger over the sealed screen
+  sealedScreen();
 }
 // Where the next try lies, said at the end of a walk that found no pod, from the flag: the first walk names the pod the game knows; later walks the nearest cell with a pod found and
 // left or a slow beat; with none known, the nearest wood or rock (pods sleep in woods and rock, never in open meadow). { cell, land, dir, first, pod } or null.
@@ -4357,23 +4341,12 @@ function walk(m) {
   const did = evs.length > 1 ? CARE_TEXT.played(evs.map(e => e.m.name)) : young ? CARE_TEXT.playedYoung(m.name, m.mem) : [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp] ?? CARE_TEXT.playedOther(m.name, m.mem);
   careLines(did, evs, WALK_MS);
 }
-function dirWord(dx, dy, n) {
-  const ax = dx / n, ay = dy / n, ns = ay < -.15 ? 'north' : ay > .15 ? 'south' : '', ew = ax > .15 ? 'east' : ax < -.15 ? 'west' : '';
-  if (!ns && !ew) return null;
-  if (ns && ew) { if (Math.abs(ax) > 2 * Math.abs(ay)) return ew; if (Math.abs(ay) > 2 * Math.abs(ax)) return ns; return ns + '-' + ew; }
-  return ns || ew;
-}
-// A herd's drift as the crate's direction code (specs/world-events.md): 1 to 8 for N, NE, E, SE, S, SW, W, NW; 0 when it only spread out.
-const DIR_CODE = { 'north': 1, 'north-east': 2, 'east': 3, 'south-east': 4, 'south': 5, 'south-west': 6, 'west': 7, 'north-west': 8 };
 function regionWord(cells) {
   let sx = 0, sy = 0; for (const c of cells) { const p = cxy(c); sx += p.x; sy += p.y; }
   const x = sx / cells.length, y = sy / cells.length;
   const ns = y < MH / 3 ? 'north' : y > MH * 2 / 3 ? 'south' : '', ew = x < MW / 3 ? 'west' : x > MW * 2 / 3 ? 'east' : '';
   return ns && ew ? 'the ' + ns + '-' + ew : ns || ew ? 'the ' + (ns || ew) : 'the middle of the map';
 }
-// The land kinds a world event names (specs/world-events.md): LAND_NAME's order as ids; `shallows` and `cliff` only in outpost lines and near-the-cliff or by-the-river places.
-const PLACE_KIND = ['meadow', 'pond', 'rock', 'wood', 'shallows', 'cliff'];
-const PLACE_PHRASE = { cliff: 'near the cliff', shallows: 'by the river', meadow: 'in the meadows', pond: 'by the ponds', rock: 'in the rock fields', wood: 'in the woods' };
 // The land kind the words choose for some cells: near a cliff or stair, by the river, else the land most of them lie on.
 function placeKind(cells) {
   let sx = 0, sy = 0; for (const c of cells) { const p = cxy(c); sx += p.x; sy += p.y; }
@@ -4386,37 +4359,42 @@ function placeKind(cells) {
   const counts = [0, 0, 0, 0]; for (const c of cells) if (G.land[c] < 4) counts[G.land[c]]++;
   return PLACE_KIND[counts.indexOf(Math.max(...counts))];
 }
-const placePhrase = cells => PLACE_PHRASE[placeKind(cells)];
 // The land most of some cells lie on, as a kind (a new pod's place, a bloom's centre): any of the six lands.
 function mainLand(cells) { const n = PLACE_KIND.map(() => 0); for (const c of cells) if (G.land[c] >= 0 && G.land[c] < n.length) n[G.land[c]]++; return PLACE_KIND[n.indexOf(Math.max(...n))]; }
-// The world turns once per expedition ended: the region the Companion is in turns (regionTurn), then the realm (realmTurn), and the region has seen the turn.
-// A region that was away is not turned meanwhile; mounting it catches it up (catchUp).
-function worldTurn(pending) {
+// The world turns at the night's end: the region the Companion is in turns (regionTurn), then the realm (realmTurn), and the region has seen the turn.
+// A region that was away is not turned meanwhile; mounting it catches it up (catchUp). ripe: what is done with a bloom's centre (regionTurn).
+function worldTurn(pending, ripe = ripenBloom) {
   const last = { trail: pending.trail, entered: S.lastEntered || [] }, here = regionById(S, S.here);
   const farFromPlayer = c => awayFromLast(c, last);
-  const turned = regionTurn(here, S.turn, pending, farFromPlayer), out = realmTurn(turned, pending);
+  const turned = regionTurn(here, S.turn, pending, farFromPlayer, ripe), out = realmTurn(turned, pending);
   here.turnSeen = S.turn;
   return out;
 }
-// What touches the map, for region R (the one mounted) at turn t: creatures roam, the storm leaves marks, a bloom, arrivals and young, and a species the region
-// lacks surfaces. It draws on hash(R.seed, 'turn', t), which for region 1 is the world's own hash, and writes no line and no log; it hands back what the
-// realm turn's lines are made of. farFromPlayer is the arrival guard for where the player last walked.
-function flushRipe() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return false; RIPE_CELLS.length = 0; for (const ctr of RIPE_PENDING.splice(0)) ripenBloom(ctr); return true; }   // the set-out finishes whatever the background steps have not
-// The background part: the bloom's cells ripen a step at a time (a place's layout can take a quarter second to build cold), so a press never waits on the whole bloom.
-const RIPE_CELLS = [];
+// The turn a press waits on (the night's end, a night passed out there): the bloom's fruit trees are left to the background steps.
+function worldTurnQuick(pending) {
+  const out = worldTurn(pending, ctr => RIPE_PENDING.push(ctr));
+  if (out.arrived.bloom >= 0) setTimeout(ripeLoop, 250);   // after the sealed screen's first frames
+  return out;
+}
+// A bloom ripens the fruit trees of every place within three cells of its centre (silently: the turn's line counts bushes). That builds each of those
+// places (a quarter second each when cold), so a turn a press waits on only queues the centre (RIPE_PENDING); ripeLoop then ripens a place at a time
+// between frames, and the next set-out takes the centres still waiting (flushRipe). Only generators 4 to 6 make fruit trees.
+const RIPE_CELLS = [];   // the places of the bloom the background steps are on, still to ripen
+function bloomPlaces(ctr) { const keys = []; if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) if (G.comp[c] && cdist(c, ctr) <= 3) keys.push(String(c)); return keys; }
+function ripenPlace(key) { for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); }
+function ripenBloom(ctr) { bloomPlaces(ctr).forEach(ripenPlace); }
 function ripeStep() {
-  if (!RIPE_CELLS.length && RIPE_PENDING.length) { const ctr = RIPE_PENDING.shift(); if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) if (G.comp[c] && cdist(c, ctr) <= 3) RIPE_CELLS.push(String(c)); }
+  if (!RIPE_CELLS.length && RIPE_PENDING.length) RIPE_CELLS.push(...bloomPlaces(RIPE_PENDING.shift()));
   const t0 = performance.now();
-  while (RIPE_CELLS.length && performance.now() - t0 < 8) { const key = RIPE_CELLS.shift(); for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); }
+  while (RIPE_CELLS.length && performance.now() - t0 < 8) ripenPlace(RIPE_CELLS.shift());
   return RIPE_CELLS.length > 0 || RIPE_PENDING.length > 0;
 }
 function ripeLoop() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return; if (ripeStep()) setTimeout(ripeLoop, 40); else save(); }
-let RIPE_LATER = null;   // while an expedition ends: the bloom centres whose fruit trees ripen after the first sealed frame
-function ripenBloom(ctr) {   // fruit trees in the bloom's reach ripen too (silently: the line counts bushes)
-  if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || cdist(c, ctr) > 3) continue; const key = String(c);
-    for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); }
-}
-function regionTurn(R, t, pending, farFromPlayer) {
+function flushRipe() { RIPE_CELLS.length = 0; RIPE_PENDING.splice(0).forEach(ripenBloom); }   // the set-out: the blooms still waiting ripen whole, at once; the one the background is part way through stops where it is
+// What touches the map, for region R (the one mounted) at turn t: creatures roam, the storm leaves marks, a bloom, arrivals and young, and a species the region
+// lacks surfaces. It draws on hash(R.seed, 'turn', t), which for region 1 is the world's own hash, and writes no line and no log; it hands back what the
+// realm turn's lines are made of. farFromPlayer is the arrival guard for where the player last walked; ripe is handed the bloom's centre.
+function regionTurn(R, t, pending, farFromPlayer, ripe = ripenBloom) {
   if (R.id !== S.here) throw new Error('regionTurn: region ' + R.id + ' is not mounted');
   const rng = makeRng(hash(R.seed, 'turn', t));
   const mv = SPECIES.map(() => ({ dx: 0, dy: 0, n: 0 })), kinds = hereKinds(R).map(k => k.sp);   // the mounted region's kinds
@@ -4450,10 +4428,10 @@ function regionTurn(R, t, pending, farFromPlayer) {
   if (far.length) { const ctr = rng.pick(far); bloom = ctr;
     for (let c = 0; c < MW * MH; c++) { if (cdist(c, ctr) > 3) continue; const key = String(c), cs = S.cells[key]; if (!cs) continue;
       for (const id in cs) if (cs[id].bare) { delete cs[id].bare; bushes++; } }
-    if (RIPE_LATER) RIPE_LATER.push(ctr); else ripenBloom(ctr); }   // the fruit trees' part builds every place in reach: at an expedition's end it waits until the sealed screen is up (ripenBloom)
+    ripe(ctr); }
   // New arrivals, away from where the player just was.
   const occupied = [...new Set(S.cr.filter(w => !w.cv && G.comp[w.c] && farFromPlayer(w.c)).map(w => w.c))];
-  const nPods = 2 + rng.int(2);   // W5: the draws stay (the turn's other draws keep their place); no anonymous pod is made
+  const nPods = 2 + rng.int(2);   // the draws stay (the turn's other draws keep their place); no anonymous pod is made
   for (let i = 0; i < nPods && occupied.length; i++) { const c = rng.pick(occupied), here = S.cr.filter(w => w.c === c && !w.cv);
     const pod = { id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: rng.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' };
     if (ANON_PODS) { S.pods.push(pod); newPods.push(c); } }
@@ -4511,7 +4489,7 @@ function realmTurn(turned, pending) {
   if (stormWhere || !pending.storm.length) S.lastStorm = stormWhere;   // a stormy turn that charged nothing keeps the memory
   if (bushes) say('Fruit is back on ' + (bushes === 1 ? 'one bush.' : numWord(bushes) + ' bushes.'), ['fruit', mainLand([bloom]), null, bushes]);
   if (lines.length < 3 && newPods.length) say('Something new is stirring in ' + regionWord(newPods) + '.', ['stirring', mainLand(newPods), null, newPods.length]);
-  if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' appeared ' + placePhrase([y0.c]) + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
+  if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' appeared ' + PLACE_PHRASE[placeKind([y0.c])] + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
   if (!lines.length) say('A quiet turn. Little changed.', ['quiet', null, null, 0]);
   logEv('World turn ' + wTurn());
   return { lines: lines.slice(0, 3), ev: ev.slice(0, 3), arrived: { pods: newPods, young: young.map(y => y.c), bloom, charged } };   // the same three, in the same order; `arrived` names the cells the guard placed things in, and the cells the storm charged
