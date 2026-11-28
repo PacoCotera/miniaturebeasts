@@ -2,7 +2,7 @@
 //   node --test prototypes/exploration/tests/satchel-stack.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { stacks, stackRoom, capStacks, STACK, SATCHEL } from "../src/habits.mjs";
+import { stacks, stackRoom, capStacks, STACK, SATCHEL } from "../src/logic/habits.mjs";
 
 const mk = (item, n, from = 0) => Array.from({ length: n }, (_, i) => ({ id: item + (from + i), item }));
 

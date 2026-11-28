@@ -7,7 +7,7 @@ import { realm7, NC } from '../src/gen7/region.mjs';
 import { RW } from '../src/gen7/world.mjs';
 import { biomeTargets } from '../src/gen7/world.mjs';
 import { MW, MH, L, EDGE, canStepIn } from '../src/world.mjs';
-import { ATLAS, BIOMES } from '../src/regions.mjs';
+import { ATLAS, BIOMES } from '../src/logic/regions.mjs';
 
 const SHARE_TOL = 5;
 

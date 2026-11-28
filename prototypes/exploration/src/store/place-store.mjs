@@ -5,7 +5,7 @@
 // A second worker renders a place's ground (the pixel work of places/src/ground.mjs, which the page did a frame at a time): groundAsk, groundTake. It is a second one so that a ground is not queued behind the reach.
 import { get, set, del } from 'idb-keyval';
 import { REALM_REV, realm7 } from '../gen7/region.mjs';
-import { BAKE_STAGES } from '../waitpips.mjs';
+import { BAKE_STAGES } from '../logic/waitpips.mjs';
 import { decorSites, presetHollowSites, madeBanks, presetBanks } from '../gen7/place.mjs';
 
 export const PLACE_REV = 6;   // exported for the baked package's id (package-store.mjs); the number and its rule are the same

@@ -11,7 +11,7 @@ import { createApp } from "../app.mjs";
 import { b64uDecode, hexDecode } from "../../play/src/realm/b64.mjs";
 import { pairFromSeed } from "../../play/src/realm/keys.mjs";
 import { buildSleepFile, fileHash, MAX_BYTES } from "../../play/src/realm/sleepfile.mjs";
-import { migrate8 } from "../../exploration/src/regions.mjs";
+import { migrate8 } from "../../exploration/src/logic/regions.mjs";
 
 const V = JSON.parse(readFileSync(new URL("../../play/src/realm/vectors.json", import.meta.url), "utf8"));
 const v8 = JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-played-g2.json", import.meta.url), "utf8"));

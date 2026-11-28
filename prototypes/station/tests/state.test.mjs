@@ -587,7 +587,7 @@ test("growBlockKey names what stops Grow in the rules' order (unidentified, busy
 test("the Station keeps an unknown top-level Companion field (gen) through load, save and storageChanged", async () => {
   const mem = new Map(); globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => { mem.set(k, String(v)); }, removeItem: (k) => { mem.delete(k); } };
   const game = await import("../src/game.mjs"), stored = () => JSON.parse(mem.get(game.saveKey()));
-  const { migrate8 } = await import("../../exploration/src/regions.mjs");
+  const { migrate8 } = await import("../../exploration/src/logic/regions.mjs");
   mem.set(game.saveKey(), JSON.stringify({ ...migrate8({ ...fixture(), gen: 5 }, { now: 1793664000000 }), gen: 2 }));   // a v10 realm (a v8 save is reset, not kept) with a Companion field the Station does not know
   game.load(); game.save(); assert.equal(stored().gen, 2, "load then save keeps gen"); assert.equal(mem.has(S.SAVE_KEY), false);
   mem.set(game.saveKey(), JSON.stringify({ ...stored(), gen: 3 }));

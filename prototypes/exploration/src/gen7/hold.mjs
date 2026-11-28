@@ -12,7 +12,7 @@
 //   strikes    [{ x, y, age, glass, read: false }]        strike marks (section 4.7a); age = world turns since the strike, glass = storm glass lies in it (sand only)
 // No hearts, springs or clue gleams: section 4 replaces them.
 import { hash, L, MW, MH, HERD, groundName, genLife5, sideKind, softGround, bankEdges, canStepIn, edgeIndex } from '../world.mjs';
-import { ATLAS, regionKinds, KIND_INFO } from '../regions.mjs';
+import { ATLAS, regionKinds, KIND_INFO } from '../logic/regions.mjs';
 import { realm7, route, NC } from './region.mjs';
 import { CW, CH } from './world.mjs';
 import { landmarksOf, LM_PROP, LM_SLOT } from './landmarks.mjs';

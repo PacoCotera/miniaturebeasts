@@ -5,7 +5,7 @@
 // Pure parts take their world from the caller (a test gives its own worker, store and realm); `startPackage` is the page's wiring.
 
 // What the save names: the region a package is for, and where its order starts. null: no generator 7 world in the save.
-const biomeV = (sv) => (sv && sv.biomeV != null ? sv.biomeV : 1);   // the realm's kind version, as the Companion reads it (exploration/src/regions.mjs biomeVersion), so this check imports no generator
+const biomeV = (sv) => (sv && sv.biomeV != null ? sv.biomeV : 1);   // the realm's kind version, as the Companion reads it (exploration/src/logic/regions.mjs biomeVersion), so this check imports no generator
 export function wantOf(sv, biomeVersion = biomeV) {
   const regions = sv && Array.isArray(sv.regions) ? sv.regions : [], R = regions.find(r => r && r.id === sv.here) || regions[0];
   if (!R || R.gen !== 7 || !regions[0] || typeof regions[0].seed !== 'number' || !Array.isArray(R.slot)) return null;

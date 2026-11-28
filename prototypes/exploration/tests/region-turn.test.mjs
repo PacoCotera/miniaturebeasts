@@ -5,7 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import * as W from "../src/world.mjs";
-import * as R from "../src/regions.mjs";
+import * as R from "../src/logic/regions.mjs";
 import { readFileSync } from "node:fs";
 import { makePage } from "./page-harness.mjs";
 

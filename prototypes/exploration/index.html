@@ -240,15 +240,15 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, TERR, genWorld, genPlace, placeTrees, depotCells as depotCellsIn } from "./src/world.mjs";
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf, makeHauntWalk } from "./src/world7.mjs";
-import { nightTable } from "./src/night.mjs";
+import { nightTable } from "./src/render/night.mjs";
 import { newSeen, seenFromOld, reveal as seenReveal, markWalked, markBeen, walkedCell as seenWalked, fogState as seenFog, veilable, anySeen, tileBit, unveiled as seenUnveiled, unveiledRows, rowsCopy, liftRound, liftSquare, liftLine, liftFlood, walkLift as seenWalkLift, liftWhere, seenShare, liftAll, veilMask } from "./src/logic/seen.mjs";
 import { cardStep } from "./src/render/card-motion.mjs";
-import { duskTable, duskLitRgb } from "./src/dusk.mjs";
-import { cutName, kindId, CUT_DIR } from "./src/riding-cut.mjs";
-import { beatOf, poseOf, stripPoses, chipOf, givesNow, drawsCut } from "./src/watch.mjs";
+import { duskTable, duskLitRgb } from "./src/render/dusk.mjs";
+import { cutName, kindId, CUT_DIR } from "./src/data/riding-cut.mjs";
+import { beatOf, poseOf, stripPoses, chipOf, drawsCut } from "./src/logic/watch.mjs";
 import { PLAYTEST_SEEDS } from "./src/data/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/store/realm-store.mjs";
-import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
+import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/logic/waitpips.mjs";
 import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, packageUse, packageState, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/store/place-store.mjs";
 import { paintLand } from "./src/render/landpaint.mjs";
 import { fogEdgeRead, fogEdges, FOG_EDGE_FILES } from "./src/render/fogedge.mjs";
@@ -265,19 +265,19 @@ import { readPixels } from "./src/pngdecode.mjs";
 const canvasPx = im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0); return { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; };   // the fallback only: no DecompressionStream
 const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, regionName, ATLAS } from "./src/regions.mjs";
-import { makeSleeper } from "./src/sleeper.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, regionName, ATLAS } from "./src/logic/regions.mjs";
+import { makeSleeper } from "./src/store/sleeper.mjs";
 import { GLYPHS, glyphOf, textW, textWT, wrapText, clipText, cutLine } from "./src/render/font.mjs";
 import { SPECIES_ART, JUVENILE_ART, STEP_ART, SADDLED_ART, WILD_BEAT, HOPPER_SP } from "./src/data/tokens.mjs";
 import { WORDS, DAY, DAY_TEXT, CARD_TEXT, partOfDay, clockToNext, restTarget } from "./src/data/words.mjs";
-import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
-import { mapHooks } from "./src/mapkinds.mjs";
-import { HABITS, BEATS, SAMPLE, SATCHEL, stacks as sampleStacks, stackRoom, capStacks,rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, sleeperGives, isSleeper, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
+import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos } from "./src/logic/ease.mjs";
+import { mapHooks } from "./src/render/mapkinds.mjs";
+import { HABITS, BEATS, SAMPLE, SATCHEL, stacks as sampleStacks, stackRoom, capStacks, rangeOf as habRange, tellOf, clearAir as habClear, givesAt, rainEndsIn, calmWindow, sleepPart, sleeperGives, isSleeper, record as habRecord, noteIn as habNote, wantOf, sampleId, PARTS as DAY_PARTS, leftHaunts, readKey } from "./src/logic/habits.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { FIELD, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN, routineBase, wariness1 } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/data/playtest.mjs";
 // the rules the Station's map room shares (map-room build): reach, where a start may go, the marks
-import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBook } from "./src/map-rules.mjs";
+import { TIER, tierOf, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBook } from "./src/logic/map-rules.mjs";
 import { readOptions } from "./src/store/options.mjs";
 import { SOUNDS, tallyTick, playNotes, soundOff } from "./src/sound/blips.mjs";
 import { PALETTE, DARK_OF, LIGHT_OF } from "./src/data/palette.mjs";
@@ -307,13 +307,13 @@ import { BAY, CAP, STRIKE_DATA, PLACE_TIER, CAVE_TIER, PRICE, SAFE_AFTER_HIT, ST
 import { LAND_NAME, TIER_NAME, DEPOT_NAME, WHY_WORD, WHY_SETTLE, PIN_TEXT, SIGN_NAME, PRESS_TEXT } from "./src/data/field-words.mjs";
 import { placeTier, noteTier, walkTier, walkYield, dataLadder } from "./src/logic/tiers.mjs";
 import { SPECIES, spOf } from "./src/logic/species.mjs";
-import { REALM_SAVE_V as SAVE_V } from "./src/regions.mjs";
+import { REALM_SAVE_V as SAVE_V } from "./src/logic/regions.mjs";
 import { LEGACY_KEY, keyOfCompanion, keptCompanion, newCompanion, keepCompanionAs } from "./src/store/companion.mjs";
 // The save is shared with the Station page (prototypes/station): the Companion owns every top-level field except `st`, which the Station owns;
 // each page re-reads the stored save before writing and keeps the other's part. Bytes this page cannot load stay where they are and open read-only.
 const OLD_GENS = [5, 6].filter(g => !GENS.includes(g));   // a save of an older generator is reset, not played: its bytes are kept under <key>.gen<N>
 let RESET_CARRY = null;   // set by load() when the save found was reset (or the Station reset first); the new realm takes it (newRealm)
-const V7_KEY = 'mb-exploration-v7';   // where a save from before v8 lies: load() resets it, its bytes kept (src/regions.mjs resetPlan)
+const V7_KEY = 'mb-exploration-v7';   // where a save from before v8 lies: load() resets it, its bytes kept (src/logic/regions.mjs resetPlan)
 let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
 let SAVE_KEY = keyOfCompanion(COMPANION.id);
 // The Companion's identity (src/store/companion.mjs): the one kept for this slot, or a new one, kept with its first write.
@@ -392,7 +392,7 @@ function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
 
 // The world's creatures and buried pods: src/world.mjs, by the world's generator (the herd floor is generator 3's).
 const hereRegion = () => S.regions.find(r => r.id === S.here);   // the region mounted on S
-const hereKinds = (R = hereRegion()) => regionKinds(R, biomeVersion(S));   // its kinds: the home region's three starters, any other region's land by the realm's kind version (src/regions.mjs)
+const hereKinds = (R = hereRegion()) => regionKinds(R, biomeVersion(S));   // its kinds: the home region's three starters, any other region's land by the realm's kind version (src/logic/regions.mjs)
 function genLife(seed, region) { return genLifeIn(G, seed, G.gen >= 5 ? hereKinds(region) : ROSTER); }
 // A pod has a known parent: it comes from a wild one's own young, a returned mibi's line, or the land's slab and deep finds. The world's buried ground pods, the first expedition's two and
 // the night's arrivals are not made. ANON_PODS = true brings that old route back, for the tests that still exercise it (the harness's anonPods).
@@ -442,7 +442,7 @@ const vurl = u => REL.v ? u + (u.includes('?') ? '&' : '?') + 'v=' + encodeURICo
 // The first frame waits for the new art and the place (the Probe line shows meanwhile); a load that fails says so with a reload, and never draws old art.
 const ART_DONE = { walk: false, open: false, atlas: false, places: false }, ART_FAIL = [], ART_WHY = [];   // ART_WHY: { part, file, why } for each part that failed, shown under the failed screen
 const artWhy = (part, e, extra) => { ART_FAIL.push(part); ART_WHY.push({ part, file: (e && e.file) || '', why: extra || String((e && e.message) || e || 'failed').slice(0, 300) }); };
-// The first-load wait's measure (src/waitpips.mjs): the files the loaders count (owed when a loader starts, got as each arrives) and the realm worker's stages (RT.wait)
+// The first-load wait's measure (src/logic/waitpips.mjs): the files the loaders count (owed when a loader starts, got as each arrives) and the realm worker's stages (RT.wait)
 const FILES = { done: 0, of: 0 }, fileOwe = n => { FILES.of += n; }, fileGot = () => { FILES.done++; };
 const artHeld = () => RT.artHold && !(ART_DONE.atlas && ART_DONE.places && ART_DONE.walk && ART_DONE.open && ART48.ready && PL.ready && !ART_FAIL.length);
 const artFailed = () => ART_FAIL.length > 0 || (ART_DONE.atlas && !ART48.ready) || (ART_DONE.places && !PL.ready);
@@ -1433,11 +1433,10 @@ function carryApply(S, st) {
   }
   return done;
 }
-const tierOf = () => TIER[S.tier] || TIER[1];
 
 function urlSeed() { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; }
 // A new world's fields, before its life is placed: newRealm starts from them, and load() fills from them what a save lacks.
-// They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk keeps each region's map in regions[].map.
+// They are the fields as the page uses them, with the region in use mounted on S (src/logic/regions.mjs); the save on disk keeps each region's map in regions[].map.
 function worldFields(seed, gen, wid) {
   return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], habits: {}, looks: {}, pages: {}, day: freshDay(), seen: newSeen(MW * MH), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
@@ -1516,7 +1515,7 @@ function storedSave() {
   return { st: o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null };
 }
 function save(how) {   // save({ noWrite: true }) is the storage event's call: the Station's part is read and synced, the bytes are left as they are
-  if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
+  if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/store/sleeper.mjs): nothing may write it
   const had = storedSave();
   if (had.held) {   // the stored save changed under this page into one it cannot read or a newer build's: it is never replaced; the page goes read-only, as boot does for the same bytes
     console.error('the stored save is ' + (had.held === 'newer' ? 'a newer build’s' : 'not readable') + ': it stays as it is and this page writes nothing more');
@@ -1574,8 +1573,8 @@ function load() {
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
     const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
-    layoutCache.clear(); G = worldOfRegion(S.regions.find(r => r.id === S.here)); try { wantSector(hereRegion()); } catch (e) { console.error('the sector was not asked for', e); }   // the mounted region's kind; its sector is asked of the worker (a failure here only leaves the maps on the cell labels, never the save unread)
-    if (noPods) S.pods = noAnon(prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n)).filter(p => !held(p.id));
+    layoutCache.clear(); G = worldOfRegion(hereRegion()); try { wantSector(hereRegion()); } catch (e) { console.error('the sector was not asked for', e); }   // the mounted region's kind; its sector is asked of the worker (a failure here only leaves the maps on the cell labels, never the save unread)
+    if (noPods) S.pods = noAnon(prefixPods(genLife(S.seed).pods, hereRegion().n)).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     if (typeof S.realmRev !== 'number') S.realmRev = REALM_REV;   // a save from before the land freeze: the land of REALM_REV 9 is the one it was made on (the generator's output did not change)
     noteSet('landChanged', S.realmRev !== REALM_REV);   // a save made on another land than this build makes: it keeps the number it was made on, and the page says so (WORDS.notice.landChanged)
@@ -1874,7 +1873,7 @@ function foundEnergy(c) {
 function energyInReach() { const ex = S.exp; let e = 0, n = 0; if (!ex) return { e, n }; for (const c of ex.reach) { const f = foundEnergy(c); e += f.e; n += f.charge + f.warm; } return { e, n }; }
 function inRange(c) { const ex = S.exp; return !!ex && cheb(cxy(c), cxy(ex.start)) <= ex.range; }
 // The cells an expedition can reach on foot without leaving the range square.
-function reachCells(start, range, opts = abOpts()) { return reachCellsIn(G, start, range, opts); }   // opts: what the partner can cross (the partner's own by default); the walk is src/map-rules.mjs, shared with the Station
+function reachCells(start, range, opts = abOpts()) { return reachCellsIn(G, start, range, opts); }   // opts: what the partner can cross (the partner's own by default); the walk is src/logic/map-rules.mjs, shared with the Station
 // The one place the map's numbers are counted.
 function cellCounts(cells) {
   const o = { visited: 0, found: 0, seen: 0, fog: 0, total: 0 };
@@ -1980,7 +1979,7 @@ function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: 
   // a set-out in the night's light (a camp made late in the day) would end seconds in: the night's end runs first, at the Station (dry set-out, then the end), and the lift is at dawn
   if (!dry && S.day.camp != null && partOfDay(S.day.spent) === DAY.parts[DAY.parts.length - 1][0]) { startExpeditionNow(type, cell, firstPodList, true); endExpedition("night"); startExpeditionNow(type, cell, firstPodList); fxMsg(DAY_TEXT.newDay, 4); return; }
   if (!dry) flushRipe();
-  const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
+  const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf(S.tier);
   if (!dry && firstPlacement()) S.pods.push(...(firstPodList || firstPods(S.seed, cell, S.pods)));   // a new world's first expedition: two pods in reach
   const sr = dry ? null : shedsDue()[0];   // one shed pod an expedition; the rest wait for the next
   if (sr) { const c = shedCell(G, cell, tier.range, S.pods, sr.g, abOpts());
@@ -2255,7 +2254,7 @@ function individualOf(w, lay) {
 }
 // where its routine says it is, now: the stand tile of the haunt it keeps at this part of day
 const routineSpot = (c, lay, key) => c.ind ? hauntStand(hauntAt(c.ind.hs, c.ind.doings, hpart()), hauntFree(lay, key, c)) : null;
-// ---------- Ease and the carry of the wild Loika (src/ease.mjs, src/walk-data.mjs CARRY) ----------
+// ---------- Ease and the carry of the wild Loika (src/logic/ease.mjs, src/walk-data.mjs CARRY) ----------
 // The place as the carry reads it: ground (reeds and tall grass are cover; sand, scree and shallow water are open), and what blocks sight (a raised edge, a rock or a tree prop). A view over the place, never part of the land.
 const EASE_BLOCKS = new Set([T.ROCK, T.TRUNK, T.CLIFF, T.CWALL, T.FACE, T.LIP]);
 function easeGrid(lay) {
@@ -2277,13 +2276,13 @@ function easeLoika(c, X) {
   c.wary = w; c.ease |= 0; if (c.ease >= 3) return [];
   const P = X.P, env = X.ease; let heard = false;
   // holding her own food, his walking (creep) steps toward a named Loika at ease 0 are not heard; running (walk gait), a Call and any other noise still count
-  const fruitSteps = S.exp.carry === 'fruit' && c.ease === 0 && X.noise === 'creep' && X.prevP && easeCheb(P, c) <= easeCheb(X.prevP, c);
+  const fruitSteps = S.exp.carry === 'fruit' && c.ease === 0 && X.noise === 'creep' && X.prevP && cheb(P, c) <= cheb(X.prevP, c);
   if (X.moved && c.st !== 'eat' && !fruitSteps) heard = easeHeardAt(env, c, P.x, P.y, X.noise === 'walk' ? 'walk' : 'creep', w);
   if (!heard && !fruitSteps && !fedToday(c) && stayTick(env, c, P)) { heard = true; e5.crowded++; }
-  else if (heard && easeCheb(P, c) > 2) c.crowd = 0;
+  else if (heard && cheb(P, c) > 2) c.crowd = 0;
   if (heard) RT.ringHeard = NOW;   // the carry ring turns to its heard frame for a beat
   // the circle and the back-off of E5: a step made with her in sight within 5 tiles that keeps the distance round her, or lengthens it
-  if (X.moved && X.prevP && easeCheb(P, c) <= 5 && easeLos(env, P, c)) { const d0 = easeCheb(X.prevP, c), d1 = easeCheb(P, c); if (d1 > d0) e5.backsOff++; else if (d1 === d0) e5.circles++; }
+  if (X.moved && X.prevP && cheb(P, c) <= 5 && easeLos(env, P, c)) { const d0 = cheb(X.prevP, c), d1 = cheb(P, c); if (d1 > d0) e5.backsOff++; else if (d1 === d0) e5.circles++; }
   const ev = easeTick(c, heard, sleeperOf(c));   // a sleeper's first heard step only stirs her
   for (const e of ev) {
     if (e === 'stirred') { e5.stirred = (e5.stirred || 0) + 1; c.st = 'alert'; c.t = 1; c.go = 0; c.fl = null; }
@@ -2295,14 +2294,14 @@ function easeLoika(c, X) {
   return ev;
 }
 const easeEnvNow = () => { const lay = curLay(); return easeEnvOf(lay, !lay.cave && stormRain(lay.cell % MW), !lay.cave && inFog(lay.cell)); };
-// The carry ring: how far her steps carry now, in tiles, the number the rule uses to decide heard (easeHeardAt: carryAt, src/ease.mjs, the table in src/walk-data.mjs), for her tile and her gait (P.noise).
+// The carry ring: how far her steps carry now, in tiles, the number the rule uses to decide heard (easeHeardAt: carryAt, src/logic/ease.mjs, the table in src/walk-data.mjs), for her tile and her gait (P.noise).
 // The wind row and the wariness belong to the wild one that hears her, so the ring is drawn for the nearest named wild one she can see; with none in sight it is the table's plain row (wind across, steady) on her ground.
 // Clamped to 1..8 tiles, the strips' range (the table gives 1 to 8: creep 2 or walk 4, sand +1, upwind +2, wary +1, never below 1). Returns { tiles, c } or null off a place.
 function carryRing() {
   const ex = S.exp, P = ex && ex.patch; if (!P || S.phase !== 'patch') return null;
   const lay = curLay(); if (lay.cave) return null;
   let c = null, bd = 99;
-  for (const q of curLive().cr) { if (!q.ind || q.hide || (q.ease | 0) >= 3 || !seenFromPlayer(P.key, q.x, q.y)) continue; const d = easeCheb(q, P); if (d < bd) { bd = d; c = q; } }
+  for (const q of curLive().cr) { if (!q.ind || q.hide || (q.ease | 0) >= 3 || !seenFromPlayer(P.key, q.x, q.y)) continue; const d = cheb(q, P); if (d < bd) { bd = d; c = q; } }
   const v = easeCarryAt(easeEnvNow(), c || { x: P.x, y: P.y }, P.x, P.y, P.noise === 'walk' ? 'walk' : 'creep', c ? wariness1(c.ind.doings.wary) : 0).v;
   return { tiles: Math.max(1, Math.min(8, v)), c };
 }
@@ -2371,7 +2370,7 @@ function campHold(camp, wait, easeOf) {
   slice();
   return { n: total, why };
 }
-// ---------- Habits that play, notes by range, the card line, samples (src/habits.mjs) ----------
+// ---------- Habits that play, notes by range, the card line, samples (src/logic/habits.mjs) ----------
 // A named Loika's habit plays at its haunt when its condition comes in its routine's part of day, after its tell, over four beats: c.hb = { k, n, tell, pose, v (calm: the wary one's id), notes: { front|side: range } }.
 // While it plays c.st is 'hab' (she holds still); a heard step (ease 2 or more) loses the play. Each habit plays at most once a day for each Loika: S.day.hab['id:habit'] = 'played' | 'lost' | 'missed'.
 const habDay = () => (S.day.hab || (S.day.hab = {}));
@@ -2385,7 +2384,7 @@ const curledNow = c => sleeperOf(c) && !(c.ease >= 1);   // asleep and grazing: 
 // her bed goes on her page from any sighting of her in it: at her bed from dusk, seen from anywhere in sight
 function pageBed(c, X) { if (!c.ind || !hbVisible(c, X) || !sleepPart(dayPart()) || !atBedNow(c)) return; const pg = (S.pages || (S.pages = {})), mine = pg[c.id] || (pg[c.id] = {}); if (!mine.bed) mine.bed = { x: c.ind.hs.bed.x, y: c.ind.hs.bed.y }; }
 // the card line for a habit: what is still missing (her coat first, then her face; sleep-curled asks no further until the dew ships); null when nothing is left to ask
-const habWant = (id, k) => { const rec = ((S.habits || {})[id] || {})[k]; return wantOf(S.seed, id, k, rec && rec.got); };
+const habWant = (id, k) => { const rec = ((S.habits || {})[id] || {})[k]; return wantOf(rec && rec.got); };
 const roomWord = (k, w) => k === 'sleep' && w === 'place' ? WORDS.habit.sleepPlace : WORDS.habit.rooms[w];   // sleep-curled's last line is where she goes at first light
 const habCard = (id, k, sl) => { const w = habWant(id, k), nm = sl ? WORDS.habit.asleep : WORDS.habit.name[k]; return w ? WORDS.habit.card(nm, roomWord(k, w), false) : WORDS.habit.cardKnown(nm); };
 // the first habit of hers that still lacks something, as one card line; null when she is fully known. A curled sleeper is read as asleep (her sleep card), never as shaking dry.
@@ -2483,7 +2482,7 @@ function habitVisit(c, X) {
 // NAMED SLOT PAWS-ON-TILE: the built paw sign drawn on the stand tile. The art director passes it in whole-place stills at walking zoom; if it does not read, set this false:
 // the slot stays named and empty and the read works from the message box alone.
 const PAWS_ON_TILE = true;
-// Her prints lie at the stand tile of a haunt her routine has moved her on from (or she bolted from), until the end of the next morning; the routine says where she was, so they are read off it (src/habits.mjs leftHaunts).
+// Her prints lie at the stand tile of a haunt her routine has moved her on from (or she bolted from), until the end of the next morning; the routine says where she was, so they are read off it (src/logic/habits.mjs leftHaunts).
 // ✓ within one tile of them, with her more than 2 tiles from them: one action, one light. It says when she was there, goes on her page (S.pages) and into the day's count; no Data, no sample, no Essence, and no habit note.
 // The tile the print is drawn on is printMark's (src/logic/wild-rules.mjs): the free tile nearest the stand with no decor on it; none: the print is not drawn, the read still works.
 function printsHere(at) {   // at: a place's key, to read the prints of a place the explorer is not in (the map's turned sign); none given: the place in hand
@@ -2492,7 +2491,7 @@ function printsHere(at) {   // at: a place's key, to read the prints of a place 
   const here = !at || (ex.patch && ex.patch.key === at), lay = here ? curLay() : layout(at); if (lay.cave) return [];
   const live = here ? curLive() : ex.live[at], part = dayPart(), out = [];
   for (const c of live.cr) { if (!c.ind || !c.ind.hs) continue;
-    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone, DAY.parts, ex.n === 1)) { const free = printFree(lay), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
+    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone, ex.n === 1)) { const free = printFree(lay), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
   return out;
 }
 function printsToRead() {
@@ -4537,7 +4536,7 @@ const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE, NIGHT, DUS
 // The Shade place's set: the same, with its own fog table (the wash) and its own id, so no canvas cache mixes the two.
 const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE, NIGHT, DUSK];
 const buildNight = () => { NIGHT.length = 0; NIGHT.push(...nightTable(RGB)); PT.ts = null; buildDusk(); };   // (PT.ts null: the props' set-space table is read again)
-// The dusk table and the seen land's map: one source, ./src/dusk.mjs (the places view reads the same file): the unseen land is each colour's one-step dark leaned 10% toward the amber's dark, snapped to the nearest palette colour (flat, no dither); the seen land (DUSKLIT_RGB) is each colour itself darkened 20% and leaned the same, an exact colour, never snapped.
+// The dusk table and the seen land's map: one source, ./src/render/dusk.mjs (the places view reads the same file): the unseen land is each colour's one-step dark leaned 10% toward the amber's dark, snapped to the nearest palette colour (flat, no dither); the seen land (DUSKLIT_RGB) is each colour itself darkened 20% and leaned the same, an exact colour, never snapped.
 const DUSKLIT = [], DUSKLIT_RGB = [];   // DUSKLIT_RGB: the exact colour the seen land is drawn with; DUSKLIT: its nearest palette index, only a flag and a fallback
 function buildDusk() { DUSK.length = 0; DUSKLIT.length = 0; DUSKLIT_RGB.length = 0; const w = RGB[DARK[C.amber]], lim = i => i < FIRST_N ? FIRST_N : RGB.length;
   DUSK.push(...duskTable(RGB.length, DARK, i => RGB[i], w, (i, c) => nearestPal(c[0], c[1], c[2], lim(i))));
@@ -5496,7 +5495,7 @@ const SIGN_WORD = { b: 'slow beat', t: 'tracks' };
 // The map's signs, a list per cell. Pins, gates, where the Probe broke, outposts, beacons, found Energy and pods left behind always show;
 // then beats, charge and tracks seen this turn or the one before (faded), up to about 40% of revealed cells, never on a found place or inside a fog bank.
 function mapSigns() {
-  const book = signBook(), out = book.out, add = book.add;   // the book, the merge of kinds and the cap are src/map-rules.mjs
+  const book = signBook(), out = book.out, add = book.add;   // the book, the merge of kinds and the cap are src/logic/map-rules.mjs
   // a found place has nothing hidden left to sign; a located pod shows as a pip, not a sign
   const hide = c => placeDone(c) || (S.exp && inFog(c));   // a buried pod keeps its slow beat until found
   if (PAWS_ON_TILE && S.exp) { const k = S.exp.patch ? S.exp.patch.key : String(S.exp.pos), dp = printsHere(k).find(q => dewDir(q)); if (dp) add(+k, 't', 10, { dew: dewDir(dp) }); }   // the dew's prints in this place, turned on the map
@@ -5616,7 +5615,7 @@ function landImage(spec) { return landTry(spec) || landStand(spec); }
 // landPaint, cellMark, cellSignAt and openFrame are src/render/map-paint.mjs; the page's state is handed in as getters (read each time, never copied).
 const { landPaint, cellMark, cellSignAt, openFrame } = makeMapPaint({
   get S() { return S; }, get G() { return G; }, landTry: spec => landTry(spec), passable: c => passable(c), walkedCell: c => walkedCell(c), placeHave: k => placeHave(k),
-  layout: k => layout(k), walkPB: (n, w, h) => walkPB(n, w, h), openRect: () => openRect(), firstPlacement: () => firstPlacement(), startPlaces: () => startPlaces(), tierOf: () => tierOf() });
+  layout: k => layout(k), walkPB: (n, w, h) => walkPB(n, w, h), openRect: () => openRect(), firstPlacement: () => firstPlacement(), startPlaces: () => startPlaces(), tierOf: () => tierOf(S.tier) });
 function drawReachView(t) {
   if (S.exp.beaconView || S.ui.mapFull) { drawMap('map', t); return; }   // the whole map, when chosen in the menu (it stays chosen)
   ensureMap();
@@ -6665,7 +6664,7 @@ function podSlot(x, y, pod) {
 // Device status, far right of every top bar: battery and connectivity. Static placeholders for now.
 const STATUS_W = 30;
 // The part of day in the top bar: the art director's six signed 14 px pictures (art/day-dial/frames/), drawn as the files came, never redrawn. Until they load (or if they fail) the sun stands.
-const DAY_PARTS = ['dawn', 'morning', 'midday', 'afternoon', 'dusk', 'night'], DAY_ART = {}, DAY_DIM = {};
+const DAY_ART = {}, DAY_DIM = {};
 let LOG_SKETCH = null;   // the Log's sketch of a met Loika: her signed 48 x 48 base cut (art/ui/log-sketch-loika-48.png, the file as signed in ui/assets/masters/pods/mibi-adult-S01-48x48.png)
 async function loadLogSketch() {
   try {
@@ -7250,7 +7249,7 @@ function drawOpenLand(t, fr) {
     for (const c of nw.cells) { const p = q.at(c), x = p.x + cs - 11, y = p.y + 5; if (!inF(x - 1, y - 1, s + 2, s + 2)) continue; R(x - 1, y - 1, s + 2, s + 2, C.ink); R(x, y, s, s, C.bone); } } }   // bone: orange means focus only here
   drawOpenWay(q, t, fr);
   // corner states: the Probe's plates only when one is lost; docked, a band across the foot
-  const tier = tierOf(); if (S.shield != null && S.shield < tier.shield) { const w = 9 * tier.shield + 12; panel(WX + WW - w - 4, WY + 4, w, 22, C.ink, C.stone); shieldBars(WX + WW - w + 2, WY + 9, Math.max(0, S.shield), tier.shield, 6, 12); }
+  const tier = tierOf(S.tier); if (S.shield != null && S.shield < tier.shield) { const w = 9 * tier.shield + 12; panel(WX + WW - w - 4, WY + 4, w, 22, C.ink, C.stone); shieldBars(WX + WW - w + 2, WY + 9, Math.max(0, S.shield), tier.shield, 6, 12); }
   if (isDocked()) { R(WX, WY + WH - 30, WW, 30, C.ink); text(OPEN_TEXT.docked, WX + WW / 2, WY + WH - 24, C.mint, 2, 'center'); }
 }
 function drawSetup(t) {
@@ -7584,7 +7583,7 @@ const airClear = () => { const lay = curLay(); return habClear({ raining: !lay.c
 function drawWatch() {
   const c = watchHer(); if (!c) return;
   const ex = S.exp, P = ex.patch, h = c.hb, W = WORDS.watch, name = habName(c), range = habRange(cheb(c, P)), b = beatOf(h), coat = wildSaddled(c) ? 'saddle' : 'plain';
-  const gv = givesNow(range, airClear(), byDay()), hl = hearLineOf(c);
+  const gv = givesAt(range, airClear(), byDay()), hl = hearLineOf(c);
   const chip = chipOf({ range, tiles: cheb(c, P), gives: gv, left: hl ? hl.left : null });
   R(0, 0, SCR_W, SCR_H, C.night);
   R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night); text(clipText(W.head(name), 380, 2), 10, 9, C.bone); blit(battArt(), SCR_W - 6 - 27, 11);
@@ -7673,7 +7672,7 @@ function patchGuard() { if (S.ui.patchArm && !patchOn()) S.ui.patchArm = 0; }   
 // the signs you have met as pictures, and the field guide as tokens.
 function drawProbe() {
   // mid-expedition the Probe is as it set out (ex.range, ex.hold, ex.smax): a docked upgrade applies from the next expedition
-  const ex = S.exp, tier = ex ? { range: ex.range, hold: ex.hold, shield: ex.smax } : tierOf(), tierN = ex ? +(Object.keys(TIER).find(k => TIER[k].shield === ex.smax) || S.tier) : S.tier;
+  const ex = S.exp, tier = ex ? { range: ex.range, hold: ex.hold, shield: ex.smax } : tierOf(S.tier), tierN = ex ? +(Object.keys(TIER).find(k => TIER[k].shield === ex.smax) || S.tier) : S.tier;
   patchGuard(); viewBg(); drawTop('Probe', 'tier ' + tierN);
   text('Shield', 24, 40, C.mist); text('Reach', 160, 40, C.mist); text('Hold', 250, 40, C.mist);
   const n = ex ? ex.shield : (S.shield != null ? Math.max(0, S.shield) : tier.shield);
@@ -7732,7 +7731,7 @@ function tallySounds(shown, e) {   // a tick as each count rises (the pod's with
 function openCase(end) { S.ui.tally = end ? { at: NOW, seen: [0, 0, 0], settled: 0 } : null; S.ui.caseEnd = end ? 1 : 0; S.ui.caseSel = null; S.phase = 'cargo'; transition(); }
 function caseHold() { return S.exp ? S.exp.cargo : (S.hold || { e: 0, d: 0, s: 0, pods: [], samples: [] }); }
 function caseCells() {
-  const h = caseHold(), np = S.exp ? S.exp.hold : Math.max(tierOf().hold, (h.pods || []).length), cells = [], r = np > 2 ? 22 : 30;
+  const h = caseHold(), np = S.exp ? S.exp.hold : Math.max(tierOf(S.tier).hold, (h.pods || []).length), cells = [], r = np > 2 ? 22 : 30;
   for (let i = 0; i < BAY; i++) cells.push({ k: 'crate', i, x: 36 + i * 60, y: 114, w: 48, h: 36 });
   for (let i = 0; i < np; i++) cells.push({ k: 'pod', i, x: 40 + i * (2 * r + 12), y: 228 - r, w: 2 * r, h: 2 * r, r });
   ['e', 'd', 's'].forEach((s, i) => cells.push({ k: 'sup', s, x: 222 + i * 66, y: 198, w: 56, h: 60 }));
@@ -8101,7 +8100,7 @@ function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() 
 import { LINE_OK, LINE_BACK, LINE_MID, START_TEXT, MAP_TEXT, DIET_TEXT, TITLE_TEXT } from "./src/data/line-words.mjs";
 import { expireEffects } from "./src/render/effects.mjs";
 function firstPlacement() { return firstPlacementOf(S.seen.rev); }
-function placeValid(c) { return placeValidIn({ G, revealed: S.seen.rev, passable, starts: firstPlacement() ? startPlaces() : null }, c); }   // src/map-rules.mjs: never on a sealed plateau
+function placeValid(c) { return placeValidIn({ G, revealed: S.seen.rev, passable, starts: firstPlacement() ? startPlaces() : null }, c); }   // src/logic/map-rules.mjs: never on a sealed plateau
 function placeReason(c) {
   if (firstPlacement()) return START_TEXT.pickGlint;
   if (!S.seen.rev[c]) return START_TEXT.unseen;
@@ -8609,7 +8608,7 @@ const EMBED = document.documentElement.classList.contains('embed');   // ?embed,
 // the Caddy's seat with that word for the seat's number (the page's stand-in for the hold). The developer's "Companion silent" holds the answer back.
 const SHELL = EMBED && window.parent && window.parent !== window ? window.parent : null;
 let shellSeat = 0, shellSilent = false, shellSaid = '', shellLost = false;
-// Putting a realm to sleep, the Companion's side (src/sleeper.mjs): its signing key (made once, at the first boot, kept in IndexedDB and never exported), its public key
+// Putting a realm to sleep, the Companion's side (src/store/sleeper.mjs): its signing key (made once, at the first boot, kept in IndexedDB and never exported), its public key
 // in `mb-companion-<slot>` and in what it tells the shell, and the answers to the Station's `mb-sleep` requests. Nothing here is on a screen.
 let KEY_STORE = null;   // a test hands in a store for the key pairs here; the page uses IndexedDB
 const LS = { getItem: k => localStorage.getItem(k), setItem: (k, v) => localStorage.setItem(k, v), removeItem: k => localStorage.removeItem(k) };   // storage is reached at each call, never as the page loads: a browser that blocks it throws on reaching it
@@ -8723,7 +8722,7 @@ function energyText() {
 }
 // What each row says, by the row's id in the page.
 function observerRows() {
-  const ex = S.exp, t = tierOf(), st = stPart(), h = S.hold, cm = carriedMibis(), pm = ex ? ex.pt : partnerMibi(), home = homeMibis();
+  const ex = S.exp, t = tierOf(S.tier), st = stPart(), h = S.hold, cm = carriedMibis(), pm = ex ? ex.pt : partnerMibi(), home = homeMibis();
   const careOf = m => ' (plays ' + (m.plays || 0) + (m.bonded ? ', bonded' : '') + (m.grownTurn != null ? ', grown T' + m.grownTurn : '') + ')';   // the observer only: no screen shows care
   return {
     oExp: ex ? ex.n + ' · ' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') : (S.phase === 'sealed' && S.report) ? S.report.n + ' · ended' : S.expN + ' · not started',

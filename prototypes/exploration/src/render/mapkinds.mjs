@@ -2,8 +2,8 @@
 // Thickets as dark tangles of thorn and cane on open grass, Tallwood as one big old crown per cell. Drawing only: the ground shares are untouched.
 // The page calls these in buildMapPB: cell() draws a whole cell and returns true for the cells it owns (false: the page draws it as before),
 // foam() is the shore colour of a water cell, and post() runs after the second pass (the Thickets' tangles, joined across cell edges).
-import { L } from "./world.mjs";
-import { mapTuft } from "./trees48.mjs";
+import { L } from "../world.mjs";
+import { mapTuft } from "../trees48.mjs";
 
 const CELL = 26;
 const sp = (pb, px, py, R, n, cols) => { for (let i = 0; i < n; i++) pb.set(px + R.int(CELL), py + R.int(CELL), R.pick(cols)); };

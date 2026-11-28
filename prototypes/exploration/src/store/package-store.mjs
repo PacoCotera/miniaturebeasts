@@ -8,7 +8,7 @@
 import { REALM_REV } from '../gen7/region.mjs';
 import { PLACE_REV } from './place-store.mjs';
 import { MW, MH, cxy, cheb, passableIn } from '../world.mjs';
-import { reachCellsIn, tierOf } from '../map-rules.mjs';
+import { reachCellsIn, tierOf } from '../logic/map-rules.mjs';
 import { writeBaked, readBaked } from '../../../places/src/format/baked.mjs';
 import { PACKAGE_FORMAT, PKG, heldOf } from './package-dock.mjs';
 export { PACKAGE_FORMAT, heldOf, idbKv, shaOfBytes } from './package-dock.mjs';   // the dock record's page side, the browser's store and the sha (no imports there, so the play shell can read it)

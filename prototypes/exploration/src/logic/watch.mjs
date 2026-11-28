@@ -1,7 +1,7 @@
 // W6b: the watch view's pure rules (plan v6 S3 Release B). The page keeps the state (c.hb on the live creature); nothing is stored here.
 // The pose of her picture follows the beat of the play; the chip says the range, the tiles and what this range gives now (the range rule: it gives by range only).
-import { BEATS, givesAt } from './habits.mjs';
-import { WORDS } from './data/words.mjs';
+import { BEATS } from './habits.mjs';
+import { WORDS } from '../data/words.mjs';
 
 // the current beat of a play: -1 while the tell goes on, else 0..3 (habitTick: beat = n - tell, a play ends at BEATS)
 export const beatOf = h => Math.max(-1, Math.min(BEATS - 1, (h.n | 0) - (h.tell | 0)));
@@ -24,8 +24,6 @@ export function chipOf({ range, tiles, gives, left }) {
   const W = WORDS.watch, t = W.tiles(tiles), gw = giveWords(gives), st = left == null ? '' : WORDS.ease.stayShort(left);
   return { tag: range, tiles: t, gives: gw, stay: st, text: [range, t, gw, st].filter(Boolean).join(' · ') };
 }
-// what the view says it gives at a range, from the rule itself
-export const givesNow = (range, clear, byDay) => givesAt(range, clear, byDay);
 // design 2026-11-24 12:03: the eye never hands over what the range withholds. At far, and whenever the air is not clear (rain, fog), the view draws her shape
 // (the strip's silhouette from the cut's mask, 1x); mid and near, in clear air, draw the signed cut.
 export const drawsCut = (range, clear) => range !== 'far' && !!clear;

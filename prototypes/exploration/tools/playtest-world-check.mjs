@@ -13,7 +13,7 @@ import { join } from "node:path";
 import { firstTrip } from "./first-trip-bot.mjs";
 import { makePage } from "../tests/page-harness.mjs";
 import { REALM_REV } from "../src/gen7/region.mjs";
-import { REALM_BIOME_V } from "../src/regions.mjs";
+import { REALM_BIOME_V } from "../src/logic/regions.mjs";
 
 export const RING1 = [[2, 1], [3, 2], [2, 3], [1, 2]];   // the four slots round region 1 (slot 2,2)
 export const LIST_FILE = new URL("../src/data/playtest-seeds.mjs", import.meta.url);

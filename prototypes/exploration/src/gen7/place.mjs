@@ -9,7 +9,7 @@
 //   - the passes of Rule 1.4 run on a window of 5 x 7 cells round the cell, and the cell's tiles plus a one-tile apron are cut out of it;
 // Rule 1.8: every terrain boundary is drawn only by the dual grid's corner pieces; nothing here composites or overlays.
 import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world.mjs';
-import { ATLAS } from '../regions.mjs';
+import { ATLAS } from '../logic/regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, portAt, edgeOfStep, route, NC } from './region.mjs';
 import { coastSide, levelsOf, forgetLevels, regionBanks, madeRegionBanks, presetRegionBanks, loweredAt, levelCell, RAISE_OFF, tileLevel, raised as raisedTile, findWayup, pocketWayups, bankWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';

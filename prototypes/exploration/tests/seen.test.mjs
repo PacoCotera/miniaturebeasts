@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import * as SN from "../src/logic/seen.mjs";
-import * as R from "../src/regions.mjs";
+import * as R from "../src/logic/regions.mjs";
 
 const N = 320;
 test("seenFromOld: veil and a Call's kept rows join one record; been-in comes from the visit or the veil", () => {

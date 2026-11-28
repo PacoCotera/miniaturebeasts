@@ -4,14 +4,14 @@
 import { blitTile } from './blit.mjs';
 import { sixteenOf } from './sixteen.mjs';
 import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } from './sprites.mjs';
-import { duskTable, duskLitRgb } from '../../exploration/src/dusk.mjs';
+import { duskTable, duskLitRgb } from '../../exploration/src/render/dusk.mjs';
 import { BAYER4 } from '../../exploration/src/render/view.mjs';
 import { NB9, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX } from '../../exploration/src/render/edge.mjs';
 
 // Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade, 5 night (the clock's night: the page gives the set its nightMap; none given, it is dark2), 6 dark (the clock's dusk, the one-step table).
 export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'night', 'dusk'];
 
-// The dusk tables (level 6) come from the one shared source, exploration/src/dusk.mjs (the page's buildDusk reads it too): the lean (10%), the lit step (20%) and the palette rule are stated there.
+// The dusk tables (level 6) come from the one shared source, exploration/src/render/dusk.mjs (the page's buildDusk reads it too): the lean (10%), the lit step (20%) and the palette rule are stated there.
 // duskOf: the unseen land's table over the set's palette, each colour snapped to the nearest colour of the set (rgb[i] = [r, g, b] of palette index i: core 1..47, then the set's, or undefined).
 export function duskOf(rgb, dark) {
   const have = []; for (let i = 1; i < rgb.length; i++) if (rgb[i]) have.push(i);

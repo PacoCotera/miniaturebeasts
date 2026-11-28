@@ -3,14 +3,15 @@
 // The range rule is G1's as round 4 tested it (the range rule 3 A and B); every number is *greybox* (the designer's to tune).
 //   a habit: shake (after rain, the moment it stops), calm (a wary one comes near her), sleep (curled at her bed, from dusk)
 //   a play: tell (2 to 4 actions, the individual's), then four beats; ✓ facing her in sight during a play is a note
-import { hash, rnd } from './world.mjs';
-import { haunt as hauntOf } from './gen7/haunts.mjs';
+import { hash, rnd } from '../world.mjs';
+import { haunt as hauntOf } from '../gen7/haunts.mjs';
+import { DAY } from '../data/words.mjs';
 
 export const HABITS = Object.freeze(['shake', 'calm', 'sleep']);
 export const BEATS = 4;
 // what each habit leaves when she is watched from near, and the Station chapter it answers (the walk design, section 8: a tuft is the Coat's, a whisker the Face's, a shed claw the Legs & Tail's)
 export const SAMPLE = Object.freeze({ calm: Object.freeze({ item: 'whisker', chapter: 'face' }), sleep: Object.freeze({ item: 'claw', chapter: 'legs-tail' }) });
-export const WANTS = Object.freeze(['place', 'coat', 'face']);   // the three things a note can give (the range rule 2): where she goes, her coat, her face
+const WANTS = Object.freeze(['coat', 'face', 'place']);   // the three things a note can give (the range rule 2), in the order the card asks for them: her coat, her face, where she goes
 export const SATCHEL = 8;                                         // satchel slots for samples, drops, packs, materials and food (the walk design, section 8)
 export const STACK = 9;                                           // one slot holds one kind, up to 9 (owner 2026-11-25: you fill up your inventory too fast)
 // the satchel's slots: like kinds share one slot, in the order each kind first came; each stack keeps its things whole (name, find, day)
@@ -52,28 +53,25 @@ export const isSleeper = ({ part, atBed, played, hasPlay, gone, ease }) => !!atB
 
 // the card line for a habit (the range rule 3B, slip W5): what is still missing, the first want for a wild one being her coat, then her face, then where she goes.
 // Sleep-curled's last line is where she goes at first light, which the dew's prints at her bed give in the morning (night step 4). null when nothing is left to ask.
-export function wantOf(seed, id, k, got) {
-  const left = WANTS.filter(w => !(got && got[w]));
-  return left.length ? ['coat', 'face', 'place'].find(w => left.includes(w)) : null;
-}
+export const wantOf = got => WANTS.find(w => !(got && got[w])) ?? null;
 
 // ---------- her prints (the walk design, W4 round 2, 3A) ----------
 // A named wild one who leaves a haunt leaves her prints at its stand tile until the end of the next morning. The routine says where she was at each part of day, so the prints are read off it:
 // the haunts she kept earlier today and has moved on from, last night's and yesterday's while the dew's morning lasts, and the haunt she bolted from.
-export const PARTS = Object.freeze(['dawn', 'morning', 'midday', 'afternoon', 'dusk', 'night']);
+export const PARTS = Object.freeze(DAY.parts.map(p => p[0]));   // the parts of day by name, from the day's table
 const sameSite = (a, b) => !!a && !!b && a.x === b.x && a.y === b.y;
-// The dew lies from the start of dusk to the end of the morning (parts: DAY.parts, [name, length]; read from the table, never typed).
-export function dewLies(part, parts) {
-  const names = parts.map(p => p[0]), i = names.indexOf(part);
-  return i >= names.indexOf('dusk') || i <= names.indexOf('morning');
+// The dew lies from the start of dusk to the end of the morning.
+export function dewLies(part) {
+  const i = PARTS.indexOf(part);
+  return i >= PARTS.indexOf('dusk') || i <= PARTS.indexOf('morning');
 }
-// hs: her haunts; doings: her individual's; part: now; gone: she has bolted. Returns [{ h, part, yday, gone }], the latest leave of each haunt first.
-// parts (optional): DAY.parts; with it each entry also says `to`: the haunt she went to, when the print was made in the dew and still lies in it (the dew's prints point); null by dry day or after a bolt.
+// hs: her haunts; doings: her individual's; part: now; gone: she has bolted. Returns [{ h, part, yday, gone, to, toPart }], the latest leave of each haunt first.
+// to: the haunt she went to, when the print was made in the dew and still lies in it (the dew's prints point); null by dry day or after a bolt.
 // first: day 1, there is no yesterday, so no yesterday's prints.
-export function leftHaunts(hs, doings, part, gone, parts, first) {
+export function leftHaunts(hs, doings, part, gone, first) {
   if (!hs) return [];
-  const now = PARTS.indexOf(part), at = p => hauntOf(hs, doings, p), cur = at(part), out = [], dewNow = !!parts && dewLies(part, parts);
-  const add = (h, p, yday) => { if (h && !sameSite(h, cur) && !out.some(q => sameSite(q.h, h))) { const nx = PARTS[(PARTS.indexOf(p) + 1) % PARTS.length], to = dewNow && dewLies(nx, parts) ? at(nx) : null; out.push({ h, part: p, yday, gone: false, to: to && !sameSite(to, h) ? to : null, toPart: to && !sameSite(to, h) ? nx : null }); } };
+  const now = PARTS.indexOf(part), at = p => hauntOf(hs, doings, p), cur = at(part), out = [], dewNow = dewLies(part);
+  const add = (h, p, yday) => { if (h && !sameSite(h, cur) && !out.some(q => sameSite(q.h, h))) { const nx = PARTS[(PARTS.indexOf(p) + 1) % PARTS.length], to = dewNow && dewLies(nx) ? at(nx) : null; out.push({ h, part: p, yday, gone: false, to: to && !sameSite(to, h) ? to : null, toPart: to && !sameSite(to, h) ? nx : null }); } };
   if (gone && cur) out.push({ h: cur, part, yday: false, gone: true, to: null });   // she bolted: the haunt she was keeping is the one she left
   for (let i = now - 1; i >= 0; i--) if (!sameSite(at(PARTS[i]), at(PARTS[i + 1]))) add(at(PARTS[i]), PARTS[i], false);
   if (now <= 1 && !first) for (let i = PARTS.length - 1; i >= 3; i--) if (!sameSite(at(PARTS[i]), at(PARTS[(i + 1) % PARTS.length]))) add(at(PARTS[i]), PARTS[i], true);   // until the end of the next morning: yesterday's afternoon, dusk and night

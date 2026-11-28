@@ -1,9 +1,9 @@
 // What the map room reads of the Companion's part of the save (station-map-room-build-1). Read only: the Station writes none of it.
-// The reach, where a start may go and the marks are the Companion's own rules (exploration/src/map-rules.mjs, one module for both pages); the land is
+// The reach, where a start may go and the marks are the Companion's own rules (exploration/src/logic/map-rules.mjs, one module for both pages); the land is
 // made from the save's seed and slot as the Companion makes it (worldOf in exploration/index.html), so the same save gives the same land on both.
 import { genWorld7 } from "../../exploration/src/world7.mjs";
 import { softGround, bankEdges, passableIn } from "../../exploration/src/world.mjs";
-import { TIER, reachCellsIn, placeValidIn, firstPlacementOf, keptPlacesOf } from "../../exploration/src/map-rules.mjs";
+import { TIER, reachCellsIn, placeValidIn, firstPlacementOf, keptPlacesOf } from "../../exploration/src/logic/map-rules.mjs";
 
 // The mounted region of the save: its record, its map (the veil, the wild ones, the pins, where she was seen, the last start) and its id.
 // The save keeps every region's map in its record (regions.mjs serialize): the last start crosses as the region's map.lastPos (design slip 8: yes, it reaches the Station).

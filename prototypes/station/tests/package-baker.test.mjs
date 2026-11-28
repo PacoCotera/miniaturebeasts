@@ -8,7 +8,7 @@ import { wantOf, bakePackage } from "../src/package-baker.mjs";
 import * as store from "../../exploration/src/store/package-store.mjs";
 import { memKv } from "../../exploration/src/store/package-store.mjs";
 import * as W7 from "../../exploration/src/world7.mjs";
-import { biomeVersion } from "../../exploration/src/regions.mjs";
+import { biomeVersion } from "../../exploration/src/logic/regions.mjs";
 import { realm7 } from "../../exploration/src/gen7/region.mjs";
 import { decorSites, madeBanks } from "../../exploration/src/gen7/place.mjs";
 import { placesTag } from "../../exploration/src/store/place-store.mjs";

@@ -2,8 +2,8 @@
 //   node --test prototypes/exploration/tests/watch.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { beatOf, poseOf, stripPoses, chipOf, giveWords, givesNow } from "../src/watch.mjs";
-import { BEATS } from "../src/habits.mjs";
+import { beatOf, poseOf, stripPoses, chipOf, giveWords } from "../src/logic/watch.mjs";
+import { BEATS, givesAt } from "../src/logic/habits.mjs";
 
 test("the beat follows the tell: -1 while it goes on, then 0 to 3", () => {
   assert.equal(beatOf({ n: 0, tell: 3 }), -1);
@@ -21,11 +21,11 @@ test("the pose of each beat: shake-dry shakes for three beats and stands, calm s
 });
 
 test("the chip says the range, the tiles and what this range gives now", () => {
-  assert.equal(chipOf({ range: "mid", tiles: 4, gives: givesNow("mid", true, true), left: null }).text, "mid · 4 tiles · her coat");
-  assert.equal(chipOf({ range: "far", tiles: 7, gives: givesNow("far", true, true), left: null }).text, "far · 7 tiles · where she goes");
-  assert.equal(chipOf({ range: "far", tiles: 7, gives: givesNow("far", false, true), left: null }).gives, "only her shape from here", "rain or fog");
-  assert.equal(chipOf({ range: "far", tiles: 7, gives: givesNow("far", true, false), left: null }).gives, "only her shape from here", "from dusk");
-  const near = chipOf({ range: "near", tiles: 1, gives: givesNow("near", true, true), left: 6 });
+  assert.equal(chipOf({ range: "mid", tiles: 4, gives: givesAt("mid", true, true), left: null }).text, "mid · 4 tiles · her coat");
+  assert.equal(chipOf({ range: "far", tiles: 7, gives: givesAt("far", true, true), left: null }).text, "far · 7 tiles · where she goes");
+  assert.equal(chipOf({ range: "far", tiles: 7, gives: givesAt("far", false, true), left: null }).gives, "only her shape from here", "rain or fog");
+  assert.equal(chipOf({ range: "far", tiles: 7, gives: givesAt("far", true, false), left: null }).gives, "only her shape from here", "from dusk");
+  const near = chipOf({ range: "near", tiles: 1, gives: givesAt("near", true, true), left: 6 });
   assert.equal(near.tiles, "1 tile"); assert.equal(near.stay, "stay 6"); assert.equal(near.text, "near · 1 tile · her face, and a sample · stay 6");
   assert.equal(giveWords([]), "only her shape from here");
 });

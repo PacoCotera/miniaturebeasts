@@ -3,9 +3,9 @@
 //   node --test prototypes/exploration/tests/realm-slots-cache.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import * as R from "../src/regions.mjs";
+import * as R from "../src/logic/regions.mjs";
 
-const url = new URL("../src/regions.mjs", import.meta.url).href;
+const url = new URL("../src/logic/regions.mjs", import.meta.url).href;
 let n = 0;
 const fresh = () => import(url + "?cold=" + (n++));   // a new module instance: an empty slotCache
 const slots = M => seed => { const o = []; for (let ay = 0; ay < 5; ay++) for (let ax = 0; ax < 5; ax++) o.push(M.slotBiome(seed, ax, ay, 2)); return o.join(); };

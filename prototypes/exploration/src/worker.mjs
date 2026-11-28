@@ -13,7 +13,7 @@ import { paintLand } from './render/landpaint.mjs';
 import { realm7, setRealm7 } from './gen7/region.mjs';
 import { decorOf, presetHollowSites, banksOfRegion, madeBanks, presetBanks } from './gen7/place.mjs';
 import { bakedCell, sectorOfRegion } from './world7.mjs';
-import { BAKE_STAGES, WINDOW_STAGES } from './waitpips.mjs';
+import { BAKE_STAGES, WINDOW_STAGES } from './logic/waitpips.mjs';
 import { renderGround, PlaceGroundCache, wholeScale } from '../../places/src/ground.mjs';
 
 let CTX = null, SEEDED = null;
@@ -79,6 +79,6 @@ self.onmessage = e => {
       return;
     }
     if (m.op === 'sector') { if (SEEDED !== seed) { setRealm7(seed, m.realm); SEEDED = seed; } const sector = sectorOfRegion(seed, slot, m.cells || undefined); self.postMessage({ seed, slot, sector, part: !!m.cells }, [sector.cls.buffer, sector.lv.buffer, ...(sector.have ? [sector.have.buffer] : [])]); return; }
-    self.postMessage({ seed, realm: realm7(seed, (step, of) => self.postMessage({ seed, step, of })) });   // each real stage, for the first-load wait's pips (src/waitpips.mjs)
+    self.postMessage({ seed, realm: realm7(seed, (step, of) => self.postMessage({ seed, step, of })) });   // each real stage, for the first-load wait's pips (src/logic/waitpips.mjs)
   } catch (err) { self.postMessage({ op: m.op, id: m.id, seed, error: why(err) }); }
 };

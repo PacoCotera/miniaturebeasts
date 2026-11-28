@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { genRegion7, realm7, regionAt } from '../src/gen7/region.mjs';
 import { buildRealm, fieldsAt } from '../src/gen7/world.mjs';
-import { ATLAS } from '../src/regions.mjs';
+import { ATLAS } from '../src/logic/regions.mjs';
 import { vectorOf, SEEDS, SLOTS } from '../tools/gen7-vectors.mjs';
 
 const VECTORS = JSON.parse(readFileSync(new URL('./gen7-vectors.json', import.meta.url), 'utf8'));
