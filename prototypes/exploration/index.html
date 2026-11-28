@@ -264,7 +264,7 @@ import { readPixels } from "./src/pngdecode.mjs";
 const canvasPx = im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0); return { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; };   // the fallback only: no DecompressionStream
 const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, regionName, ATLAS } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { GLYPHS, glyphOf, textW, wrapText, clipText, cutLine } from "./src/font.mjs";
 import { SPECIES_ART, JUVENILE_ART, STEP_ART, SADDLED_ART, WILD_BEAT, HOPPER_SP } from "./src/data/tokens.mjs";
@@ -1434,10 +1434,10 @@ const CARE_TEXT = {
   youngTime: 'young · grows up in time', leadsChip: 'leads',
   withYouCap: 'With you', atHomeCap: 'At home', othersHome: 'the others are at home',
   takeAlong: 'take mibis along', whenDocked: 'when docked',
-  // a mibi of a species the Companion has no entry for : the copywriter's signed strings
+  // a mibi of a species the Companion has no entry for: the copywriter's signed strings
   spOther: 'a Station species', abOther: 'no field ability yet',
   playedOther: (n, mem) => mem === 'mud' ? n + ' crosses the mud' : n + ' plays · ' + (mem ? 'it remembers the ' + mem : 'it hasn’t been out yet'),
-  // the juvenile that rides in the Companion on an expedition : the copywriter's signed strings
+  // the juvenile that rides in the Companion on an expedition: the copywriter's signed strings
   riderTime: 'grows up in time, riding along',
   riderSetOut: n => n + ' rides along until it’s grown', riderMenu: n => n + ' rides along',
   playedYoung: (n, mem) => CARE_TEXT.playedOther(n, mem), onceGrown: ' once grown',
@@ -1656,7 +1656,7 @@ function storedSave() {
   if (typeof o.v === 'number' && o.v > SAVE_V) return { held: 'newer' };
   return { st: o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null };
 }
-function save({ noWrite } = {}) {   // noWrite: the storage event's call: the Station's part is read and synced, the bytes are left as they are
+function save(how) {   // save({ noWrite: true }) is the storage event's call: the Station's part is read and synced, the bytes are left as they are
   if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
   const had = storedSave();
   if (had.held) {   // the stored save changed under this page into one it cannot read or a newer build's: it is never replaced; the page goes read-only, as boot does for the same bytes
@@ -1671,7 +1671,7 @@ function save({ noWrite } = {}) {   // noWrite: the storage event's call: the St
     FX.shieldAtDock = null; FX.dockSaid = 0; }
   keepCompanion();
   const moving = legacyTo;   // the shared save of earlier builds, moving under this Companion's key with this write
-  if (noWrite) { onStateChanged(); return; }
+  if (how && how.noWrite) { onStateChanged(); return; }
   try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } noteSet('saveFailed', false); }
   catch (e) { if (!NOTE.flags.saveFailed) console.error('the save could not be written', e); noteSet('saveFailed', true); }   // storage full, blocked or private: play goes on in memory, and the notice line says so until a save works again (WORDS.notice.saveFailed)
   onStateChanged();
