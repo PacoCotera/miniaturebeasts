@@ -2279,7 +2279,7 @@ function easeLoika(c, X) {
   // holding her own food, his walking (creep) steps toward a named Loika at ease 0 are not heard; running (walk gait), a Call and any other noise still count
   const fruitSteps = S.exp.carry === 'fruit' && c.ease === 0 && X.noise === 'creep' && X.prevP && easeCheb(P, c) <= easeCheb(X.prevP, c);
   if (X.moved && c.st !== 'eat' && !fruitSteps) heard = easeHeardAt(env, c, P.x, P.y, X.noise === 'walk' ? 'walk' : 'creep', w);
-  if (!heard && !fruitSteps && stayTick(env, c, P)) { heard = true; e5.crowded++; }
+  if (!heard && !fruitSteps && !fedToday(c) && stayTick(env, c, P)) { heard = true; e5.crowded++; }
   else if (heard && easeCheb(P, c) > 2) c.crowd = 0;
   if (heard) RT.ringHeard = NOW;   // the carry ring turns to its heard frame for a beat
   // the circle and the back-off of E5: a step made with her in sight within 5 tiles that keeps the distance round her, or lengthens it
@@ -2310,7 +2310,7 @@ function carryRing() {
 function hearLineOf(c) {
   const P = S.exp.patch, lay = curLay(), env = easeEnvNow(), w = wariness1(c.ind.doings.wary); if ((c.ease | 0) >= 3) return null;
   const f = frontOf(P), free = f.x >= 0 && f.y >= 0 && f.x < lay.w && f.y < lay.h && !!lay.reach[f.y * lay.w + f.x] && !T_BLOCK[lay.tiles[f.y * lay.w + f.x]] && !occupant(P.key, f.x, f.y, 'player'), x = free ? f.x : P.x, y = free ? f.y : P.y;
-  const cr = easeHeardAt(env, c, x, y, 'creep', w), wk = easeHeardAt(env, c, x, y, 'walk', w), left = stayLeft(env, { ...c, wary: w }, P);
+  const cr = easeHeardAt(env, c, x, y, 'creep', w), wk = easeHeardAt(env, c, x, y, 'walk', w), left = fedToday(c) ? null : stayLeft(env, { ...c, wary: w }, P);   // a fed one is not heard for the stay (pod-ease-fix): no count
   return { c: cr, w: wk, left };
 }
 // a met one whose kind is not yet identified is named with what she is, never alone: "Hazel · Loika" (the one place that builds it)
