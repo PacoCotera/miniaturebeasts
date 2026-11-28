@@ -1850,7 +1850,7 @@ function nearestTake(c, P) {
 // first-pod-fix-1 (3): the Call's report also lists the fruit in sight (a full bush, fruit on the ground) and a slab not yet pushed; the pips and counts stay the finds'
 function callExtras(c) {
   const key = String(c), lay0 = layout(key), out = leftItemsAll(c).filter(i => i.k === 'fruit'); if (!passable(c)) return out;
-  for (const f of lay0.feats) if (f.kind === 's' && !fs(key, f.id).moved && fs(key, f.id).left == null && unveiled(key, f.x, f.y) && (lay0.cave || reachableTile(lay0, f.x, f.y))) out.push({ k: 'slabU', x: f.x, y: f.y });
+  for (const f of lay0.feats) if (f.kind === 's' && !fs(key, f.id).moved && fs(key, f.id).left == null && isSeen(key, f.x, f.y) && (lay0.cave || reachableTile(lay0, f.x, f.y))) out.push({ k: 'slabU', x: f.x, y: f.y });
   return out;
 }
 function leftPhrase(c, P, room, kinds, call) {
