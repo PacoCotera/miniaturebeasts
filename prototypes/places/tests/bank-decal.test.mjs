@@ -5,8 +5,8 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import vm from 'node:vm';
 import { decodePng } from '../src/png.mjs';
+import { bankDecalsOn } from '../../exploration/src/render/bank-decals.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url)), root = path.join(here, '../../..'), setDir = path.join(root, 'art/places/sets/ninja-test');
 const terrains = JSON.parse(readFileSync(path.join(root, 'art/places/terrain.json'), 'utf8')).terrains;
@@ -34,10 +34,8 @@ test('the dug piece is 32 x 64 art px, in the set palette, listed as a 96 x 192 
 });
 
 test('the page adds wayup-dug for a dug bank at its draw order, and for a view made after the dig; an undug bank gets nothing', () => {
-  const html = readFileSync(path.join(root, 'prototypes/exploration/index.html'), 'utf8');
-  const m = html.match(/function bankDecalsOn\(v, lay\) \{[\s\S]*?\n\}\n/); assert.ok(m, 'bankDecalsOn is in the page');
   const S = { exp: { dug: [] } };
-  const run = vm.runInNewContext(`${m[0]}; bankDecalsOn`, { S });
+  const run = (v, lay) => bankDecalsOn(v, lay, S.exp.dug);
   const DUG = 7, COL = 1, FACE = 2, FLOWER = 3;   // sprite indices: the dug piece, a south column (6 rows tall), a one-cell cliff piece, a flower
   const sprites = [];
   sprites[DUG] = { group: 'decal', kind: 'wayup-dug', h48: 192 }; sprites[COL] = { group: 'decal', kind: 'cliff-south-1', h48: 288 };

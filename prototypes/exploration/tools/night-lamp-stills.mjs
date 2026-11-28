@@ -27,7 +27,7 @@ try {
     let f = null; for (let i = 0; i < 120 && !f; i++) { await page.waitForTimeout(500); f = await fr(); if (f && !(await f.evaluate(() => !!(window.__mb && window.__mb.TEST)).catch(() => false))) f = null; }
     if (!f) { console.log("no frame"); continue; }
     await page.waitForTimeout(1500);
-    await f.evaluate((s) => { const m = window.__mb; m.TEST.calm = true; m.newWorld(s, 2); const pos = 13 * m.MW + 9; m.startExpedition("weather", pos); m.S.exp.fog = null; m.S.exp.storm = null; m.S.exp.pos = pos; m.enterPatch(); const P = m.S.exp.patch; m.S.veil[P.key] = new Array(m.PH).fill(0x0fffffff); m.S.day.spent = 570; }, seed);
+    await f.evaluate((s) => { const m = window.__mb; m.TEST.calm = true; m.newWorld(s, 2); const pos = 13 * m.MW + 9; m.startExpedition("weather", pos); m.S.exp.fog = null; m.S.exp.storm = null; m.S.exp.pos = pos; m.enterPatch(); const P = m.S.exp.patch; m.S.seen.tile[P.key] = new Array(m.PH).fill(0x0fffffff); m.S.day.spent = 570; }, seed);
     await page.waitForTimeout(1200);
     await page.screenshot({ path: `${out}/${w}-land${seed}-night.png` });
     console.log(w, seed, "done");

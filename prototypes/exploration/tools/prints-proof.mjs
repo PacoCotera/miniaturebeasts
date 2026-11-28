@@ -40,7 +40,7 @@ const setup = await page.evaluate(({ key, id }) => {
   const far = list[0].mark || list[0].stand;
   c.x = far.x + 7; c.y = far.y; c.gone = null; c.ease = 0; c.st = "idle"; c.ind.go = { part: m.dayPart(), t: { x: c.x, y: c.y } };
   const side = [[1, 0], [-1, 0], [0, 1], [0, -1]].find(([dx, dy]) => m.passable(far.x + dx, far.y + dy));
-  m.unveil(key, far.x, far.y, 8); P.x = far.x + side[0] * 3; P.y = far.y + side[1] * 3; P.dir = "up";
+  m.lightningLift(key, far.x, far.y, 8); P.x = far.x + side[0] * 3; P.y = far.y + side[1] * 3; P.dir = "up";
   window.__pr = { mark: far, side }; return { mark: far, side }; }, pick);
 if (setup.none) { console.log("no prints", JSON.stringify(setup)); process.exit(1); }
 const markNow = () => page.evaluate(() => { const l = window.__mb.printsHere(); return l[0] && l[0].mark; });

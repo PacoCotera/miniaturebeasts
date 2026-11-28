@@ -13,7 +13,7 @@ import { syntheticPieces, SYNTH_TONE } from "../tools/world-vectors.mjs";
 // The page in a sandbox: every DOM and canvas call lands on an inert stub; localStorage is `store`.
 const page = (store = {}) => makePage({ store });
 // The field, as ruling 6 hashes it: S.exp without its Shield, and the world the expedition can change.
-const FIELD = "JSON.stringify((() => { const e = Object.assign({}, S.exp); delete e.shield; return [e, S.pods, S.veil, S.pins, S.cells, S.opened, S.cr, S.revealed, S.totalActions, S.turn]; })())";
+const FIELD = "JSON.stringify((() => { const e = Object.assign({}, S.exp); delete e.shield; return [e, S.pods, S.seen.tile, S.pins, S.cells, S.opened, S.cr, S.seen.rev, S.totalActions, S.turn]; })())";
 const field = p => p.run(FIELD);
 const SEED = 1;   // a Weather expedition with the storm and a fog bank from its first action
 
@@ -210,12 +210,12 @@ test("6. reload docked mid-expedition: the field as it was, and the first press 
 test("7. pods returned while docked mid-expedition wait; they apply once when the expedition ends", () => {
   const { p, st } = begin();
   p.key("confirm"); p.key("call"); p.key("back"); p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'leave');"); p.key("confirm");
-  const key = String(p.S.exp.pos), veil = JSON.stringify(p.S.veil[key] ?? null);
+  const key = String(p.S.exp.pos), veil = JSON.stringify(p.S.seen.tile[key] ?? null);
   assert.notEqual(veil, "null", "the place has a veil to lose");
   st.returned = [{ id: "ret-1", k: key, sp: 0, g: 0 }];
   dock(p, st);
   p.run("save()");
-  assert.equal(JSON.stringify(p.S.veil[key] ?? null), veil, "the veil unchanged");
+  assert.equal(JSON.stringify(p.S.seen.tile[key] ?? null), veil, "the veil unchanged");
   assert.equal(p.S.retSeen.includes("ret-1"), false, "not marked seen");
   assert.equal(p.S.pods.filter(q => q.how === "ground" && q.k === key && q.x === -1).length, 0);
   p.key("back"); p.key("confirm"); p.key("confirm");   // End expedition, docked at the start
@@ -223,7 +223,7 @@ test("7. pods returned while docked mid-expedition wait; they apply once when th
   p.run("save()"); p.run("save()");
   assert.equal(p.S.retSeen.filter(id => id === "ret-1").length, 1);
   assert.equal(p.S.pods.filter(q => q.how === "ground" && q.k === key && q.x === -1).length, 1, "applied once");
-  assert.equal(JSON.stringify(p.S.veil[key] ?? null), veil, "a returned pod waits in the place without veiling it again");
+  assert.equal(JSON.stringify(p.S.seen.tile[key] ?? null), veil, "a returned pod waits in the place without veiling it again");
 });
 
 // ---- the UI designer's ruling ----

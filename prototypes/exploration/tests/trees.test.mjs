@@ -165,7 +165,7 @@ test("an old save keeps what it walked: the same tiles, every old feature and it
   // the fixture is a v9 save of generator 4; the release resets such a save, so the same realm is played as v10 on generator 5 (its ground is generator 4's, so every tile and feature is the fixture's)
   const store = JSON.parse(JSON.stringify(OLD.store)), sk = Object.keys(store).find(k => k.startsWith("mb-save")), sv10 = JSON.parse(store[sk]); sv10.v = 10; sv10.regions[0].gen = 5; store[sk] = JSON.stringify(sv10);
   const p = makePage({ console: "silent", els: true, raf: 1, store });
-  assert.equal(p.run("S.seed"), 9); assert.equal(p.run("S.gen"), 5); assert.deepEqual(OLD.walked.map(c => p.run(`S.visited[${c}]`)), [1, 1, 1, 1], "the walked places are walked in the load");
+  assert.equal(p.run("S.seed"), 9); assert.equal(p.run("S.gen"), 5); assert.deepEqual(OLD.walked.map(c => p.run(`S.seen.been[${c}]`)), [1, 1, 1, 1], "the walked places are walked in the load");
   const saved = JSON.parse(OLD.store[Object.keys(OLD.store).find(k => k.startsWith("mb-save"))]), state = p.run("JSON.stringify(S.cells)");
   assert.ok(Object.keys(JSON.parse(state)).length >= 3, "feature state came in");
   let added = 0;

@@ -39,6 +39,6 @@ test("a step refused because a tree or stone stands on the neighbour's first row
 test("a level change at a border with no cliff drawn is a slope and walks (design 2026-11-18; seed 9 cell 1,7 east edge tile 23,21)", () => {
   const p = makePage({ gen: 7, console: "silent" });
   p.run("newWorld(9); TEST.calm = true; S.tier = 2; startExpedition('weather', G.spawns[0]);");
-  const r = p.run("(() => { const a = layout('113'), b = layout('114'); return { raised: [!!a.raisedFn(23, 21), !!b.raisedFn(0, 21)], free: !T_BLOCK[a.tiles[21 * a.w + 23]] && !T_BLOCK[b.tiles[21 * b.w]], blocks: levelBlocks(a, 23, 21, b, 0, 21), open: tileSide(113, 'right').mask[21] }; })()");
-  assert.equal(JSON.stringify(r), JSON.stringify({ raised: [false, true], free: true, blocks: false, open: 1 }));
+  const r = p.run("(() => { const a = layout('113'), b = layout('114'); return { raised: [!!a.raisedFn(23, 21), !!b.raisedFn(0, 21)], free: !T_BLOCK[a.tiles[21 * a.w + 23]] && !T_BLOCK[b.tiles[21 * b.w]], lands: landingOf(a, b, 'right', 23, 21), open: tileSide(113, 'right').mask[21] }; })()");
+  assert.equal(JSON.stringify(r), JSON.stringify({ raised: [false, true], free: true, lands: { x: 0, y: 21 }, open: 1 }));
 });

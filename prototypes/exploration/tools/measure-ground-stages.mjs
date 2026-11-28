@@ -25,7 +25,7 @@ const out = await page.evaluate(async ({ CELLS, PRESS }) => {
   await one("set-out");
   for (let i = 0; i < CELLS; i++) {
     m.leavePatch(); await raf(); await raf();
-    const dirs = ["up", "right", "down", "left"].filter((d) => m.canStep(ex.pos, d)), dir = dirs.find((d) => !m.S.visited[ex.pos + ({ up: -m.MW, down: m.MW, left: -1, right: 1 })[d]]) || dirs[0]; m.act(dir); await raf(); await raf();
+    const dirs = ["up", "right", "down", "left"].filter((d) => m.canStep(ex.pos, d)), dir = dirs.find((d) => !m.S.seen.been[ex.pos + ({ up: -m.MW, down: m.MW, left: -1, right: 1 })[d]]) || dirs[0]; m.act(dir); await raf(); await raf();
     await one((m.layout(String(ex.pos)).baked || {}).id);
   }
   return rows; }, { CELLS, PRESS });

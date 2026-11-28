@@ -7,10 +7,12 @@ import { TIER, reachCellsIn, placeValidIn, firstPlacementOf, keptPlacesOf } from
 
 // The mounted region of the save: its record, its map (the veil, the wild ones, the pins, where she was seen, the last start) and its id.
 // The save keeps every region's map in its record (regions.mjs serialize): the last start crosses as the region's map.lastPos (design slip 8: yes, it reaches the Station).
+// The cells the map shows: the Companion's seen record (map.seen.rev), or the field an older save kept (map.revealed).
+const revealedOf = (M) => (M.seen && Array.isArray(M.seen.rev) ? M.seen.rev : M.revealed);
 export function regionOf(sv) {
   const regions = sv && Array.isArray(sv.regions) ? sv.regions : [];
   const R = regions.find((r) => r && r.id === sv.here) || regions[0];
-  if (!R || R.gen !== 7 || !R.map || !Array.isArray(R.map.revealed)) return null;
+  if (!R || R.gen !== 7 || !R.map || !Array.isArray(revealedOf(R.map))) return null;
   return R;
 }
 const worlds = new Map();
@@ -27,7 +29,7 @@ export const tierRange = (tier) => TIER[tier === 2 ? 2 : 1].range;
 //   { id, G, revealed, lastPos, first, tier, range, passable, reach(start, can), valid(cell), wild: [{ id, sp, c }], kept: [{ id, place, part }], pins }
 export function mapOf(sv, can = {}) {
   const R = regionOf(sv); if (!R || typeof (sv.seed ?? (sv.regions[0] && sv.regions[0].seed)) !== "number") return null;
-  const seed = sv.regions[0].seed, G = landOf(R, seed), M = R.map, tier = sv.tier === 2 ? 2 : 1, revealed = M.revealed;
+  const seed = sv.regions[0].seed, G = landOf(R, seed), M = R.map, tier = sv.tier === 2 ? 2 : 1, revealed = revealedOf(M);
   const passable = (c) => passableIn(G, c);
   const first = firstPlacementOf(revealed);
   const opts = { sure: !!can.sure, bank: can.bank ? "all" : undefined };

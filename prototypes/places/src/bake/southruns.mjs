@@ -16,7 +16,7 @@ export const CAP_HANDS = ['w', 'e'];   // P3: the face's end caps, one per hand 
 export const capKind = (hand) => `cliff-cap-${hand}`;
 export const SHADOW_KINDS = ['cliff-shadow', 'cliff-shadow-w', 'cliff-shadow-e'];   // P4: the one-row dithered cast shade under the face's base (48 x 6, a taper at each end), drawn before the face of its line
 export const WAYUP_U_KIND = 'cliff-way-up-u';   // the way up U: one 213 x 348 piece (alpha), anchored 93 px left and 126 px above the lip row cell of its area, drawn after the columns of its line
-export const BANK_DUG_KIND = 'wayup-dug';   // the earth bank a Rupar has dug (ir.banks): one 96 x 192 piece (alpha), anchored on the bank's lip row and west column; the bake draws an undug bank with no decal, the page adds this one when the bank is dug (index.html bankDecalsOn)
+export const BANK_DUG_KIND = 'wayup-dug';   // the earth bank a Rupar has dug (ir.banks): one 96 x 192 piece (alpha), anchored on the bank's lip row and west column; the bake draws an undug bank with no decal, the page adds this one when the bank is dug (exploration/src/render/bank-decals.mjs)
 
 // Every cliff decal of a level in draw order: [{ kind, x, y }] in game px, keeping only those that reach the place's picture. The one entry both bakes use.
 export const cliffDecals = (ir, cliffs, cell = PIECES.cell) => decalsOf(ir, landOf(ir, cliffs), cell);

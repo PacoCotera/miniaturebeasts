@@ -14,11 +14,11 @@ function small({ feats = "[]" } = {}) {
   const f = fixture({ canvas: true }), run = f.run;
   run(`(() => { const key = S.exp.patch.key, old = layout(key), n = ${W} * ${H};
     const lay = Object.assign({}, old, { w: ${W}, h: ${H}, tiles: new Array(n).fill(T.GRASS), reach: new Uint8Array(n).fill(1), shelter: new Uint8Array(n), sdist: new Array(n).fill(9), feats: ${feats}, cross: [], stairs: [], spawnPt: { x: 9, y: 19 }, terr: null, tmask: null, heart: undefined, vbl: undefined, tk: undefined });
-    layoutCache.set(key, lay); delete S.veil[key]; delete S.cells[key]; S.pods = S.pods.filter(p => p.k !== key); S.exp.live[key].cr.length = 0; S.cr.length = 0; indexCreatures();
+    layoutCache.set(key, lay); delete S.seen.tile[key]; delete S.cells[key]; S.pods = S.pods.filter(p => p.k !== key); S.exp.live[key].cr.length = 0; S.cr.length = 0; indexCreatures();
     S.exp.patch.x = 9; S.exp.patch.y = 19; })()`);
   return f;
 }
-const rows = f => plain(f.run("S.veil[S.exp.patch.key]"));
+const rows = f => plain(f.run("S.seen.tile[S.exp.patch.key]"));
 const lifted = f => { const v = rows(f), o = new Set(); v.forEach((r, y) => { for (let x = 0; x < 32; x++) if ((r >>> x) & 1) o.add(y * W + x); }); return o; };
 
 test("generated places and caves carry w 28 and h 32; a layout's own size is what the page reads", () => {
@@ -31,7 +31,7 @@ test("generated places and caves carry w 28 and h 32; a layout's own size is wha
 
 test("walking lift on an 18×22 place: the circle of 4 tiles, clipped at the place's own edges, no bit past column 17 or row 21", () => {
   const f = small(), run = f.run;
-  run("walkLift()");
+  run("walkSeen()");
   const v = rows(f); assert.equal(v.length, H, "one row word per row");
   for (const r of v) assert.equal(r >>> W, 0, "no bit past the 18th column");
   const got = lifted(f), want = new Set();
@@ -43,7 +43,7 @@ test("walking lift on an 18×22 place: the circle of 4 tiles, clipped at the pla
 
 test("Call lift on an 18×22 place: the round of 7 tiles, clipped; a veiled tile past the ring with lifted land behind it closes", () => {
   const f = small(), run = f.run;
-  const lift = plain(run("[...unveilRound(S.exp.patch.key, 9, 19, 7)]"));
+  const lift = plain(run("[...callLift(S.exp.patch.key, 9, 19, 7)]"));
   const v = rows(f); assert.equal(v.length, H);
   for (const r of v) assert.equal(r >>> W, 0, "no bit past the 18th column");
   for (const i of lift) { const x = i % W, y = (i / W) | 0; assert.ok(x < W && y < H, "inside the place"); }
@@ -52,7 +52,7 @@ test("Call lift on an 18×22 place: the round of 7 tiles, clipped; a veiled tile
   // and the page's own Call: it lifts the same round and reports the way to what is found
   const g = small(); g.run("callPlace()");
   assert.ok(!/Nothing in sight/.test(g.run("FX.msg")), "a Call that finds nothing says nothing (the ✓ word points on)");
-  assert.equal(g.run("S.veil[S.exp.patch.key].length"), H);
+  assert.equal(g.run("S.seen.tile[S.exp.patch.key].length"), H);
 });
 
 test("edges on an 18×22 place: x 17 and y 21 are the last tiles; one more leaves the place (on a 28×32 place the same press only steps)", () => {
@@ -123,8 +123,8 @@ test("bug #37: the slide scrolls the view by what keeps the pawn on its line of 
 test("the veil words on an 18×22 place: a veiled stone says so until a Call lifts it", () => {
   // a stone on a veiled tile reads "Veiled · Call to see" until a Call lifts it
   const g = small({ feats: "[{ id: 'k1', kind: 'k', x: 9, y: 11, ch: 0 }]" });
-  g.run("S.exp.patch.x = 9; S.exp.patch.y = 12; S.exp.patch.dir = 'up'; S.veil[S.exp.patch.key] = new Array(" + H + ").fill(0);");
+  g.run("S.exp.patch.x = 9; S.exp.patch.y = 12; S.exp.patch.dir = 'up'; S.seen.tile[S.exp.patch.key] = new Array(" + H + ").fill(0);");
   assert.equal(g.run("patchAction().label"), "Veiled · Call to see");
-  g.run("unveilRound(S.exp.patch.key, 9, 12, 7)");
+  g.run("callLift(S.exp.patch.key, 9, 12, 7)");
   assert.notEqual(g.run("patchAction().label"), "Veiled · Call to see");
 });

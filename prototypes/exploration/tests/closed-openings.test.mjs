@@ -89,7 +89,7 @@ test("walking off a region side into an open neighbour goes on in the same exped
 test("on the coast a step from the beach or the shallows into the deep water is refused: every row ends on the shore, never in the water", () => {
   const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(13); TEST.calm = true; S.tier = 2;`);
   const id = p.openRegion([0, 2]); p.run(`mountRegion(${JSON.stringify(id)})`);
-  p.run(`S.revealed.fill(1); startExpedition('weather', 1); S.exp.range = 12; S.exp.reach = reachCells(1, 12); S.exp.pos = 1; enterPatch(); if (RT.view) endView();`);
+  p.run(`S.seen.rev.fill(1); startExpedition('weather', 1); S.exp.range = 12; S.exp.reach = reachCells(1, 12); S.exp.pos = 1; enterPatch(); if (RT.view) endView();`);
   const r = p.run(`(() => { const lay = layout('1'), W = lay.w, P = S.exp.patch, wet = t => t === T.WATER || t === T.DEEP || t === T.ISLE, out = { rows: 0, wetStood: 0, refused: 0 };
     for (let y = 2; y < lay.h - 2; y++) {
       let x0 = -1; for (let x = 12; x >= 5; x--) if (!T_BLOCK[lay.tiles[y * W + x]] && !wet(lay.tiles[y * W + x]) && lay.tiles[y * W + x - 1] !== undefined && !wet(lay.tiles[y * W + x])) { x0 = x; break; }
@@ -136,13 +136,13 @@ const CHECK = `(() => {
   }
   for (const t of things) for (const d of lay.baked.place.decals) { if (/^cliff-|^way-up/.test(PL.ts.sprites[d.kind].kind)) continue; const dx = Math.floor(d.x / 48) - 1 - t.x, dy = Math.floor(d.y / 48) - 1 - t.y; if (t.what !== 'pod' && Math.abs(dx) <= 1 && dy >= -1 && dy <= 2) bad.push('decor over ' + t.what + ' ' + t.x + ',' + t.y); }
   { const left = leftItemsAll(lay.cell).filter(i => !i.cave); for (const i of left) if (q.length && !near(i.x, i.y)) bad.push('counted but unreachable ' + i.k + ' ' + i.x + ',' + i.y); }
-  // one fog record: lift every other row, then compare the whole view's veil (apron included) with the walk's uncovered set
-  S.veil[key] = Array.from({ length: H }, (_, y) => (y % 2 ? 0 : -1) >>> 0);
-  const wv = placeVeil(lay), P = lay.baked.place;
-  for (let y = 0; y < P.h; y++) for (let x = 0; x < P.w; x++) { const px = x + lay.baked.ox, py = y + lay.baked.oy, inside = px >= 0 && py >= 0 && px < W && py < H, want = inside ? !unveiled(key, px, py) : false; if ((wv[y * P.w + x] === 1) !== want) bad.push('fog differs at ' + px + ',' + py); }
-  S.veil[key] = Array.from({ length: H }, () => 0xffffff >>> 0);
-  { const all = placeVeil(lay); for (let i = 0; i < all.length; i++) if (all[i]) { bad.push('fog left with the walk all clear at ' + (i % P.w) + ',' + ((i / P.w) | 0)); break; } }
-  delete S.veil[key]; leavePatch();
+  // one fog record: lift every other row, then compare the whole view's veil (the apron takes its nearest tile) with the walk's uncovered set
+  S.seen.tile[key] = Array.from({ length: H }, (_, y) => (y % 2 ? 0 : -1) >>> 0);
+  S.seen.into[lay.cell] = 1; const P = lay.baked.place, wv = veilMask(S.seen, lay, P.w, P.h, lay.baked.ox, lay.baked.oy);
+  for (let y = 0; y < P.h; y++) for (let x = 0; x < P.w; x++) { const px = x + lay.baked.ox, py = y + lay.baked.oy, want = !tileBit(S.seen, key, Math.min(W - 1, Math.max(0, px)), Math.min(H - 1, Math.max(0, py))); if ((wv[y * P.w + x] === 1) !== want) bad.push('fog differs at ' + px + ',' + py); }
+  S.seen.tile[key] = Array.from({ length: H }, () => 0x0fffffff >>> 0);
+  { const all = veilMask(S.seen, lay, P.w, P.h, lay.baked.ox, lay.baked.oy); for (let i = 0; i < all.length; i++) if (all[i]) { bad.push('fog left with the walk all clear at ' + (i % P.w) + ',' + ((i / P.w) | 0)); break; } }
+  delete S.seen.tile[key]; leavePatch();
   return bad;
 })()`;
 
@@ -194,7 +194,7 @@ test("a side open on part of its length is crossable there and refused at its cl
   assert.ok(land && typeof land.x === "number", "the open part has a landing");
   p.run(`patchStep('${found.dir}', 'creep')`);
   assert.equal(p.run("S.exp.pos"), found.n, "across the open part the step crosses");
-  assert.deepEqual(p.run("({ x: S.exp.patch.x, y: S.exp.patch.y })"), land, "and the pawn lands on the far tile");
+  assert.deepEqual(p.run("[S.exp.patch.x, S.exp.patch.y]").join(), [land.x, land.y].join(), "and the pawn lands on the far tile");
 });
 
 // Bug #14 (the heart slab with no art blocked and said nothing) is fixed at the cause: an undrawn piece is not placed (undrawn-pieces-dont-block.test.mjs).

@@ -84,7 +84,7 @@ await page.evaluate(() => {
 await settle(2500);
 const info = await page.evaluate(() => { const m = window.__mb, lay = m.layout(m.S.exp.patch.key); return { gen: m.G.gen ?? null, banks: lay.banks, w: lay.w, h: lay.h, partner: !!m.partnerMibi() }; });
 console.log("place", JSON.stringify(info)); log.place = info;
-const place = (x, y, dir) => page.evaluate(([x, y, dir]) => { const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key); m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); P.x = x; P.y = y; P.dir = dir; m.walkLift(); }, [x, y, dir]);
+const place = (x, y, dir) => page.evaluate(([x, y, dir]) => { const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key); m.S.seen.tile[P.key] = new Array(lay.h).fill(0x0fffffff); P.x = x; P.y = y; P.dir = dir; m.walkSeen(); }, [x, y, dir]);
 // light: "day" is the clear light; "dark" puts the expedition's storm over the cell's column (the game's own dark light: overcast and rain)
 const light = (mode) => page.evaluate((mode) => { const m = window.__mb, col = m.S.exp.pos % m.MW; m.S.exp.storm = mode === "dark" ? { x: col - 2, w: 3, dir: 1, t: 0 } : null; }, mode);
 

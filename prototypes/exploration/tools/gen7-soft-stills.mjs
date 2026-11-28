@@ -43,7 +43,7 @@ const setup = (c) => page.evaluate((cell) => { const m = window.__mb, S = m.S, T
   const ok = (x, y) => x >= 0 && y >= 0 && x < lay.w && y < lay.h && !m.T_BLOCK[lay.tiles[y * lay.w + x]] && lay.reach[y * lay.w + x];
   // the soft tile nearest the middle of the run; the pawn on the nearest walking tile that is reached on foot (from the first soft tile's neighbours); the Tuliko on the soft tile
   const mid = soft[soft.length >> 1]; let best = null, bd = 1e9; for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) if (ok(x, y)) { const d = (x - mid[0]) ** 2 + (y - mid[1]) ** 2; if (d >= 4 && d < bd) { bd = d; best = [x, y]; } }
-  P.x = best[0]; P.y = best[1]; P.dir = "right"; S.veil[key] = new Array(lay.h).fill(0x0fffffff);
+  P.x = best[0]; P.y = best[1]; P.dir = "right"; S.seen.tile[key] = new Array(lay.h).fill(0x0fffffff);
   if (live) live.pt = { x: mid[0], y: mid[1], st: "follow", face: 1 };
   return { soft: soft.length, mid, pawn: best, w: lay.w, h: lay.h }; }, c);
 const info = await setup(cell); console.log(JSON.stringify(info));

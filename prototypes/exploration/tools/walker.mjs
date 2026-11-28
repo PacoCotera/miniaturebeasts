@@ -88,11 +88,11 @@ export function makeWalker(p, { budget = 1e9, verbose = false, tag = "" } = {}) 
     const cand = goal.filter(c => c !== from && seen.has(c)).sort((a, b) => cdist(a, start) - cdist(b, start) || dist.get(a) - dist.get(b) || a - b)[0];
     if (cand === undefined) return null;
     const out = []; for (let k = cand; seen.get(k); k = seen.get(k)[0]) out.unshift(seen.get(k)[1]); return out; })()`);
-  const unvisited = () => p.run(`(() => { const out = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && G.land[c] !== L.WATER && passable(c) && !G.island[c] && !S.visited[c] && c !== G.gate) out.push(c); return out; })()`);
+  const unvisited = () => p.run(`(() => { const out = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c] && G.land[c] !== L.WATER && passable(c) && !G.island[c] && !S.seen.been[c] && c !== G.gate) out.push(c); return out; })()`);
   // the way back to the start along cells already visited (the page's rule for a step)
   const wayHome = () => p.run(`(() => { const goal = S.exp.start, from = S.exp.pos, seen = new Map([[from, null]]), q = [from];
     for (let i = 0; i < q.length; i++) { const c = q[i]; if (c === goal) break;
-      for (const d of ['up', 'right', 'down', 'left']) { if (!canStep(c, d)) continue; const t = stepCell(c, d); if (t < 0 || seen.has(t) || !(S.visited[t] || t === goal)) continue; seen.set(t, [c, d]); q.push(t); } }
+      for (const d of ['up', 'right', 'down', 'left']) { if (!canStep(c, d)) continue; const t = stepCell(c, d); if (t < 0 || seen.has(t) || !(S.seen.been[t] || t === goal)) continue; seen.set(t, [c, d]); q.push(t); } }
     if (!seen.has(goal)) return null; const out = []; for (let k = goal; seen.get(k); k = seen.get(k)[0]) out.unshift(seen.get(k)[1]); return out; })()`);
   // walk the map along a list of steps; false if the phase changed or the budget ran out
   const steps = (way) => { for (const d of way) { if (phase() !== "map" || budgetGone()) return false; key(d); } return true; };

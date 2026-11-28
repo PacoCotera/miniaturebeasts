@@ -46,7 +46,7 @@ async function empty(spent, tag) {
     const q = list[0], far = q.mark || q.stand, tryX = [far.x + 7, far.x - 7].find(x => x > 1 && x < lay.w - 2 && m.passable(x, far.y)) ?? far.x + 7;
     c.x = tryX; c.y = far.y; c.gone = null; c.ease = 0; c.st = "idle"; c.ind.go = { part: m.dayPart(), t: { x: c.x, y: c.y } };
     const side = [[1, 0, "left"], [-1, 0, "right"], [0, 1, "up"], [0, -1, "down"]].find(([dx, dy]) => m.passable(far.x + dx, far.y + dy));
-    m.unveil(key, far.x, far.y, 7); P.x = side ? far.x + side[0] * 2 : far.x; P.y = side ? far.y + side[1] * 2 : far.y; P.dir = side ? side[2] : "up";
+    m.lightningLift(key, far.x, far.y, 7); P.x = side ? far.x + side[0] * 2 : far.x; P.y = side ? far.y + side[1] * 2 : far.y; P.dir = side ? side[2] : "up";
     window.__pr = { stand: far, side: side && side.slice(0, 2) }; return { stand: far, part: q.part, id }; }, { ...pick, spent });
   if (!r || r.none) { log["empty-" + tag] = "no prints " + JSON.stringify(r); await page.context().close(); return; }
   await page.waitForTimeout(600);
@@ -67,7 +67,7 @@ async function own() {
     const rec = r => ({ ranges: { [r]: 1 }, got: {}, best: r, plays: 1, sample: null, sights: 0 }); S.habits = { [id]: { shake: rec("far"), calm: rec("mid"), sleep: rec("near") } };
     m.advance("patch", { noise: "act" });
     const pod = S.pods.find(q => q.how === "own"); if (!pod) return { none: 1 };
-    m.unveil(key, pod.x, pod.y, 7); const side = [[1, 0, "left"], [-1, 0, "right"], [0, 1, "up"], [0, -1, "down"]].find(([dx, dy]) => m.passable(pod.x + dx, pod.y + dy));
+    m.lightningLift(key, pod.x, pod.y, 7); const side = [[1, 0, "left"], [-1, 0, "right"], [0, 1, "up"], [0, -1, "down"]].find(([dx, dy]) => m.passable(pod.x + dx, pod.y + dy));
     P.x = pod.x + (side ? side[0] : 1); P.y = pod.y + (side ? side[1] : 0); P.dir = side ? side[2] : "left"; m.advance("patch", { noise: "creep", moved: true });
     return { pod: { x: pod.x, y: pod.y, how: pod.how, of: pod.of, gs: pod.gs }, tag: m.podTagOf(pod) }; }, pick);
   if (!r || r.none) { log.own = "no own pod " + JSON.stringify(r); await page.context().close(); return; }

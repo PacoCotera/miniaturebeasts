@@ -33410,7 +33410,7 @@ function DockScreen({ api }) {
   };
   const box2 = s2.box, style = box2 ? { left: px3(box2[0]), top: px3(box2[1]), width: px3(box2[2]), height: px3(box2[3]) } : void 0, laptop = s2.laptop;
   const ew = Math.min(s2.sheetW || 358, 464), eh = Math.round(ew * EP_H / EP_W);
-  return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(dist_exports4.Root, { open, onOpenChange: (v) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(dist_exports4.Root, { modal: !laptop, open, onOpenChange: (v) => {
     setOpen(v);
     api.onOpenChange && api.onOpenChange(v);
   }, children: [
