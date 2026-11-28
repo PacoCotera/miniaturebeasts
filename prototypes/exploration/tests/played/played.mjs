@@ -938,6 +938,18 @@ for (const size of SIZES) {
       assert.ok(off < 20, `no glint on the old tile over 1.6 s after the take (${off} pixels)`);
     } finally { await g.ctx.close(); }
   });
+  // OWNER 2026-11-24 12:1x (via the lead): "stop breaking things or telling me that you fixed or shipped something just to find ..." LIVE bug on his Call: callExtras read the removed unveiled(); a Call beside an unpushed slab threw 'unveiled is not defined'. Played: slab-full-hold (the slab not yet pushed, the hero below it), a short press is a Call; no page error, and the Call's report is up.
+  if (size.w === 412) it(`s90 a Call beside an unpushed slab throws no page error (live bug, unveiled is not defined) [${tag}]`, async () => {
+    const g = await open(size, "slab-full-hold");
+    const errs = [];
+    g.page.on("pageerror", (e) => errs.push(e.message)); g.page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errs.push("console: " + m.text()); });
+    try {
+      assert.equal((await g.where()).phase, "patch", "the case is reached: in the place beside the slab");
+      await g.page.evaluate(() => { window.__play.frames.companion.contentWindow.__mb.S.exp.reach = []; });   // arranged: no land next door in reach, so the Call reports this place (callReport), where the slab is read
+      await g.press("call", 100, 1500);
+      assert.deepEqual(errs, [], "no page error from the Call");
+    } finally { await g.ctx.close(); }
+  });
   // OWNER 2026-11-24 12:1x (via the lead): "stop breaking things or telling me that you fixed or shipped something just to find at the first interaction that the game is still utterly broken." QA verify-live-664 case D: after taking the pushed slab's Essence, the lightning-warning card threw "Cannot read properties of null (reading 'x')" (PIC.warn drew the place picture with no place under him).
   // Played on QA's room.save (= slab-mark-room) as QA's D: down x3, up x3, ✓ takes the Essence, then ← and ✓ as QA pressed them; every press waits for its effect. The page's own console errors are the reach: none across the steps.
   // The verdict on the screen: any shot in which the warning card is up shows its picture slot as the outline form (the Probe's flat grass in a yellow outline); that slot against a crop of it (saves/s32-warn-card-outline.png). PLAYED_WRITE_CROPS=1 rewrites the crop.
