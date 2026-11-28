@@ -257,6 +257,8 @@ import { makeMapSigns } from "./src/render/map-signs.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
+import { TAB, TAG, findTabY, rectsMeet, tabPointer, tabRect } from "./src/render/cues.mjs";
+import { POSE, CR_MOVING } from "./src/render/creature-poses.mjs";
 import { readPixels } from "./src/pngdecode.mjs";
 // Every exact-colour read of a picture goes through the file's own bytes (src/pngdecode.mjs), never a canvas read-back a browser may colour-manage or farble (bug 68).
 const canvasPx = im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0); return { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; };   // the fallback only: no DecompressionStream
@@ -278,6 +280,8 @@ import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBoo
 import { readOptions } from "./src/options.mjs";
 import { SOUNDS, tallyTick, playNotes, soundOff } from "./src/sound/blips.mjs";
 import { PALETTE, DARK_OF, LIGHT_OF } from "./src/data/palette.mjs";
+import { RIM_BIT, rimRefuses } from "./src/logic/rim.mjs";
+import { nearestHole, seekPace, whereWord } from "./src/logic/creatures.mjs";
 const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot
 soundOff(OPT.mute);
 /* =====================================================================
@@ -403,8 +407,8 @@ const numWord = n => NUM_WORD[n] || String(n);
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 
 // ===================== 3. World generation =====================
-const TEST = { calm: false, at: null, clock: null, boom: 0,
-  paint: (x, y) => { resetCanvas(); g.fillStyle = '#ff00ff'; g.fillRect(x, y, 4, 4); },   // test hook only: a magenta mark on a clean canvas, which the next whole frame must paint over   // boom: 1 makes one sprite throw, 2 makes the place view throw after its sprites (a test that no throw loses the explorer or the bars)
+const TEST = { calm: false, at: null, clock: null,
+  paint: (x, y) => { resetCanvas(); g.fillStyle = '#ff00ff'; g.fillRect(x, y, 4, 4); },   // test hook only: a magenta mark on a clean canvas, which the next whole frame must paint over
    // test hook only: start expeditions without a storm, for measuring calm Energy; at: the reveal's clock held at this many ms (null: the real one), so its frames can be still pictures
   // test hook only: the place is walked: its veil is lifted everywhere and it counts as explored (what walking most of it does)
   exploreHere() { const P = S.exp.patch, lay = layout(P.key); S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); checkWalked(); return walkedCell(lay.cell); } };
@@ -3170,7 +3174,6 @@ function blockWords(lay, x, y, o) {
   if (o.t === T.ROCK && lay.press && lay.press[i] === 1 && !(lay.steep && lay.steep[i])) return B.stone;   // a cliff tile is steep rock, not a stone (bug #45: "what stone?")
   return B.rock;
 }
-const RIM_BIT = { up: 1, down: 2, left: 4, right: 8 };   // the steps a ring cell's rim line refuses (lay.rim, adapt7.mjs)
 // The pawn's last 20 steps for a play note (playNoteState): direction, tile before and after, whether it moved, and the check that let it pass or stopped it (STEP_WHY, set where each check decides).
 const STEP_KEEP = 20; let STEP_WHY = '';
 function patchStep(dir, mode) {
@@ -4267,29 +4270,25 @@ function pickStrike(X) {
 }
 
 // ===================== 8. Creatures and the partner =====================
-function rimRefuses(lay, fx, fy, tx, ty) {   // the one rim check: the orthogonal step from (fx,fy) to (tx,ty) crosses a drawn rim line (as the explorer's step does; bug #107). A mibi already on the far side keeps its level: only the step across is refused.
-  if (!lay.rimSteps || fx < 0 || fy < 0 || fx >= lay.w || fy >= lay.h) return false;
-  const dx = tx - fx, dy = ty - fy; if (Math.abs(dx) + Math.abs(dy) !== 1) return false;
-  return !!(lay.rimSteps[fy * lay.w + fx] & RIM_BIT[dy < 0 ? 'up' : dy > 0 ? 'down' : dx < 0 ? 'left' : 'right']);
-}
 function canStand(X, x, y, who) {
   if (who && who.x != null && rimRefuses(X.lay, who.x, who.y, x, y)) return false;
   if (who && who === X.live.pt && x >= 0 && y >= 0 && x < X.lay.w && y < X.lay.h) { const t = bankTile(X.lay, x, y) ? T.BANK : X.lay.tiles[y * X.lay.w + x];   // the partner follows across what it can cross: Tuliko on mud and scree, Rupar on its dug bank
     if ((t === T.WADE || t === T.SCREE || t === T.BANK) && softTileOpen(X.lay, t, x, y)) return !X.live.cr.some(c => !c.hide && c.x === x && c.y === y) && !(X.P.x === x && X.P.y === y); }
   return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * X.lay.w + x]); }
+// The step taken: the tile it leaves is kept (px, py), which the sidestep in stepToward reads.
+function takeStep(who, to) { who.held = 0; who.px = who.x; who.py = who.y; who.x = to.x; who.y = to.y; if (to.dx) who.face = to.dx; }
 function stepToward(X, who, tgt, n) {
-  for (let k = 0; k < (n || 1); k++) {
+  for (let k = 0; k < n; k++) {
     if (tgt.tree && man(who, tgt) <= 1) return;   // a hollow trunk is entered from beside it: stop there, the next tick goes in
     let best = null, bd = man(who, tgt);
-    const ds = Object.values(DIRS).slice(); const r = hash(S.seed, 'st', who.id || 0, S.exp.actions, k) % 4;
+    const ds = Object.values(DIRS), r = hash(S.seed, 'st', who.id || 0, S.exp.actions, k) % 4;
     for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy;
       const d = man({ x, y }, tgt); if (d < bd && canStand(X, x, y, who)) { bd = d; best = { x, y, dx }; } }
-    if (!best) { // sidestep around a blocker
-      for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy; if (man({ x, y }, tgt) <= man(who, tgt) + 1 && canStand(X, x, y, who) && (!(who.px === x && who.py === y) || who.held >= 3)) { best = { x, y, dx }; break; } }   // bug #121: after 3 turns with no step she may turn round, the back-step refused above
-    }
+    // No nearer tile: a sidestep round the blocker, never back onto the tile just left until three turns have passed with no step.
+    for (let i = 0; i < 4 && !best; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy;
+      if (man({ x, y }, tgt) <= man(who, tgt) + 1 && canStand(X, x, y, who) && (!(who.px === x && who.py === y) || who.held >= 3)) best = { x, y, dx }; }
     if (!best) { who.held = (who.held || 0) + 1; return; }
-    who.held = 0;
-    who.px = who.x; who.py = who.y; who.x = best.x; who.y = best.y; if (best.dx) who.face = best.dx;
+    takeStep(who, best);
   }
 }
 function pathNext(X, who, d) {   // the neighbour nearer the target by field d that she can stand on
@@ -4306,21 +4305,21 @@ function standers(X) {   // the tiles something that moves or lies on the ground
   for (const p of S.pods) if (p.k === X.key && !p.h && p.x >= 0) s.add(p.y * w + p.x);
   for (const q of L.fr) s.add(q.y * w + q.x);
   for (const q of L.tf) s.add(q.y * w + q.x);
-  const P = S.exp && S.exp.patch; if (P && P.key === X.key) s.add(P.y * w + P.x);
+  s.add(X.P.y * w + X.P.x);
   return s;
 }
 function pathStepToward(X, who, tgt, n) {
-  for (let k = 0; k < (n || 1); k++) {
+  for (let k = 0; k < n; k++) {
     if (who.x === tgt.x && who.y === tgt.y) return;
     if (tgt.tree) { stepToward(X, who, tgt, 1); continue; }
     const w = X.lay.w, d = pathField(X.lay, tgt, null, X.key), here = d[who.y * w + who.x];
-    if (here < 0) { stepToward(X, who, tgt, 1); continue; }   // no route inside the place: the greedy step, as before
-    // every step goes by the same field (bug #121: step one by the open field and step two by the creature-shut one turned her back): the creature-shut field when its way round is short (<= +4), else the open one, and she waits for what stands in it
+    if (here < 0) { stepToward(X, who, tgt, 1); continue; }   // no route inside the place: the greedy step
+    // Every step goes by the same field, or two fields in turn walk her back and forth: the creature-shut field when its way round is short (<= +4), else the open one, and she waits for what stands in it.
     const occ = standers(X); occ.delete(who.y * w + who.x); occ.delete(tgt.y * w + tgt.x);
     let f = d; if (occ.size) { const d2 = pathField(X.lay, tgt, (x, y) => occ.has(y * w + x), X.key); if (d2[who.y * w + who.x] >= 0 && d2[who.y * w + who.x] <= here + 4) f = d2; }
     const best = pathNext(X, who, f);
     if (!best) { who.held = (who.held || 0) + 1; if (who.held >= 3) stepToward(X, who, tgt, 1); return; }   // a creature in the only way: she waits
-    who.held = 0; who.px = who.x; who.py = who.y; who.x = best.x; who.y = best.y; if (best.dx) who.face = best.dx;
+    takeStep(who, best);
   }
 }
 // Flight is short and never leaves the screen: it stays within the view around you.
@@ -4328,7 +4327,7 @@ function stepAway(X, c, from, n) {
   for (let k = 0; k < n; k++) {
     let best = null, bd = cheb(c, from) * 10 + man(c, from);
     for (const [dx, dy] of Object.values(DIRS)) { const x = c.x + dx, y = c.y + dy, d = cheb({ x, y }, from) * 10 + man({ x, y }, from);
-      if (Math.abs(x - X.P.x) > 6 || Math.abs(y - X.P.y) > 7) continue;
+      if (awayFrom({ x, y }, X.P)) continue;
       if (d > bd && canStand(X, x, y, c)) { bd = d; best = { x, y, dx }; } }
     if (!best) return; c.x = best.x; c.y = best.y; if (best.dx) c.face = best.dx;
   }
@@ -4344,15 +4343,10 @@ function stepRandom(X, c) {
   for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(r + i) % 4], x = c.x + dx, y = c.y + dy;
     if (x >= 1 && y >= 1 && x < X.lay.w - 1 && y < X.lay.h - 1 && canStand(X, x, y, c)) { c.x = x; c.y = y; if (dx) c.face = dx; return; } }
 }
-function nearestHole(X, c, maxD) {
-  let best = null, bd = maxD + 1;
-  for (const f of X.lay.feats) if (f.kind === 'n' && !X.live.cr.some(o => o.hide && o.x === f.x && o.y === f.y)) { const d = man(c, f); if (d < bd) { bd = d; best = f; } }
-  return best;
-}
-// Flight: a Tuikis dives into a hole near by; others run 3 tiles (over two actions), stop and watch.
+// Flight: a Tuikis dives into a hole near by; any other runs its kind's own distance, two tiles an action, then stops and watches.
 function hideOrFlee(X, c) {
   if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = h.tree ? { x: h.x, y: h.y, tree: 1 } : { x: h.x, y: h.y }; return; } }
-  const run = fleeTiles(spOf(c.sp)); c.st = 'flee'; c.fl = run; c.t = Math.ceil(run / 2);   // the kind's own run, two tiles an action
+  const run = fleeTiles(spOf(c.sp)); c.st = 'flee'; c.fl = run; c.t = Math.ceil(run / 2);
 }
 // Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once,
 // at most SHED_MAX moment pods an expedition. A creature not ready but fed or settled this expedition may still shed, on its own seeded roll.
@@ -4367,16 +4361,6 @@ function shedAllowed(c, X) {
 }
 // A settle moment spent in this place: the Tuikis's once per place per expedition (calmShed), the Tepor's by a warm stone once per place per walk (moShed). Peplos and Wickle have no per-place limit.
 function momentTaken(c, X) { const m = spOf(c.sp).shed; return m === 'calm' ? !!X.live.calmShed : m === 'warm' ? !!(X.live.moShed && X.live.moShed[c.sp]) : false; }
-// Where something happened, in words: a landmark if one is close, else a direction from you.
-function whereWord(X, x, y) {
-  const { lay, P } = X, near = (fx, fy, r) => Math.abs(fx - x) <= r && Math.abs(fy - y) <= r;
-  for (const f of lay.feats) if (f.kind === 'o' && y >= f.y + 1 && y <= f.y + 3 && x >= f.x - 1 && x <= f.x + 3) return 'near the overhang';
-  for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.TRUNK && near(i % lay.w, (i / lay.w) | 0, 1)) return 'under a tree';
-  for (const f of lay.feats) { if (f.kind === 'b' && near(f.x, f.y, 2)) return 'by a bush'; if (f.kind === 'n' && near(f.x, f.y, 2)) return 'by a hole'; if (f.kind === 'e' && near(f.x, f.y, 2)) return 'by a nest'; }
-  for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const t = lay.tiles[(y + dy) * lay.w + x + dx]; if (y + dy >= 0 && y + dy < lay.h && x + dx >= 0 && x + dx < lay.w && (t === T.WATER || t === T.DEEP)) return 'by the water'; }
-  const dx = x - P.x, dy = y - P.y, ns = dy < -2 ? 'north' : dy > 2 ? 'south' : '', ew = dx > 2 ? 'east' : dx < -2 ? 'west' : '';
-  return 'to the ' + (ns && ew ? ns + '-' + ew : ns || ew || 'side');
-}
 function shedPod(c, X) {
   const how = c.st === 'curl' ? 'curl' : spOf(c.sp).shed || 'meal';   // the kind's own moment (a Tuikis curling out of the rain is its curl)
   if (c.st === 'shake' || c.st === 'curl') X.live.stormShed[c.sp] = 1;
@@ -4386,7 +4370,7 @@ function shedPod(c, X) {
   const id = 'p' + (S.nextId++);
   const why = !S.known.includes(c.sp) ? 'new' : bonded(c) ? 'bond' : null;
   if (ANON_PODS) S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how, ...(why ? { why } : {}) });
-  else if (!X.live.tf.some(q => q.x === p.x && q.y === p.y)) X.live.tf.push({ id: X.live.fid++, x: p.x, y: p.y });   // W5: the moment leaves a tuft, not an anonymous pod; bug #144: one tuft per tile at most
+  else if (!X.live.tf.some(q => q.x === p.x && q.y === p.y)) X.live.tf.push({ id: X.live.fid++, x: p.x, y: p.y });   // the moment leaves a tuft, not an anonymous pod: one tuft per tile at most
   if (how === 'dig') (X.live.holes = X.live.holes || []).push({ x: p.x, y: p.y, g: groundName(X.lay.land, X.lay.cave), at: NOW });   // the Rupar's fresh hole stays for the expedition
   const w = crById.get(c.id) || c.stub; if (w) w.s = S.exp.n;
   S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');
@@ -4396,10 +4380,9 @@ function shedPod(c, X) {
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
   else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why && !(how === 'grab' && why === 'bond') ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
 }
-// An eater closes in on fruit quickly from across the view, then slows near it: about 4 quiet actions.
-function seekPace(c, f) { const d = man(c, f); return d > 6 ? 3 : d > 3 ? 2 : 1; }
 // The four bubbles: ! startled · ? curious · fruit (it eats what you carry) · … settling. One at a time, in that order.
-const BUBBLE_SIGN = { '!': 'bubbleNotice', '?': 'bubbleCurious', f: 'bubbleFruit', fs: 'bubbleSeek', '…': 'bubbleSettle' };   // 'fs' is the fruit bubble of a creature going for fruit (drawn as 'f')   // each bubble's sign, the first time it shows in view
+// Each bubble's sign, the first time it shows in view; 'fs' is the fruit bubble of a creature going for fruit (drawn as 'f').
+const BUBBLE_SIGN = { '!': 'bubbleNotice', '?': 'bubbleCurious', f: 'bubbleFruit', fs: 'bubbleSeek', '…': 'bubbleSettle' };
 function bubbleOf(c, carry) {
   if (c.st === 'alert') return '!';
   if (c.st === 'approach') return '?';
@@ -4434,22 +4417,21 @@ function creatureTick(c, X) {
   // Walking is noticed within the species' range; creeping only right beside it, and never inside a fog bank.
   let notice = noticeRange(sp, { curious: c.b > .6, fog: X.fog });
   const walking = X.moved && X.noise === 'walk';
-  if (calm && walking && d <= notice && d > notice - 2 && ['idle', 'seek'].includes(c.st) && !X.live.noted['c' + c.id]) {
+  c.cue = calm && walking && d <= notice && d > notice - 2;   // would have noticed you without the partner: drives the cue
+  if (c.cue && ['idle', 'seek'].includes(c.st) && !X.live.noted['c' + c.id]) {
     X.live.noted['c' + c.id] = 1; fieldHabit('calm');
-    const short = X.ptName + ' keeps the ' + spName(c.sp) + ' calm';
     // the sign is spent only once it is actually on the screen
     if (!S.found.includes('calmkeep')) fxSign('calmkeep', S.exp.pt && S.exp.pt.sp);
-    else fxMsg(short, 0); }
-  c.cue = calm && walking && d <= notice && d > notice - 2;   // would have noticed you without the partner: drives the cue
+    else fxMsg(X.ptName + ' keeps the ' + spName(c.sp) + ' calm', 0); }
   if (calm) notice -= 2;
-  if (c.ind) easeLoika(c, X);   // walk W3: a named Loika hears by the carry table, never by its kind's notice
-  if (c.ind && habitTick(c, X)) return;   // walk W4: her habit plays (the tell, then four beats), or is lost to a heard step
+  if (c.ind) easeLoika(c, X);   // a named Loika hears by the carry table, never by its kind's notice
+  if (c.ind && habitTick(c, X)) return;   // her habit plays (the tell, then four beats), or is lost to a heard step
   const threat = !c.ind && X.moved && c.st !== 'eat' && (walking ? d <= notice : (!X.fog && d <= creepRange(sp) && !calm && !curious));
   const sheltered = !!X.lay.shelter[c.y * X.lay.w + c.x];
   if (c.st === 'shake' || c.st === 'full' || c.st === 'glow') {
     if (c.st === 'glow' && sp.settle) awardMoment(c, 'settle', X);
     if (shedAllowed(c, X)) shedPod(c, X); c.st = 'idle'; c.wet = 0; c.calm = 0; c.warm = 0; c.grab = 0; return; }
-  if (c.st === 'curl' && !X.raining && !X.lay.shelter[c.y * X.lay.w + c.x]) { c.st = 'idle'; c.curl = 0; }
+  if (c.st === 'curl' && !X.raining && !sheltered) { c.st = 'idle'; c.curl = 0; }
   // Sudden things: a strike, a loud act nearby, your Call.
   const startled = (X.strike && cheb(c, X.strike) <= 3) || (X.ring && cheb(c, X.ring) <= X.ring.r && c.b < .75 && !calm && !X.fog);
   if (startled && c.st !== 'eat') hideOrFlee(X, c);
@@ -4458,7 +4440,7 @@ function creatureTick(c, X) {
     else if (curious || calm) { c.st = 'approach'; c.t = 3; }
     else { c.st = 'alert'; c.t = 2; c.go = 1; } }   // wary: "!" for one action, then it hides
   // Weather.
-  if (c.ind) { if (X.raining) c.wet = 1; }   // a named Loika is wet in rain wherever she keeps; she shakes dry as a habit (W4), never runs for shelter
+  if (c.ind) { if (X.raining) c.wet = 1; }   // a named Loika is wet in rain wherever she keeps; she shakes dry as a habit, never runs for shelter
   else if (X.raining) {
     if (!sheltered) { c.wet = 1; if (!['flee', 'dive', 'eat'].includes(c.st)) c.st = 'shelter'; }
     else if (c.wet && c.sp === 0 && c.st !== 'flee') { c.st = 'shake'; return; }
@@ -4472,18 +4454,19 @@ function creatureTick(c, X) {
   }
   if (!X.raining && c.st === 'curl') { c.st = 'idle'; c.curl = 0; }
   if (!X.raining && (c.st === 'shelter' || c.st === 'huddle')) c.st = 'idle';
-  if (c.visit && !threat && ['idle', 'seek', 'watch'].includes(c.st) && habitVisit(c, X)) return;   // W4: a wary one drawn to her haunt for the calm window
+  if (c.visit && !threat && ['idle', 'seek', 'watch'].includes(c.st) && habitVisit(c, X)) return;   // a wary one drawn to her haunt for the calm window
   // The player: a creature shows "!" for one action before it flees, so you can stop.
   if (threat && ['idle', 'seek', 'watch', 'alert', 'approach'].includes(c.st)) {
     if (c.st === 'alert') { if (curious && X.carry && sp.eats) { c.st = 'approach'; c.t = 2; } else { c.go = 0; hideOrFlee(X, c); } }
     else if (!(c.st === 'approach' && curious)) { c.st = 'alert'; c.t = 2; }
   }
-  // #145: at a part-of-day turn a named Loika who is alert or watching is let go to her routine (as the gone is at the turn): hauntStep sets the new part's haunt; the hearing model takes her again on the way, the ease is kept
+  // At a part-of-day turn a named Loika who is alert or watching is let go to her routine (as the gone is at the turn): hauntStep sets the new part's haunt; the hearing model takes her again on the way, the ease is kept
   if (c.ind && !c.gone && (c.st === 'alert' || c.st === 'watch') && c.ind.go && c.ind.go.part !== hpart()) { c.st = 'idle'; c.t = 0; c.go = 0; }
+  const keep = (curious || calm || X.fog) ? 1 : 3;   // how far you stand from fruit on the ground before an eater goes for it
   // Act on the current state.
   switch (c.st) {
     case 'flee': { const n = Math.min(2, c.fl == null ? (c.t >= 2 ? 2 : 1) : c.fl); stepAway(X, c, P, n); if (c.fl != null) c.fl -= n; } if (--c.t <= 0) { c.st = 'watch'; c.t = 3; } break;
-    case 'watch': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (c.ind && c.ease === 2) break; if (!threat && --c.t <= 0) c.st = 'idle'; break;   // a named Loika's watching ends by its ease (W3)   // back to routine after 3 quiet actions
+    case 'watch': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (c.ind && c.ease === 2) break; if (!threat && --c.t <= 0) c.st = 'idle'; break;   // a named Loika's watching ends by its ease; any other is back to its routine after 3 quiet actions
     case 'dive': {
       const h = c.tgt; if (!h) { c.st = 'flee'; c.t = 2; c.fl = null; break; }
       if (man(c, h) <= 1 && !rimRefuses(X.lay, c.x, c.y, h.x, h.y)) { c.x = h.x; c.y = h.y; c.hide = X.raining ? 6 : 4; c.st = 'hidden'; }
@@ -4496,7 +4479,7 @@ function creatureTick(c, X) {
     case 'alert': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (c.ind && c.ease === 1 && !c.go) break; if (--c.t <= 0) { if (c.go) { c.go = 0; hideOrFlee(X, c); } else c.st = 'idle'; } break;
     case 'eat': if (--c.eat <= 0) { const sh = sp.shed; c.st = ((sh === 'meal' || sh === 'dig' || (sh === 'grab' && c.grab)) && shedAllowed(c, X)) ? 'full' : 'idle'; if (c.st === 'idle') c.grab = 0; } break;   // a full Untuva, Rupar (after a meal) or a Hiljan that grabbed
     case 'seek': {
-      const f = X.live.fr.find(q => q.id === c.fid), keep = (curious || calm || X.fog) ? 1 : 3;
+      const f = X.live.fr.find(q => q.id === c.fid);
       if (!f || (!c.grab && cheb(P, f) < keep - 1)) { c.st = 'idle'; c.grab = 0; break; }   // you came too close: it gives up for now (a Hiljan going for a shaken fruit ignores the back-off)
       if (cheb(c, f) <= 1) { X.live.fr = X.live.fr.filter(q => q !== f); c.st = 'eat'; c.eat = 2; if (f.x !== c.x) c.face = Math.sign(f.x - c.x);
         S.exp.stats.putFeeds++;
@@ -4510,31 +4493,29 @@ function creatureTick(c, X) {
       // A settler (the Tuikis by its burrow, the Wickle anywhere, the Peplos in a fog bank) sheds only after a long quiet spell. A kin or calming
       // partner lets you wait one tile closer; it never makes the wait shorter.
       if (canSettle(c, X)) {
-        const loud = walking, near = !(d >= 3 || (calm && d >= 2)), pulsed = X.pulse && d <= X.reach;
-        if (!loud && !near && !pulsed) c.calm++;
-        else { if (c.calm >= 2) fxMsg(pulsed ? 'Your call startled the ' + spName(c.sp) + ' · it stopped settling' : 'The ' + spName(c.sp) + ' looks up · ' + (loud ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
+        if (!walking && d >= (calm ? 2 : 3)) c.calm++;
+        else { if (c.calm >= 2) fxMsg('The ' + spName(c.sp) + ' looks up · ' + (walking ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
         if (c.calm === 2 && S.found.includes('mark…') && X.away(c) && !FX.msg.includes('settling')) fxMsg('A ' + spName(c.sp) + ' is settling ' + whereWord(X, c.x, c.y), 0);
         if (c.calm >= 8 && !momentTaken(c, X)) { c.st = 'glow'; break; }
       } else if (sp.settle === 'fog' && c.calm) c.calm = 0;   // the fog drifted off: the Peplos's settle stops with it
-      // A Tepor within a tile of a warm stone, for three quiet actions in a row (you not walking within 3 tiles, no Call reaching it), settles there; once a place a walk.
+      // A Tepor within a tile of a warm stone, for three quiet actions in a row (you not walking within 3 tiles), settles there; once a place a walk.
       if (sp.shed === 'warm' && !momentTaken(c, X)) {
-        const quiet = warmStoneNear(X, c) && !(walking && d <= 3) && !(X.pulse && d <= X.reach);
+        const quiet = warmStoneNear(X, c) && !(walking && d <= 3);
         c.warm = quiet ? (c.warm || 0) + 1 : 0;
         if (c.warm >= 3) { c.st = 'glow'; break; }
       }
       // Put it down and back off: an eater comes for fruit on the ground once you are 3 tiles from it.
-      if (sp.eats && X.live.fr.length && !(c.ease >= 3)) {   // bug179-hand-fruit-5: a bolted one (ease 3) does not come for fruit; it came back inside 4 tiles and the bolt-end count never ran on his save
-        const keep = (curious || calm || X.fog) ? 1 : 3;
+      if (sp.eats && X.live.fr.length && !(c.ease >= 3)) {   // a bolted one (ease 3) does not come for fruit: coming back inside 4 tiles, its bolt-end count would never run
         let best = null, bd = 1e9, wanted = null;
         for (const f of X.live.fr) { if (cheb(c, f) > 10) continue; const dd = man(c, f); if (dd >= bd) continue; if (cheb(P, f) >= keep) { bd = dd; best = f; } else wanted = f; }
         if (best) { c.st = 'seek'; c.fid = best.id; c.grab = 0; if (cheb(c, best) > 1) stepToward(X, c, best, seekPace(c, best)); break; }
-        if (wanted && man(c, wanted) <= 8 && !X.away(c) ) fxSign('bubbleFruit');
+        if (wanted && man(c, wanted) <= 8 && !X.away(c)) fxSign('bubbleFruit');
       }
       if (sp.settle && c.calm >= 2) break;   // settling: stays put
       if (sp.shed === 'warm' && c.warm >= 1) break;   // a Tepor settling by a warm stone stays on it
       if (c.home) { if (c.x !== c.home.x || c.y !== c.home.y) stepToward(X, c, c.home, 1); }   // a moment heart's creature stays at its spot
-      else if (c.ind && hauntStep(X, c)) { /* its routine: it goes to the haunt it keeps at this part of day and stays there (walk W2) */ }
-      else if (rnd(S.seed, c.id, S.exp.actions, 'w') < sp.wander) stepRandom(X, c);
+      // a named one's routine comes first: it goes to the haunt it keeps at this part of day and stays there
+      else if (!(c.ind && hauntStep(X, c)) && rnd(S.seed, c.id, S.exp.actions, 'w') < sp.wander) stepRandom(X, c);
     }
   }
 }
@@ -4558,14 +4539,14 @@ function partnerTick(X) {
     const r = (elder ? 10 : 5) + n, pod = S.pods.find(p => p.k === X.key && p.h && p.x >= 0 && cheb(p, pt) <= r && cheb(p, P) <= r + 1);
     if (pod) {
       if (cheb(pt, pod) <= 1) { pt.st = 'sniff'; pt.face = Math.sign(pod.x - pt.x) || pt.face; pt.sn = (pt.sn || 0) + 1;
-        if (pt.sn >= 2) { pod.h = 0; pod.out = 1; pt.sn = 0; if (S.exp) S.exp.abUsed = 1; fxGlint(pod.x, pod.y); fxMsg(X.ptName + ' found a buried pod'); logEv(X.ptName + ' sniffed out a pod'); } }
+        if (pt.sn >= 2) { pod.h = 0; pod.out = 1; pt.sn = 0; S.exp.abUsed = 1; fxGlint(pod.x, pod.y); fxMsg(X.ptName + ' found a buried pod'); logEv(X.ptName + ' sniffed out a pod'); } }
       else { pt.st = 'follow'; stepToward(X, pt, pod, speed); }
       return;
     }
   }
   // A notched Rupar or Tuliko shows you its way through: it goes to the nearest earth bank not yet dug (Rupar) or mud / scree (Tuliko) within 4 + 2n of you and waits beside it sniffing.
   // It stops once the bank is dug or the soft ground crossed; a Call (above) always comes first, and out of reach it follows again.
-  if (n >= 1 && (ab === 'bank' || ab === 'sure') && !(ab === 'sure' && S.exp && S.exp.softSaid)) {
+  if (n >= 1 && (ab === 'bank' || ab === 'sure') && !(ab === 'sure' && S.exp.softSaid)) {
     const lay = X.lay, rr = 4 + 2 * n; let tgt = null, bd = 1e9;
     for (let i = 0; i < lay.w * lay.h; i++) { const t = lay.tiles[i]; if (ab === 'bank' ? t !== T.BANK : (t !== T.WADE && t !== T.SCREE)) continue;
       const x = i % lay.w, y = (i / lay.w) | 0;
@@ -6488,7 +6469,6 @@ function edge48(key, pb, pick, near, far) { const k = key + '|' + RT.remap.id; l
     const v = pick(x, y) ? far(c, x, y) : near(c, x, y), q = typeof v === 'number' ? RGB[v] : v; u[o] = ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(k, cv); return cv; }
 const veilPx = (c, x, y, rm) => rm === 6 ? DARK[c] : BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
-const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle', hab: 'idle' };
 // The place camera: today's centred camera for a generated place; for a baked place the half-screen steps of places/src/camera.mjs (page pixels).
 // live (drawPatch only) steps the kept state RT.ca on the explorer's tile; every other caller reads what the view would be (a copy of the state),
 // at (px, py) in place pixels. At the reveal's spot the view also holds the heart.
@@ -6917,7 +6897,7 @@ function drawPatchBody(t) {
       if (m) { g.drawImage(veilEdgeTile(keyFor(i), tileFor(i), L0, m), W(tx * ts), H(ty * ts)); continue; } }
     g.drawImage(tileFor(i, L0 === 3).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
   }
-  if (lampDark) lampCircle(RT.plScr.x, RT.plScr.y, (SIGHT_NIGHT + .5) * ts, ts);   // night step 4: the lamp's circle over the ground, before the creatures
+  if (lampDark) lampCircle(RT.plScr.x, RT.plScr.y, (SIGHT_NIGHT + .5) * ts, ts);   // the lamp's circle over the ground, before the creatures
   const vis2 = (x, y) => x > camX - 96 && x < camX + SCR_W + 96 && y > camY - 96 && y < camY + VIEW_H + 96;
   // ground decals
   for (const f of lay.feats) {
@@ -6953,7 +6933,7 @@ function drawPatchBody(t) {
     const rr = f.kind === 'k' && lay.cave && stoneCharge(P.key, f) > 0 ? 0 : rm;
     // a baked place's bush, cup or stone with something to take is drawn after the crowns, as pods are, so nothing a player can take hides under a tree
     const takeable = f.kind === 'b' ? bushFull(P.key, f) : f.kind === 'u' ? cupFull(P.key, f) : f.kind === 'k' ? (lay.cave ? stoneCharge(P.key, f) > 0 : stormCharge(P.key, f) > 0) : false;
-    const shade = f.kind === 'k' && !lay.cave && f.id !== 'kh';   // a field stone stands on its ground shadow (bug #30); the heart's tall stone and the cave's crystals do not
+    const shade = f.kind === 'k' && !lay.cave && f.id !== 'kh';   // a field stone stands on its ground shadow; the heart's tall stone and the cave's crystals do not
     const drawIt = () => { if (shade) stoneShadow(SX(x), SY(y), rr); blit(a, SX(x), SY(y), rr); };
     if (bk && takeable) aboveCrowns.push({ y: y + 1, d: drawIt });
     else items.push({ y: y + 1, d: drawIt }); }
@@ -6965,14 +6945,14 @@ function drawPatchBody(t) {
   // (the 2 x 1 heart slab, sp.w tiles wide, sorted on its foot row: the named empty slot heart-slab draws nothing until its art is signed)
   for (const sp of lay.pieces || []) { const pc = propPiece(sp.piece), sw = sp.w || 1; if (pc && pc.w > 1 && (see(sp.x, sp.y) || (sw > 1 && see(sp.x + 1, sp.y)))) { const x = sp.x * ts, y = sp.y * ts; items.push({ y: y + 1, d: () => blit(pc, SX(x) + ((ts * sw - pc.w) >> 1), SY(y) + ts - pc.h, spriteRm(sp.x, sp.y)) }); } }
   for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, findRm(f.x, f.y)) }); }
-  for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16) }); }   // the signed tuft at its signed size and palette: no light table over it (the AD's note on PR 489: it read as a lilac gem)
-  // W4 round 2: her prints at a haunt she has left, the built paw sign on the stand tile (a new placement: the art director passes it in whole-place stills; the slot is named PAWS-ON-TILE)
+  for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16) }); }   // the signed tuft at its signed size and palette: no light table over it (under one it read as a lilac gem)
+  // her prints at a haunt she has left: the built paw sign on the stand tile
   if (PAWS_ON_TILE) for (const p of printsHere()) { if (!p.mark) continue; const x = p.mark.x * ts, y = p.mark.y * ts; if (vis2(x, y) && see(p.mark.x, p.mark.y)) items.push({ y: y + 1, d: () => { const dd = dewDir(p), ag = printAge(p), pb = PAWS_AGED(dd ? PAWS_TURNED(dd.h) : PAWS(), ag, dd ? "sg-paws-t" + dd.h : "sg-paws"); blit(pb, SX(x) + ((ts - pb.w) >> 1), SY(y) + ((ts - pb.h) >> 1), findRm(p.mark.x, p.mark.y)); } }); }
-  const herTag = herInSight(); RT.tagW = null;   // her-page-ui-1: the wild one the bottom line names carries her name
+  const herTag = herInSight(); RT.tagW = null;   // the wild one the bottom line names carries her name
   for (const c of live.cr) {
     const r = RT.cr.get(c.id) || null, nr = tween(r, c.x * ts, c.y * ts, 170); if (!r) RT.cr.set(c.id, nr);
     if (c.hide) continue; if (!vis2(nr.x, nr.y) || !inS(c.x, c.y)) continue;   // creatures show under the veil too (not beyond fog sight)
-    const bs = c.sp === 0 ? beatShift(c, ts) : null, bdx = bs ? bs.dx : 0, bdy = bs ? bs.dy : 0;   // wild-life-build-3: her act's picture goes to her plant and back (the draw only)
+    const bs = c.sp === 0 ? beatShift(c, ts) : null, bdx = bs ? bs.dx : 0, bdy = bs ? bs.dy : 0;   // her act's picture goes to her plant and back (the draw only)
     if (herTag && String(c.id) === herTag) RT.tagW = { x: SX(PX(nr)) + 16 + bdx, y: SY(PY(nr)) + bdy, name: S.named[c.id], sp: c.sp, wild: true, id: c.id };
     const pose = c.sp === 1 && c.st === 'curl' ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 6 ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 3 ? 'settle'
       : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : c.st === 'hab' ? (c.hb && c.hb.pose) || 'idle' : POSE[c.st] || 'idle';
@@ -6990,21 +6970,19 @@ function drawPatchBody(t) {
   const heroDraw = (ox = 0, oy = 0) => {
     RT.heroN = (RT.heroN || 0) + 1;   // the pawn's draws this frame (read by the slide test)
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
-    const heroRm0 = spriteRm(P.x, P.y), heroRm = heroRm0 === 5 ? 6 : heroRm0;   // at night she draws through the dusk table (one step), not the night table, so she does not vanish (art director 2026-11-22 18:06); beasts and props stay on night
+    const heroRm0 = spriteRm(P.x, P.y), heroRm = heroRm0 === 5 ? 6 : heroRm0;   // at night she draws through the dusk table (one step), not the night table, so she does not vanish; beasts and props stay on night
     blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx + ox, SY(PY(RT.pl)) + oy, heroRm);
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx + ox, SY(PY(RT.pl) - 6) + oy); };
   // Near a place's edge, and through a crossing slide, the pawn is kept out of the place's picture: the slide layers are pictures of the place, so a pawn in them would show twice. It is drawn once on top instead (after the picture is kept, or by drawSlide riding between its two spots).
   RT.heroFn = heroDraw; RT.heroLater = motion() && (!!FX.slide || nearEdge(P));
   items.push({ y: RT.pl.y + 5, hero: true, d: RT.heroLater ? () => {} : heroDraw });
-  if (bk && ts === 48) { const fi = bk.feetItem(g, bOrg, bclk, { x: P.x, y: P.y }, (x, y) => tileLight(x, y), RT.pl.y + 5, RT.pl.ry + 46); if (fi) items.push(fi); }   // standing in a plant: its lower part over the explorer's feet (his feet are 46 px down his tile; a plant whose base is well above them is behind him: owner #54)
-  if (TEST.boom === 1) items.push({ y: -1e9, d: () => { throw new Error('test: a sprite throws'); } });   // test hook only: an item that throws before everything else
+  if (bk && ts === 48) { const fi = bk.feetItem(g, bOrg, bclk, { x: P.x, y: P.y }, (x, y) => tileLight(x, y), RT.pl.y + 5, RT.pl.ry + 46); if (fi) items.push(fi); }   // standing in a plant: its lower part over the explorer's feet (his feet are 46 px down his tile; a plant whose base is well above them is behind him)
   if (bk) items.push(...bk.propItems(g, bOrg, bclk, (x, y) => see(x, y), (x, y) => tileLight(x, y), lay.cut));
   if (ts === 48 && bk && lay.rim && ART48.ready) { const rs = lay.rimSet || (lay.rimSet = new Set(lay.rim)); for (const s2 of layers48(lay, fr).sprites) if (rs.has(s2.ty * lay.w + s2.tx) && vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) }); }   // the rim's reeds, as a generated place's
   if (ts === 48 && !bk) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
   RT.tag = null; let heroDrawn = false;
   items.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); if (it.hero) heroDrawn = true; } catch (e) { if (RT.err++ < 3) console.error(e); } });   // one sprite that throws costs that sprite, never the explorer or the rest of the frame
   if (!heroDrawn && !RT.heroLater) { try { heroDraw(); } catch (e) { if (RT.err++ < 3) console.error(e); } }
-  if (TEST.boom === 2) throw new Error('test: the place view throws after its sprites');   // test hook only
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
   if (bk) bk.drawCanopy(g, bOrg, bclk, [{ x: RT.pl.rx + 24, y: RT.pl.ry + 24 }].concat(RT.pt ? [{ x: RT.pt.rx + 24, y: RT.pt.ry + 24 }] : []), (x, y) => shown(x, y), (x, y) => tileLight(x, y), lay.cut);   // the crowns, cut away round the explorer and the partner
@@ -7014,8 +6992,7 @@ function drawPatchBody(t) {
     const crown = ts === 48 && treeCanopy(lay, i, under ? 1 : 0, !lightAt && tileLight(x, y) === 3); if (crown) overlay(crown, W(x * ts + o.x + 16 - 44), H(y * ts + o.y + 16 - 58), x, y);
   }
   aboveCrowns.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); } catch (e) { if (RT.err++ < 3) console.error(e); } });
-  if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, see, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused; drawn after the crowns so a tree never hides it
-  if (RT.tagW) drawTag(tagSpot(RT.tagW, { W, H, o, ts, inS, see, PX, PY }));   // her name on the same tag component, bone, placed by the same rule (refuses the pawn, finds and the message box); after the crowns too
+  for (const tg of [RT.tag, RT.tagW]) if (tg) drawTag(tagSpot(tg, { W, H, o, ts, inS, see, PX, PY }));   // the name tags, the partner's then the wild one's: the first clear of positions 1–5 (creatures, the pawn, finds, the message box and the edge tabs refused); after the crowns so a tree never hides one
   // pods sit above the canopy layer so they can't hide under a tree
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     // a find your Call or partner turned up stays outlined until you take it
@@ -7033,14 +7010,14 @@ function drawPatchBody(t) {
       const read = strikeIsRead(P.key, f);
       if (!read) { const a = sparkArt(false); glintBlit(a, W(x + (ts >> 1)) - Math.floor(a.w / 2), H(y + (ts >> 1) - 4) - Math.floor(a.h / 2), (NOW + hash(f.x, f.y, 5) % 1600) % 1600 < 400); } }
     // once the place is explored, every takeable still in view glints: the sparkle always showing, bright for 400 ms every 1.6 s (staggered by position) and dim between; under reduced motion it stands steady, bright (a find marker, not decoration)
-    if ((walkedCell(lay.cell) || (RT.pointed && RT.pointed[lay.cell]))) {   // (or a place a tab pointed at: its finds glint on arrival, owner-notes-fix-160)
+    if (walkedCell(lay.cell) || (RT.pointed && RT.pointed[lay.cell])) {   // (or a place a tab pointed at: its finds glint on arrival)
       for (const it of leftItems(lay.cell)) { if (it.cave || it.k === 'strike' || !vis2(it.x * ts, it.y * ts)) continue;
         const a = sparkArt(false); glintBlit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2), (NOW + hash(it.x, it.y, 7) % 1600) % 1600 < 400); } } }
   // what Confirm will act on
   const act = patchAction();
   if (act.run && act !== NOTHING && !act.face) { const f = ACT_AT || frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
   // the strike warning: a tile glows one action before lightning hits it
-  const aimedAt = [live.strike, ex.stray && ex.stray.scope === 'patch' && ex.patch && ex.patch.key === P.key ? ex.stray : null].filter(Boolean);   // a warned strike and a stray, each outlined a turn ahead
+  const aimedAt = [live.strike, ex.stray && ex.stray.scope === 'patch' ? ex.stray : null].filter(Boolean);   // a warned strike and a stray, each outlined a turn ahead
   for (const st of aimedAt) { const x = W(st.x * ts), y = H(st.y * ts), col = fr ? C.cream : C.yellow;
     R(x, y, ts, 2, col); R(x, y + ts - 2, ts, 2, col); R(x, y, 2, ts, col); R(x + ts - 2, y, 2, ts, col); RT.litScr = { x, y, w: ts, h: ts }; }   // strike warned: the tile's outline only
   for (const s2 of FX.strikes) { if (s2.space !== 'patch') continue; const age = NOW - s2.at; if (age > 380) continue;
@@ -7051,7 +7028,7 @@ function drawPatchBody(t) {
     const a = sparkArt(!motion() || Math.floor(age / 120) % 2 === 0); blit(a, W(r.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(r.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); }
   if (FX.pulse) { const age = NOW - FX.pulse.at, cx = W(FX.pulse.x * ts + (ts >> 1)), cy = H(FX.pulse.y * ts + (ts >> 1)), maxR = (2 * FX.pulse.r + 1) * ts >> 1;   // the range's edge
     if (motion() && age < CALL_MS) circ(cx, cy, 8 + (maxR - 8) * age / CALL_MS, C.ice);            // the leading edge: the veil lifts behind it
-  }   // no final contour and no view-edge dashes after the Call (#140: the owner said remove the call range and the probe view range)
+  }   // no final contour and no view-edge dashes after the Call
   if (FX.dig) { const age = NOW - FX.dig.at, x = W(FX.dig.x * ts + (ts >> 1)), y = H(FX.dig.y * ts + ts - 6);
     for (let i = 0; i < 6; i++) { const a = ((age / 300) + i / 6) % 1; R(x - 12 + i * 5, y - Math.round(Math.sin(a * Math.PI) * 14), 2, 2, i % 2 ? C.clay : C.bark); } }
   for (const b of FX.bursts) { const age = NOW - b.at; if (age < 0 || age >= JUICE_BURST_MS) continue;   // the burst: 4 frames, a cream ring, then a dashed amber one, with eight ticks
@@ -7059,7 +7036,7 @@ function drawPatchBody(t) {
     circ(x, y, r, fr < 2 ? C.cream : C.amber, fr >= 2);
     for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; R(Math.round(x + Math.cos(a) * (r + 4)) - 1, Math.round(y + Math.sin(a) * (r + 4)) - 1, 2, 2, fr < 2 ? C.white : C.amber); } }
   for (const f of FX.floats) { const age = NOW - f.at; if (age > 1200) continue;
-    if (motion() && age > 960 && Math.floor(age / 80) % 2) continue;   // juice-build-2: it fades out (palette only, so it blinks out) after rising about 12 px (720 ms)
+    if (motion() && age > 960 && Math.floor(age / 80) % 2) continue;   // it fades out (palette only, so it blinks out) after rising about 12 px (720 ms)
     const ic = f.icon === 'pod' ? podArt('bone') : ICON[f.icon](), tw = f.text ? textW(f.text, 2) + 6 : 0, w = ic.w + tw + 14;
     const x = W(f.x * ts + (ts >> 1)), y = Math.max(VIEW_Y + 14, H(f.y * ts) - 6 - (motion() ? Math.min(12, Math.floor(age / 60)) : 8));   // never above the view's top edge
     panel(x - w / 2, y - 12, w, 24, C.ink, C.slate);
@@ -7076,7 +7053,6 @@ function drawPatchBody(t) {
 }
 // Which half of its tween a thing is in while it moves (0 or 1), or -1 when it is not moving: motion on, now inside the tween's duration, the target differing from the start.
 function stepHalf(o) { return o && motion() && NOW - o.at < o.dur && (o.tx !== o.fx || o.ty !== o.fy) ? ((NOW - o.at) * 2 >= o.dur ? 1 : 0) : -1; }
-const CR_MOVING = ['idle', 'seek', 'approach', 'flee', 'watch'];   // the states a creature steps in
 function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1, faceOv = 0) {
   const m = motion(), fr = m ? Math.floor(t * 2.4 + c.id * .37) % 2 : 0;
   const stepping = stepFr >= 0 && !!stepFrames(STEP_ART[c.sp], false);
@@ -7087,7 +7063,7 @@ function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1, faceOv = 0) {
   const sad = c.sp === 0 && wildSaddled(c);   // her marking shows and her coat is read
   const a = stepping ? creatureArt(c.sp, 'step', stepFr, 1, false, sad) : creatureArt(c.sp, pose === 'shake' && spOf(c.sp).shed === 'air' ? 'idle' : pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0, 1, false, sad);   // the Tuliko airing its scales is its idle with the shake's jiggle
   const cu = c.sp === 0 && curledNow(c) ? art('curl' + (sad ? 's' : 'p') + fr, () => tokenPB(CURLED_LOIKA[sad ? 'saddled' : 'plain'][fr], 32)) : null;   // asleep on her bed: the signed curled token
-  const bt = c.sp === 0 && !cu && !stepping && pose === 'idle' && c.st === 'idle' ? beatTok(c, sad) : null;   // wild-life-build-1: the idle beat's picture, held still (no bob)
+  const bt = c.sp === 0 && !cu && !stepping && pose === 'idle' && c.st === 'idle' ? beatTok(c, sad) : null;   // the idle beat's picture, held still (no bob)
   const ba = bt ? art('wb' + bt.key, () => tokenPB(bt.row, 32)) : null; if (ba) dy = 0;
   else if (c.sp === 0 && !cu && !stepping && pose === 'idle' && c.st === 'idle') { const bd = beatDip(c); if (bd) dy = bd; }   // sniff and graze: the idle sinks to the plant and holds still
   blit(cu || ba || a, x + dx, y + dy, rm, (faceOv || c.face || 1) < 0);
@@ -7112,12 +7088,8 @@ function drawPartner(sp, pt, x, y, t, stepFr = -1) {
   if (pt.st === 'dig') for (let i = 0; i < 5; i++) { const a = ((t * 6) + i / 5) % 1; R(f > 0 ? x + 4 - a * 12 : x + 26 + a * 12, y + 20 - Math.round(Math.sin(a * Math.PI) * 10), 2, 2, C.clay); }
 }
 
-// ---------- The view's edge cues: tabs for what is off screen, the Call's hold on the edge, the name tag's place ----------
-// Read only: S, FX and RT in, pixels out. The one render state is RT.tabSeen (when each tab first showed, for its flash).
-const TAB = { order: ['!', '?', 'find'], border: { '!': 'yellow', '?': 'sprout', find: 'cream' }, max: 4, merge: 24, clear: 4, flashMs: 160 };
-const TOP_LINE_B = 56;   // the bottom of the goal line drawn over the view's top (VIEW_Y + GOAL_BAND_H)
-const findTabY = t => t.kind === 'find' ? Math.max(t.cy, TOP_LINE_B + 12) : t.cy;   // the find marker sits whole below the goal line, never a sliver under it (owner #80)
-const rectsMeet =(a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+// ---------- The view's edge cues: tabs for what is off screen, the name tag's place (their geometry: src/render/cues.mjs) ----------
+// S, FX and RT in, pixels out. The render state kept here: RT.tabSeen (when each tab first showed, for its flash) and RT.pointed (the finds a tab pointed at, dropped once taken).
 // the place view and its drawn camera, as drawPatch has them this frame (the shake after the clamp)
 function cueView() { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), [sx, sy] = shakeOff(), c0 = camPos(v, S.exp.patch.x * v.ts, S.exp.patch.y * v.ts); return { v, cam: { x: c0.x + sx, y: c0.y + sy } }; }
 // a find the Call lit is still lying there: a pod not taken, a charged stone, the crack
@@ -7140,9 +7112,9 @@ function edgeTabs() {
   for (const c of live.cr) { if (c.hide || !(sight >= 99 || Math.hypot(c.x - P.x, c.y - P.y) <= sight + .5)) continue;   // never hidden, never beyond fog sight
     const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?' || b === 'fs') add(b === 'fs' ? '?' : b, c.x, c.y, 'c' + c.id); }
   const q = FX.cue, callLive = !!q && q.key === P.key && ex.actions < q.until;
-  if (callLive) { const w = leadWay(P, lay); if (w) add('find', w.tx ?? P.x + w.vx * 60, w.ty ?? P.y + w.vy * 60, 'beat'); }   // only for the Call's own time (owner #80): never on the plain map; one tab on the edge toward the nearest thing to take or explore (call-probe-marks-1)
-  if (RT.pointed && RT.pointed[lay.cell]) { const left = leftItems(lay.cell).filter(i => !i.cave && i.k !== 'strike'); if (!left.length) delete RT.pointed[lay.cell]; for (const i of left) add('find', i.x, i.y, 'p' + i.x + ',' + i.y); }   // owner-notes-fix-160: a find a tab pointed at keeps its tab in its own place until taken
-  if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
+  if (callLive) { const w = leadWay(P, lay); if (w) add('find', w.tx ?? P.x + w.vx * 60, w.ty ?? P.y + w.vy * 60, 'beat'); }   // only for the Call's own time, never on the plain map: one tab on the edge toward the nearest thing to take or explore
+  if (RT.pointed && RT.pointed[lay.cell]) { const left = leftItems(lay.cell).filter(i => !i.cave && i.k !== 'strike'); if (!left.length) delete RT.pointed[lay.cell]; for (const i of left) add('find', i.x, i.y, 'p' + i.x + ',' + i.y); }   // a find a tab pointed at keeps its tab in its own place until taken
+  if (callLive) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
     if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
     add('find', f.x, f.y, 'f' + f.x + ',' + f.y); }
   all.sort((a, b) => TAB.order.indexOf(a.kind) - TAB.order.indexOf(b.kind) || a.d - b.d);
@@ -7155,35 +7127,17 @@ function edgeTabs() {
     t.cy = m.y > VIEW_Y + (VIEW_H >> 1) ? m.y - g4 : m.y + m.h + g4; }
   return kept;
 }
-// a tab's pointer: three rows in its border colour, outside the tab on the side the ray leaves by
-function tabPointer(t) { const { cx, cy } = t;
-  if (t.side === 'E') return [[cx + 11, cy - 2, 1, 5], [cx + 12, cy - 1, 1, 3], [cx + 13, cy, 1, 1]];
-  if (t.side === 'W') return [[cx - 12, cy - 2, 1, 5], [cx - 13, cy - 1, 1, 3], [cx - 14, cy, 1, 1]];
-  if (t.side === 'N') return [[cx - 2, cy - 12, 5, 1], [cx - 1, cy - 13, 3, 1], [cx, cy - 14, 1, 1]];
-  return [[cx - 2, cy + 11, 5, 1], [cx - 1, cy + 12, 3, 1], [cx, cy + 13, 1, 1]]; }
-// the tab and its pointer as one rect (what the name tag refuses)
-function tabRect(t) { const r = { x: t.cx - 11, y: t.cy - 11, w: 22, h: 22 };
-  if (t.side === 'E') r.w += 3; else if (t.side === 'W') { r.x -= 3; r.w += 3; } else if (t.side === 'N') { r.y -= 3; r.h += 3; } else r.h += 3; return r; }
-// After drawPatch, before the message box: the tabs, clipped to the view. A tab's fill flashes cream for 160 ms when it first shows.
-// The edge look on the walk (owner walk notes 4, 13, 14, 16, 26-28; one vocabulary with the map, in the map's ink):
-//   a way through: within 3 tiles, a paper tab naming the place next door once the Probe has read it (note 19: the hint).
-// [copy] placeholders (the copywriter places them): the tab 'Wood →' form, REACH_LINE_TEXT, PROBE_READING_TEXT.
-const REACH_LINE_TEXT = 'Probe reach', PROBE_READING_TEXT = 'the Probe is reading the land';
-function drawEdgeLook(t) {
-  const ex = S.exp, P = ex && ex.patch, pl = RT.gridScr; if (!P || !pl || !RT.ts) return;
-  // no dashed reach line inside a place; a way through: the land shows it, no tab, no mark (owner note #24: the place is named once when you enter it)
-}
-// The Probe's pulse in the top bar while the neighbours are read ahead (note 19): a small ring in the map's ink that breathes; [art] slot probe-pulse.
+// The Probe's pulse in the top bar while the neighbours are read ahead: a small ring in the map's ink that breathes; [art] slot probe-pulse.
 function drawProbePulse(x, y) {
   const r = motion() ? 3 + Math.floor((NOW / 150) % 4) : 5;
   R(x - r, y - r, 2 * r + 1, 1, C.sand); R(x - r, y + r, 2 * r + 1, 1, C.sand); R(x - r, y - r, 1, 2 * r + 1, C.sand); R(x + r, y - r, 1, 2 * r + 1, C.sand); R(x - 1, y - 1, 3, 3, C.paper);   // a square pulse frame (palette pixels)
 }
-function drawEdgeCues(t) {
-  drawEdgeLook(t);
+// After drawPatch, before the message box: the tabs, clipped to the view. A tab's fill flashes cream for 160 ms when it first shows.
+function drawEdgeCues() {
   const tabs = edgeTabs(), seen = RT.tabSeen || (RT.tabSeen = new Map()), keep = new Set();
   clipView();
   for (const tb of tabs) { const k = tb.kind + tb.id, col = C[TAB.border[tb.kind]]; keep.add(k); if (!seen.has(k)) seen.set(k, NOW);
-    // bug #79: the find tab is a pale badge with no pointer nub (a dark round body, a nub and a spark read as a bomb with a lit fuse); the other tabs keep their dark body and pointer
+    // the find tab is a pale badge with no pointer nub (a dark round body, a nub and a spark read as a bomb with a lit fuse); the other tabs keep their dark body and pointer
     const isFind = tb.kind === 'find';
     panel(tb.cx - 11, tb.cy - 11, 22, 22, motion() && NOW - seen.get(k) < TAB.flashMs ? C.cream : isFind ? C.bark : C.ink, col);
     if (isFind) blit(sparkArt(true), tb.cx - 6, tb.cy - 6); else blit(bubbleArt(tb.kind), tb.cx - 5, tb.cy - 7);
@@ -7191,10 +7145,7 @@ function drawEdgeCues(t) {
   for (const k of [...seen.keys()]) if (!keep.has(k)) seen.delete(k);   // a tab that goes and comes back flashes again
   g.restore();
 }
-// The partner's name tag: a 20 px ink panel with an aqua border and a 2×5 (5×2 sideways) aqua pointer on the side facing the partner.
-// Its clear zone is the cell, the ring's foot rows below it, and a 4 px margin that stays empty; the pointer sits just outside the margin.
-// Positions in order: below, right, left, above (from the species' highest row), below slid by ±4, ±8 …; none clear, no tag.
-const TAG = { h: 20, ptr: 5, margin: 4, view: { x0: 6, y0: 38, x1: 444, y1: 558 }, slide: 4, slideIn: 6 };
+// The name tag's spot (TAG and its rules: src/render/cues.mjs), for the partner or the wild one the bottom line names.
 const tagTop = sp => { const top = pb => { for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) if (pb.p[y * pb.w + x] >= 0) return y; return pb.h; };
   return spOf(sp).other ? 0 : Math.min(top(creatureArt(sp, 'idle', 0)), top(creatureArt(sp, 'idle', 1))); };   // the bob only moves it down
 function tagSpot(tg, k) {
@@ -7205,7 +7156,7 @@ function tagSpot(tg, k) {
   const below = d => at(h2 - 1, zy1 + 1, 2, n, h2 - (w >> 1) + d, zy1 + 1 + n), H0 = o.y + tagTop(tg.sp != null ? tg.sp : ex.pt.sp);
   const spots = [below(0), at(zx1 + 1, h2 - 1, n, 2, zx1 + 1 + n, h2 - (TAG.h >> 1)), at(-M - n, h2 - 1, n, 2, -M - n - w, h2 - (TAG.h >> 1)),
     at(h2 - 1, H0 - M - n, 2, n, h2 - (w >> 1), H0 - M - n - TAG.h)];
-  if (tg.wild && TAG.view.x1 - (X + zx1) < w + n + M) spots.splice(1, 2, spots[2], spots[1]);   // her page's tag (AD, PR 597): within a tag's width of the right edge it stands on her left first, so it never clips
+  if (tg.wild && TAG.view.x1 - (X + zx1) < w + n + M) spots.splice(1, 2, spots[2], spots[1]);   // a wild one's tag within a tag's width of the right edge stands on her left first, so it never clips
   for (let d = TAG.slide; d <= (w >> 1) - TAG.slideIn; d += TAG.slide) spots.push(below(d), below(-d));
   // what a tag may not cover: other creatures' and the pawn's clear zones, the finds' zones, the warned cell, the message box, the edge tabs
   const zone = (cx, cy, x0, y0, x1, y1) => ({ x: cx + Math.min(0, x0) - M, y: cy + Math.min(0, y0) - M, w: Math.max(ts, x1) - Math.min(0, x0) + 2 * M, h: Math.max(ts, y1) - Math.min(0, y0) + 2 * M });
@@ -7219,14 +7170,14 @@ function tagSpot(tg, k) {
     if (f.kind === 'k' && k.see(q.x, q.y)) fz(q.x, q.y); else if (f.kind === 'd' && k.see(f.x, f.y)) fz(f.x, f.y, live.seen.d); else if (f.kind === 'i' && k.inS(f.x, f.y)) fz(f.x, f.y); }
   for (const f of live.fr) if (k.see(f.x, f.y) || (f.put && k.inS(f.x, f.y))) fz(f.x, f.y);
   if (live.strike) block.push({ x: k.W(live.strike.x * ts), y: k.H(live.strike.y * ts), w: ts, h: ts });
-  const sy = S.exp.stray; if (sy && sy.scope === 'patch' && S.exp.patch && S.exp.patch.key === P.key) block.push({ x: k.W(sy.x * ts), y: k.H(sy.y * ts), w: ts, h: ts });
+  const sy = ex.stray; if (sy && sy.scope === 'patch') block.push({ x: k.W(sy.x * ts), y: k.H(sy.y * ts), w: ts, h: ts });
   const m = msgGeom(); if (m) block.push(m);
   for (const t of edgeTabs()) block.push(tabRect(t));
   const V = TAG.view, inView = r => r.x >= V.x0 && r.y >= V.y0 && r.x + r.w - 1 <= V.x1 && r.y + r.h - 1 <= V.y1;
   const s = spots.find(s => inView(s.ptr) && inView(s.panel) && !block.some(b => rectsMeet(b, s.ptr) || rectsMeet(b, s.panel)));
   return s ? Object.assign({ name: tg.name, wild: !!tg.wild }, s) : null;
 }
-// aqua and mint for the partner, bone for a wild one (her-page-ui-1: the one the bottom line names)
+// aqua and mint for the partner, bone for a wild one
 function drawTag(s) { if (!s) return; const p = s.ptr, q = s.panel, edge = s.wild ? C.bone : C.aqua;
   R(p.x, p.y, p.w, p.h, edge); panel(q.x, q.y, q.w, q.h, C.ink, edge); text(s.name, q.x + 5, q.y + 3, s.wild ? C.bone : C.mint); }
 
@@ -8957,7 +8908,7 @@ function renderFrame(t) {
       if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
     case 'patch': if (WARM.cold && warmLanding()) { drawHUD(); drawSwap(); break; }   // entered before the land was warm: built a step a frame, the controls live
-      if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); keepEdgeView(); drawHeroLater(); drawInkIn(); drawSlide(); } drawHUD(); drawSwap(); break;   // a view over the place (Look, the peek) has the whole view
+      if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(); keepEdgeView(); drawHeroLater(); drawInkIn(); drawSlide(); } drawHUD(); drawSwap(); break;   // a view over the place (Look, the peek) has the whole view
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'log': drawLog(); break;
     case 'her': drawHer(); break;
