@@ -17,7 +17,7 @@ import { WORDS } from "../src/words.mjs";
 import * as R from "../src/regions.mjs";
 import * as A from "../src/atlas.mjs";
 import * as V from "../src/view.mjs";
-import * as EDGE from "../src/render/edge.mjs";
+import * as SHAPE from "../src/render/edge.mjs";
 import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs, viewOut, ATLAS_CASES, atlasCaseOut, atlasPlaces, syntheticPieces, SYNTH_TONE, NO_MACRO, PROOF_GRID, proofStates, fnv as fnvStr } from "../tools/world-vectors.mjs";
 
 const VECTORS = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
@@ -1111,13 +1111,13 @@ test("48 px edges: an eighth's dither (all 512 masks) equals its definition; a s
     for (let y = 0; y < 12; y++) for (let x = 0; x < 12; x++) { let c = 0; for (const oy of [-6, -3, 0, 3, 6]) for (const ox of [-6, -3, 0, 3, 6]) c += far(Math.floor((x + ox) / 12), Math.floor((y + oy) / 12));
       f[y * 12 + x] = 32 * c > (2 * BAYER_[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; } return f; };
   assert.deepEqual(V.BAYER4, BAYER_);
-  for (let m = 0; m < 512; m++) assert.deepEqual(Array.from(EDGE.coverE(m)), Array.from(want(m)), "mask " + m);
-  assert.equal(EDGE.coverE(7), EDGE.coverE(7), "the table is built once");
-  assert.ok(EDGE.coverE(0).every(v => v === 0) && EDGE.coverE(511).every(v => v === 1));
-  const w = EDGE.coverE(0xe0);   // the west column of eighths far, the eighth itself near: from 6 px in, every pixel is near
+  for (let m = 0; m < 512; m++) assert.deepEqual(Array.from(SHAPE.coverE(m)), Array.from(want(m)), "mask " + m);
+  assert.equal(SHAPE.coverE(7), SHAPE.coverE(7), "the table is built once");
+  assert.ok(SHAPE.coverE(0).every(v => v === 0) && SHAPE.coverE(511).every(v => v === 1));
+  const w = SHAPE.coverE(0xe0);   // the west column of eighths far, the eighth itself near: from 6 px in, every pixel is near
   for (let y = 0; y < 12; y++) for (let x = 6; x < 12; x++) assert.equal(w[y * 12 + x], 0, "inside the near eighth at " + x + "," + y);
   assert.ok(w.some(v => v === 1) && w.some((v, i) => (i % 12) < 6 && v === 0), "the dither lies across the boundary, one eighth wide");
-  const c = EDGE.coverE(0x002);   // only the NE eighth far: a rounded patch gathering at the corner
+  const c = SHAPE.coverE(0x002);   // only the NE eighth far: a rounded patch gathering at the corner
   let corner = 0; for (let y = 0; y < 3; y++) for (let x = 9; x < 12; x++) corner += c[y * 12 + x]; assert.ok(corner > 0 && corner < 9, "far pixels gather at the corner: " + corner); assert.equal(c[11 * 12], 0);
 });
 test("48 px edges: the eighth grid equals its definition on random shapes and the sight discs; it is cut-only; a thin region falls back to the quarter look; a disc loses at most 8 of a tile's 16 eighths", () => {
@@ -1127,7 +1127,7 @@ test("48 px edges: the eighth grid equals its definition on random shapes and th
   shapes.push((x, y) => Math.hypot(x - 14, y - 16) > 4.5, (x, y) => Math.hypot(x - 14, y - 16) > 6.5, (x, y) => Math.hypot(x - 1, y - 1) > 6.5, (x, y) => x < 12 || x > 12, (x, y) => x < 12 || x > 16, (x, y) => !(x === 12 && y === 10));
   for (const far of shapes) {
     const tf = new Uint8Array(896); for (let y = 0; y < 32; y++) for (let x = 0; x < 28; x++) tf[y * 28 + x] = far(x, y) ? 1 : 0;
-    const got = EDGE.eighthGrid(tf, 28, 32), want = refGrid(far);
+    const got = SHAPE.eighthGrid(tf, 28, 32), want = refGrid(far);
     assert.deepEqual(Array.from(got), Array.from(want));
     for (let ty = 0; ty < 32; ty++) for (let tx = 0; tx < 28; tx++) if (tf[ty * 28 + tx]) for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) assert.equal(got[(4 * ty + j) * 112 + 4 * tx + i], 1, "a hidden tile's eighths are all far"); }
   const count = (far, tx, ty, grid) => { let n = 0; for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) n += grid[(4 * ty + j) * 112 + 4 * tx + i]; return n; };
@@ -1136,11 +1136,11 @@ test("48 px edges: the eighth grid equals its definition on random shapes and th
     assert.equal(g.emptied.length, 0, "no tile of the disc is emptied"); }
   const col = n => (x, y) => !(x >= 12 && x < 12 + n), one = refGrid(col(1), 28, 32, true), five = refGrid(col(5), 28, 32, true);
   assert.ok(one.emptied.length === 32 && five.emptied.length === 0, "a corridor 1 wide is emptied by the opening, 5 wide keeps every tile: " + one.emptied.length + ", " + five.emptied.length);
-  const fb = EDGE.eighthGrid(Uint8Array.from({ length: 896 }, (_, k) => col(1)(k % 28, (k / 28) | 0) ? 1 : 0), 28, 32);   // the fallback: a 1-wide corridor takes quarterFar's look (here: all near)
+  const fb = SHAPE.eighthGrid(Uint8Array.from({ length: 896 }, (_, k) => col(1)(k % 28, (k / 28) | 0) ? 1 : 0), 28, 32);   // the fallback: a 1-wide corridor takes quarterFar's look (here: all near)
   for (let ty = 0; ty < 32; ty++) for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) assert.equal(fb[(4 * ty + j) * 112 + 48 + i], 0, "a corridor tile draws near by its quarters");
 });
 test("48 px edges: a quarter of a tile is far where its tile is far, or where both sides meeting at its corner are far unless the tile is boxed in (a lone tile stays whole)", () => {
-  for (let m8 = 0; m8 < 256; m8++) for (const own of [0, 1]) { const q = EDGE.quarterFar(own, m8), bit = b => (m8 >> b) & 1, boxed = bit(0) && bit(2) && bit(4) && bit(6);
+  for (let m8 = 0; m8 < 256; m8++) for (const own of [0, 1]) { const q = SHAPE.quarterFar(own, m8), bit = b => (m8 >> b) & 1, boxed = bit(0) && bit(2) && bit(4) && bit(6);
     const want = own ? 15 : boxed ? 0 : (bit(0) & bit(6)) | ((bit(0) & bit(2)) << 1) | ((bit(4) & bit(6)) << 2) | ((bit(4) & bit(2)) << 3);
     assert.equal(q, want, "own " + own + " m8 " + m8); }
 });
@@ -1215,7 +1215,7 @@ test("48 px storm on grass: a grass colour takes dark2 in the band, under the ov
     assert.ok(grass > 100 && n > 1000, what + ": grass pixels " + grass + " of " + n); };
   check(band, 12, 12, c => ps[c], "a band tile (the pawn's column minus two)");
   check(over, 14, 12, c => ps[c], "under the overcast");
-  check(band, 13, 12, (c, x, y) => EDGE.stormStep(x, x, y) ? ps[c] : c, "the lit tile beside the band (its 6 px step takes the storm table)");
+  check(band, 13, 12, (c, x, y) => SHAPE.stormStep(x, x, y) ? ps[c] : c, "the lit tile beside the band (its 6 px step takes the storm table)");
   assert.equal(band.run("PLACE_STORM[53] === DARK2[53] && REMAP_PLACE[1] === PLACE_STORM && REMAP[1] === DARK"), true, "the band, the step and the overcast share one table; 32 px reads the core dark");
 });
 test("48 px fog edge: in the storm's band the clear side takes the band's dark (PLACE_STORM), as 32 px does, and outside the band it is lit", () => {
