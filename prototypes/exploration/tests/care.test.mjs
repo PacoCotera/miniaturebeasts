@@ -13,6 +13,9 @@ import { decodePNG } from "../tools/atlas-check.mjs";
 import { decodeExact } from "../src/atlas.mjs";
 import { SPECIES, SP_OTHER, spOf } from "../src/logic/species.mjs";
 import { numWord } from "../src/data/text.mjs";
+import { holdEmpty, exploredAny, tripRecord, tripsWith } from "../src/logic/expedition.mjs";
+import { sealedWords } from "../src/data/expedition-lines.mjs";
+import { MAT } from "../src/data/walk-lines.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
@@ -53,7 +56,7 @@ function clockAt(day) { const [y, m, d] = day.split("-").map(Number), at = new D
 
 const CARE = ["mibiById", "listWords", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "homeMibis", "partnerMibi",
   "grownNow", "agedNow", "rosterList", "canSwap", "releasedIds", "takeMibi", "leaveMibi", "bondCheck", "playWouldBond", "playsLeftLines", "migrateCarried", "normalizeCare",
-  "carryApply", "canWalk", "walkAll", "tripRecord", "TRIP_KINDS", "tripsWith", "liveMibis", "setLead"];
+  "carryApply", "canWalk", "walkAll", "liveMibis", "setLead"];
 // The care functions over a world: S, docked or not, on a given day. ctx.S, ctx.Date and the flags can change between calls.
 function world(S, o = {}) {
   const env = { docked: !!o.docked, log: [] };
@@ -190,16 +193,18 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 });
 
 // ---- The expedition: outings, notches, the trip ----
-function ending(S, ex, reason = "home") {
-  const t = vm.createContext({ console, S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, RIPE_PENDING: [], JUVENILE_TURNS: 2, ELDER_TURNS: 16,
+function ending(S, ex, reason = "night") {   // the night's end is the one that turns the world; "home" is a camp
+  if (!S.day) S.day = { spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null };
+  const t = vm.createContext({ console, S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 16,
+    holdEmpty, exploredAny, tripRecord, tripsWith, MAT, sendSleepersHome: () => {}, leaveSleepers: () => {},
     reachCounts: () => ({ found: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { S.turn++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, spOf: s => ({ ab: ({ 0: "calm", 1: "dig", 2: "nose", 7: "bank", 19: "sure" })[s] }), transition: () => {}, save: () => {}, emptyLead: () => null });
-  const names = ["endExpedition", "exploredAny", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
+    worldTurnQuick: () => { S.turn++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, spOf: s => ({ ab: ({ 0: "calm", 1: "dig", 2: "nose", 7: "bank", 19: "sure" })[s] }), transition: () => {}, save: () => {}, emptyLead: () => null });
+  const names = ["endExpedition", "turnPending", "newsCells", "freshDay", "carriedMibis", "mibiById"];
   vm.runInContext(names.map(source).join("\n") + "\n;endExpedition(" + JSON.stringify(reason) + ");", Object.assign(t, { __ex: ex }));
 }
 test("an expedition: an outing to every carried mibi, notches to the bonded partner only, no care; the trip carries `carried`", () => {
   const ex = n => ({ n, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { hearts: 1 }, stormCells: {}, entered: [0], met: [], moments: [], abUsed: true, tripPlaces: ["meadow"] });
-  const S = save({ carried: [1, 2, 3], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [] });
+  const S = save({ carried: [1, 2, 3], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, seen: { been: {} } });
   S.exp = Object.assign(ex(5), { pt: { id: 1 } });
   ending(S, S.exp);
   const [dot, moss, fig, pip] = S.mibis;
@@ -212,13 +217,13 @@ test("an expedition: an outing to every carried mibi, notches to the bonded part
   assert.deepEqual(plain(S.report.lines), ["The world turned."], "never among the world lines");
   assert.deepEqual(plain(S.bay.at(-1).lines), ["The world turned."], "the crate keeps the world's lines only");
   moss.bonded = true; S.exp = Object.assign(ex(7), { pt: { id: 1 } }); ending(S, S.exp); assert.equal(moss.notches, 0, "a bonded mibi that is not the partner");
-  const t = world(save()); const rec = t.tripRecord({ n: 3 }, S.carried); S.carried.push(9);
-  assert.deepEqual(plain(rec.carried), [1, 2, 3], "a copy"); assert.deepEqual(plain(t.tripRecord({ n: 3 }).carried), []);
+  const rec = tripRecord({ n: 3 }, S.carried); S.carried.push(9);
+  assert.deepEqual(plain(rec.carried), [1, 2, 3], "a copy"); assert.deepEqual(tripRecord({ n: 3 }).carried, []);
 });
 // ---- The notch rule (ruling 17:33): only on an expedition that explored something; a break keeps it ----
 const notchExp = (calls, o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { calls, hearts: calls }, stormCells: {}, entered: [0], met: [], moments: [],
   abUsed: 1, pt: { id: 1 }, tripPlaces: ["meadow"] }, o);
-const notchSave = () => save({ carried: [1], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [] });
+const notchSave = () => save({ carried: [1], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, seen: { been: {} } });
 const NOTCH_LINE = "Dot gains a skill notch";
 test("notch: a bonded partner digs, enters no place, End expedition: notches unchanged, no notch line", () => {
   const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 1;
@@ -253,7 +258,7 @@ test("notch: a bonded Tuliko partner earns a notch (named by kind and count on t
 test("T5: a trip record without `carried` reads as [partner] on the Station; with it, every id", { skip: station("tripCarried") }, () => {
   assert.deepEqual(ST.tripCarried({ v: 1, n: 1, partner: 2, places: [], storm: false }), [2]);
   assert.deepEqual(ST.tripCarried({ v: 1, n: 1, partner: null, places: [], storm: false }), []);
-  const t = world(save()); assert.deepEqual(plain(ST.tripCarried(t.tripRecord({ n: 2, pt: { id: 1 } }, [1, 3]))), [1, 3]);
+  assert.deepEqual(ST.tripCarried(tripRecord({ n: 2, pt: { id: 1 } }, [1, 3])), [1, 3]);
 });
 
 // ---- §5: the save ----
@@ -594,15 +599,16 @@ test("the active screen: a page gone goes to the page now at that index, or the 
   S.ui.aId = 1; sh(); t.normalizeCare(S, new Set([1])); assert.equal(sh().id, 2, "the page now at index 0");
 });
 // End expedition: the outcome block, the notch row, the crates and the world lines, as drawn (text and pictures recorded).
+const { FIRST_TEXT } = await import("../src/data/field-lines.mjs");   // the first walk's words, as the page imports them
 function sealed(rep, lines, bay = 1) {
   const said = [], faces = [], crates = [], dots = [], noop = () => {};
   const ctx = vm.createContext({ console, S: { report: Object.assign({ n: 4, lines }, rep), bay: Array.from({ length: bay }, (_, i) => ({ id: "c" + i })) }, NOW: 0, FX: { transAt: 0 }, BAY: 3, TIER_NAME: ["", "starter", "early", "mid"],
-    numWord, C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x, cutLine: (x, w) => x,
+    numWord, sealedWords, C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x, cutLine: (x, w) => x,
     text: (str, x, y, col, s) => said.push({ str: String(str), x, y, s: s || 2 }), ringFace: (x, y, sp, p) => faces.push({ x, y, sp, p }), crateIcon: (x, y) => crates.push({ x, y }), R: (x, y, w, h, c) => dots.push({ x, y, w, h, c }),
-    bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" } });
+    bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" }, FIRST_TEXT });
   ctx.goalForms = () => "";
-  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "sealedWords"];
-  vm.runInContext(PAGE.match(/^const FIRST_TEXT = [^]*?\n\};/m)[0] + "\n" + names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
+  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine"];
+  vm.runInContext(names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
   return { said, faces, crates, at: s2 => said.find(q => q.str === s2), world: dots.filter(d => d.c === "orange" && d.w === 4) };
 }
 test("End expedition: the notch is its own row under the outcome's last 2× line, the crates move down 28, no world line repeats it", () => {
@@ -658,8 +664,9 @@ test("End expedition after a break: 'Docking mends the Probe for free.'", () => 
   assert.ok(sealed({ reason: "break", dropped: 0, lost: [] }, []).at("Docking mends the Probe for free."));
 });
 test("Cargo's preview predicts End: what the hold seals; an empty hold seals nothing", () => {
-  const run = (cargo, bay = [], yld = 2, dField = 0) => vm.runInContext(["sealPreview", "sealedWords", "holdEmpty", "exploredAny"].map(source).join("\n") + "\n;sealPreview()",
-    vm.createContext({ S: { exp: { cargo, entered: [0], stats: { hearts: 1 }, shield: 3, smax: 3, dField }, bay }, WORDS: { waits: "Nothing explored · the world waits" }, BAY: 3, CAP: 20, walkYield: () => yld, numWord }));
+  const run = (cargo, bay = [], yld = 2, dField = 0) => vm.runInContext(["sealPreview", "sealBranch"].map(source).join("\n") + "\n;sealPreview()",
+    vm.createContext({ S: { exp: { cargo, entered: [0], stats: { hearts: 1 }, shield: 3, smax: 3, dField }, bay }, WORDS: { waits: "Nothing explored · the world waits" }, BAY: 3, CAP: 20, walkYield: () => yld,
+      sealedWords, holdEmpty, exploredAny, isNightPod: () => false }));
   assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), [], "an empty hold seals nothing (Data comes only from readings and creature acts): no line");
   assert.equal(run({ e: 0, d: 0, s: 0, pods: [1, 2] })[0], "Seals two pods + supplies · crate 1 of 3", "pods only in the hold: pods and supplies");
   assert.equal(run({ e: 1, d: 2, s: 0, pods: [1] }, [{}])[0], "Seals one pod + supplies · crate 2 of 3");

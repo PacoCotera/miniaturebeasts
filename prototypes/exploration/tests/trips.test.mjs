@@ -1,11 +1,16 @@
-// The Companion's trips (top-level `trips` in the shared save): the real functions are read out of index.html and run
-// in a sandbox with the rest of the page stubbed, so the test follows the page as it changes.
+// The Companion's trips (top-level `trips` in the shared save). The trip rules are src/logic/expedition.mjs, imported here; the page's own
+// functions (endExpedition and the rest) are read out of index.html and run in a sandbox with the rest of the page stubbed.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import * as W from "../src/world.mjs";
 import * as R from "../src/regions.mjs";
+import { makePage } from "./page-harness.mjs";
+import { holdEmpty, exploredAny, TRIP_KINDS, tripPlace, tripRecord, tripsWith } from "../src/logic/expedition.mjs";
+import { MAT } from "../src/data/walk-lines.mjs";
+import { PRESS_TEXT } from "../src/data/field-words.mjs";
+const RULES = { holdEmpty, exploredAny, tripPlace, tripRecord, tripsWith, MAT, sendSleepersHome: () => {}, leaveSleepers: () => {} };   // what endExpedition takes from the modules; no Loika sleeps in these holds
 const REGIONS = { migrate8: R.migrate8, mount: R.mount, unmount: R.unmount, serialize: R.serialize, realmStatus: R.realmStatus, resetPlan: R.resetPlan, keepPre10: R.keepPre10, regionKinds: R.regionKinds, KIND_INFO: R.KIND_INFO, prefixPods: R.prefixPods, RESET_CARRY: null };   // what the page imports from regions.mjs
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
@@ -37,20 +42,18 @@ function load(names, stubs) {
 
 // values made in the sandbox carry its own Array and Object, so they are compared as plain data
 const plain = x => JSON.parse(JSON.stringify(x));
-const TRIP = ["TRIP_KINDS", "tripPlace", "tripRecord", "tripsWith"];
-const LAND = [];   // groundName is src/world.mjs's now (the page imports it): handed to the sandbox as it is
 
-// endExpedition with the world stubbed: `explored` decides the branch, worldTurn moves the counter as the page does.
+// endExpedition with the world stubbed: `explored` decides the branch, the night's turn moves the counter as the page does.
 const ARRIVED = { pods: [], young: [], bloom: -1, charged: [] };   // what worldTurn hands back for the opening's pips
 function ending({ explored, trips, ex, world = { lines: [], ev: [], arrived: ARRIVED } }) {
   ex = { cargo: { e: 0, d: 0, s: 0, pods: [] }, ...ex };
-  const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [], mibis: [], carried: [], day: { spent: 9, camps: 0, pend: { trail: [], storm: [] }, camp: null } };
+  const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, seen: { been: {} }, mibis: [], carried: [], day: { spent: 9, camps: 0, pend: { trail: [], storm: [] }, camp: null } };
   const turned = [];
-  const t = load(["endExpedition", "freshDay", "holdEmpty", ...TRIP], {
-    S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3, RIPE_PENDING: [], emptyLead: () => null,
+  const t = load(["endExpedition", "turnPending", "newsCells", "freshDay"], {
+    ...RULES, S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3, emptyLead: () => null,
     carriedMibis: () => [], exploredAny: () => explored, reachCounts: () => ({ found: explored ? 1 : 0, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { turned.push(S.expN); S.turn++; return { arrived: { pods: [], young: [], bloom: -1, charged: [] }, ...world }; },
+    worldTurnQuick: () => { turned.push(S.expN); S.turn++; return { arrived: { pods: [], young: [], bloom: -1, charged: [] }, ...world }; },
     logEv: () => {}, transition: () => {}, save: () => {},
   });
   t.endExpedition(ex.reason || "night");   // the world turns only at the night's end (walk W1); any other end is a camp
@@ -99,23 +102,22 @@ test("the walk with the mibi writes no trip", () => {
 test("partner: a juvenile is never the Probe partner; no partner gives null", () => {
   const juvenile = { id: 4, born: 3 }, adult = { id: 7, born: 0 };
   const S = { turn: 3, carried: [4], lead: null, mibis: [juvenile, adult] };
-  const t = load(["partnerMibi", "carriedMibis", "mibiById", "isAdult", "mibiStage", "stageAt", ...TRIP], { S, JUVENILE_TURNS: 2, ELDER_TURNS: 10 });
+  const t = load(["partnerMibi", "carriedMibis", "mibiById", "isAdult", "mibiStage", "stageAt"], { S, JUVENILE_TURNS: 2, ELDER_TURNS: 10 });
   assert.equal(t.partnerMibi(), null, "a juvenile with you is not the partner");
   S.carried = [7]; assert.equal(t.partnerMibi().id, 7);
-  assert.equal(t.tripRecord(expedition({ pt: null })).partner, null);
-  assert.equal(t.tripRecord(expedition({ pt: { id: 7, elder: false } })).partner, 7);
+  assert.equal(tripRecord(expedition({ pt: null })).partner, null);
+  assert.equal(tripRecord(expedition({ pt: { id: 7, elder: false } })).partner, 7);
 });
 
 test("places: the kinds entered, each once, only the five", () => {
-  const t = load([...TRIP, ...LAND], {});
-  assert.deepEqual(plain(t.TRIP_KINDS), ["meadow", "pond", "rock", "wood", "cave"]);
+  assert.deepEqual(TRIP_KINDS, ["meadow", "pond", "rock", "wood", "cave"]);
   // every land the page has (meadow, pond edge, rock field, wood, shallows, cliff) names one of the five
-  for (let land = 0; land < 6; land++) assert.ok(t.TRIP_KINDS.includes(W.groundName(land, false)), "land " + land);
+  for (let land = 0; land < 6; land++) assert.ok(TRIP_KINDS.includes(W.groundName(land, false)), "land " + land);
   const ex = expedition();
-  for (const land of [3, 0, 3, 1, 4, 2, 5]) t.tripPlace(ex, W.groundName(land, false));
-  t.tripPlace(ex, "cave"); t.tripPlace(ex, "cave"); t.tripPlace(ex, "shallows"); t.tripPlace(ex, undefined);
-  assert.deepEqual(plain(t.tripRecord(ex).places), ["wood", "meadow", "pond", "rock", "cave"]);
-  assert.deepEqual(plain(t.tripRecord(expedition({ tripPlaces: ["wood", "wood", "lava"] })).places), ["wood"]);
+  for (const land of [3, 0, 3, 1, 4, 2, 5]) tripPlace(ex, W.groundName(land, false));
+  tripPlace(ex, "cave"); tripPlace(ex, "cave"); tripPlace(ex, "shallows"); tripPlace(ex, undefined);
+  assert.deepEqual(tripRecord(ex).places, ["wood", "meadow", "pond", "rock", "cave"]);
+  assert.deepEqual(tripRecord(expedition({ tripPlaces: ["wood", "wood", "lava"] })).places, ["wood"]);
 });
 
 test("entering a place or the cave adds its kind", () => {
@@ -127,33 +129,31 @@ test("entering a place or the cave adds its kind", () => {
 test("storm: over the Probe outside the cave on any action; never in the cave", () => {
   const ex = expedition({ pos: 4, storm: { x: 3.5, w: 2 }, patch: null });
   const S = { exp: ex };
-  const t = load(["tripStormTick", "stormOverProbe", "stormCovers", ...TRIP], {
+  const t = load(["tripStormTick", "stormOverProbe", "stormCovers"], {
     S, cxy: c => ({ x: c % 16, y: Math.floor(c / 16) }), layout: key => ({ cave: key[0] === "c" }),
   });
   ex.patch = { key: "c4" };
   assert.equal(t.tripStormTick(ex), false, "the band covers the column but the Probe is in the cave");
-  assert.equal(t.tripRecord(ex).storm, false);
+  assert.equal(tripRecord(ex).storm, false);
   ex.patch = { key: "4" };
   assert.equal(t.tripStormTick(ex), true, "the same column, in a place under the open sky");
   ex.patch = { key: "c4" }; t.tripStormTick(ex);
-  assert.equal(t.tripRecord(ex).storm, true, "once on any action is enough");
+  assert.equal(tripRecord(ex).storm, true, "once on any action is enough");
   const away = expedition({ pos: 10, storm: { x: 3.5, w: 2 } }); S.exp = away;
-  t.tripStormTick(away); assert.equal(t.tripRecord(away).storm, false, "the band elsewhere");
+  t.tripStormTick(away); assert.equal(tripRecord(away).storm, false, "the band elsewhere");
   S.exp = expedition({ storm: null }); assert.equal(t.tripStormTick(S.exp), false, "no storm");
 });
 
 test("the last 40 trips are kept, oldest first", () => {
-  const t = load(TRIP, {});
   let trips = [];
-  for (let n = 1; n <= 45; n++) trips = t.tripsWith(trips, t.tripRecord(expedition({ n })));
+  for (let n = 1; n <= 45; n++) trips = tripsWith(trips, tripRecord(expedition({ n })));
   assert.equal(trips.length, 40);
   assert.equal(trips[0].n, 6); assert.equal(trips[39].n, 45);
 });
 
 test("old saves: no trips list, an expedition without the new fields", () => {
-  const t = load(TRIP, {});
-  assert.deepEqual(plain(t.tripRecord({ n: 3 })), { v: 1, n: 3, partner: null, places: [], storm: false, carried: [] });
-  assert.equal(t.tripsWith(undefined, t.tripRecord({ n: 3 })).length, 1);
+  assert.deepEqual(tripRecord({ n: 3 }), { v: 1, n: 3, partner: null, places: [], storm: false, carried: [] });
+  assert.equal(tripsWith(undefined, tripRecord({ n: 3 })).length, 1);
   // a save without `trips` is given an empty list by the page's load (worldFields: expN 1, trips []): the next test
 });
 
@@ -173,13 +173,13 @@ test("End expedition while docked at the start", () => {
   S.day = { spent: 4, camps: 0, pend: { trail: [], storm: [] }, camp: null };
   const writeSt = () => { store["mb-save-v8"] = JSON.stringify(Object.assign({}, S, { st })); };
   const sv = () => JSON.parse(store["mb-save-v8"]);
-  const t = load(["endExpedition", "freshDay", "holdEmpty", "exploredAny", "carriedMibis", "mibiById", "save", "storedSt", "stPart", "isDocked", "syncStation", "carryApply",
-    "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "fieldFrozen", ...TRIP], {
-    S, window: {}, RT: {}, FX: {}, NOW: 0, noteSet: () => {}, RIPE_PENDING: [], emptyLead: () => null, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
+  const t = load(["endExpedition", "turnPending", "newsCells", "freshDay", "carriedMibis", "mibiById", "save", "storedSave", "stPart", "isDocked", "syncStation", "carryApply",
+    "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "fieldFrozen"], {
+    ...RULES, PRESS_TEXT, S, window: {}, RT: {}, FX: {}, NOW: 0, noteSet: () => {}, keepCompanion: () => {}, legacyTo: null, onStateChanged: () => {}, emptyLead: () => null, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
     CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ found: 1, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},
-    worldTurn: () => { S.turn++; return { lines: [], ev: [], arrived: ARRIVED }; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
+    worldTurnQuick: () => { S.turn++; return { lines: [], ev: [], arrived: ARRIVED }; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
   });
   // start an expedition, undocked
   writeSt(); t.save();
@@ -207,8 +207,8 @@ test("End expedition while docked at the start", () => {
   assert.deepEqual(sv().carried, [1, 2]);
 });
 
-// ?embed (the play page's frame; station-w1-x3-ready.md §3.1, C1): the screen alone, scaled to whole physical pixels.
-test("?embed shows the screen alone, fit() stands aside and the scale follows a dpr change", () => {
+// ?embed (the play page's frame): the screen alone, as wide as its frame. The size is decided once, in play/src/layout.mjs; the page only fills the frame it is given.
+test("?embed shows the screen alone, fit() stands aside and the screen fills its frame", () => {
   assert.ok(PAGE.includes('<script>if (new URLSearchParams(location.search).has("embed")) { document.documentElement.classList.add("embed"); document.addEventListener("contextmenu", e => e.preventDefault()); }</script>'));
   for (const rule of [
     "html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}",
@@ -216,63 +216,21 @@ test("?embed shows the screen alone, fit() stands aside and the scale follows a 
     "html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450px; height:auto; max-width:none; border-radius:0; transform:scale(var(--embed-s,1)); transform-origin:0 0}",
   ]) assert.ok(PAGE.includes(rule + "\n"), rule);
   assert.ok(PAGE.indexOf("html.embed #screen") < PAGE.indexOf("</style>"));
-  assert.equal(source("EMBED"), "const EMBED = document.documentElement.classList.contains('embed');");
-  assert.match(source("fit"), /^function fit\(\) \{\n  if \(EMBED\) return;\n/);
 
-  // fit() under embed touches nothing; setEmbedS() sets --embed-s to k/dpr
-  assert.ok(PAGE.includes("\nlet dprQuery = null;\n"));
-  assert.equal(source("armDpr"), "function armDpr() {\n  if (dprQuery) dprQuery.removeEventListener('change', onDpr);\n  dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);\n  dprQuery.addEventListener('change', onDpr);\n}");
-  assert.equal(source("onDpr"), "function onDpr() { setEmbedS(); armDpr(); }");
-  assert.ok(PAGE.includes("\nif (EMBED) { setEmbedS(); armDpr(); window.addEventListener('resize', setEmbedS); }\n"));
-  const touch = new Proxy({}, { get() { throw new Error("fit() ran under embed"); } });
-  for (const [dpr, want] of [[1, "1"], [2, "1"], [1.25, "0.8"], [3, "1"], [1.5, "0.6666666666666666"]]) {
-    const set = {};
-    const t = load(["fit", "setEmbedS"], {
-      EMBED: true, fitEl: touch, deviceEl: touch, matchMedia: touch,
-      window: { devicePixelRatio: dpr, innerHeight: 600 },
-      document: { documentElement: { clientWidth: 450, style: { setProperty: (k, v) => { set[k] = v; } } } },
-    });
-    t.fit();
-    t.setEmbedS(); t.setEmbedS();
-    assert.deepEqual(set, { "--embed-s": want }, "dpr " + dpr);
-  }
-
-  // owner #123: the play page's frame is 450 x k / dpr CSS px wide (300 x 400 at 1.5, 409 x 545 at 2.2): the screen fills it, not shrunk a second time
-  for (const [dpr, w, h, want] of [[1.5, 300, 400, "0.6666666666666666"], [2.2, 409, 545, String(2 / 2.2)]]) {
-    const set = {};
-    const t = load(["setEmbedS"], { window: { devicePixelRatio: dpr, innerWidth: w, innerHeight: h }, document: { documentElement: { style: { setProperty: (k, v) => { set[k] = v; } } } } });
-    t.setEmbedS();
-    assert.deepEqual(set, { "--embed-s": want }, "frame at dpr " + dpr);
-  }
-
-  // a viewport smaller than the 450x600 frame shrinks the whole frame to fit (390x844 phone, 844x390 landscape), so the message box stays inside
-  for (const [w, h, want] of [[390, 844, String(390 / 450)], [844, 390, String(390 / 600)], [450, 600, "1"], [1000, 900, "1"]]) {
-    const set = {};
-    const t = load(["setEmbedS"], { window: { devicePixelRatio: 1, innerWidth: w, innerHeight: h }, document: { documentElement: { style: { setProperty: (k, v) => { set[k] = v; } } } } });
-    t.setEmbedS();
+  // the page itself, run: the harness's document answers yes to every class, so this page reads itself as embedded
+  const p = makePage({ console: "silent" });
+  let set = {}, scaled = 0;
+  p.ctx.document = { documentElement: { style: { setProperty: (k, v) => { set[k] = v; } } } };
+  p.ctx.__mbDeviceScale = () => { scaled++; };
+  p.run("fit()");
+  assert.equal(scaled, 0, "fit() leaves the standalone page's scale alone under embed");
+  assert.deepEqual(set, {}, "and sets nothing");
+  // the frame the shell gives is 450 x k / dpr CSS px wide (300 at dpr 1.5, 409 at 2.2, 390 on a narrow phone): the screen is scaled to that width, nothing else
+  for (const [w, h, want] of [[450, 600, "1"], [300, 400, String(300 / 450)], [409, 545, String(409 / 450)], [390, 844, String(390 / 450)], [900, 1200, "2"], [844, 390, String(844 / 450)]]) {
+    set = {}; p.ctx.innerWidth = w; p.ctx.innerHeight = h;
+    p.run("setEmbedS(); setEmbedS()");
     assert.deepEqual(set, { "--embed-s": want }, w + "x" + h);
   }
-
-  // a dpr change with no resize: the query for the old dpr fires, the scale follows, the old listener goes and a new query is armed
-  const set = [], queries = [], win = { devicePixelRatio: 1 };
-  win.matchMedia = q => {
-    const mq = { q, on: new Set(), addEventListener(e, f) { assert.equal(e, "change"); this.on.add(f); }, removeEventListener(e, f) { assert.equal(e, "change"); this.on.delete(f); } };
-    queries.push(mq); return mq;
-  };
-  const t = load(["setEmbedS", "armDpr", "onDpr"], {
-    window: win, dprQuery: null,
-    document: { documentElement: { style: { setProperty: (k, v) => { assert.equal(k, "--embed-s"); set.push(v); } } } },
-  });
-  t.setEmbedS(); t.armDpr();
-  for (const dpr of [1.25, 2, 1]) {
-    const live = queries.at(-1);
-    win.devicePixelRatio = dpr;
-    for (const f of [...live.on]) f();
-    assert.equal(live.on.size, 0, "old listener removed at " + dpr);
-    assert.equal(queries.at(-1).q, `(resolution: ${dpr}dppx)`);
-    assert.equal(queries.at(-1).on.size, 1);
-  }
-  assert.deepEqual(queries.map(m => m.q), ["(resolution: 1dppx)", ...[1.25, 2, 1].map(d => `(resolution: ${d}dppx)`)]);
-  assert.deepEqual(queries.map(m => m.on.size), [0, 0, 0, 1], "listeners never pile up");
-  assert.deepEqual(set, ["1", "0.8", "1", "1"]);
+  set = {}; p.ctx.innerWidth = 0; p.run("setEmbedS()");
+  assert.deepEqual(set, { "--embed-s": "1" }, "a frame with no width yet: the screen at its own size");
 });

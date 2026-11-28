@@ -255,7 +255,6 @@ import { fogEdgeRead, fogEdges, FOG_EDGE_FILES } from "./src/fogedge.mjs";
 import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from "./src/shore7.mjs";
 import { makeMapPaint } from "./src/map-paint.mjs";
 import { makeMapSigns } from "./src/render/map-signs.mjs";
-import { breakLines, buildTag } from "./src/breakline.mjs";
 import { NB9, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, edgeFade, fogFade, pickE } from "./src/render/edge.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
@@ -266,9 +265,9 @@ import { readPixels } from "./src/pngdecode.mjs";
 const canvasPx = im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0); return { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; };   // the fallback only: no DecompressionStream
 const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
-import { GLYPHS, glyphOf, textW, wrapText, clipText, cutLine } from "./src/font.mjs";
+import { GLYPHS, glyphOf, textW, textWT, wrapText, clipText, cutLine } from "./src/font.mjs";
 import { SPECIES_ART, JUVENILE_ART, STEP_ART, SADDLED_ART, WILD_BEAT, HOPPER_SP } from "./src/data/tokens.mjs";
 import { WORDS, DAY, DAY_TEXT, CARD_TEXT, partOfDay, clockToNext, restTarget } from "./src/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
@@ -314,7 +313,7 @@ import { LEGACY_KEY, keyOfCompanion, keptCompanion, newCompanion, keepCompanionA
 // each page re-reads the stored save before writing and keeps the other's part. Bytes this page cannot load stay where they are and open read-only.
 const OLD_GENS = [5, 6].filter(g => !GENS.includes(g));   // a save of an older generator is reset, not played: its bytes are kept under <key>.gen<N>
 let RESET_CARRY = null;   // set by load() when the save found was reset (or the Station reset first); the new realm takes it (newRealm)
-const V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
+const V7_KEY = 'mb-exploration-v7';   // where a save from before v8 lies: load() resets it, its bytes kept (src/regions.mjs resetPlan)
 let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
 let SAVE_KEY = keyOfCompanion(COMPANION.id);
 // The Companion's identity (src/store/companion.mjs): the one kept for this slot, or a new one, kept with its first write.
@@ -896,12 +895,16 @@ function sendHint() { const w = sendWay(); return SEND_TXT.hint(w.b, w.dir); }
 
 
 // ===================== 5. State, persistence, effects hooks =====================
-// FX holds presentation-only events the renderer reads; rules write to it but never read it.
+import { FIRST_TEXT, GOAL_MARK, SWAP_TEXT, SIGN_LINE, JUICE, DOCK_TEXT } from "./src/data/field-lines.mjs";
+import { idsIn, keepOfGame } from "./src/store/save-parts.mjs";
+import { SLIDE_MS, slideAt, slideOffsets } from "./src/render/slide.mjs";
+// FX: what the screen shows of what just happened (the message box's notes, the effects and their clocks). Rules write to it; the message rules below
+// (composeMsg, settleOnce, teachFill) also read the box back, to tell which line was shown and so is spent.
 const FX = { msg: '', sign: null, hintNote: null, notes: [], floats: [], bursts: [], pops: {}, rings: [], strikes: [], bolts: [], lockUntil: 0, transAt: -1e9, bumpAt: -1e9, hitAt: -1e9, dig: null, pulse: null };
 let NOW = 0;
-const RIPE_PENDING = [];   // bloom centres whose fruit trees still wait to ripen (set at an expedition's end, done at the next save or set-out)
+const RIPE_PENDING = [];   // bloom centres whose fruit trees still wait to ripen (set at an expedition's end, done a step at a time behind the sealed screen; the next set-out finishes what is left)
 // Messages: actions and offscreen results both add notes; the most important ones share the line until the next action.
-const OWN_HOLD_MS = 2000;   // a line his own ✓ just caused keeps the box this long; a sign that arrives meanwhile waits (slab-full-1)
+const OWN_HOLD_MS = 2000;   // a line his own ✓ just caused keeps the box this long; a sign that arrives meanwhile waits
 function fxMsg(text, pri) { const n = { text, pri: pri == null ? 2 : pri }; if (FX.ownRun) { n.own = 1; FX.ownUntil = NOW + OWN_HOLD_MS; } FX.notes.push(n); composeMsg(); }
 function composeMsg() {
   const n = FX.notes.slice().sort((a, b) => b.pri - a.pri); let out = ''; FX.held = []; FX.sign = null;
@@ -909,8 +912,8 @@ function composeMsg() {
   // outranks it; the other signs keep their flags unspent and come again at their own next trigger, and plain notes wait one action.
   // (first ten minutes) before the first pod is home no first-sighting sign or one-time line shows or is spent, a hazard sign apart; each comes at its own trigger after
   const keep = firstWalk() ? n.filter(x => !x.once || x.beat || (x.sign && FIRST_HAZARD.includes(x.sign))) : n;
-  // slab-full-1: a line his own ✓ just caused holds the box about 2 s; a sign that arrives in that time waits, its flag unspent (never dropped), and shows when the time is over or with his next press
-  // steering (design, 11-26): a hazard sign (FIRST_HAZARD) is never held: it shows at once, and the line his press caused waits one action (FX.held) and shows after the warning
+  // a line his own ✓ just caused holds the box about 2 s; a sign that arrives in that time waits, its flag unspent (never dropped), and shows when the time is over or with his next press
+  // a hazard sign (FIRST_HAZARD) is never held: it shows at once, and the line his press caused waits one action (FX.held) and shows after the warning
   const ownHold = (FX.ownUntil || 0) > NOW && keep.some(x => x.own && !x.sign), signs = keep.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign));
   const hz = ownHold ? signs.find(x => FIRST_HAZARD.includes(x.sign)) : null, holding = ownHold && !hz;
   if (hz) { signs.splice(signs.indexOf(hz), 1); signs.unshift(hz); }
@@ -942,28 +945,17 @@ function settleOnce() {
     else fxOnce(h.key, h.text, h.pri); }   // too long for the bottom line's middle: a plain note until the copy has a short form
   const covered = S.phase === 'patch' && S.ui.swap;   // the swap chooser has the box's place: nothing is drawn, so nothing is spent
   const bl = FX.beatLine; FX.beatLine = null;
-  const wanderOnly = FX.notes.length > 0 && FX.notes.every(n => n.wander);   // wild-beats-fix-5: a wander note ("The creature wanders") gives the box to the act's line for the 2.5 s hold
-  if (bl && !covered && (!FX.msg || wanderOnly || (FX.msg === FX.teachMsg && !FX.beatOver)) && !FX.sign && (!FX.notes.length || wanderOnly)) {   // wild-life-build-3: a free box takes the act's line; wild-life-build-6: so does a box holding only the standing target line, for the 2.5 s hold (teachFill puts it back)
+  const wanderOnly = FX.notes.length > 0 && FX.notes.every(n => n.wander);   // a wander note ("The creature wanders") gives the box to the act's line for the 2.5 s hold
+  if (bl && !covered && (!FX.msg || wanderOnly || (FX.msg === FX.teachMsg && !FX.beatOver)) && !FX.sign && (!FX.notes.length || wanderOnly)) {   // a free box takes the act's line; so does a box holding only the standing target line, for the 2.5 s hold (teachFill puts it back)
     if (wanderOnly) FX.notes = [];
     FX.notes.push({ text: bl.text, pri: 0, once: 'beat', beat: bl.key }); composeMsg(); FX.beatOver = FX.msg === bl.text ? { text: bl.text, until: NOW + BEAT_HOLD_MS } : null; }
-  for (const n of covered ? [] : FX.notes) if (n.beat && FX.msg.includes(n.text)) (S.beatSaid || (S.beatSaid = {}))[n.beat] = S.turn;   // wild-life-build-3: an act's line is spent for the day only once it showed
+  for (const n of covered ? [] : FX.notes) if (n.beat && FX.msg.includes(n.text)) (S.beatSaid || (S.beatSaid = {}))[n.beat] = S.turn;   // an act's line is spent for the day only once it showed
   for (const n of covered ? [] : FX.notes) if (n.once && !n.beat && (n.sign ? FX.sign === n : FX.msg.includes(n.text)) && !onceDone(n.once, n.local)) {
     if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once);
     if (n.sign) { const k = 'met:' + SIGN[n.sign].tile; if (!S.found.includes(k)) S.found.push(k); } }
 }
 // ===================== The first ten minutes, the walk side =====================
-// [copy] placeholders: the copywriter picks the final words. All the player strings of the first walk are in this one table.
-const FIRST_TEXT = {
-  goal: { find: 'Find a Loika · feed her', feed: name => name + ' · feed her', pod: name => name + ' left a pod · at her bed', home: 'Bring it home · back to the start',
-    dock: 'Dock the Companion · the pod goes home', dockFinds: 'Dock the Companion · your finds go home' },   // F1-F3; [copy] find, feed (habits-out-build-1: the plan line names feeding her, working words as in still p-6b), pod, dockFinds (w5-first-goal-1)
-  teach: { setOut: 'Press ✓ to set out', place: 'Start at a glint · ✓ starts there', go: 'Press ✓ to go into this place', pod: 'Go to the glint · ✓ takes the pod',
-    stone: 'A charged stone · ✓ takes its Energy', end: '← then End · your finds go in a crate', dock: 'Dock: the key below',
-    endHere: '← End · your finds go in a crate' },
-  face: { still: 'Keep still', beat: 'Face the beat', pod: 'Face the pod', stone: 'Face the stone', turn: dir => 'Turn ' + dir },   // the ✓ words on the walk, facing nothing (the way back is SEND_TXT.way)
-  empty: { later: 'A pod waits', look: 'Still looking', rock: 'Pods sleep in woods and rock', where: (land, dir) => 'In the ' + land + ', ' + (dir ? dir + ' of where you set out' : 'where you set out') + '.',   // [copy]
-    start: 'Start there and press ))) Call.', back: 'Back to the pod' },
-};
-const GOAL_MARK = { slot: 'goal-mark-12', w: 12 };   // [art] the goal line's mark, an empty named slot: the art director's piece fills it (nothing is drawn in it)
+// Its words are FIRST_TEXT (src/data/field-lines.mjs).
 const FIRST_HAZARD = ['shield', 'warn', 'storm', 'shelter'];   // the signs that still show on the first walk: a hit, a strike, a storm
 // "First pod home": the play page's word (the Station's `podHome` in its dock state), else the Station's part of the save. A mibi on the Companion counts too.
 function firstHome() {
@@ -971,8 +963,7 @@ function firstHome() {
   if (S.mibis && S.mibis.length) return true;
   const st = stPart(); return !!st && ((st.tray || []).length > 0 || (st.waiting || []).length > 0 || !!st.bud || (st.mibis || []).length > 0);
 }
-const firstWalk = () => !!S && !(RT && RT.readOnly) && !firstHome();
-// The one teaching line due now on the first walk, or '' (each line waits for its deed; the Station's goal takes over once the pod is home).
+const firstWalk = () => !!S && !RT.readOnly && !firstHome();
 // A pod this place shows now (a Call lifted it, or the veil does): the glint to go to.
 const podShown = (key, night) => S.pods.some(p => p.k === key && !p.h && p.x >= 0 && isNightPod(p) === !!night && isSeen(key, p.x, p.y));   // a pod in view: the built kind's, or (night) her night pod
 // The first walk's pod beat as a way from here: the nearest buried pod, in this place or next door; { dir: 'north-east', vx, vy } or null.
@@ -983,12 +974,12 @@ function beatWay(P) {
     .filter(q => q && q.d > 0).sort((a, c) => a.d - c.d)[0];
   const dir = b && dirWord(b.dx, b.dy, b.d); return dir ? { dir, vx: DIR_VEC[dir][0], vy: DIR_VEC[dir][1], tx: b.tx, ty: b.ty } : null;   // tx, ty: the pod's own tile when it lies in this place
 }
-// (call-probe-marks-1, owner #56) After every Call here, if nothing to take is in sight, the way to the nearest thing to take or explore: a buried find first (its beat), then anything to take seen
+// After every Call here, if nothing to take is in sight, the way to the nearest thing to take or explore: a buried find first (its beat), then anything to take seen
 // in another place of the reach, then the nearest way out not yet walked. { dir, vx, vy, kind } or null; null at once when something to take is in sight (no tab then).
 const SIDE_VEC = { N: [0, -1], S: [0, 1], W: [-1, 0], E: [1, 0] };
 function leadWay(P, lay) {
   const ex = S.exp; if (!ex || !P || lay.cave || !(ex.callsAt && ex.callsAt[lay.cell]) || leftItems(lay.cell).length) return null;
-  // the tab keeps one target until it is reached (owner bug 2026-11-20): pinned for this place and Call while a buried pod of this place is still there
+  // the tab keeps one target until it is reached: pinned for this place and Call while a buried pod of this place is still there
   const pin = RT.leadPin;
   if (pin && pin.key === P.key && pin.calls === ex.stats.calls && pin.pods === S.pods.length && pin.held === ex.cargo.pods.length && (pin.way.tx === undefined || S.pods.some(p => p.h && p.k === P.key && p.x === pin.way.tx && p.y === pin.way.ty))) return pin.way;
   const sig = P.key + ':' + P.x + ':' + P.y + ':' + ex.actions + ':' + ex.stats.calls + ':' + S.pods.length + ':' + ex.cargo.pods.length + ':' + ex.carry;
@@ -999,7 +990,7 @@ function leadWay(P, lay) {
   else {
     let best = null;   // anything to take seen in a place already made in this reach
     for (const c of ex.reach) { if (c === lay.cell || !S.seen.been[c] || !layoutCache.has(String(c)) || !leftItems(c).length) continue; const q = cxy(c), d = Math.max(Math.abs(q.x - here.x), Math.abs(q.y - here.y)); if (!best || d < best.d) best = { c, d, dx: q.x - here.x, dy: q.y - here.y }; }
-    if (best) { way = toWay(best.dx, best.dy, 'take'); if (way) { way.cell = best.c; (RT.pointed = RT.pointed || {})[best.c] = 1; } }   // owner-notes-fix-160: the tab promised a find there; that place glints it (and keeps its tab) until it is taken
+    if (best) { way = toWay(best.dx, best.dy, 'take'); if (way) { way.cell = best.c; (RT.pointed = RT.pointed || {})[best.c] = 1; } }   // the tab promised a find there; that place glints it (and keeps its tab) until it is taken
     if (!way) {   // the nearest side of this place that leads on to a cell of the reach not walked yet
       let out = null;
       for (const o of lay.openings || []) { if (openingKind(lay, o).kind !== 'open') continue; const [dx, dy] = SIDE_VEC[o.side], c = (here.y + dy) * MW + here.x + dx;
@@ -1011,6 +1002,7 @@ function leadWay(P, lay) {
   }
   RT.lead = { sig, way }; RT.leadPin = way ? { key: P.key, calls: ex.stats.calls, pods: S.pods.length, held: ex.cargo.pods.length, way } : null; return way;
 }
+// The one teaching line due now on the first walk, or '' (each line waits for its deed; the Station's goal takes over once the pod is home).
 function teachStep() {
   const T = FIRST_TEXT.teach, ex = S.exp;
   if (isDocked() || RT.view || (S.phase === 'patch' && S.ui.swap)) return '';
@@ -1018,18 +1010,18 @@ function teachStep() {
   if (S.phase === 'place') return T.place;
   if (S.phase === 'map') return ex.cargo.pods.length && ex.pos === ex.start ? T.endHere : T.go;
   const P = S.phase === 'patch' ? ex.patch : null; if (!P) return '';
-  { const np = S.pods.find(p => isNightPod(p) && p.k === P.key && !p.h && isSeen(P.key, p.x, p.y)); if (np && !ex.cargo.pods.some(isNightPod) && !S.found.includes('teach:nightpod')) return WORDS.pod.podTeach(np.nm); }   // pod-sleep-build-1: her pod in sight: the line names her, never the built line for a pod (once per save: spent when she is taken up)
+  { const np = S.pods.find(p => isNightPod(p) && p.k === P.key && !p.h && isSeen(P.key, p.x, p.y)); if (np && !ex.cargo.pods.some(isNightPod) && !S.found.includes('teach:nightpod')) return WORDS.pod.podTeach(np.nm); }   // her pod in sight: the line names her, never the built line for a pod (once per save: spent when she is taken up)
   if (!ex.cargo.pods.length) { if (podShown(P.key)) return T.pod;   // her own pod, in sight
     let c0 = ex.carry === 'fruit' ? indInSight() : null; if (c0 && !onScreen(c0.x, c0.y)) c0 = null; if (c0 && S.named && S.named[c0.id] && !S.found.includes('teach:eats')) return WORDS.pod.eatsTeach(S.named[c0.id]);   // fruit in hand, a named Loika in sight: once per save (spent at the feed)
-    const w = loikaTeach(); if (w) return w; }   // W5: the next deed with a named Loika, in the words W4 uses
+    const w = loikaTeach(); if (w) return w; }   // the next deed with a named Loika, in her card's words
   if (!ex.cargo.e && layout(P.key).feats.some(f => f.kind === 'k' && stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f))) return T.stone;
-  { const wl = whereTeach(P); if (wl) return wl; }   // first-walk-teach-approach-1: where she comes, in a place with none
+  { const wl = whereTeach(P); if (wl) return wl; }   // where she comes, in a place with none
   if (!ex.cargo.pods.length) return '';   // nothing to take home yet: no line asks for the end
   return T.end;
 }
-// first-walk-teach-approach-1: the cells of the reach that hold a named Loika (made places only; layouts built for the check are dropped again), kept per reach and place count
+// The cells of the reach that hold a named Loika (made places only; layouts built for the check are dropped again), kept per reach and place count
 function namedCells() {
-  // round 2: not keyed on PLACES.epoch (it climbs with every place the worker delivers); keyed on the reach and on how many of the Loika's reach cells have their place, and a cell is checked once (memo) when its place arrives
+  // not keyed on PLACES.epoch (it climbs with every place the worker delivers); keyed on the reach and on how many of the Loika's reach cells have their place, and a cell is checked once (memo) when its place arrives
   const ex = S.exp, reach = new Set(ex.reach.map(Number)), cand = [];
   for (const q of S.cr) { if (q.sp !== 0 || q.cv || q.home || !reach.has(+q.c) || cand.some(x => x.c === +q.c)) continue; cand.push({ c: +q.c, q }); }
   const have = cand.filter(x => placeHave(String(x.c))).length, key = S.seed + '|' + S.cr.length + '|' + ex.reach.length + '|' + have;
@@ -1063,13 +1055,13 @@ const APPROACH_ONCE = { near: 'teach:near', heard: 'teach:heard', tell: 'teach:t
 function approachTeach(c) {
   const W = WORDS.teachWalk, e = c.ease | 0;
   if (e >= 1 && e < 3 && !S.found.includes(APPROACH_ONCE.heard)) return { k: 'heard', t: W.heard };
-  if (e === 0 && !c.hb && c.st === 'idle' && habRange(cheb(c, S.exp.patch)) === 'mid' && !S.found.includes(APPROACH_ONCE.tell)) return { k: 'tell', t: W.tell };   // (5) mid range and still: her tell comes first
+  if (e === 0 && !c.hb && c.st === 'idle' && habRange(cheb(c, S.exp.patch)) === 'mid' && !S.found.includes(APPROACH_ONCE.tell)) return { k: 'tell', t: W.tell };   // mid range and still: her tell comes first
   if (e === 0 && cheb(c, S.exp.patch) > 2 && !S.found.includes(APPROACH_ONCE.near)) return { k: 'near', t: W.near };
   return null;
 }
 // The teaching line takes the message box whenever no real note or sign holds it; an action clears it and the next frame sets the next one.
 function teachFill() {
-  const bo = FX.beatOver;   // wild-life-build-6: her line over the standing target line ends after its hold, or when another line has the box; the target line comes back as it was
+  const bo = FX.beatOver;   // her line over the standing target line ends after its hold, or when another line has the box; the target line comes back as it was
   if (bo) { if (FX.msg !== bo.text || NOW >= bo.until) { FX.beatOver = null; if (FX.msg === bo.text && firstWalk()) { FX.notes = FX.notes.filter(x => x.text !== bo.text); FX.msg = ''; FX.sign = null; } } }
   if (FX.msg && FX.msg !== FX.teachMsg) return;
   const prevUp = RT.approachUp; RT.approachUp = null;
@@ -1077,29 +1069,28 @@ function teachFill() {
   if (prevUp && !(RT.approachUp && RT.approachUp.k === prevUp.k) && !S.found.includes(APPROACH_ONCE[prevUp.k])) S.found.push(APPROACH_ONCE[prevUp.k]);   // each approach line once per save, spent when it is left
   FX.msg = t; FX.teachMsg = t; FX.sign = null;   // on a first save the opening draws its one teaching line under the land itself
 }
-// The goal line: F1-F3 before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
-// W5 (first walk): the named Loika he follows; { id, name } or null when none is met.
+// The named Loika he follows on the first walk; { id, name } or null when none is met.
 function metBest() {
-  const nm = S.named || {}, gone = S.homeIds || {}, order = (S.metIds || []).filter(id => nm[id] && !gone[id]);   // pod-sleep-build-1: one gone home is skipped: the goal moves to the next Loika met
+  const nm = S.named || {}, gone = S.homeIds || {}, order = (S.metIds || []).filter(id => nm[id] && !gone[id]);   // one gone home is skipped: the goal moves to the next Loika met
   for (const id of Object.keys(nm)) if (!order.includes(id) && !gone[id]) order.push(id);   // a save from before the met order: by id
-  // owner note 167 (rule 47a): the one he follows is the named Loika he last faced, watched or noted (S.follow); before any of those the first named one he met; a Loika newly seen never takes it
+  // the one he follows is the named Loika he last faced, watched or noted (S.follow); before any of those the first named one he met; a Loika newly seen never takes it
   const id = S.follow && nm[S.follow] && !gone[S.follow] ? S.follow : order[0]; return id ? { id, name: nm[id] } : null;
 }
-// owner note 167: facing, watching or noting a named Loika makes her the one followed
+// Facing, watching or noting a named Loika makes her the one followed.
 function followSet(c) { if (RT.readOnly || !c || !c.ind || !S.named || !S.named[c.id]) return; S.follow = String(c.id); }
 function followFront() { const ex = S && S.exp, P = ex && ex.patch; if (!P) return; const f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player'); if (o && o.type === 'cr') followSet(o.c); }
 const ownPodLying = () => S.pods.find(p => p.how === 'own' && !p.h) || null;
-// The teaching line in a place: a named Loika's prints to read, or her next want (coat first, then face), both in W4's words.
+// The teaching line in a place: a named Loika's prints to read, or her next want (coat first, then face), both in her card's words.
 function loikaTeach() {
   const pr = printsToRead(); if (pr) return habName(pr.c) + ' · ' + WORDS.prints.read;
-  const c = indInSight(), ap = c && firstWalk() ? approachTeach(c) : null; if (ap) { RT.approachUp = ap; return ap.t; }   // first-walk-teach-approach-1
-  const ct = c || indInSight(true);   // pr722-fix-1: before her first feed her kind is not known yet, so indInSight() is null; the teach asks for any named Loika in sight (not bolted)
-  if (ct && (ct.ease | 0) < 3 && firstWalk() && S.exp.carry !== 'fruit' && S.named && S.named[ct.id] && spOf(ct.sp).eats && !S.found.includes('teach:eats')) { const n = S.named[ct.id], long = WORDS.pod.fruitTeach(n); return long.length <= 44 ? long : WORDS.pod.fruitTeachShort(n); }   // first-pod-fix-1 (1): a named Loika met, no fruit in hand: where the food comes from (spent at her first feed); editorial's words, bus 2dd0bb
+  const c = indInSight(), ap = c && firstWalk() ? approachTeach(c) : null; if (ap) { RT.approachUp = ap; return ap.t; }
+  const ct = c || indInSight(true);   // before her first feed her kind is not known yet, so indInSight() is null; the teach asks for any named Loika in sight (not bolted)
+  if (ct && (ct.ease | 0) < 3 && firstWalk() && S.exp.carry !== 'fruit' && S.named && S.named[ct.id] && spOf(ct.sp).eats && !S.found.includes('teach:eats')) { const n = S.named[ct.id], long = WORDS.pod.fruitTeach(n); return long.length <= 44 ? long : WORDS.pod.fruitTeachShort(n); }   // a named Loika met, no fruit in hand: where the food comes from (spent at her first feed); the editor's words
   const cd = c && habCardNext(c); return cd ? habName(c) + ' · ' + cd : '';
 }
 const waysLine = b => b ? FIRST_TEXT.goal.feed(b.name) : FIRST_TEXT.goal.find;
 const dockHasPod = () => S.bay.some(c => (c.pods || []).length) || !!(S.report && S.report.sealed && (S.report.sealed.pods || []).length) || !!(S.hold && (S.hold.pods || []).length);
-// The goal line: F1-F3 before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
+// The goal line: the first walk's own before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
 function goalLine() {
   if (!S || RT.readOnly) return '';
   if (firstWalk()) { const G1 = FIRST_TEXT.goal, ex = S.exp;
@@ -1107,24 +1098,13 @@ function goalLine() {
     if (ex && ex.cargo.pods.length) return G1.home;
     const op = ownPodLying(); if (op) return G1.pod(op.of);
     return waysLine(metBest()); }
-  // after the first expedition only the Station's Companion part shows; a Station step gives no line, and no band (note 10)
+  // after the first expedition only the Station's Companion part shows; a Station step gives no line, and no band
   const g = RT.caddy && RT.caddy.goal; if (!g) return ''; if (typeof g === 'string') return g; return g.companion ? g.companion.text || '' : '';
 }
 // ===================== Signs: one picture and one line, found again on the Probe =====================
+// A sign's line is its row of SIGN_LINE (src/data/field-lines.mjs).
 // key: the once-flag (an old save keeps its flags); also: other flags that count as seen; tile: its place on the Probe (met-order grid).
 // Priority is the old once-line's (a merged sign takes the highest of its lines; every hazard sign is 3, so the hazard order decides). Then the order below.
-// The bag choice at the find (walk slice W§5): every player string of the chooser, so the words can change without code.
-const SWAP_TEXT = { title: 'Your bag is full', sub: 'Keep one of these. The other stays here.', bag: 'In your bag', found: 'Found here', stays: 'stays here',
-  foot: 'The one you leave waits here. The map remembers it.', take: 'Take it', leave: 'Leave it here', leaveCtx: p => 'leave the ' + p + ' pod', kept: 'Left it here', swapTitle: 'Swap the pod' };
-const SIGN_LINE = {
-  call: 'Call lifts the veil: finds show', shield: 'Plate lost · lose them all and the Probe breaks',   // [copy] placeholder: the copywriter has the final word (owner 11-08: "no plates, Probe breaks" read as "the Probe is broken")
-
-  storm: dir => 'More bolts, more strikes · moving ' + (dir > 0 ? 'east ▶' : 'west ◀'), warn: 'Lightning strikes here next', shelter: 'Overhangs and caves, not trees',
-  full: 'Hold full · a new pod is a choice',bank: 'If the Probe breaks, you lose your finds', fog: 'Fog · creatures calm, sight short',
-  muffled: 'The fog muffles your Call', fruit: WORDS.fruitSign, putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
-  tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog', strike: WORDS.strike.sign,
-  bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
-  untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
 // the first sighting of each map sign: its Probe name (the line on the card is the same one)
 const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
   beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'Mud or scree · needs a rambler', bank: 'Earth bank · needs a digger', deep: 'Deep ? · the Probe upgrade reads it' };
@@ -1208,23 +1188,9 @@ const spName = sp => S.known.includes(sp) ? spOf(sp).name : 'creature';   // spe
 const aAn = w => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
 function fxFloat(x, y, text, icon) { FX.floats.push({ x, y, text, icon, at: NOW }); }
 function fxGlint(x, y, delay) { FX.rings.push({ x, y, at: NOW + (delay || 0), glint: 1 }); }
-// ===== JUICE (juice-build-1): every act that takes or gives something answers at once, from this one table, through fxJuice. =====
-// A row says: line, what it moved him toward (the canon strings, core-loop-canon-1; null = the act's own line stays). The act's sound is the row of the same name in
-// src/sound/blips.mjs; the burst at the thing is about 4 frames of 80 ms, palette only, off under reduced motion. The +N rising over the thing and the HUD counter's
-// bracket belong to a counter changing, so addMat does them (a counter changes the same way whatever act changed it).
-const JUICE = {
-  stone:   { line: n => '+' + n + ' Energy · it goes home in the crate' },   // a stone's charge
-  cup:     { line: n => '+' + n + ' Essence · it feeds the Station' },       // a cup of dew
-  tuft:    { line: n => '+' + n + ' Essence · it feeds the Station' },       // a tuft on the ground
-  press:   { line: n => '+' + n + ' Essence · it feeds the Station' },       // fruit pressed at a stone
-  fruit:   { line: () => '+1 fruit · in your hand for her' },               // fruit picked up
-  pod:     { line: () => 'A pod · it goes home in the crate' },
-  slab:    { line: null },    // the push's own lines say what lay under it
-  prints:  { line: null },    // her prints line stays
-  note:    { line: null },    // the note's own line stays
-  feed:    { line: null },    // the feeding's own line stays
-  strike:  { line: null }     // a strike mark's own line stays
-};
+// Every act that takes or gives something answers at once, through fxJuice: its row of JUICE (src/data/field-lines.mjs) gives the line, the row of the same name in
+// src/sound/blips.mjs the sound, and a burst plays at the thing (about 4 frames of 80 ms, palette only, off under reduced motion). The +N rising over the thing and the
+// HUD counter's bracket belong to a counter changing, so addMat does them (a counter changes the same way whatever act changed it).
 const JUICE_BURST_MS = 320;   // 4 frames of 80 ms
 // x, y: the tile of the thing (patch coordinates); n: how much it moved, for the line.
 function fxJuice(act, x, y, n) {
@@ -1235,8 +1201,7 @@ function fxJuice(act, x, y, n) {
 }
 const LOCK_MAX = 2500;   // no hold on the keys lasts longer than this, whatever asked for it: input never locks for good
 function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + Math.min(ms, LOCK_MAX)); }
-// A crossing is a camera slide of one screen in the walking direction (owner walk note 18): the last picture of the place left slides out, the new place slides in, input is locked for its length.
-const SLIDE_MS = 300;
+// A crossing is a camera slide of one screen in the walking direction (src/render/slide.mjs): the last picture of the place left slides out, the new place slides in, input is locked for its length.
 // The place's picture sits below the goal band (the band's rows hold no picture), so the sliding layer is the view below the band: nothing of the band, and no empty band rows, travels with it.
 function viewSnapshot() { const gb = goalBandOn() ? GOAL_BAND_H : 0, cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H - gb; cv.gb = gb; cv.hero = RT.heroN || 0; const c = cv.getContext('2d'); c.drawImage(scr, 0, VIEW_Y + gb, SCR_W, VIEW_H - gb, 0, 0, SCR_W, VIEW_H - gb); return cv; }   // the goal band is drawn once, by drawGoalBand over the slide, never inside the sliding layer
 // The place's own picture (before the goal band, the message and the bottom line go over it) is kept each frame the explorer stands within a tile of an edge: that is what slides out.
@@ -1251,40 +1216,27 @@ function keepEdgeView() {
 const plNow = () => RT.plScr ? { x: RT.plScr.x, y: RT.plScr.y } : null;   // where the pawn stands on the screen (the last frame's)
 // What a crossing slides out: the picture of the place left and where the pawn stood in it (null when motion is off: then the next place is a cut).
 function slideOut() { if (!motion()) return null; const ev = FX.edgeView && FX.edgeView.key === S.exp.patch.key ? FX.edgeView : null; return { snap: ev ? ev.snap : viewSnapshot(), pl: ev ? ev.pl : plNow() }; }
-function slideP(sl) { const p = clamp((NOW - sl.at) / SLIDE_MS, 0, 1); return 1 - (1 - p) * (1 - p); }   // ease-out
 // After the new place's frame is on the screen: the screen's view band is moved by the slide (the old picture leaves the way the explorer walks, the new one comes in behind it).
 function drawSlide() {
   const sl = FX.slide; if (!sl) return;
   if (!motion() || NOW - sl.at >= SLIDE_MS) { FX.slide = null; drawHeroLater(); const k = FX.slideKey; FX.slideKey = null; if (k && !HELD.includes(k)) setTimeout(() => { if (S && S.phase === 'patch') act(k, 'creep'); }, 0); return; }   // the slide's last frame: the pawn stands in its place again; a tap made inside the slide is played now (a key still held walks on by the resume)
-  const p = slideP(sl), nw = viewSnapshot(), W = SCR_W, H = VIEW_H;
+  const p = slideAt(sl, NOW), nw = viewSnapshot(), W = SCR_W, H = VIEW_H;
   RT.slideNewHero = nw.hero;
   const top = VIEW_Y + nw.gb;   // the slide runs below the goal band; the band itself stays where it is
   g.save(); g.beginPath(); g.rect(0, top, W, H - nw.gb); g.clip();
   g.fillStyle = HEX[C.ink]; g.fillRect(0, top, W, H - nw.gb);
-  const Hs = H - nw.gb, o = slideOffsets(sl, RT.plScr, W, Hs);   // the layers travel the height they slide in, so no gap opens between them
+  const Hs = H - nw.gb, o = slideOffsets(sl, RT.plScr, RT.ts, W, Hs);   // the layers travel the height they slide in, so no gap opens between them
   g.drawImage(sl.snap, Math.round(o.old.x * p), top + Math.round(o.old.y * p));
   g.drawImage(nw, Math.round(o.nw.x * (1 - p)), top + Math.round(o.nw.y * (1 - p)));
   if (RT.heroLater && RT.heroFn) {   // the pawn, once: it rides from its spot in the old place (p = 0) to its spot in the new one (p = 1), with the camera
-    const a = sl.pl, b = RT.plScr, ride = a && b && slideRides ? { x: (a.x - b.x) * (1 - p), y: (a.y - b.y) * (1 - p) } : { x: 0, y: 0 };
+    const a = sl.pl, b = RT.plScr, ride = a && b && o.rides ? { x: (a.x - b.x) * (1 - p), y: (a.y - b.y) * (1 - p) } : { x: 0, y: 0 };
     try { RT.heroFn(Math.round(ride.x), Math.round(ride.y)); } catch (e) { if (RT.err++ < 3) console.error(e); }
   }
   g.restore();
 }
-// Bug #37: the two places are one map. Each layer is a whole screen of its own place; the pawn stands one tile further on in the new one than in the old (the cell across the shared edge).
-// The old layer ends (p = 1) where that puts its pawn, the new one starts (p = 0) where its pawn is one tile beyond the old pawn's: so the view scrolls by exactly what the camera of each place
-// is off by, and the pawn's line of the map never shifts on the screen, whatever the sizes of the two places (a screen away along the way, a few tiles apart across it).
-let slideRides = false;
-function slideOffsets(sl, pl1, W, Hs) {
-  const dx = sl.dx, dy = sl.dy, plain = { old: { x: -dx * W, y: -dy * Hs }, nw: { x: dx * W, y: dy * Hs } }, pl0 = sl.pl;
-  slideRides = false;   // true when the pawn's two spots are on the same map line (the offsets are not the plain screen slide): drawSlide then carries the pawn between them
-  if (!pl0 || !pl1 || !RT.ts) return plain;
-  const ts = RT.ts, nw = { x: pl0.x + dx * ts - pl1.x, y: pl0.y + dy * ts - pl1.y }, old = { x: pl1.x - dx * ts - pl0.x, y: pl1.y - dy * ts - pl0.y };
-  if (Math.abs(nw.x) > 1.5 * W || Math.abs(nw.y) > 1.5 * Hs) return plain;
-  slideRides = true; return { old, nw };   // a camera that is not flush with the place's edge gives a distance that is no screen: keep the plain slide
-}
 // A cell the storm struck: the world turn at the expedition's end reads its place (stones, strike mark), and a cold layout takes a quarter second to build, so it is built now, a moment after the flash, in the walk's idle time and not all at once when End expedition is pressed.
-function stormMark(ex, c) { ex.stormCells[c] = 1; setTimeout(() => { if (S && S.exp === ex && typeof layout === 'function' && !layoutCache.has(String(c)) && placeHave(String(c))) layout(String(c)); }, 600); }
-function transition() { FX.transAt = NOW; lockInput(160); if (typeof stopRepeat === 'function') stopRepeat(); } // a held direction never carries across scales
+function stormMark(ex, c) { ex.stormCells[c] = 1; setTimeout(() => { if (S && S.exp === ex && !layoutCache.has(String(c)) && placeHave(String(c))) layout(String(c)); }, 600); }
+function transition() { FX.transAt = NOW; lockInput(160); stopRepeat(); } // a held direction never carries across scales
 
 let crById = new Map();
 function indexCreatures() { crById = new Map(S.cr.map(w => [w.id, w])); }
@@ -1292,7 +1244,7 @@ function logEv(text) {
   if (!S) return; const tag = S.exp ? 'E' + S.exp.n : 'T' + wTurn();
   S.log.push(tag + ' · ' + text); if (S.log.length > 40) S.log.splice(0, S.log.length - 40);
 }
-// ---- The Log (companion-device-build-1): S.book keeps a record for each thing that happened on a walk, written by the same calls that write S.log, at the moment it happens. ----
+// ---- The Log: S.book keeps a record for each thing that happened on a walk, written by the same calls that write S.log, at the moment it happens. ----
 // { d: the day (the expedition's number), part: the part of day, place: the place's name, from: where from the flag, id/who: the wild one it is about (or none), kind, text, item }
 // kinds: prints (read), met (met and named), habit (a habit noted, far or mid), near (crept to two steps), find (a find taken). The last 3 days are kept; S.log's 40 lines stay for the observer panel. An old save has no S.book: nothing is shown.
 const BOOK_DAYS = 3;
@@ -1309,10 +1261,10 @@ function bookEv(kind, c, text, item) {
   while (bk.length && bk[0].d < ex.n - (BOOK_DAYS - 1)) bk.shift();
   return rec;
 }
-// Where and when a thing in the hold was taken (companion-case-build-1): day, part of day and place name (the Log's own), written by the calls that add it; the crate keeps it. A thing from an old save has none.
+// Where and when a thing in the hold was taken: day, part of day and place name (the Log's own), written by the calls that add it; the crate keeps it. A thing from an old save has none.
 function gotNow() { const ex = S && S.exp; return ex && ex.patch && S.day ? { got: { d: ex.n, part: dayPart(), place: placeName(curLay()) } } : {}; }
 function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
-// ---- Care and the carried set (the care save shape, C0) ----
+// ---- Care and the carried set ----
 // The Companion carries up to three mibis (S.carried, in the order they were taken). Care happens here and nowhere else:
 // Play together, once a world turn for all of them together. Three plays earn the bond; every young mibi grows up on the
 // clock. The Companion owns plays, bonded, grownTurn, notches and outings; the Station only mirrors them at the dock.
@@ -1340,10 +1292,10 @@ const CARE_TEXT = {
   youngTime: 'young · grows up in time', leadsChip: 'leads',
   withYouCap: 'With you', atHomeCap: 'At home', othersHome: 'the others are at home',
   takeAlong: 'take mibis along', whenDocked: 'when docked',
-  // a mibi of a species the Companion has no entry for (X1): the copywriter's signed strings (2026-10-11 14:42)
+  // a mibi of a species the Companion has no entry for: the copywriter's signed strings
   spOther: 'a Station species', abOther: 'no field ability yet',
   playedOther: (n, mem) => mem === 'mud' ? n + ' crosses the mud' : n + ' plays · ' + (mem ? 'it remembers the ' + mem : 'it hasn’t been out yet'),
-  // the juvenile that rides in the Companion on an expedition (X26): the copywriter's signed strings (2026-10-11 15:04)
+  // the juvenile that rides in the Companion on an expedition: the copywriter's signed strings
   riderTime: 'grows up in time, riding along',
   riderSetOut: n => n + ' rides along until it’s grown', riderMenu: n => n + ' rides along',
   playedYoung: (n, mem) => CARE_TEXT.playedOther(n, mem), onceGrown: ' once grown',
@@ -1391,7 +1343,7 @@ const CARE_ASSETS = [
 ];
 const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f'], 'mini'], 'c-token-48': ['stone', ['token', 't'], 'sprite'],
   'c-sprite-other-32': ['stone', ['mibi', 'm']], 'c-mini-other-12': ['stone', ['m']] };   // each placeholder's plate colour and labels (longest first), and the mibi's own built art it carries ('mini' 12 px, 'sprite' 32 px)
-const CARRY_MAX = 3, BOND_PLAYS = 3;   // the carry cap; the bond: three plays together (owner 2026-11-11)
+const CARRY_MAX = 3, BOND_PLAYS = 3;   // the carry cap; the bond: three plays together
 function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
 // One definition of a mibi's stage on both pages (the Station's copy is the same text; a parity test proves it).
 function stageAt(m, turn, j, e) {
@@ -1483,9 +1435,9 @@ function carryApply(S, st) {
 }
 const tierOf = () => TIER[S.tier] || TIER[1];
 
-function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
+function urlSeed() { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; }
 // A new world's fields, before its life is placed: newRealm starts from them, and load() fills from them what a save lacks.
-// They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk (v9) keeps each region's map in regions[].map.
+// They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk keeps each region's map in regions[].map.
 function worldFields(seed, gen, wid) {
   return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], habits: {}, looks: {}, pages: {}, day: freshDay(), seen: newSeen(MW * MH), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
@@ -1498,20 +1450,6 @@ function realmOf(flat) { const r = migrate8({ ...flat, v: 8 }, { now: Date.now()
 // The notice line (play/src/footer.mjs mountNotice; the words are WORDS.notice's [copy] slots): what holds now is kept here, and drawn once the line is mounted.
 const NOTE = { flags: {}, ui: null };
 function noteSet(kind, on) { on = !!on; if (!!NOTE.flags[kind] === on) return; NOTE.flags[kind] = on; if (NOTE.ui) NOTE.ui.set(kind, on); }
-// New world, from the menu: the map is replaced and the game is not (bug #59, the owner's words: "under no circumstance you should delete user game data").
-// What the player has made (mibis, the Station's part, crates, the hold, the Library, bonds, the world turn) is read off the old save here, as a copy;
-// what belongs to the old land (every region and its map, the expedition on it, the report, the screen the player was on) is left out. Carried mibis come home.
-// An expedition on the old land ends with it: its cargo goes to the hold (nothing in it is lost), the Probe's Shield stays as it was.
-const NEW_MAP_ONLY = new Set(['v', 'seed', 'regions', 'here', 'phase', 'ui', 'exp', 'report', 'walkTurn', 'biomeV', 'realmRev', 'pods', 'cr', 'gen', 'hold', ...MAP_KEYS]);
-function keepOfGame(old) {
-  const o = serialize(old), keep = {};
-  for (const k of Object.keys(o)) if (!NEW_MAP_ONLY.has(k)) keep[k] = o[k];
-  const ex = old.exp, cargo = ex && ex.cargo && (ex.cargo.e | 0 || ex.cargo.d | 0 || ex.cargo.s | 0 || (ex.cargo.pods || []).length || (ex.cargo.samples || []).length) ? ex.cargo : null;
-  const hold = cargo || old.hold; if (hold) keep.hold = hold;
-  const k2 = JSON.parse(JSON.stringify(keep));
-  k2.carried = []; k2.lead = null;   // the mibis with you come home
-  return k2;
-}
 function newRealm(seed, gen = NEW_GEN, wid, keep) {   // a new realm takes the newest generator (a test may ask for an older one); a realm that follows a sleep is given its wid; `keep` is the game that stays (keepOfGame)
   if (seed == null) seed = randomSeed();
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
@@ -1541,13 +1479,14 @@ function mountRegion(id) {
 // until then the maps keep to the cell labels. A page without a worker makes it on the spot when a map first asks (sectorHere).
 const SECTOR_ASKED = new Set();
 function wantSector(R) {
-  if (!R || R.gen !== 7 || !R.slot || !S.regions[0] || typeof readySector !== 'function') return;
+  if (!R || R.gen !== 7 || !R.slot || !S.regions[0]) return;
   const seed = S.regions[0].seed, key = seed + ':' + R.slot.join(','); if (SECTOR_ASKED.has(key)) return; SECTOR_ASKED.add(key);
   const again = () => { if (hereRegion() === R) { landReset(); mapCv = null; } };
   // the places in view first (the Probe's reach and every cell already seen), then the rest of the region, both in the worker
   const view = new Set(S.exp && S.exp.reach ? S.exp.reach : []);
   for (let c = 0; c < MW * MH; c++) if (S.seen.rev[c]) view.add(c);
-  readySector(seed, R.slot, realm7(seed), [...view], again).then(how => { if (how === 'page') sectorMake(seed, R.slot); again(); }, () => { });   // no worker (or it failed): made here, on the spot
+  readySector(seed, R.slot, realm7(seed), [...view], again).then(how => { if (how === 'page') sectorMake(seed, R.slot); again(); },   // 'page': there is no worker, so it is made here, on the spot
+    e => { console.warn('the worker did not make the region’s sector: its maps keep to the cell labels', e); });
 }
 // A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
 // storm or trail, and no line written. Older turns are let go (the world is permanent, not a ledger). With one region, turnSeen is always S.turn.
@@ -1563,89 +1502,73 @@ function inRegion(id, fn) {
   const was = S.here; mountRegion(id);
   try { return fn(); } finally { mountRegion(was); }
 }
-// A new home region in a free slot: its kind and generator by the realm's rule (src/regions.mjs openHome), its own life; the hand is put back.
-function openRegion(slot) {
-  const rec = openHome(S, slot); S.regions.push(rec);
-  inRegion(rec.id, () => { const life = genLife(S.seed); S.cr = life.cr; S.pods = noAnon(prefixPods(life.pods, rec.n)); indexCreatures(); });
-  return rec.id;
-}
 // Crates and the expedition under way name their region; none means region 1, so a realm of one region writes nothing new.
 const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
-// The Station's part as last stored, if it belongs to this world.
-function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
-function save(keepRipe, noWrite) {   // noWrite: the storage event's call: the Station's part is read and synced, the bytes are left as they are
+// What a write would replace: the Station's part of the stored save if it belongs to this world ({ st }), or why the stored bytes are not this page's to write over
+// ({ held: 'newer' }, a newer build's save; { held: 'broken' }, bytes that are no save). Nothing stored, or storage that cannot be read: { st: null }, and the write itself says if it fails.
+function storedSave() {
+  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { return { st: null }; }
+  if (!raw) return { st: null };
+  let o; try { o = JSON.parse(raw); } catch (e) { return { held: 'broken' }; }
+  if (!o || typeof o !== 'object' || Array.isArray(o)) return { held: 'broken' };
+  if (typeof o.v !== 'number') return { held: 'broken' };   // no numeric v: broken to boot too (resetPlan)
+  if (o.v > SAVE_V) return { held: 'newer' };
+  return { st: o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null };
+}
+function save(how) {   // save({ noWrite: true }) is the storage event's call: the Station's part is read and synced, the bytes are left as they are
   if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
+  const had = storedSave();
+  if (had.held) {   // the stored save changed under this page into one it cannot read or a newer build's: it is never replaced; the page goes read-only, as boot does for the same bytes
+    console.error('the stored save is ' + (had.held === 'newer' ? 'a newer build’s' : 'not readable') + ': it stays as it is and this page writes nothing more');
+    if (had.held === 'newer') readOnlyNewer(); else readOnlyBroken(); return; }
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
-  const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
+  if (had.st) S.st = had.st; else delete S.st;   // the Station's part stays as the Station wrote it
   if (fieldFrozen() && FX.shieldAtDock == null) FX.shieldAtDock = S.exp.shield;   // the Shield as docked, before the cradle mends it
   if (S.st) { syncStation(); normalizeCare(S); }
   if (!fieldFrozen() && FX.shieldAtDock != null) {   // Lift (or the expedition ended): the bars the cradle mended flash once
     if (S.exp && S.exp.shield > FX.shieldAtDock) FX.shieldFlash = { from: FX.shieldAtDock, at: NOW };
     FX.shieldAtDock = null; FX.dockSaid = 0; }
-  if (typeof keepCompanion === 'function') keepCompanion();
-  const moving = typeof legacyTo === 'string' ? legacyTo : null;   // the shared save of earlier builds, moving under this Companion's key with this write
-  if (noWrite) { if (typeof onStateChanged === 'function') onStateChanged(); return; }
-  try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } noteSet('saveFailed', false); } catch (e) { noteSet('saveFailed', true); /* storage full, blocked or private: keep playing in memory, and say so until a save works again (WORDS.notice.saveFailed) */ }
-  if (typeof onStateChanged === 'function') onStateChanged();
+  keepCompanion();
+  const moving = legacyTo;   // the shared save of earlier builds, moving under this Companion's key with this write
+  if (how && how.noWrite) { onStateChanged(); return; }
+  try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } noteSet('saveFailed', false); }
+  catch (e) { if (!NOTE.flags.saveFailed) console.error('the save could not be written', e); noteSet('saveFailed', true); }   // storage full, blocked or private: play goes on in memory, and the notice line says so until a save works again (WORDS.notice.saveFailed)
+  onStateChanged();
 }
-// v7 → v8, the same structural move on both pages: the old Station store becomes the Station's part, mibis move to
-// the Station (the Companion keeps its copies), the bay starts empty. The Station page fills in genomes.
-function migrate7(o) {
-  const wid = 'w' + (o.seed >>> 0).toString(36), H = o.home || { e: 0, d: 0, s: 0, pods: [] };
-  const st = { wid, at: Date.now(), turn: o.turn || 0, e: H.e | 0, d: H.d | 0, s: H.s | 0, tray: [], waiting: [], accepted: [], known: (o.known || []).slice(), met: (o.known || []).slice(),
-    seen: {}, studiedW: {}, mibis: [], nextMibi: 1, nameN: 0, inc: null, dock: { docked: false, at: Date.now() }, withReq: null, probe: null, mendFull: true, freeId: false, returned: [], firstMibi: true, log: [] };
-  (H.pods || []).forEach((p, i) => { const pod = { id: 'v7-' + i, sp: p.sp, g: p.g, how: p.how, gs: hash(o.seed, 'gs7', i, p.sp), n: p.n || 0, idd: p.idd ? 1 : 0, st: [] }; (st.tray.length < 6 ? st.tray : st.waiting).push(pod); });
-  st.mibis = (o.mibis || []).map(m => ({ id: m.id, name: m.name, sp: m.sp, gs: hash(o.seed, 'mibi7', m.id), born: m.born || 0, from: { n: m.from || 0, g: '', how: '' }, mem: m.mem || null, outings: 0, notches: 0, bonded: false }));
-  st.nextMibi = st.mibis.reduce((a, m) => Math.max(a, m.id), 0) + 1; st.nameN = st.mibis.length; st.freeId = (o.found || []).includes('freeid'); st.firstMibi = !st.mibis.length;
-  const s = Object.assign({}, o); delete s.home; delete s.report;
-  s.v = 8; s.wid = wid; s.bay = []; s.hold = null; s.walkTurn = -1; s.withSeen = 0; s.probeSeen = 0; s.retSeen = []; s.dockSeen = 0; s.st = st;
-  if (s.exp && s.exp.cargo) s.exp.cargo.pods.forEach((p, i) => { if (p.gs == null) p.gs = hash(o.seed, 'gs7c', String(p.id), i, p.sp); });   // pods in flight get their own genomes
-  if (s.phase === 'station') s.phase = 'setup';
-  if (s.phase === 'watch' || s.phase === 'card' || s.phase === 'her') { s.phase = s.exp && s.exp.patch ? 'patch' : 'setup'; if (s.ui) { s.ui.watch = null; s.ui.card = null; s.ui.her = null; } }   // w6b: the watch view and the card are not kept across a reload; nor is her page
-  if (s.phase === 'mibis' || s.phase === 'active') s.phase = 'riding';   // an old save opens on Riding, with its riders
-  if (s.ui && (s.ui.from === 'mibis' || s.ui.from === 'active')) s.ui.from = 'riding';
-  return s;
-}
-// Every string `id` held anywhere in a loaded save, at any depth (pods in the field, the cargo, the bay, the hold, a report, the Station's part).
-function idsIn(o, out = new Set()) {
-  if (Array.isArray(o)) for (const v of o) idsIn(v, out);
-  else if (o && typeof o === 'object') { if (typeof o.id === 'string') out.add(o.id); for (const k of Object.keys(o)) idsIn(o[k], out); }
-  return out;
-}
-// What the stored save is: nothing (a new world), a save to load (true), a save from a newer page ('newer'), or bytes this page cannot use ('broken').
-// Bytes the page did not load are never written over: both read-only states keep them, and nothing older is removed (the v7 save moves only into an empty slot).
+// What the stored save is: nothing (false: a new world), a save to load (true), a save from a newer page ('newer'), or bytes this page cannot use ('broken').
+// Bytes the page did not load are never written over: both read-only states keep them, and nothing older is removed.
 function load() {
-  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { return false; }   // storage unavailable: a new world in memory
+  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { console.warn('storage cannot be read: a new world, in memory', e); return false; }
   const own = SAVE_KEY;
-  if (raw == null && COMPANION.slot === 'A') { let old = null; try { old = localStorage.getItem(LEGACY_KEY); } catch (e) { } if (old != null) { SAVE_KEY = LEGACY_KEY; raw = old; } }   // the shared save of earlier builds: read where it is
+  if (raw == null && COMPANION.slot === 'A') { const old = localStorage.getItem(LEGACY_KEY); if (old != null) { SAVE_KEY = LEGACY_KEY; raw = old; } }   // the shared save of earlier builds: read where it is
   const r = (() => {
-  const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
   try {
-    let s = null;
-    if (!raw) {   // an empty slot: a v7 save moves in
-      try { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); raw = JSON.stringify(s); localStorage.setItem(SAVE_KEY, raw); } localStorage.removeItem(V7_KEY); } } catch (e) { s = null; }
-      if (!s) { dropOld(); return false; }
-    } else s = JSON.parse(raw);
+    if (!raw) {   // an empty slot. A save from before v8 lies under its own key: it is reset as a v8 or v9 one is, its bytes copied whole to this slot's copy and left where they are; anything else there is left alone
+      const old = localStorage.getItem(V7_KEY), plan = resetPlan(old, SAVE_V);
+      if (plan.action !== 'reset') return false;
+      if (!keepPre10(localStorage, own, old)) return 'broken';
+      RESET_CARRY = { resetFrom: plan.from }; return false;
+    }
+    const s = JSON.parse(raw);
     if (!s || typeof s !== 'object' || Array.isArray(s)) return 'broken';
-    const plan = resetPlan(raw, SAVE_V, OLD_GENS);   // (a v10 realm of generator 5 only is reset too: the world is new at generator 6) what to do with what is found: play it, reset it (a v8 or v9 save), keep it read-only (newer, unreadable)
+    const plan = resetPlan(raw, SAVE_V, OLD_GENS);   // what to do with what is found: play it, reset it (an older save, or a realm only of generators no longer played), keep it read-only (newer, unreadable)
     if (plan.action === 'newer') return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
-    if (plan.action === 'reset') {   // the release's reset: the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
+    if (plan.action === 'reset') {   // the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
       if (!(plan.gen ? keepGen(localStorage, own, raw, oldGenOf(raw)) : keepPre10(localStorage, own, raw))) return 'broken';   // a generator reset keeps its own copy (<key>.gen6, or .gen5): the .pre10 of the earlier reset stays what it was
-      if (SAVE_KEY === LEGACY_KEY) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) { } }   // the shared old save is kept in the copy: it must not be found and reset again
-      RESET_CARRY = { resetFrom: plan.from }; dropOld(); return false;
+      if (SAVE_KEY === LEGACY_KEY) localStorage.removeItem(LEGACY_KEY);   // the shared old save is kept in the copy: it must not be found and reset again
+      RESET_CARRY = { resetFrom: plan.from }; return false;
     }
     if (plan.action !== 'play') return 'broken';
-    if (s.v === SAVE_V) {   // v10: a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet) starts a new world
-      if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { RESET_CARRY = { resetFrom: s.resetFrom ?? null, wid: s.wid ?? null }; dropOld(); return false; }   // the Station reset first: its world id and its part stay
-      const rs = realmStatus(s, GENS); if (rs !== 'ok') return rs;   // 'newer': a region of a generator this page does not know, kept as stored
-      mount(s, s.here);
-    }
-    if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) { if (s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; } return 'broken'; }   // a Station-only save: a new world starts (and a fresh Station with it)
-    const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
+    // a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet: the Station reset first) starts a new world, and its world id and its part stay
+    if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { RESET_CARRY = { resetFrom: s.resetFrom ?? null, wid: s.wid ?? null }; return false; }
+    const rs = realmStatus(s, GENS); if (rs !== 'ok') return rs;   // 'newer': a region of a generator this page does not know, kept as stored
+    mount(s, s.here);
+    if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) return 'broken';
+    const gen = s.gen;
     S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
-    // whatever it holds, and `gen` is never filled (a save without it is generator 1). A missing pods is the world's life,
+    // whatever it holds, and `gen` is never filled (it is the mounted region's). A missing pods is the world's life,
     // regenerated below without any pod the save already holds (as itself, or as the Station's crate id + ':' + pod id),
     // and a missing or invalid nextId is counted from the pod ids the save holds.
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
@@ -1656,7 +1579,7 @@ function load() {
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     if (typeof S.realmRev !== 'number') S.realmRev = REALM_REV;   // a save from before the land freeze: the land of REALM_REV 9 is the one it was made on (the generator's output did not change)
     noteSet('landChanged', S.realmRev !== REALM_REV);   // a save made on another land than this build makes: it keeps the number it was made on, and the page says so (WORDS.notice.landChanged)
-    indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
+    indexCreatures(); return true;
   } catch (e) { console.error('the save would not load', e); S = null; return 'broken'; }   // it would not load: kept as it is; the cause is logged so the next failure shows it
   })();
   if (SAVE_KEY === LEGACY_KEY && r === true) legacyTo = own;   // loaded: its first write goes under this Companion's key and the old key goes (a read-only save is never moved)
@@ -1669,9 +1592,6 @@ function isDocked() { const st = stPart(); return !!(st && st.dock && st.dock.do
 // Docked mid-expedition the field is frozen: nothing that reaches advance(), moves you or spends is taken, and the
 // expedition resumes at Lift as it was (game designer's dock-freeze ruling). Field input only; views still open.
 const fieldFrozen = () => !!(S && S.exp) && isDocked();
-const DOCK_TEXT = { chip: 'Docked', first: 'Field paused while docked · lift to go on · End expedition still works at the start or a lit outpost', again: 'Docked · lift to go on',
-  tierMid: 'Tier 2 · from the next expedition', probe: 'Docked · the Station mends it', bay: n => n + ' crate' + (n === 1 ? '' : 's') + ' aboard · the Bay is full',
-  sealed: 'Docked · the Bay is full', sealedEmpty: 'Docked' };
 // Docked, the Companion takes what the Station hands over: accepted crates leave the bay; the Probe as mended or
 // upgraded; the Station's carry requests (st.carryReqs); the mibis raised; species identified; pods returned to the wild.
 function syncStation() {
@@ -1712,10 +1632,10 @@ function fs(key, id) { const c = S.cells[key]; return (c && c[id]) || {}; }
 function setFS(key, id, patch) { const c = S.cells[key] || (S.cells[key] = {}); c[id] = Object.assign(c[id] || {}, patch); }
 function featPos(key, f) { if (f.kind === 's') { const st = fs(key, f.id); if (st.moved) return { x: st.x, y: st.y }; } return f; }
 function cupFull(key, f) { const s = fs(key, f.id); return s.full != null ? s.full : !!f.full; }
-// ---------- Strike marks (scheme 4.7): the land's record of lightning, read for Data ----------
+// ---------- Strike marks: the land's record of lightning, read for Data ----------
 // A strike mark is a dark glassy streak where lightning went into bare ground (nothing burns). The generator places them (lay.strikes, with an age in world turns) and each world turn's storm
 // adds fresh ones (S.cells[key]['sf...'], kept with the cell). A mark fades STRIKE_FADE turns after the strike. Reading one is a press: it adds the Data of the
-//place's tier (STRIKE_DATA), once a mark, and takes nothing from the land; only the hold limits it. Words: src/words.mjs.
+// place's tier (STRIKE_DATA), once a mark, and takes nothing from the land; only the hold limits it. Words: src/words.mjs.
 const STRIKE_FADE = 12;   // [tune] world turns a mark stays on the land
 const strikeFaded = f => S.turn - f.born >= STRIKE_FADE;
 const strikeIsRead = (key, f) => fs(key, f.id).read != null;
@@ -1724,8 +1644,8 @@ function addStrikeFeats(lay) {   // the generated marks, and the fresh ones the 
   const c = S.cells[lay.key]; if (c) for (const id of Object.keys(c)) if (c[id].fresh) lay.feats.push({ id, kind: 'q', x: c[id].x, y: c[id].y, born: c[id].born, glass: false });
 }
 // What a press on a strike mark would add now: the worth of the place it lies in (2 / 3 / 4 / 5), whole. 0: the whole worth does not fit the hold and a press is not offered.
-function strikeWorth(lay = curLay()) { return STRIKE_DATA[placeTier(lay)] || STRIKE_DATA[1]; }
-function strikeGain(ex, lay = curLay(), f = null) { const left = strikeWorth(lay) - (f ? fs(lay.key, f.id).took || 0 : 0); return Math.max(0, Math.min(left, CAP - ex.cargo.d)); }   // what fits: a mark that does not fit whole is read in part, the rest stays on the mark (owner 11-13)
+function strikeWorth(lay = curLay()) { return STRIKE_DATA[placeTier(lay)]; }
+function strikeGain(ex, lay = curLay(), f = null) { const left = strikeWorth(lay) - (f ? fs(lay.key, f.id).took || 0 : 0); return Math.max(0, Math.min(left, CAP - ex.cargo.d)); }   // what fits: a mark that does not fit whole is read in part, the rest stays on the mark
 function readStrike(f) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, put = strikeGain(ex, curLay(), f);
   if (!put) { FX.bumpAt = NOW; fxMsg(WORDS.strike.holdFull, 2); return; }   // not offered with the hold full; a press that gets here spends nothing and the mark stays unread
@@ -1930,7 +1850,7 @@ function nearestTake(c, P) {
 // first-pod-fix-1 (3): the Call's report also lists the fruit in sight (a full bush, fruit on the ground) and a slab not yet pushed; the pips and counts stay the finds'
 function callExtras(c) {
   const key = String(c), lay0 = layout(key), out = leftItemsAll(c).filter(i => i.k === 'fruit'); if (!passable(c)) return out;
-  for (const f of lay0.feats) if (f.kind === 's' && !fs(key, f.id).moved && fs(key, f.id).left == null && unveiled(key, f.x, f.y) && (lay0.cave || reachableTile(lay0, f.x, f.y))) out.push({ k: 'slabU', x: f.x, y: f.y });
+  for (const f of lay0.feats) if (f.kind === 's' && !fs(key, f.id).moved && fs(key, f.id).left == null && isSeen(key, f.x, f.y) && (lay0.cave || reachableTile(lay0, f.x, f.y))) out.push({ k: 'slabU', x: f.x, y: f.y });
   return out;
 }
 function leftPhrase(c, P, room, kinds, call) {
@@ -2197,12 +2117,10 @@ function wakeSleepers() {
 }
 // The day's light is spent: the world turns once (as the night's end did), a fresh day starts, and the walk goes on in the same place with everything as it was.
 function nightPasses() {
-  const ex = S.exp, pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
-  S.lastEntered = (ex.entered || []).slice(); RIPE_LATER = []; let turned, ripeLater;
-  try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
+  const ex = S.exp, pending = turnPending(ex);
+  S.lastEntered = (ex.entered || []).slice(); const turned = worldTurnQuick(pending);
   S.day = freshDay(); ex.stormCells = {}; ex.nights = (ex.nights || 0) + 1;   // the trail and the storm marks are spent in this turn; the end card counts the days
-  RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(ripeLoop, 250);
-  const a = turned.arrived; ex.nightNews = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] };
+  ex.nightNews = { cells: newsCells(turned.arrived) };
   for (const l of wakeSleepers()) fxMsg(l, 3);   // a pod of hers on the ground opens at first light; a pod in the Case stays asleep to the walk's end
   fxMsg(DAY_TEXT.nightPassed(partOfDay(0)), 4);
   for (const l of turned.lines) fxMsg(l, 3);   // the world turn's news, one line at a time in the message box
@@ -2780,7 +2698,7 @@ function placePartnerNear(key, P) {
     const x = P.x + dx, y = P.y + dy; if (!occupant(key, x, y)) { live.pt = { x, y, st: 'follow', face: 1 }; return; }
   }
 }
-// The wait for places made in the worker (the set-out's reach, a cell entered before its place is here): the page stays live and the loading line's pips count the places that are here (RT.placeWait; drawWaitPips).
+// The wait for places made in the worker (the set-out's reach, a cell entered before its place is here): the page stays live and the loading line's pips count the places that are here (RT.placeWait; waitPipsNow).
 const yieldTurn = () => new Promise(res => setTimeout(res, 0));
 function beginPlaceWait(seed, slot, v, cells, laying) {
   startPlaceWait(RT, { seed, slot, v, cells, laying, laid: 0 }, performance.now());   // a new wait starts empty, whatever the last one reached; one asked inside a set-out's wait goes on under its pips
@@ -4249,44 +4167,30 @@ function partnerTick(X) {
 }
 
 // ===================== 9. Expedition end, the sealed bay, world turn =====================
+import { holdEmpty, exploredAny, tripPlace, tripRecord, tripsWith } from "./src/logic/expedition.mjs";
+import { dirWord } from "./src/logic/compass.mjs";
+import { DARK_TEXT, sealedWords, PLACE_KIND, PLACE_PHRASE, DIR_CODE } from "./src/data/expedition-lines.mjs";
 // End expedition ends this expedition and seals the hold (pods and materials) as one consignment into the Companion's
 // sealed bay (three at most, one per expedition, never topped up). Nothing is teleported: the Station accepts each
-// consignment once, when the Companion is docked (prototypes/station). The world turns once per expedition ended.
-// Guards: an expedition that explored nothing seals nothing and turns nothing; an empty hold seals no consignment;
+// consignment once, when the Companion is docked (prototypes/station). The world turns at the night's end; a camp leaves the day waiting.
+// Guards: an expedition that explored nothing seals nothing; an empty hold seals no consignment;
 // with the bay full the finds stay in the hold and ride along unsealed. A break seals nothing.
-const holdEmpty = h => !h || (!h.e && !h.d && !h.s && !(h.pods && h.pods.length) && !(h.samples && h.samples.length));
-const exploredAny = ex => (ex.entered || []).length > 0;   // the walk turns the world when it entered at least one place (or dug a bank): a walk that went into no place changes nothing
-// The trips the Station reads at the dock (top-level `trips` in the save): one record per expedition that turned the world,
-// oldest first, the last 40 kept. The expedition gathers its kinds of place (ex.tripPlaces) and whether a storm was over
-// the Probe (ex.tripStorm) as it goes; both are optional, so an expedition saved before them still ends cleanly. `carried` is
-// a copy of S.carried at the expedition's end (`[]` allowed); a reader of an older record takes [partner].
-const TRIP_KINDS = ['meadow', 'pond', 'rock', 'wood', 'cave'], TRIPS_KEPT = 40;
-function tripPlace(ex, kind) { if (!TRIP_KINDS.includes(kind)) return; if (!Array.isArray(ex.tripPlaces)) ex.tripPlaces = []; if (!ex.tripPlaces.includes(kind)) ex.tripPlaces.push(kind); }
-function tripRecord(ex, carried) { const places = Array.isArray(ex.tripPlaces) ? [...new Set(ex.tripPlaces.filter(k => TRIP_KINDS.includes(k)))] : [];
-  return { v: 1, n: ex.n, partner: ex.pt ? ex.pt.id : null, places, storm: !!ex.tripStorm, carried: Array.isArray(carried) ? carried.slice() : [] }; }
-function tripsWith(trips, rec) { return (Array.isArray(trips) ? trips : []).concat([rec]).slice(-TRIPS_KEPT); }
 function bayLine() { const n = S.bay.length; return !n ? '' : isDocked() ? DOCK_TEXT.bay(n) : n + ' crate' + (n === 1 ? '' : 's') + ' sealed · dock to transfer'; }
-// What a hold seals, in words, from its contents: "two pods" + `join` + "supplies", or `alone` ("supplies") when no pod is in it. Every crate carries the walk's Data, so the pods-only form is never shown.
-function sealedWords(h, join, alone) { const n = h.pods ? h.pods.length : 0; return n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + join + 'supplies' : alone; }
-// The Cargo screen's preview of what End expedition will do.
-// What End does with the hold, decided in one place (rule 16b): 'nothing' (nothing explored), 'empty', 'full' (bay full), 'night' (seals, naming her) or 'seal' (seals a crate). The tally draws only on 'night' and 'seal'.
+// What End does with the hold: 'nothing' (nothing explored or dug), 'empty', 'full' (bay full), 'night' (seals, naming her) or 'seal' (seals a crate). The tally draws only on 'night' and 'seal'.
 function sealBranch(ex) {
   if (!exploredAny(ex) && !(ex.dug && ex.dug.length)) return 'nothing';
   if (holdEmpty(ex.cargo)) return 'empty';
   if (S.bay.length >= BAY) return 'full';
-  return (ex.cargo.pods || []).some(isNightPod) ? 'night' : 'seal';
+  return ex.cargo.pods.some(isNightPod) ? 'night' : 'seal';
 }
 function sealsCrate(ex) { const b = sealBranch(ex); return b === 'night' || b === 'seal'; }
+// The Cargo screen's preview of what End expedition will do: the hold as it is (Data comes only from readings and creature acts).
 function sealPreview() {
-  const ex = S.exp, out = [], br = sealBranch(ex);
-  if (br === 'nothing') { out.push(WORDS.waits); out.push('your finds stay in the hold'); return out; }
-  const h = Object.assign({}, ex.cargo);   // what End will seal: the hold as it is (Data comes only from readings and creature acts)
-  if (br === 'empty') { /* nothing to seal (only a save from before places had a tier): no line */ }
-  else if (br === 'full') { const np = (h.pods || []).find(isNightPod); if (np) out.push(WORDS.pod.bayFull(np.nm)); else { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); } }
-  else if (br === 'night') { const np = h.pods.find(isNightPod), n = h.pods.length - 1;   // pod-sleep-build-1: the preview names her (editorial's join for the rest of the hold)
-    out.push(WORDS.pod.seal(np.nm, (n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + ' + ' : '') + 'supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY); out.push(WORDS.pod.sealTail); }
-  else { out.push('Seals ' + sealedWords(h, ' + ', 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
-    out.push('The Station takes it when you dock'); }
+  const ex = S.exp, br = sealBranch(ex), pods = ex.cargo.pods, np = pods.find(isNightPod), crate = ' · crate ' + (S.bay.length + 1) + ' of ' + BAY, out = [];
+  if (br === 'nothing') return [WORDS.waits, 'your finds stay in the hold'];
+  if (br === 'full') { if (np) out.push(WORDS.pod.bayFull(np.nm)); else out.push('Bay full · your finds stay in the hold', 'dock to free it'); }
+  else if (br === 'night') out.push(WORDS.pod.seal(np.nm, sealedWords({ pods: pods.filter(p => p !== np) }, ' + ', 'supplies')) + crate, WORDS.pod.sealTail);   // the preview names her, then the rest of the hold
+  else if (br === 'seal') out.push('Seals ' + sealedWords(ex.cargo, ' + ', 'the supplies') + crate, 'The Station takes it when you dock');
   if (ex.shield < ex.smax) out.push('Docking mends the Shield');
   return out;
 }
@@ -4303,25 +4207,28 @@ function dropPods(ex, rep) {
   logEv('Probe broke at ' + rep.at.x + ',' + rep.at.y + ' · ' + rep.dropped + ' pod' + (rep.dropped === 1 ? '' : 's') + ' left there (skull on the map)');
   ex.cargo.pods = [];
 }
-// The Probe's last plate is gone: it goes dark where you stand and the expedition goes on (night step 1). The pods fall here under the skull, the unsealed supplies are lost, sealed crates are untouched.
+// The Probe's last plate is gone: it goes dark where you stand and the expedition goes on. The pods fall here under the skull, the unsealed supplies are lost, sealed crates are untouched.
 // While ex.dark: no Call, nothing taken or carried, no strike marks read, no storm strike; walking, seeing, keeping still, a habit noted and End expedition at the flag all work.
 function goDark(ex) {
   const rep = {}; ex.dark = 1; S.shield = 0;
-  dropPods(ex, rep); ex.darkRep = { dropped: rep.dropped, lost: ['e', 'd', 's'].filter(k => ex.cargo[k]).map(k => ({ k, text: ex.cargo[k] + ' ' + { e: 'Energy', d: 'Data', s: 'Essence' }[k] })) };   // the end card at the flag says what the break cost
+  dropPods(ex, rep); ex.darkRep = { dropped: rep.dropped, lost: Object.keys(MAT).filter(k => ex.cargo[k]).map(k => ({ k, text: ex.cargo[k] + ' ' + MAT[k] })) };   // the end card at the flag says what the break cost
   ex.cargo.e = ex.cargo.d = ex.cargo.s = 0; if (ex.carry) ex.carry = null; S.hold = null;
   logEv('Probe dark · carried supplies lost');
-  if (typeof stopRepeat === 'function') stopRepeat();
+  stopRepeat();
   fxMsg(DARK_TEXT.goes, 4);
 }
-const DARK_TEXT = { goes: 'The Probe goes dark. Your pods fall here. Walk back to the flag.', refuse: 'The Probe is dark · walk back to the flag', line: 'Probe dark' };   // [copy]
 const isDark = () => !!(S && S.exp && S.exp.dark);
 // A dark Probe refuses what needs it: says so, spends nothing. True when refused.
 function darkRefuse() { if (!isDark()) return false; FX.bumpAt = NOW; fxMsg(DARK_TEXT.refuse, 3); return true; }
+// What the day's trips left for the night's turn: the camps' trails and charged stones wait in the day and join this trip's.
+const turnPending = ex => ({ trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] });
+// The cells a turn left something new on: where pods and young arrived, the bloom's centre, the stones the storm charged.
+const newsCells = a => [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])];
 function endExpedition(reason) {
-  const ex = S.exp; if (!ex) return;
+  const ex = S.exp;
   if (ex.dark && reason !== 'night') reason = 'break';   // a dark Probe's end is the break's card at the flag
-  const broke = reason === 'break' || !!ex.dark, night = reason === 'night'; S.ui.lastPos = ex.pos;   // any end but the night's is making camp: the day waits where it is (walk W1)
-  const explored = exploredAny(ex), rc = reachCounts();
+  const broke = reason === 'break' || !!ex.dark, night = reason === 'night'; S.ui.lastPos = ex.pos;   // any end but the night's is making camp: the day waits where it is
+  const explored = exploredAny(ex), dug = !!(ex.dug && ex.dug.length), tier = walkTier(ex), rc = reachCounts();
   let notch = null;   // a notch earned is named on Expedition ended as its own row of the outcome block (and logged), never with a count, never a world line
   { const n = {}, mud = c => !!(G.soft && G.soft.wade[c]);   // a wade the partner crossed counts as 'mud', apart from a ford (both are L.WATER)
     for (const c of new Set(ex.trail)) if (S.seen.been[c] && (passable(c) || mud(c))) { const k = mud(c) ? 'mud' : G.land[c]; n[k] = (n[k] || 0) + 1; }   // every mibi with you remembers where you went most
@@ -4331,47 +4238,44 @@ function endExpedition(reason) {
       if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name, spOf(w.sp).ab, w.notches)); notch = { id: w.id, name: w.name, sp: w.sp, ab: spOf(w.sp).ab, n: w.notches }; } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.found, of: rc.total };
   if (explored && !broke) {   // what the walk brought in: Data from strike marks (read by a press) and from creature acts; nothing is added here
-    const tier = walkTier(ex);
     rep.yield = { tier, data: (ex.dField || 0) + (ex.dAct || 0), moments: ex.moments.length, early: ex.dAct || 0, late: ex.dField || 0 };
     logEv('Walk Data · ' + (ex.dField || 0) + ' from strike marks · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · plus ' + (ex.dAct || 0) + ' from creature acts'); }
-  for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
+  for (const k in MAT) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + MAT[k] });
   if (ex.carry === 'fruit') ex.carry = null;
   if (ex.dark && ex.darkRep) { rep.dropped = ex.darkRep.dropped; rep.lost = ex.darkRep.lost.slice(); S.shield = 0; S.hold = null; }   // already dropped and lost where the Probe went dark
   else if (broke) { S.shield = 0; dropPods(ex, rep); S.hold = null; logEv('Probe broke · carried supplies lost'); }   // a break seals nothing; the Station mends it free at the dock
   else S.shield = ex.shield;
-  // what the day's trips left for the night's turn: the camps' trails and charged stones wait in the day and join this trip's
-  const pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
+  const pending = turnPending(ex);
   const tripOfDay = S.day.camps;   // 0 for the first trip of the day: a later trip's crate id carries it (the expedition number holds until the world turns)
   if (!night) { S.day.pend = pending; S.day.camp = ex.pos; S.day.camps++; }
   S.hist.push({ n: ex.n, reason, actions: ex.actions, e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, pods: ex.cargo.pods.length, rev: ex.stats.rev, lit: ex.stats.lit,
     hits: ex.stats.hits, reach: rc, putFeeds: ex.stats.putFeeds, handFeeds: ex.stats.handFeeds, maxLvl: ex.stats.maxLvl, openStormActs: ex.stats.openStormActs, moments: ex.moments.length,
-    warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, dTier: walkTier(ex), dYield: explored && !broke ? walkYield(ex) : 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
+    warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, dTier: tier, dYield: explored && !broke ? walkYield(ex) : 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
   if (S.hist.length > 40) S.hist.shift();
   rep.days = (ex.nights || 0) + 1; rep.places = (ex.entered || []).length; rep.habits = Object.keys(ex.habits || {}).length;   // what the days gave, for the end card
-  if (!explored && !(ex.dug && ex.dug.length) && !night && !ex.nights) {   // nothing explored (and no night passed: a night turned the world): nothing sealed, and the finds stay in the hold (a break loses them); only the night's end turns the world
+  const sealedScreen = () => { S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); };   // a line from the walk does not linger over the sealed screen
+  if (!explored && !dug && !night && !ex.nights) {   // nothing explored (and no night passed: a night turned the world): nothing sealed, and the finds stay in the hold (a break loses them); only the night's end turns the world
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
-    S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); return; }
+    sealedScreen(); return; }
   S.expN++;   // the number counts expeditions (an outing that explored or dug, at a camp or at night), not world turns: the next set-out is one more
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
-  if (explored || (ex.dug && ex.dug.length)) S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // this expedition is a trip for the Station
-  RIPE_LATER = []; let turned, ripeLater;
+  if (explored || dug) S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // this expedition is a trip for the Station
+  let turned = { lines: [], ev: [], arrived: { pods: [], young: [], bloom: -1, charged: [] } };   // a camp: the day waits, the world does not turn
   if (night) {   // the night's end: the world turns, once for the day's light; the pawn wakes at the last camp and the next day starts at dawn
-    try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
+    turned = worldTurnQuick(pending);
     if (S.day.camp != null) S.ui.lastPos = S.day.camp;
     S.day = freshDay();
-  } else { turned = { lines: [], ev: [], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; ripeLater = []; RIPE_LATER = null; }   // a camp: the day waits, the world does not turn
-  const worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
-  RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(ripeLoop, 250);   // after the sealed screen's first frames, a step at a time; the next set-out finishes what is left
-  { const a = turned.arrived; rep.news = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] }; }   // where it happened: the opening puts a pip on these cells until the next set-out
+  }
+  rep.lines = turned.lines.slice();
+  rep.news = { cells: newsCells(turned.arrived) };   // the opening puts a pip on these cells until the next set-out
   if (!broke) {
-    if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
+    if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction
     else if (S.bay.length >= BAY) { rep.kept = true; leaveSleepers(ex); S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n + (tripOfDay ? 'c' + tripOfDay : ''),...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, ...((ex.cargo.samples || []).length ? { samples: ex.cargo.samples.map(q => ({ ...q })) } : {}),
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), ...(q.dv ? { dv: q.dv } : {}), k: q.k || null, ...(q.got ? { got: q.got } : {}), ...shedOf(q), ...nightOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), ...(q.dv ? { dv: q.dv } : {}), k: q.k || null, ...(q.got ? { got: q.got } : {}), ...shedOf(q), ...nightOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: turned.lines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; sendSleepersHome(ex); logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
-  S.exp = null; S.report = rep;
-  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(true);   // a line from the walk does not linger over the sealed screen
+  sealedScreen();
 }
 // Where the next try lies, said at the end of a walk that found no pod, from the flag: the first walk names the pod the game knows; later walks the nearest cell with a pod found and
 // left or a slow beat; with none known, the nearest wood or rock (pods sleep in woods and rock, never in open meadow). { cell, land, dir, first, pod } or null.
@@ -4437,23 +4341,12 @@ function walk(m) {
   const did = evs.length > 1 ? CARE_TEXT.played(evs.map(e => e.m.name)) : young ? CARE_TEXT.playedYoung(m.name, m.mem) : [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp] ?? CARE_TEXT.playedOther(m.name, m.mem);
   careLines(did, evs, WALK_MS);
 }
-function dirWord(dx, dy, n) {
-  const ax = dx / n, ay = dy / n, ns = ay < -.15 ? 'north' : ay > .15 ? 'south' : '', ew = ax > .15 ? 'east' : ax < -.15 ? 'west' : '';
-  if (!ns && !ew) return null;
-  if (ns && ew) { if (Math.abs(ax) > 2 * Math.abs(ay)) return ew; if (Math.abs(ay) > 2 * Math.abs(ax)) return ns; return ns + '-' + ew; }
-  return ns || ew;
-}
-// A herd's drift as the crate's direction code (specs/world-events.md): 1 to 8 for N, NE, E, SE, S, SW, W, NW; 0 when it only spread out.
-const DIR_CODE = { 'north': 1, 'north-east': 2, 'east': 3, 'south-east': 4, 'south': 5, 'south-west': 6, 'west': 7, 'north-west': 8 };
 function regionWord(cells) {
   let sx = 0, sy = 0; for (const c of cells) { const p = cxy(c); sx += p.x; sy += p.y; }
   const x = sx / cells.length, y = sy / cells.length;
   const ns = y < MH / 3 ? 'north' : y > MH * 2 / 3 ? 'south' : '', ew = x < MW / 3 ? 'west' : x > MW * 2 / 3 ? 'east' : '';
   return ns && ew ? 'the ' + ns + '-' + ew : ns || ew ? 'the ' + (ns || ew) : 'the middle of the map';
 }
-// The land kinds a world event names (specs/world-events.md): LAND_NAME's order as ids; `shallows` and `cliff` only in outpost lines and near-the-cliff or by-the-river places.
-const PLACE_KIND = ['meadow', 'pond', 'rock', 'wood', 'shallows', 'cliff'];
-const PLACE_PHRASE = { cliff: 'near the cliff', shallows: 'by the river', meadow: 'in the meadows', pond: 'by the ponds', rock: 'in the rock fields', wood: 'in the woods' };
 // The land kind the words choose for some cells: near a cliff or stair, by the river, else the land most of them lie on.
 function placeKind(cells) {
   let sx = 0, sy = 0; for (const c of cells) { const p = cxy(c); sx += p.x; sy += p.y; }
@@ -4466,37 +4359,42 @@ function placeKind(cells) {
   const counts = [0, 0, 0, 0]; for (const c of cells) if (G.land[c] < 4) counts[G.land[c]]++;
   return PLACE_KIND[counts.indexOf(Math.max(...counts))];
 }
-const placePhrase = cells => PLACE_PHRASE[placeKind(cells)];
 // The land most of some cells lie on, as a kind (a new pod's place, a bloom's centre): any of the six lands.
 function mainLand(cells) { const n = PLACE_KIND.map(() => 0); for (const c of cells) if (G.land[c] >= 0 && G.land[c] < n.length) n[G.land[c]]++; return PLACE_KIND[n.indexOf(Math.max(...n))]; }
-// The world turns once per expedition ended: the region the Companion is in turns (regionTurn), then the realm (realmTurn), and the region has seen the turn.
-// A region that was away is not turned meanwhile; mounting it catches it up (catchUp).
-function worldTurn(pending) {
+// The world turns at the night's end: the region the Companion is in turns (regionTurn), then the realm (realmTurn), and the region has seen the turn.
+// A region that was away is not turned meanwhile; mounting it catches it up (catchUp). ripe: what is done with a bloom's centre (regionTurn).
+function worldTurn(pending, ripe = ripenBloom) {
   const last = { trail: pending.trail, entered: S.lastEntered || [] }, here = regionById(S, S.here);
   const farFromPlayer = c => awayFromLast(c, last);
-  const turned = regionTurn(here, S.turn, pending, farFromPlayer), out = realmTurn(turned, pending);
+  const turned = regionTurn(here, S.turn, pending, farFromPlayer, ripe), out = realmTurn(turned, pending);
   here.turnSeen = S.turn;
   return out;
 }
-// What touches the map, for region R (the one mounted) at turn t: creatures roam, the storm leaves marks, a bloom, arrivals and young, and a species the region
-// lacks surfaces. It draws on hash(R.seed, 'turn', t), which for region 1 is the world's own hash, and writes no line and no log; it hands back what the
-// realm turn's lines are made of. farFromPlayer is the arrival guard for where the player last walked.
-function flushRipe() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return false; RIPE_CELLS.length = 0; for (const ctr of RIPE_PENDING.splice(0)) ripenBloom(ctr); return true; }   // the set-out finishes whatever the background steps have not
-// The background part: the bloom's cells ripen a step at a time (a place's layout can take a quarter second to build cold), so a press never waits on the whole bloom.
-const RIPE_CELLS = [];
+// The turn a press waits on (the night's end, a night passed out there): the bloom's fruit trees are left to the background steps.
+function worldTurnQuick(pending) {
+  const out = worldTurn(pending, ctr => RIPE_PENDING.push(ctr));
+  if (out.arrived.bloom >= 0) setTimeout(ripeLoop, 250);   // after the sealed screen's first frames
+  return out;
+}
+// A bloom ripens the fruit trees of every place within three cells of its centre (silently: the turn's line counts bushes). That builds each of those
+// places (a quarter second each when cold), so a turn a press waits on only queues the centre (RIPE_PENDING); ripeLoop then ripens a place at a time
+// between frames, and the next set-out takes the centres still waiting (flushRipe). Only generators 4 to 6 make fruit trees.
+const RIPE_CELLS = [];   // the places of the bloom the background steps are on, still to ripen
+function bloomPlaces(ctr) { const keys = []; if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) if (G.comp[c] && cdist(c, ctr) <= 3) keys.push(String(c)); return keys; }
+function ripenPlace(key) { for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); }
+function ripenBloom(ctr) { bloomPlaces(ctr).forEach(ripenPlace); }
 function ripeStep() {
-  if (!RIPE_CELLS.length && RIPE_PENDING.length) { const ctr = RIPE_PENDING.shift(); if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) if (G.comp[c] && cdist(c, ctr) <= 3) RIPE_CELLS.push(String(c)); }
+  if (!RIPE_CELLS.length && RIPE_PENDING.length) RIPE_CELLS.push(...bloomPlaces(RIPE_PENDING.shift()));
   const t0 = performance.now();
-  while (RIPE_CELLS.length && performance.now() - t0 < 8) { const key = RIPE_CELLS.shift(); for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); }
+  while (RIPE_CELLS.length && performance.now() - t0 < 8) ripenPlace(RIPE_CELLS.shift());
   return RIPE_CELLS.length > 0 || RIPE_PENDING.length > 0;
 }
-function ripeLoop() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return; if (ripeStep()) setTimeout(ripeLoop, 40); else save(true); }
-let RIPE_LATER = null;   // while an expedition ends: the bloom centres whose fruit trees ripen after the first sealed frame
-function ripenBloom(ctr) {   // fruit trees in the bloom's reach ripen too (silently: the line counts bushes)
-  if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || cdist(c, ctr) > 3) continue; const key = String(c);
-    for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); }
-}
-function regionTurn(R, t, pending, farFromPlayer) {
+function ripeLoop() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return; if (ripeStep()) setTimeout(ripeLoop, 40); else save(); }
+function flushRipe() { RIPE_CELLS.length = 0; RIPE_PENDING.splice(0).forEach(ripenBloom); }   // the set-out: the blooms still waiting ripen whole, at once; the one the background is part way through stops where it is
+// What touches the map, for region R (the one mounted) at turn t: creatures roam, the storm leaves marks, a bloom, arrivals and young, and a species the region
+// lacks surfaces. It draws on hash(R.seed, 'turn', t), which for region 1 is the world's own hash, and writes no line and no log; it hands back what the
+// realm turn's lines are made of. farFromPlayer is the arrival guard for where the player last walked; ripe is handed the bloom's centre.
+function regionTurn(R, t, pending, farFromPlayer, ripe = ripenBloom) {
   if (R.id !== S.here) throw new Error('regionTurn: region ' + R.id + ' is not mounted');
   const rng = makeRng(hash(R.seed, 'turn', t));
   const mv = SPECIES.map(() => ({ dx: 0, dy: 0, n: 0 })), kinds = hereKinds(R).map(k => k.sp);   // the mounted region's kinds
@@ -4530,10 +4428,10 @@ function regionTurn(R, t, pending, farFromPlayer) {
   if (far.length) { const ctr = rng.pick(far); bloom = ctr;
     for (let c = 0; c < MW * MH; c++) { if (cdist(c, ctr) > 3) continue; const key = String(c), cs = S.cells[key]; if (!cs) continue;
       for (const id in cs) if (cs[id].bare) { delete cs[id].bare; bushes++; } }
-    if (RIPE_LATER) RIPE_LATER.push(ctr); else ripenBloom(ctr); }   // the fruit trees' part builds every place in reach: at an expedition's end it waits until the sealed screen is up (ripenBloom)
+    ripe(ctr); }
   // New arrivals, away from where the player just was.
   const occupied = [...new Set(S.cr.filter(w => !w.cv && G.comp[w.c] && farFromPlayer(w.c)).map(w => w.c))];
-  const nPods = 2 + rng.int(2);   // W5: the draws stay (the turn's other draws keep their place); no anonymous pod is made
+  const nPods = 2 + rng.int(2);   // the draws stay (the turn's other draws keep their place); no anonymous pod is made
   for (let i = 0; i < nPods && occupied.length; i++) { const c = rng.pick(occupied), here = S.cr.filter(w => w.c === c && !w.cv);
     const pod = { id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: rng.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' };
     if (ANON_PODS) { S.pods.push(pod); newPods.push(c); } }
@@ -4591,7 +4489,7 @@ function realmTurn(turned, pending) {
   if (stormWhere || !pending.storm.length) S.lastStorm = stormWhere;   // a stormy turn that charged nothing keeps the memory
   if (bushes) say('Fruit is back on ' + (bushes === 1 ? 'one bush.' : numWord(bushes) + ' bushes.'), ['fruit', mainLand([bloom]), null, bushes]);
   if (lines.length < 3 && newPods.length) say('Something new is stirring in ' + regionWord(newPods) + '.', ['stirring', mainLand(newPods), null, newPods.length]);
-  if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' appeared ' + placePhrase([y0.c]) + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
+  if (lines.length < 3 && young.length) { const y0 = young[0]; say('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' appeared ' + PLACE_PHRASE[placeKind([y0.c])] + '.', ['young', PLACE_KIND[G.land[y0.c]], S.known.includes(y0.sp) ? y0.sp : -1, 0]); }
   if (!lines.length) say('A quiet turn. Little changed.', ['quiet', null, null, 0]);
   logEv('World turn ' + wTurn());
   return { lines: lines.slice(0, 3), ev: ev.slice(0, 3), arrived: { pods: newPods, young: young.map(y => y.c), bloom, charged } };   // the same three, in the same order; `arrived` names the cells the guard placed things in, and the cells the storm charged
@@ -5542,95 +5440,30 @@ function puffArt(i, px, py) { const ax = px & 3, ay = py & 3; return art('puff' 
   return pb; }); }
 
 // ===================== 11. The frame: 450×600 offscreen, 1:1 device pixels =====================
-const scr = document.createElement('canvas'); scr.width = SCR_W; scr.height = SCR_H;
-const g = scr.getContext('2d'); g.imageSmoothingEnabled = false;
-// The depth of the canvas's save stack, so a frame that threw between a save and its restore can be put right without clearing the picture (the canvas's own reset() clears it).
-let gDepth = 0; { const sv = g.save.bind(g), rs = g.restore.bind(g); g.save = () => { gDepth++; sv(); }; g.restore = () => { if (gDepth > 0) { gDepth--; rs(); } }; }
-const vis = document.getElementById('screen'), vctx = vis.getContext('2d'); vctx.imageSmoothingEnabled = false;
-const RM = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+import { makeFrame } from "./src/render/frame.mjs";
+const RM = matchMedia('(prefers-reduced-motion: reduce)');
 const motion = () => !RM.matches;
-const R = (x, y, w, h, c) => { g.fillStyle = HEX[c]; g.fillRect(Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)); };
-const blit = (pb, x, y, rm, flip, chk) => g.drawImage(pb.canvas(rm, flip, chk), Math.round(x) + (pb.dx || 0), Math.round(y) + (pb.dy || 0));
-// a standing glint is always drawn: full for its 400 ms pulse, the same picture dimmer between pulses (bug 160)
-const GLINT_DIM = .4;
-const glintBlit = (pb, x, y, bright) => { if (bright || !motion()) { blit(pb, x, y); return; } g.save(); g.globalAlpha = GLINT_DIM; blit(pb, x, y); g.restore(); };
-function text(str, x, y, col, s, align, tight) {
+// The frame's canvas and what every screen draws on it with (src/render/frame.mjs), given the pixel core above, the effects' record and the frame's time.
+const { scr, g, resetCanvas, R, blit, glintBlit, circ, pline, ditherFill, lampCircle, clipView, shakeOff, hitFrame, tween, viewBg } = makeFrame({ document, HEX, C, PB, art, ditherArt, FX, now: () => NOW, motion });
+const vis = document.getElementById('screen'), vctx = vis.getContext('2d'); vctx.imageSmoothingEnabled = false;
+// Text, panels and brackets are still the page's: the tests replace these three by name to read what a screen says.
+function text(str, x, y, col, s, align, tight) {   // tight: the glyphs sit 1 px apart (textWT)
   s = s || 2; x = Math.round(x); y = Math.round(y);
-  const w = tight ? textWT(str, s) : textW(str, s);
-  if (align === 'center') x -= Math.round(w / 2); else if (align === 'right') x -= w;
+  if (align === 'center' || align === 'right') { const w = tight ? textWT(str, s) : textW(str, s); x -= align === 'center' ? Math.round(w / 2) : w; }
   for (const ch of str) { const gl = glyphOf(ch); if (ch !== ' ') g.drawImage(glyphCanvas(ch, col, s), x, y); x += tight ? gl.w * s + 1 : (gl.w + 1) * s; }
 }
-// Tight setting: glyphs keep their 2× pixels but sit 1 px apart, so the bottom line holds its three parts.
-function textWT(str, s) { s = s || 2; let w = 0; for (const ch of str) w += glyphOf(ch).w * s + 1; return Math.max(0, w - 1); }
 // A pixel panel with cut corners.
 function panel(x, y, w, h, fill, border) {
-  if (border != null) { R(x + 2, y, w - 4, h, border); R(x + 1, y + 1, w - 2, h - 2, border); R(x, y + 2, w, h - 4, border); x++; y++; w -= 2; h -= 2; }
-  R(x + 2, y, w - 4, h, fill); R(x + 1, y + 1, w - 2, h - 2, fill); R(x, y + 2, w, h - 4, fill);
+  const cut = c => { R(x + 2, y, w - 4, h, c); R(x + 1, y + 1, w - 2, h - 2, c); R(x, y + 2, w, h - 4, c); };
+  if (border != null) { cut(border); x++; y++; w -= 2; h -= 2; }
+  cut(fill);
 }
 function brackets(x, y, w, h, c) {
   const l = Math.min(8, Math.floor(w / 3));
   R(x, y, l, 2, c); R(x, y, 2, l, c); R(x + w - l, y, l, 2, c); R(x + w - 2, y, 2, l, c);
   R(x, y + h - 2, l, 2, c); R(x, y + h - l, 2, l, c); R(x + w - l, y + h - 2, l, 2, c); R(x + w - 2, y + h - l, 2, l, c);
 }
-function circ(cx, cy, r, c, dotted) { // midpoint circle, 2 px thick
-  cx = Math.round(cx); cy = Math.round(cy); r = Math.round(r); g.fillStyle = HEX[c];
-  for (const rr of [r, r - 1]) { let x = rr, y = 0, e = 1 - rr, i = 0;
-    while (x >= y) { if (!dotted || (i++ & 2)) for (const [a, b] of [[x, y], [y, x], [-y, x], [-x, y], [-x, -y], [-y, -x], [y, -x], [x, -y]]) g.fillRect(cx + a, cy + b, 1, 1);
-      y++; if (e < 0) e += 2 * y + 1; else { x--; e += 2 * (y - x) + 1; } } }
-}
-function pline(x0, y0, x1, y1, c, th) { // Bresenham, th×th pen
-  x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1); th = th || 1; g.fillStyle = HEX[c];
-  const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1; let e = dx + dy;
-  for (;;) { g.fillRect(x0, y0, th, th); if (x0 === x1 && y0 === y1) break; const e2 = 2 * e; if (e2 >= dy) { e += dy; x0 += sx; } if (e2 <= dx) { e += dx; y0 += sy; } }
-}
-function ditherFill(x, y, w, h, col, level) {
-  if (level <= 0) return; if (level >= 16) { R(x, y, w, h, C[col]); return; }
-  const cv = ditherArt(64, 64, col, level).canvas();
-  g.save(); g.beginPath(); g.rect(Math.floor(x), Math.floor(y), Math.round(w), Math.round(h)); g.clip();
-  for (let ty = Math.floor(y / 64) * 64; ty < y + h; ty += 64) for (let tx = Math.floor(x / 64) * 64; tx < x + w; tx += 64) g.drawImage(cv, tx, ty);
-  g.restore();
-}
-// The lamp's circle (night step 4, AD 11-23 18:48): the night ground as it is inside; outside, the same ground under a 62% void dither (the palette's darkest, so darker than the ground; its shapes still there), round by pixel,
-// the dither growing from nothing to 50% over one tile at the rim (no rim line). cx, cy: the lamp on the screen; r: its reach; band: one tile. The overlay is the dither's ink pixels only.
-let LAMP = null;
-function lampCircle(cx, cy, r, band) {
-  const x0 = 0, y0 = VIEW_Y, w = SCR_W, h = VIEW_H, key = Math.round(cx) + ',' + Math.round(cy) + ',' + r;
-  if (!LAMP || LAMP.key !== key) {
-    const cv = LAMP ? LAMP.cv : document.createElement('canvas'); cv.width = w; cv.height = h;
-    const c2 = cv.getContext('2d'), img = c2.createImageData(w, h), u = new Uint32Array(img.data.buffer), hex = HEX[C.void], ink = (255 << 24) | (parseInt(hex.slice(5, 7), 16) << 16) | (parseInt(hex.slice(3, 5), 16) << 8) | parseInt(hex.slice(1, 3), 16);
-    const lx = Math.round(cx), ly = Math.round(cy) - y0;
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      const t = Math.min(1, Math.max(0, (Math.hypot(x + .5 - lx, y + .5 - ly) - (r - band)) / band));
-      if (t > 0 && BAYER[(y & 3) * 4 + (x & 3)] < t * 10) u[y * w + x] = ink;
-    }
-    c2.putImageData(img, 0, 0); LAMP = { key, cv };
-  }
-  g.drawImage(LAMP.cv, x0, y0);
-}
-function clipView() { g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.clip(); }
-function shakeOff() {
-  const a = NOW - FX.hitAt; if (a < 0 || a > 260 || !motion()) return [0, 0];
-  return [[3, 0], [-3, 1], [2, -1], [-2, 0], [1, 1], [-1, 0]][Math.floor(a / 45) % 6];
-}
-function hitFrame() { // a short bright frame on a shield hit; a steady border instead when motion is reduced
-  const a = NOW - FX.hitAt; if (a < 0 || a > 420) return;
-  if (motion() && a < 90) { for (const [x, y, w, h] of [[0, VIEW_Y, SCR_W, 6], [0, VIEW_Y + VIEW_H - 6, SCR_W, 6], [0, VIEW_Y, 6, VIEW_H], [SCR_W - 6, VIEW_Y, 6, VIEW_H]]) R(x, y, w, h, C.cream); }
-  else for (const [x, y, w, h] of [[0, VIEW_Y, SCR_W, 3], [0, VIEW_Y + VIEW_H - 3, SCR_W, 3], [0, VIEW_Y, 3, VIEW_H], [SCR_W - 3, VIEW_Y, 3, VIEW_H]]) R(x, y, w, h, C.coral);
-}
-// Tweens: logical moves are instant; the drawn position slides linearly so held walking reads as one smooth walk.
-function tween(o, tx, ty, dur) {
-  if (!o) return { x: tx, y: ty, fx: tx, fy: ty, tx, ty, at: NOW, dur, rx: Math.round(tx), ry: Math.round(ty) };
-  if (o.tx !== tx || o.ty !== ty) { o.fx = o.x; o.fy = o.y; o.tx = tx; o.ty = ty; o.at = NOW; o.dur = dur; }
-  const k = motion() ? clamp((NOW - o.at) / o.dur, 0, 1) : 1;
-  o.x = o.fx + (o.tx - o.fx) * k; o.y = o.fy + (o.ty - o.fy) * k;
-  o.rx = Math.round(o.x); o.ry = Math.round(o.y); return o;   // rx, ry: the whole-pixel position the camera and the map pawn read; x, y stay exact (a retarget starts from them, and the floored overlays take them)
-}
 const RT = { sleepLock: false, key: null, ts: 32, remap: REMAP, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
-const bgArt = () => art('bg', () => { const pb = new PB(64, 64); pb.rect(0, 0, 64, 64, C.night); for (let i = 0; i < 64; i += 8) for (let j = 0; j < 64; j += 8) if (((i + j) / 8) % 2 === 0) pb.set(i + 3, j + 3, C.slate); return pb; });
-function viewBg(col) {
-  if (col != null) { R(0, VIEW_Y, SCR_W, VIEW_H, col); return; }
-  const cv = bgArt().canvas(); for (let y = VIEW_Y; y < VIEW_Y + VIEW_H; y += 64) for (let x = 0; x < SCR_W; x += 64) g.drawImage(cv, x, y);
-}
 
 // ===================== 12. World map =====================
 let mapCv = null, mapCvFade = null, fogCv = null, fogCvDark = null, mapSeed = null, mapPB = null;
@@ -6423,8 +6256,6 @@ function peekFruit(key, lay, at, Tp) {
   for (const f of lay.feats) { if (f.kind !== 'b' || f.tree || !bushFull(key, f) || !isSeen(key, f.x, f.y)) continue; const a = at(f.x, f.y); blitScaled(bushArt(true, f), a.x, a.y, k); }
   if (live) for (const q of live.fr) { if (!(isSeen(key, q.x, q.y) || q.put)) continue; const a = at(q.x, q.y); blitScaled(FRUIT(), a.x + 10 * k, a.y + 14 * k, k); }
 }
-// The canvas state a frame starts from: no clip, no transform, no pending save, sharp pixels. A frame that threw half way (a save with no restore) can never leave a clip behind.
-function resetCanvas() { while (gDepth > 0) g.restore(); g.setTransform(1, 0, 0, 1, 0, 0); g.imageSmoothingEnabled = false; }
 // The place view never takes the rest of the frame down with it: a throw inside is logged (the first three) and the canvas and the tables are put back.
 function drawPatch(t) {
   try { drawPatchBody(t); }
@@ -7841,7 +7672,7 @@ const patchOn = () => canPatch() && !fieldFrozen();
 function patchGuard() { if (S.ui.patchArm && !patchOn()) S.ui.patchArm = 0; }   // armed only while it can be spent
 // The Probe, in groups under one-word captions: the Probe itself (shield plates, reach, the hold with its Energy, the patch, the tier 2 price),
 // the signs you have met as pictures, and the field guide as tokens.
-function drawProbe(t) {
+function drawProbe() {
   // mid-expedition the Probe is as it set out (ex.range, ex.hold, ex.smax): a docked upgrade applies from the next expedition
   const ex = S.exp, tier = ex ? { range: ex.range, hold: ex.hold, shield: ex.smax } : tierOf(), tierN = ex ? +(Object.keys(TIER).find(k => TIER[k].shield === ex.smax) || S.tier) : S.tier;
   patchGuard(); viewBg(); drawTop('Probe', 'tier ' + tierN);
@@ -7961,7 +7792,7 @@ function caseLine() {   // the bottom line: only what works here
   if (S.exp && S.ui.caseEnd) return canSend() ? { ok: W.end, ctx: W.pages, back: W.field, dim: false } : { ok: '', ctx: W.pages, back: W.field, dim: false };   // the end-of-walk Case names the Log too: his named ones' pages are found there
   return { ok: caseEntry(caseThing(caseSel(caseCells())).thing) ? W.page : '', ctx: W.pages, back: W.field, dim: false };
 }
-function drawCargo(t) {
+function drawCargo() {
   const W = WORDS.case, h = caseHold(), cells = caseCells(), cur = caseSel(cells), end = !!(S.exp && S.ui.caseEnd);
   faceFrame(1);
   // the lid: the crates sealed for home; an empty place is dotted
@@ -8149,7 +7980,7 @@ function drawRidingNone() {
   R(16, 434, 418, 1, C.sand); text(W.also, 22, 484, C.clay);
   for (let i = 0; i < CARRY_MAX; i++) dashedRect(145 + 102 * i, 462, 60, 60, C.clay);
 }
-function drawRiding(t) {
+function drawRiding() {
   const W = WORDS.riding, mo = motion(); faceFrame(2); dockCue(); g.imageSmoothingEnabled = false;
   const m = shownMibi(); if (!m) { drawRidingNone(); return; }
   const cuts = FX.cuts || [], growing = cuts.some(c => c.kind === 'grow' && c.id === m.id && NOW < c.at), st = growing ? 'juvenile' : mibiStage(m);   // the cut to the adult comes at its turn
@@ -8210,7 +8041,7 @@ function drawNewWorld() {
 // Expedition ended: the hold sealed into the bay (or why not), the world turn, and the way on. The Station opens the crates
 // only when the Companion is docked (the Station page).
 const WHY_ENDED = 'You ended the expedition.';   // [copy]
-function drawSealed(t) {
+function drawSealed() {
   const r = S.report; viewBg(); drawTop(r ? 'Expedition ' + r.n + ' ended' : 'Expedition ended', goalForms());
   if (!r) return;
   // every line below is clipped at 410 px, so nothing passes x 432; `last` is the outcome block's last 2× line
@@ -8268,49 +8099,49 @@ function outpostLights() { const out = []; for (const c of depotCells(S.seed)) {
 function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() + (l.length ? ' · ' + DEPOT_NAME + ' lights: ' + l.join(', ') : ''); }
 
 // ===================== 15. Screen dispatch =====================
+import { LINE_OK, LINE_BACK, LINE_MID, START_TEXT, MAP_TEXT, DIET_TEXT, TITLE_TEXT } from "./src/data/line-words.mjs";
+import { expireEffects } from "./src/render/effects.mjs";
 function firstPlacement() { return firstPlacementOf(S.seen.rev); }
 function placeValid(c) { return placeValidIn({ G, revealed: S.seen.rev, passable, starts: firstPlacement() ? startPlaces() : null }, c); }   // src/map-rules.mjs: never on a sealed plateau
 function placeReason(c) {
-  if (firstPlacement()) return 'Pick a glint';
-  if (!S.seen.rev[c]) return 'Not seen yet';
-  if (G.island[c]) return 'Out of reach';
-  if (G.gen && passable(c) && !G.comp[c]) return 'No stairs out · can’t start';   // generator 2's sealed plateau (the fallback's)
-  return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
+  if (firstPlacement()) return START_TEXT.pickGlint;
+  if (!S.seen.rev[c]) return START_TEXT.unseen;
+  if (G.island[c]) return START_TEXT.island;
+  if (G.gen && passable(c) && !G.comp[c]) return START_TEXT.sealed;   // a plateau with no stairs out
+  return G.land[c] === L.CLIFF ? START_TEXT.cliff : START_TEXT.water;
 }
 function signWords(c) { const e = mapSigns().find(q => q.c === c), list = e ? e.list : [];
-  return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? DEPOT_NAME + (q.lit ? ' · lit ' + q.lit + ' turn' + (q.lit === 1 ? '' : 's') : ' (dark)') : q.kind === 'beacon' ? 'beacon' + (q.lit ? ' (lit)' : ' (unlit)') : SIGN_NAME[q.kind]); }
+  return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? (q.lit ? MAP_TEXT.depotLit(q.lit) : MAP_TEXT.depotDark) : q.kind === 'beacon' ? (q.lit ? MAP_TEXT.beaconLit : MAP_TEXT.beaconUnlit) : SIGN_NAME[q.kind]); }
 // A place's name: its landmark's, as editorial wrote it, once you have been in; else the land's words (the IR's pond is the pond edge, its rock the rock field).
-const placeName = lay => lay.landmark && S.seen.into[lay.cell] ? lay.landmark.name : G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land];
+const placeName = lay => lay.landmark && S.seen.into[lay.cell] ? lay.landmark.name : G.soft && G.soft.wade[lay.cell] ? MAP_TEXT.wade : LAND_NAME[lay.land];
 function landWord(c) {
-  if (G.land[c] === L.WATER) return G.ford[c] ? 'ford' : G.soft && G.soft.wade[c] ? 'muddy water' : nextToIsland(c) ? 'fast water' : 'wide water';
+  if (G.land[c] === L.WATER) return G.ford[c] ? MAP_TEXT.ford : G.soft && G.soft.wade[c] ? MAP_TEXT.wade : nextToIsland(c) ? MAP_TEXT.fastWater : MAP_TEXT.wideWater;
   if (G.gen === 7 && S.seen.into[c] && passable(c) && PL.ready && placeHave(String(c))) { const nm = layout(String(c)).landmark; if (nm) return nm.name; }
-  return LAND_NAME[G.land[c]] + (c === G.gate ? ' under the cliff' : c === G.swim ? ' by the island' : ''); }
+  return LAND_NAME[G.land[c]] + (c === G.gate ? MAP_TEXT.underCliff : c === G.swim ? MAP_TEXT.byIsland : ''); }
 function cellWords(c) { const w = signWords(c); return landWord(c) + (w.length ? ' · ' + w.join(', ') : ''); }
 function aheadCell() { const ex = S.exp, p = cxy(ex.pos), [dx, dy] = DIRS[ex.face || 'down'], x = p.x + dx, y = p.y + dy; return x < 0 || y < 0 || x >= MW || y >= MH ? -1 : y * MW + x; }
 // The map's middle part: the cell you're on and the one you face, shortest forms last.
 function mapContext() {
-  const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · burrow too narrow' : S.seen.been[ex.pos] && passable(ex.pos) && walkedCell(ex.pos) ? ' · ' + WORDS.explored : ''), hs = signWords(ex.pos), a = aheadCell();
-  const toTake = c => S.seen.been[c] && passable(c) && leftTotal(c) ? ' · ' + leftTotal(c) + ' to take' : '';
+  const ex = S.exp, face = ex.face || 'down', here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · ' + MAP_TEXT.narrow : S.seen.been[ex.pos] && passable(ex.pos) && walkedCell(ex.pos) ? ' · ' + WORDS.explored : ''), hs = signWords(ex.pos), a = aheadCell();
+  const toTake = c => S.seen.been[c] && passable(c) && leftTotal(c) ? ' · ' + MAP_TEXT.toTake(leftTotal(c)) : '';
   // the edge you face, named even when the cell beyond is fog (your own four edges always show): a steep edge or stairs
-  const ek = a >= 0 && inRange(a) ? edgeKind(ex.pos, ex.face || 'down') : EDGE.OPEN;
-  const sk = ek === EDGE.CLIFF ? softKind(ex.pos, ex.face || 'down') : null, up = a >= 0 && G.level[a] > G.level[ex.pos];   // scree and banks are named as the bump names them; a dug bank crosses like a stair
-  const es = ek === EDGE.CLIFF ? (sk === 'scree' ? 'loose scree' : sk === 'bank' ? (bankIsDug(edgeIndex(ex.pos, ex.face || 'down')) ? 'dug way ' + (up ? 'up' : 'down') : 'earth bank') : 'cliff') : ek === EDGE.RAMP ? (G.level[a] > G.level[ex.pos] ? 'stairs up' : 'stairs down') : '';
-  const beyond = a < 0 ? (seamSlot(ex.face || 'down') ? 'more land' : borderCliff(ex.pos) ? 'high cliffs' : 'shore') : G.coast && G.coast[a] ? 'shore' : !inRange(a) ? 'edge of range' : !S.seen.rev[a] ? 'fog' : gatedCell(a) ? 'cave · burrow too narrow' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.seen.rev[a] && !gatedCell(a) ? signWords(a) : [];
-  const there = es ? es + ' · ' + beyond : beyond, AS = 'Ahead: ' + (es || there);   // the short forms cut the cell beyond first, never the edge
-  const H = here + (hs.length ? ' · ' + hs.join(', ') : ''), A = 'Ahead: ' + there + (as.length ? ' · ' + as.join(', ') : '');
+  const ek = a >= 0 && inRange(a) ? edgeKind(ex.pos, face) : EDGE.OPEN;
+  const sk = ek === EDGE.CLIFF ? softKind(ex.pos, face) : null, up = a >= 0 && G.level[a] > G.level[ex.pos];   // scree and banks are named as the bump names them; a dug bank crosses like a stair
+  const es = ek === EDGE.CLIFF ? (sk === 'scree' ? MAP_TEXT.scree : sk === 'bank' ? (bankIsDug(edgeIndex(ex.pos, face)) ? (up ? MAP_TEXT.dugUp : MAP_TEXT.dugDown) : MAP_TEXT.bank) : MAP_TEXT.cliff) : ek === EDGE.RAMP ? (up ? MAP_TEXT.stairsUp : MAP_TEXT.stairsDown) : '';
+  const beyond = a < 0 ? (seamSlot(face) ? MAP_TEXT.moreLand : borderCliff(ex.pos) ? MAP_TEXT.highCliffs : MAP_TEXT.shore) : G.coast && G.coast[a] ? MAP_TEXT.shore : !inRange(a) ? MAP_TEXT.rangeEdge : !S.seen.rev[a] ? MAP_TEXT.fog : gatedCell(a) ? MAP_TEXT.caveNarrow : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.seen.rev[a] && !gatedCell(a) ? signWords(a) : [];
+  const there = es ? es + ' · ' + beyond : beyond, AS = MAP_TEXT.ahead + (es || there);   // the short forms cut the cell beyond first, never the edge
+  const H = here + (hs.length ? ' · ' + hs.join(', ') : ''), A = MAP_TEXT.ahead + there + (as.length ? ' · ' + as.join(', ') : '');
   // where you stand comes first when it has a sign; otherwise what you face; the edge word alone is the last before here
   const list = hs.length ? [H + ' · ' + A, H + ' · ' + AS, H, here + ' · ' + A, A, here] : [here + ' · ' + A, A, here + ' · ' + AS, AS, here];
   if (es) list.splice(list.length - 1, 0, es);
   return list;
 }
-// The first time the line names a sign, its one-line explanation shows once (only if it actually fits the message box).
-
-// First sightings in the top bar: what the Call slot means, and the weather group's arrows.
+// After an action in the field: the control hints for the Call and your own pin, the rider setting out, and the storm and fog signs.
 function noteHud() {
   const ex = S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return;
-  if (S.phase === 'map') fxHint('callmap', 'CALL here drops a pin', 1);
+  if (S.phase === 'map') fxHint('callmap', MAP_TEXT.hintCall, 1);
   if (ex.rider) fxOnce('rider', CARE_TEXT.riderSetOut(ex.rider.name), 2, true);
-  if (S.phase === 'map' && ownPin(ex.pos)) fxHint('pinoff', 'Your pin · ))) takes it away', 1);
+  if (S.phase === 'map' && ownPin(ex.pos)) fxHint('pinoff', MAP_TEXT.hintPin, 1);
   if (stormLevel()) fxSign('storm', ex.storm.dir);
   if (fogNear()) fxSign('fog');
 }
@@ -8335,6 +8166,7 @@ function noteMapMarks() {
   if (S.phase === 'map' && ex) { const sec = sectorHere();
     if (sec) { if (sec.dest.some(d => S.seen.rev[d.c])) meet('ring'); if (sec.lines.some(l => S.seen.rev[l.c])) meet('trail'); } }
 }
+// A sign met for the first time says its one line once: the stones and the marks of the map key, a hut or a beacon in sight in a place, the map signs on your cell and the one you face, the fog bank beside you.
 function noteSigns() {
   noteStones(); noteMapMarks();
   if (S.phase === 'patch' && S.exp && S.exp.patch && S.exp.patch.key[0] !== 'c') { const P = S.exp.patch;   // the hut or the beacon in sight in a place
@@ -8354,11 +8186,11 @@ function actTag(c) {
   return ex.cargo.d < CAP ? ' · +' + ACT_DATA + ' Data' : ' · ' + WORDS.creature.holdFull;
 }
 function dietLine(sp, long) {
-  if (!S.known.includes(sp)) return 'Unknown creature · watch what it does';
-  const nm = spOf(sp).name;
-  if (spOf(sp).eats) return nm + ' · eats fruit';
-  const s = spOf(sp), tail = long && s.settle ? (s.settle === 'fog' ? ' · settles in fog when you keep still' : ' · settles when you keep still') : '';
-  return nm + (s.drinks ? ' · drinks dew' : ' · doesn’t eat fruit') + tail;
+  if (!S.known.includes(sp)) return DIET_TEXT.unknown;
+  const s = spOf(sp);
+  if (s.eats) return s.name + DIET_TEXT.eats;
+  const settles = long && s.settle ? (s.settle === 'fog' ? DIET_TEXT.settlesFog : DIET_TEXT.settles) : '';
+  return s.name + (s.drinks ? DIET_TEXT.drinks : DIET_TEXT.neither) + settles;
 }
 // A control hint, while it is due, leads the middle of the bottom line; the usual words follow if it does not fit.
 function lineFor() {
@@ -8369,71 +8201,73 @@ function lineFor() {
 // The start pick's storm words for a cell: how soon the band reaches it, that it is in it, or that it moves away from it. '' on Deep ground or with no storm.
 function placeStormWords(c) {
   if (S.ui.type === 'deep') return ''; const st = stormAt(); if (!st) return '';
-  const q = stormGap(st, c); return q.in ? 'in the storm' : q.behind ? 'storm moving away' : q.actions === 1 ? 'storm here in 1 action' : 'storm here in ' + q.actions + ' actions';
+  const q = stormGap(st, c); return q.in ? START_TEXT.stormIn : q.behind ? START_TEXT.stormBehind : START_TEXT.stormActions(q.actions);
 }
-// The part of day, in words, in the bottom line's middle while an expedition is out ("morning · Meadow · ..."); each longer form first, the day alone last before the old forms (walk W1, until the HUD's light is drawn).
-// W6a: the day bar (the top bar) is the one clock, so the day words leave the bottom line's middle: it is the place alone. Until the W6a frames have loaded, the words stay.
+// Until the day pictures of the top bar have loaded, the part of day leads the middle of the bottom line in words ("morning · Meadow · ..."): each form with the day before it,
+// then the day alone, then the forms as they were. Once the day bar is drawn it is the one clock, and the middle is the place alone.
 function dayCtx(ctx) {
   if (!S.exp || !S.day || HUD.ok) return ctx;
   const d = DAY_TEXT.line(dayPart(), untilNext()), alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);
   return alts.map(c => d + ' · ' + c).concat([d], alts);
 }
 function lineBase() {
-  // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
+  // a ✓ label past 29 characters is cut with an ellipsis
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 29 ? ok.slice(0, 28) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
-    case 'setup': if (S.ui.sel === 2 && !openAlone()) return L1('Open Mibis', partnerCtx(), 'menu');
-      if (S.ui.sel === 1 && !digger()) return L1(OPEN_TEXT.needsLabel, 'Deep ground', 'menu', true);   // a mibi at home is never named
-      { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked' : 'dock: mended free', 'menu', true); }
-      return L1(OPEN_TEXT.setOut, bayLine() || (S.ui.sel === 1 ? OPEN_TEXT.deepLeads(digger().name) : 'Weather'), 'menu');
-    case 'place': { const c = S.ui.cur, first = firstPlacement();
-      const tail = placeStormWords(c), wx = tail ? ' · ' + tail : '';   // the storm stands still; the cursor changes only this last part (note 14)
-      if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (c === homeStart() ? ' · ' + WORDS.startMorning : sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), tail ? [base + wx, tail, base] : base, 'back', !placeValid(c)); }
-      const base = S.seen.rev[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? (tail ? [base + wx, tail, base] : base) : tail, 'back', !placeValid(c)); }
-    case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
-      return L1('Go in', dayCtx(mapContext()), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
+    case 'setup': if (S.ui.sel === 2 && !openAlone()) return L1(LINE_OK.openMibis, partnerCtx(), LINE_BACK.menu);
+      if (S.ui.sel === 1 && !digger()) return L1(OPEN_TEXT.needsLabel, LINE_MID.deep, LINE_BACK.menu, true);   // a mibi at home is never named
+      if (startBlock()) return L1(isDocked() ? LINE_OK.lift : LINE_OK.broken, isDocked() ? LINE_MID.docked : LINE_MID.mendFree, LINE_BACK.menu, true);
+      return L1(OPEN_TEXT.setOut, bayLine() || (S.ui.sel === 1 ? OPEN_TEXT.deepLeads(digger().name) : LINE_MID.weather), LINE_BACK.menu);
+    case 'place': { const c = S.ui.cur, valid = placeValid(c), ok = valid ? LINE_OK.start : placeReason(c);
+      const tail = placeStormWords(c), wx = tail ? ' · ' + tail : '';   // the storm stands still; the cursor changes only this last part
+      if (firstPlacement()) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (c === homeStart() ? ' · ' + WORDS.startMorning : sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(ok, tail ? [base + wx, tail, base] : base, LINE_BACK.back, !valid); }
+      const base = S.seen.rev[c] ? cellWords(c) : ''; return L1(ok, base ? (tail ? [base + wx, tail, base] : base) : tail, LINE_BACK.back, !valid); }
+    case 'map': if (S.exp.beaconView) return L1('', MAP_TEXT.beaconView, LINE_BACK.back);
+      return L1(LINE_OK.goIn, dayCtx(mapContext()), canSend() ? LINE_BACK.end : LINE_BACK.menu, fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
     case 'patch': {
       if (RT.view) { const v = RT.view; return v.kind === 'look' ? L1('', '', VIEW_TEXT.close) : L1('', '', ''); }   // a view over the place: its own line
-      const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
-      const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
+      const lay = curLay(), col = lay.cell % MW, cov = !lay.cave && stormCovers(col), a = patchAction();
+      const wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? LINE_MID.lull : cov ? LINE_MID.overcast : '';   // storm and fog show as the conditions icons
       // facing a creature you can see, the line names it and its diet before you offer anything
       const P = S.exp.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
       const sv = '\x01' + placeLine(lay, P), svN = '\x01' + placeLine(lay, P, true), land = placeName(lay) + ' · ';
-      let wild = null; let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay)];
+      let wild = null, ctx = lay.cave ? LINE_MID.cave : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) { ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
         const nm = o.c.ind && S.named && S.named[o.c.id];   // a met one is named, and says where it keeps this part of day
-        if (nm && !S.known.includes(o.c.sp)) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h), wk = nameKind(nm, o.c.sp);   // her kind unidentified: her name and what she is, no diet, no act tag
-          ctx = [wk + hw, wk]; }   // her name is never alone, and the diet fallbacks are not appended
-        else if (nm) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h);
-          ctx = [nm + hw + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + hw, nm].concat(ctx); }
-        if (o.c.ind) { const w = wildCtx(o.c, nm && !S.known.includes(o.c.sp) ? nameKind(nm, o.c.sp) : nm); if (w) wild = nm && !S.known.includes(o.c.sp) ? w.filter(s => s.includes(nm) || [...WORDS.ease.stage, WORDS.ease.asleepShort, WORDS.ease.fed].includes(s)) : w; } }   // bug174: her bare word stays a candidate (no room for name and word: the word shows)   // her kind unidentified: the name is never alone   // walk W3: the line under a wild one in sight: its ease, whether this step would be heard, how long it lets you stay
+        const unk = nm && !S.known.includes(o.c.sp), wk = unk && nameKind(nm, o.c.sp);   // her kind unidentified: her name and what she is, never her name alone
+        if (nm) { const hw = hintWord(o.c, hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()));
+          ctx = unk ? [wk + hw, wk]   // no diet and no act tag, and the diet forms are not appended
+            : [nm + hw + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + hw, nm].concat(ctx); }
+        // the line under a wild one in sight: its ease, whether this step would be heard, how long it lets you stay. Unidentified, the forms that carry her name stay, and her bare ease word (no room for both: the word shows)
+        if (o.c.ind) { const w = wildCtx(o.c, unk ? wk : nm); if (w) wild = unk ? w.filter(s => s.includes(nm) || [...WORDS.ease.stage, WORDS.ease.asleepShort, WORDS.ease.fed].includes(s)) : w; } }
       if (S.ui.swap) { const sw = swapState(); if (sw && sw.night) return L1(WORDS.pod.take, '', WORDS.pod.leave, fieldFrozen()); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
       if (!lay.cave && !a.ctx && !(o && o.type === 'cr')) { const sl2 = screenLoika(), w2 = sl2 && sl2.c, n2 = w2 && S.named && S.named[w2.id]; if (w2 && n2 && !S.known.includes(w2.sp)) wild = [nameKind(n2, w2.sp)]; else if (w2) wild = wildCtx(w2, n2); }   // not faced, but in sight: the same line
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx); if (wild) ctx = wild.concat(ctx);   // the wild one's line leads, without the part of day
-      if (!lay.cave && !a.ctx && edgeStepCrosses()) ctx = [WORDS.edgeStep(DAY.mapStep)].concat(ctx);   // facing the edge, the next step crosses: it says what it costs first (edge-cost-line-fix-1)
-      if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
-      const lv = L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim);
-      return lv; }
-    case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close', fieldFrozen());
-      const it = menuItems()[S.ui.menuSel] || menuItems()[0];
-      if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
-      if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
-      if (it.id === 'her') return L1(WORDS.her.open, '', 'close');
-      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'New world, keep mibis' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [reachLine(), 'shows what it does'] : it.id === 'riding' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
+      if (!lay.cave && !a.ctx && edgeStepCrosses()) ctx = [WORDS.edgeStep(DAY.mapStep)].concat(ctx);   // facing the edge, the next step crosses: it says what it costs first
+      if (fieldFrozen()) return L1(a.label, ctx, LINE_BACK.menu, true);   // docked: ✓ dimmed, and ← opens the menu
+      return L1(a.label, ctx, lay.cave ? LINE_BACK.climbOut : LINE_BACK.leave, !a.run || a.dim); }
+    case 'menu': { if (S.ui.waiting && S.exp) return L1(LINE_OK.waitAgain, LINE_MID.waiting, LINE_BACK.close, fieldFrozen());
+      const items = menuItems(), it = items[S.ui.menuSel] || items[0];
+      if (it.frz) return L1(it.id === 'wait' ? LINE_OK.waitOne : it.label, '', LINE_BACK.close, true);   // docked: a frozen row keeps its label, dimmed
+      if (it.id === 'send' && it.far) return L1(LINE_OK.end, sendHint(), LINE_BACK.close, true);
+      if (it.id === 'her') return L1(WORDS.her.open, '', LINE_BACK.close);
+      const ok = it.id === 'wait' ? LINE_OK.waitOne : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? LINE_OK.newWorldKeep : LINE_OK.newWorld) : LINE_OK.open(it.label);
+      const ctx = it.id === 'send' && S.exp ? [reachLine(), LINE_MID.sendShows] : it.id === 'riding' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '';
+      return L1(ok, ctx, LINE_BACK.close); }
     case 'log': return L1(logMarked() ? WORDS.her.logOk : '', (logCanMove() ? WORDS.book.moves + ' ' + WORDS.book.earlier + ' · ' : '') + '▶ ' + WORDS.case.title, WORDS.book.field);
     case 'her': return L1('', metOrder().length > 1 ? WORDS.her.others : '', WORDS.her.backTo);
     case 'watch': return L1(WORDS.watch.note, WORDS.her.watchLine, WORDS.watch.leave);
-    case 'card': return L1(WORDS.watch.keep, '', watchHer() ? WORDS.watch.back : 'field');
+    case 'card': return L1(WORDS.watch.keep, '', watchHer() ? WORDS.watch.back : LINE_BACK.field);
     case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? (tl.id === 'storm' ? [stormOdds(), stormOddsShort()] : []).concat(lineOf(tl.name), lineOf(tl.short)) : '';   // the focused sign: name · gist, then the name alone
-      patchGuard(); return patchShown() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', ctx, 'close', !patchOn()) : L1('', ctx, 'close'); }   // read-only: one way out
+      patchGuard(); return patchShown() ? L1(S.ui.patchArm ? LINE_OK.patchConfirm : LINE_OK.patch, ctx, LINE_BACK.close, !patchOn()) : L1('', ctx, LINE_BACK.close); }   // read-only: one way out
     case 'cargo': { const c = caseLine(); return L1(c.ok, c.ctx, c.back, c.dim); }
     case 'riding': { const m = shownMibi(), a = ridingAct(m), W = WORDS.riding, many = rosterList().length > 1;   // only the ✓ that applies, ← field, ▲▼ who rides, ◀▶ pages
       const warn = a && a.k === 'play' && !a.dim && playWouldBond() ? [CARE_TEXT.playBond] : [];   // the play that will bond says so first: a bond is for good
       return L1(a ? a.label : '', warn.concat(many ? ['▲▼ ' + W.who + ' · ' + W.pages, W.pages] : [W.pages]), W.field, a && a.dim); }
-    case 'newworld': return L1(S.ui.nw ? 'New world, keep mibis' : 'Keep this world', '', 'close');
-    case 'worldmap': return L1('', 'the whole map', 'close');
-    case 'sealed': { const r = S.report, blk = startBlock(); return L1(r && r.empty && r.lead && r.lead.pod && !blk ? FIRST_TEXT.empty.back : 'Next expedition', blk ? (isDocked() ? 'docked · lift to explore' : 'the Probe is broken') : bayLine() || (r && r.kept ? 'finds in the hold' : ''), 'menu', !!blk); }
+    case 'newworld': return L1(S.ui.nw ? LINE_OK.newWorldKeep : LINE_OK.keepWorld, '', LINE_BACK.close);
+    case 'worldmap': return L1('', MAP_TEXT.whole, LINE_BACK.close);
+    case 'sealed': { const r = S.report, blk = startBlock(); return L1(r && r.empty && r.lead && r.lead.pod && !blk ? FIRST_TEXT.empty.back : LINE_OK.next, blk ? (isDocked() ? LINE_MID.dockedLift : LINE_MID.probeBroken) : bayLine() || (r && r.kept ? LINE_MID.kept : ''), LINE_BACK.menu, !!blk); }
   }
   return L1('', '', '');
 }
@@ -8444,50 +8278,49 @@ function render(t) {
   finally { resetCanvas(); RT.remap = REMAP; vctx.drawImage(scr, 0, 0); }
 }
 function renderFrame(t) {
-  if (RT.making || (RT.artHold && artHeld() && !artFailed())) { drawMaking(); vctx.drawImage(scr, 0, 0); return; }   // a world is being made off the page, or the art and the place are still coming in
-  if (RT.artHold && artFailed()) { drawArtFailed(); vctx.drawImage(scr, 0, 0); return; }   // a load failed: say so, and offer the reload
-  if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
-  if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
+  if (RT.making || (RT.artHold && artHeld() && !artFailed())) { drawMaking(); return; }   // a world is being made off the page, or the art and the place are still coming in
+  if (RT.artHold && artFailed()) { drawArtFailed(); return; }   // a load failed: say so, and offer the reload
+  if (RT.readOnly) { drawNewer(); return; }   // nothing that reads S runs
+  if (RT.notice) { drawNotice(); return; }   // the release's notice, until its button is pressed
   trackDock(); RT.heroN = 0; RT.heroFn = null; RT.heroLater = false; RT.plScr = null; RT.gridScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   teachFill();
   if (S.phase === 'watch' && !watchHer()) watchClose();   // the play is over, she is gone or out of sight: the view closes by itself
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
-    case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
+    case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? START_TEXT.noteFirst : START_TEXT.noteDeep) : START_TEXT.noteWeather, rx = drawTop(TITLE_TEXT.expedition(S.expN), note);
       if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
     case 'patch': if (WARM.cold && warmLanding()) { drawHUD(); drawSwap(); break; }   // entered before the land was warm: built a step a frame, the controls live
       if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(); keepEdgeView(); drawHeroLater(); drawInkIn(); drawSlide(); } drawHUD(); drawSwap(); break;   // a view over the place (Look, the peek) has the whole view
-    case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
+    case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop(TITLE_TEXT.menu); break;
     case 'log': drawLog(); break;
     case 'her': drawHer(); break;
     case 'watch': drawWatch(); break;
     case 'card': drawCard(); break;
-    case 'probe': drawProbe(t); break;
-    case 'cargo': drawCargo(t); break;
-    case 'riding': drawRiding(t); break;
+    case 'probe': drawProbe(); break;
+    case 'cargo': drawCargo(); break;
+    case 'riding': drawRiding(); break;
     case 'newworld': drawNewWorld(); break;
-    case 'worldmap': drawMap('map', t); drawTop('Full map', 'world turn ' + wTurn()); break;
-    case 'sealed': drawSealed(t); break;
+    case 'worldmap': drawMap('map', t); drawTop(TITLE_TEXT.fullMap, TITLE_TEXT.turn(wTurn())); break;
+    case 'sealed': drawSealed(); break;
   }
   drawGoalBand();
   hitFrame();
   { const wa = NOW - (FX.waitAt || -1e9); if (wa >= 0 && wa < 220 && motion() && S.exp) { const by = VIEW_Y + Math.round(wa / 220 * (VIEW_H - 24)); ditherFill(0, by, SCR_W, 24, 'cream', 3); ditherFill(0, by + 6, SCR_W, 12, 'cream', 5); } }   // Wait's ripple
   drawLine(lineFor());
   if (!(RT.view && S.phase === 'patch') && S.phase !== 'log' && S.phase !== 'her' && S.phase !== 'watch' && S.phase !== 'card' && !(S.phase === 'cargo' && !(S.exp && S.ui.caseEnd))) drawMessage();   // the Log and the Case are pages: no message box over them (the End refusal is the exception)
-  drawDuskCard();   // a night-step-4 card, when one is up: the whole frame, over everything
+  drawDuskCard();   // a dusk, night or dawn card, when one is up: the whole frame, over everything
   const ta = NOW - FX.transAt; if (ta < 200 && ta >= 0 && motion()) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 16 - Math.floor(ta / 200 * 16));
 }
+// A fault in a frame is counted (RT.err) and logged once per message, up to twenty different ones (a fault that repeats every frame never floods the log); the loop goes on to the next frame.
+const FRAME_FAULTS = new Set();
+function frameFault(e) { RT.err++; const k = String(e && e.message); if (FRAME_FAULTS.has(k) || FRAME_FAULTS.size >= 20) return; FRAME_FAULTS.add(k); console.error(e); }
 function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
-  try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  try { wantPlaces(); warmPay(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
-  FX.bursts = FX.bursts.filter(b => NOW - b.at < JUICE_BURST_MS); FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
-  if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
-  if (FX.reveal && NOW - FX.reveal.at > 1200) FX.reveal = null;
-  if (FX.dig && NOW - FX.dig.at > 900) FX.dig = null;
+  try { render(t / 1000); } catch (e) { frameFault(e); }
+  for (const tick of [wantPlaces, warmPay, warmTick, resumeHeld, panTick, placeNameExpire]) { try { tick(); } catch (e) { frameFault(e); } }
+  expireEffects(FX, NOW, JUICE_BURST_MS, CALL_MS + 400);
   requestAnimationFrame(frame);
 }
 
@@ -8771,68 +8604,91 @@ window.addEventListener('keyup', e => {
 window.addEventListener('blur', () => { stopRepeat(); HELD.length = 0; if (peek.held) { peek.held = false; peekEnd(); } document.querySelectorAll('.key.is-down').forEach(b => b.classList.remove('is-down')); });
 
 // ===================== 17. Page: fit, build footer, observer =====================
-const fitEl = document.getElementById('deviceFit');
-const EMBED = document.documentElement.classList.contains('embed');
-// ?embed on the play page: this Companion tells the page who it is and what it carries (its id and name, its world, the crates in its bay), and answers
+const EMBED = document.documentElement.classList.contains('embed');   // ?embed, the play page's frame: the screen alone (the class is set in <head>)
+
+// ---- The play page's shell (?embed). This Companion tells the page who it is and what it carries (its id and name, its world, the crates in its bay), and answers
 // the Caddy's seat with that word for the seat's number (the page's stand-in for the hold). The developer's "Companion silent" holds the answer back.
 const SHELL = EMBED && window.parent && window.parent !== window ? window.parent : null;
-let shellSeat = 0, shellSilent = false, shellSaid = '';
+let shellSeat = 0, shellSilent = false, shellSaid = '', shellLost = false;
 // Putting a realm to sleep, the Companion's side (src/sleeper.mjs): its signing key (made once, at the first boot, kept in IndexedDB and never exported), its public key
 // in `mb-companion-<slot>` and in what it tells the shell, and the answers to the Station's `mb-sleep` requests. Nothing here is on a screen.
 let KEY_STORE = null;   // a test hands in a store for the key pairs here; the page uses IndexedDB
-const LS = { getItem: k => localStorage.getItem(k), setItem: (k, v) => localStorage.setItem(k, v), removeItem: k => localStorage.removeItem(k) };
+const LS = { getItem: k => localStorage.getItem(k), setItem: (k, v) => localStorage.setItem(k, v), removeItem: k => localStorage.removeItem(k) };   // storage is reached at each call, never as the page loads: a browser that blocks it throws on reaching it
 const SLEEP = makeSleeper({ store: LS, rt: RT, keyStore: () => KEY_STORE, companion: () => COMPANION, wid: () => S.wid, saveKey: () => SAVE_KEY, save,
   newRealm: (seed, wid) => { newRealm(seed, NEW_GEN, wid); RT.mp = null; RT.key = null; mapCv = null; transition(); },
   onPub: pub => { if (COMPANION.pub !== pub) { COMPANION = { ...COMPANION, pub }; tellShell(true); } } });
+// Every message to the shell leaves here. One that cannot be sent says why once: the beat below would say it four times a second.
+function toShell(m) {
+  try { SHELL.postMessage(m, location.origin); }
+  catch (e) { if (!shellLost) console.warn('a message to the play page was not sent', e); shellLost = true; }
+}
 function tellShell(force) {
   if (!SHELL || shellSilent) return;
-  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, pub: COMPANION.pub || null, wid: S && !RT.readOnly ? S.wid : null, region: S && S.regions && S.regions[0] && typeof S.regions[0].seed === 'number' && hereRegion() ? { seed: S.regions[0].seed, slot: hereRegion().slot, v: biomeVersion(S) } : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, bay: BAY, seat: shellSeat };
-  const k = JSON.stringify(m); if (!force && k === shellSaid) return; shellSaid = k;
-  try { SHELL.postMessage(m, location.origin); } catch (e) { }
+  const here = S && S.regions && S.regions[0] && typeof S.regions[0].seed === 'number' && hereRegion();
+  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, pub: COMPANION.pub || null, wid: S && !RT.readOnly ? S.wid : null,
+    region: here ? { seed: S.regions[0].seed, slot: here.slot, v: biomeVersion(S) } : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, bay: BAY, seat: shellSeat };
+  const k = JSON.stringify(m); if (!force && k === shellSaid) return;
+  shellSaid = k; toShell(m);
 }
 if (SHELL) {
   window.addEventListener('message', e => {
-    if (e.origin !== location.origin || e.source !== SHELL) return; const m = e.data || {};
+    if (e.origin !== location.origin || e.source !== SHELL) return;
+    const m = e.data || {};
     if (m.t === 'mb-seat' && !shellSilent) { shellSeat = m.seat | 0; SLEEP.seat(true); tellShell(true); }
     else if (m.t === 'mb-lift') SLEEP.seat(false);   // the cradle is empty: no request is answered (and an unsigned lock lets go)
-    else if (m.t === 'mb-sleep' && !shellSilent) SLEEP.handle(m).then(a => { try { SHELL.postMessage({ t: 'mb-sleep-ack', nonce: m.nonce, op: m.op, ...a }, location.origin); } catch (e) { } });
-    else if (m.t === 'mb-note-ask') { try { SHELL.postMessage({ t: 'mb-note-state', id: m.id, state: playNoteState() }, location.origin); } catch (e) { } }   // a play note's details (see playNoteState)
+    else if (m.t === 'mb-sleep' && !shellSilent) SLEEP.handle(m).then(a => toShell({ t: 'mb-sleep-ack', nonce: m.nonce, op: m.op, ...a }));
+    else if (m.t === 'mb-note-ask') { try { toShell({ t: 'mb-note-state', id: m.id, state: playNoteState() }); } catch (err) { console.warn('the play note has no details from the Companion', err); } }   // the note goes without them
     else if (m.t === 'mb-silent') { shellSilent = !!m.on; if (!shellSilent) tellShell(true); }
-    else if (m.t === 'mb-caddy') RT.caddy = { podHome: typeof m.podHome === 'boolean' ? m.podHome : undefined, goal: m.goal || null };   // the Station's dock state, passed on by the play page (first-ten): "first pod home" and the Station's goal
+    else if (m.t === 'mb-caddy') RT.caddy = { podHome: typeof m.podHome === 'boolean' ? m.podHome : undefined, goal: m.goal || null };   // the Station's dock state, passed on by the play page: "first pod home" and the Station's goal
   });
   const beat = () => { tellShell(false); setTimeout(beat, 250); }; beat();
 }
-// Scale the depicted device to the window. When the screen would land close to a whole number of
-// physical pixels per device pixel, snap to it so the pixel grid stays even.
-function fit() {
-  if (EMBED) return;
-  const W = 522, H = 832, s = window.__mbDeviceScale ? window.__mbDeviceScale() : 1;   // the head's function (before the first paint): the one formula (the test harness runs the module without the head)
-  fitEl.style.width = (W * s) + 'px'; fitEl.style.height = (H * s) + 'px';
-  deviceEl.style.transform = `scale(${s})`;
-}
+
+// ---- The page's size. Standalone, the device follows the window: the head's function is the one formula (it ran before the first paint) and the styles size the device from --device-s.
+function fit() { if (!EMBED) window.__mbDeviceScale(); }
 window.addEventListener('resize', fit);
-// ?embed (the play page's frame): the screen alone; the class is set in <head>. The size of the Companion on /play is decided once, in play/src/layout.mjs (plan().screen); the shell gives this page a frame 450 x k0 / dpr CSS px wide
-// and scales the frame by k / k0 as a whole. The screen here fills the frame exactly: scale = the frame's width over 450, no snapping, no min (one scale function, code-audit step 6; owner #27, #123, #134, #135).
+// ?embed: the size of the Companion on /play is decided once, in play/src/layout.mjs (plan().screen); the shell gives this page a frame 450 x k0 / dpr CSS px wide
+// and scales the frame by k / k0 as a whole. The screen here fills the frame exactly: scale = the frame's width over the screen's, no snapping, no min.
 // A dpr change makes the shell resize the frame, so the resize event is the only trigger.
-const setEmbedS = () => { document.documentElement.style.setProperty('--embed-s', String((window.innerWidth || 450) / 450)); };
+const setEmbedS = () => { document.documentElement.style.setProperty('--embed-s', String((window.innerWidth || SCR_W) / SCR_W)); };
 if (EMBED) { setEmbedS(); window.addEventListener('resize', setEmbedS); }
 
-const footEl = document.getElementById('buildFoot');
-import('../station/src/genome.mjs').then(async g => { const L = await import('../station/src/looks.mjs'), fr = await (await fetch('../species/frames/language/species-S01.json')).json();
-  { const SD = await import('../station/src/stands.mjs'), more = await Promise.all(Object.keys(SD.COAT_TRAITS).filter(k => k !== 'S01').map(async k => { try { return await (await fetch('../species/frames/language/species-' + k + '.json')).json(); } catch (e) { console.warn('the frame of ' + k + ' did not load', e); return null; } }));   // a frame that fails leaves that kind on its painted cut; Riding draws a home mibi in her own coat: the frames of the kinds that have coats
-    g.setFrames([fr, ...more.filter(Boolean)]); RIDE.coatOf = SD.coatOf; RIDE.ownLooks = L.ownLooks; RIDE.frameOf = g.frameOf; }
-  WILD.shows = (seed, id) => L.saddleShown(fr, { genome: g.wildGenome(fr, seed, id, g.markedLoika(seed, markedCandidates())), read: ['coat'] });   // one Loika of the realm shows it (wild-marking-named-2); the wild Loika's marking, her coat taken as read (the walk keeps the read apart)
-  WILD.partner = id => { const st = stPart(), m = st && (st.mibis || []).find(q => q.id === id); return !!m && !!m.genome && m.species === 'S01' && L.saddleShown(fr, m); };   // the Station's own drawnLooks on the partner: shown and read
-  WILD.ok = true; }).catch(e => { console.warn('the coats and the wild marking did not load', e); });   // a failed load leaves every token plain and the walk goes on
-import('../play/src/footer.mjs').then(m => { window.__mbNotice = NOTE.ui = m.mountNotice(document.getElementById('notice'), WORDS.notice, { buildUrl: '../../build.json' });   // the notice line: a save that cannot be written, a land that changed, a page that broke (the head's script saw it first)
+// ---- The riders' coats and the wild Loika's marking, from the Station's modules and the species' frames. A failed load leaves every token plain and the walk goes on;
+// a frame that fails leaves that kind on its painted cut.
+async function loadCoats() {
+  const frame = async k => (await fetch('../species/frames/language/species-' + k + '.json')).json();
+  const genome = await import('../station/src/genome.mjs'), looks = await import('../station/src/looks.mjs'), loika = await frame('S01'), stands = await import('../station/src/stands.mjs');
+  const coated = await Promise.all(Object.keys(stands.COAT_TRAITS).filter(k => k !== 'S01').map(k => frame(k).catch(e => { console.warn('the frame of ' + k + ' did not load', e); return null; })));
+  genome.setFrames([loika, ...coated.filter(Boolean)]);
+  RIDE.coatOf = stands.coatOf; RIDE.ownLooks = looks.ownLooks; RIDE.frameOf = genome.frameOf;   // Riding draws a home mibi in her own coat: the frames of the kinds that have coats
+  WILD.shows = (seed, id) => looks.saddleShown(loika, { genome: genome.wildGenome(loika, seed, id, genome.markedLoika(seed, markedCandidates())), read: ['coat'] });   // one Loika of the realm shows the marking; her coat is taken as read (the walk keeps the read apart)
+  WILD.partner = id => { const st = stPart(), m = st && (st.mibis || []).find(q => q.id === id); return !!m && !!m.genome && m.species === 'S01' && looks.saddleShown(loika, m); };   // the Station's own drawnLooks on the partner: shown and read
+  WILD.ok = true;
+}
+loadCoats().catch(e => { console.warn('the coats and the wild marking did not load', e); });
+
+// ---- The notice line (a save that cannot be written, a land that changed, a page that broke: the head's script saw that first) and the build footer
+// (page chrome, always shown: build, save version, whether the Caddy service answers).
+import('../play/src/footer.mjs').then(m => {
+  const buildUrl = '../../build.json';
+  window.__mbNotice = NOTE.ui = m.mountNotice(document.getElementById('notice'), WORDS.notice, { buildUrl });
   for (const k of Object.keys(NOTE.flags)) if (NOTE.flags[k]) NOTE.ui.set(k, true);
   if (window.__mbBroke) noteSet('pageBroke', true);
   window.addEventListener('error', e => { if (e.error) noteSet('pageBroke', true); }); window.addEventListener('unhandledrejection', () => noteSet('pageBroke', true));
-  m.mountFooter(footEl, { buildUrl: '../../build.json', schema: SAVE_V, caddy: m.caddyAnswers }); }).catch(e => { console.warn('the notice line and the build footer did not load', e); });   // the build footer (page chrome, always shown): build, save version, whether the Caddy service answers
+  m.mountFooter(document.getElementById('buildFoot'), { buildUrl, schema: SAVE_V, caddy: m.caddyAnswers });
+}).catch(e => { console.warn('the notice line and the build footer did not load', e); });
 
+// ---- The Observer: the developer panel beside the device. Its rows are read from the game after every change, while it is open.
 const obsBtn = document.getElementById('obsToggle'), obsEl = document.getElementById('obs');
-function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
+function setObserver(on) {
+  obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on;
+  try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { console.warn('the Observer switch was not kept', e); }
+  onStateChanged();
+}
 obsBtn.addEventListener('click', e => { setObserver(obsBtn.getAttribute('aria-pressed') !== 'true'); if (e.detail) obsBtn.blur(); });   // a mouse click hands the keys back to the game
+{ const el = document.getElementById('oPal');   // the palette's swatches, made once
+  for (const [n, h] of PALETTE) { const i = document.createElement('i'); i.style.background = h; i.title = n + ' ' + h; el.appendChild(i); }
+  document.getElementById('palHead').textContent = 'Palette · ' + PALETTE.length + ' colours'; }
 // What this expedition yields: its tier, the Data it earns, how much the moments have brought in so far.
 function yieldText() {
   const ex = S.exp, r = S.report;
@@ -8840,11 +8696,6 @@ function yieldText() {
   if (S.phase === 'sealed' && r && r.yield) return 'last expedition: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' creature act' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' from strike marks | ladder ' + dataLadder();
   return 'ladder ' + dataLadder() + ' by tier (starter / early / mid / late)';
 }
-(function buildPalette() {
-  const el = document.getElementById('oPal');
-  PALETTE.forEach(([n, h]) => { const i = document.createElement('i'); i.style.background = h; i.title = n + ' ' + h; el.appendChild(i); });
-  document.getElementById('palHead').textContent = 'Palette · ' + PALETTE.length + ' colours';
-})();
 function whereText() {
   const ex = S.exp; let where = S.phase;
   if (ex && S.phase === 'map') { const p = cxy(ex.pos); where = 'map ' + p.x + ',' + p.y; }
@@ -8856,7 +8707,7 @@ function mapCounts() {
   return 'whole map ' + all.visited + ' visited · ' + all.found + ' found · ' + all.seen + ' seen · ' + all.fog + ' fog' +
     (rc ? ' | in reach ' + rc.found + '/' + rc.total + ' found · ' + rc.visited + ' visited · ' + rc.seen + ' seen' : '');
 }
-// The heart of the cell you are in, and the reach count (the observer's line).
+// The heart of the cell you are in, and the reach count.
 function heartText() {
   const ex = S.exp; if (!ex) return '–';
   const c = ex.patch ? layout(ex.patch.key).cell : ex.pos, st = passable(c) && S.seen.been[c] ? (walkedCell(c) ? 'explored' : 'not explored') : 'not visited';
@@ -8871,31 +8722,37 @@ function energyText() {
     for (const f of layout(key).feats) if (f.kind === 'k') { if (stormCharge(key, f) > 0) { k++; if (isSeen(key, f.x, f.y)) kf++; } else if (stoneWarm(key, f)) { w++; if (isSeen(key, f.x, f.y)) wf++; } } }
   return 'in reach: ' + w + ' warm stones (' + wf + ' seen) · ' + k + ' storm-charged (' + kf + ' seen) · drawn from warm this expedition ' + (ex.stats.warm || 0);
 }
-function onStateChanged() {
-  if (!obsEl || obsEl.hidden || !S || RT.readOnly) return;
-  const ex = S.exp;
-  document.getElementById('oExp').textContent = ex ? ex.n + ' · ' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') : (S.phase === 'sealed' && S.report) ? S.report.n + ' · ended' : S.expN + ' · not started';
-  document.getElementById('oTurn').textContent = wTurn();
-  document.getElementById('oYield').textContent = yieldText();
-  document.getElementById('oAct').textContent = ex ? ex.actions + ' (total ' + S.totalActions + ')' : 'total ' + S.totalActions;
-  document.getElementById('oWhere').textContent = whereText();
-  const cm = carriedMibis(), pm = ex ? ex.pt : partnerMibi(), home = homeMibis();
+// What each row says, by the row's id in the page.
+function observerRows() {
+  const ex = S.exp, t = tierOf(), st = stPart(), h = S.hold, cm = carriedMibis(), pm = ex ? ex.pt : partnerMibi(), home = homeMibis();
   const careOf = m => ' (plays ' + (m.plays || 0) + (m.bonded ? ', bonded' : '') + (m.grownTurn != null ? ', grown T' + m.grownTurn : '') + ')';   // the observer only: no screen shows care
-  document.getElementById('oPartner').textContent = (cm.length ? 'with you (' + cm.length + ' of ' + CARRY_MAX + '): ' + cm.map(m => m.name + ' · ' + mibiSpName(m) + ' ' + mibiStage(m) + (pm && pm.id === m.id ? ' · partner' : '') + (S.lead === m.id ? ' · lead' : '') + careOf(m)).join('; ') : S.mibis.length ? 'no one with you' : 'none yet') + (home.length ? ' · at home: ' + home.map(m => m.name + ' ' + mibiStage(m) + careOf(m)).join(', ') : '');
-  document.getElementById('oSeed').textContent = S.seed;
-  const t = tierOf();
-  document.getElementById('oProbe').textContent = 'tier ' + S.tier + ' · range ' + t.range + ' · hold ' + t.hold + ' · shield ' + (ex ? ex.shield + '/' + ex.smax : t.shield) + (ex ? ' · storm ' + stormLevel() + ' bolt' + (stormLevel() === 1 ? '' : 's') : '');
-  document.getElementById('oCarry').textContent = ex ? ex.cargo.e + ' Energy, ' + ex.cargo.d + ' Data, ' + ex.cargo.s + ' Essence, ' + ex.cargo.pods.length + ' pod' + (ex.cargo.pods.length === 1 ? '' : 's') : '–';
-  { const st = stPart(), h = S.hold; document.getElementById('oHome').textContent = (isDocked() ? 'docked' : 'away') + ' · bay ' + S.bay.length + '/' + BAY + (S.bay.length ? ' (' + S.bay.map(c => 'E' + c.n + ': ' + c.pods.length + ' pods').join(', ') + ')' : '') + ' · hold ' + (h ? h.e + 'E ' + h.d + 'D ' + h.s + 'S ' + h.pods.length + ' pods' : 'empty') + (st ? ' · Station store ' + st.e + 'E ' + st.d + 'D ' + st.s + 'S' : ' · no Station yet'); }
-  document.getElementById('oMap').textContent = mapCounts();
-  document.getElementById('oHeart').textContent = heartText();
-  document.getElementById('oEnergy').textContent = energyText();
+  return {
+    oExp: ex ? ex.n + ' · ' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') : (S.phase === 'sealed' && S.report) ? S.report.n + ' · ended' : S.expN + ' · not started',
+    oTurn: wTurn(),
+    oYield: yieldText(),
+    oAct: ex ? ex.actions + ' (total ' + S.totalActions + ')' : 'total ' + S.totalActions,
+    oWhere: whereText(),
+    oPartner: (cm.length ? 'with you (' + cm.length + ' of ' + CARRY_MAX + '): ' + cm.map(m => m.name + ' · ' + mibiSpName(m) + ' ' + mibiStage(m) + (pm && pm.id === m.id ? ' · partner' : '') + (S.lead === m.id ? ' · lead' : '') + careOf(m)).join('; ') : S.mibis.length ? 'no one with you' : 'none yet') + (home.length ? ' · at home: ' + home.map(m => m.name + ' ' + mibiStage(m) + careOf(m)).join(', ') : ''),
+    oSeed: S.seed,
+    oProbe: 'tier ' + S.tier + ' · range ' + t.range + ' · hold ' + t.hold + ' · shield ' + (ex ? ex.shield + '/' + ex.smax : t.shield) + (ex ? ' · storm ' + stormLevel() + ' bolt' + (stormLevel() === 1 ? '' : 's') : ''),
+    oCarry: ex ? ex.cargo.e + ' Energy, ' + ex.cargo.d + ' Data, ' + ex.cargo.s + ' Essence, ' + ex.cargo.pods.length + ' pod' + (ex.cargo.pods.length === 1 ? '' : 's') : '–',
+    oHome: (isDocked() ? 'docked' : 'away') + ' · bay ' + S.bay.length + '/' + BAY + (S.bay.length ? ' (' + S.bay.map(c => 'E' + c.n + ': ' + c.pods.length + ' pods').join(', ') + ')' : '') + ' · hold ' + (h ? h.e + 'E ' + h.d + 'D ' + h.s + 'S ' + h.pods.length + ' pods' : 'empty') + (st ? ' · Station store ' + st.e + 'E ' + st.d + 'D ' + st.s + 'S' : ' · no Station yet'),
+    oMap: mapCounts(),
+    oHeart: heartText(),
+    oEnergy: energyText(),
+  };
+}
+function onStateChanged() {
+  if (obsEl.hidden || !S || RT.readOnly) return;
+  for (const [id, words] of Object.entries(observerRows())) document.getElementById(id).textContent = words;
   const ol = document.getElementById('oLog'); ol.textContent = '';
   for (const s of S.log.slice(-8)) { const li = document.createElement('li'); li.textContent = s; ol.appendChild(li); }
 }
-// A play note's details from this device (the play page asks with `mb-note-ask`, play/src/notes.mjs): world, place, turn, expedition, carried, map counts and the last 12 events. Never a name or address.
-// The Companion's save for this slot, as stored (what a replay loads); '' when storage cannot be read.
-function playNoteSave() { try { return localStorage.getItem(SAVE_KEY) || ''; } catch (e) { return ''; } }
+
+// ---- A play note's details from this device (the play page asks with `mb-note-ask`, play/src/notes.mjs): world, place, turn, expedition, carried, map counts,
+// the last 12 events and what a replay loads. Never a name or address.
+// The Companion's save for this slot, as stored; '' when storage cannot be read.
+function playNoteSave() { try { return localStorage.getItem(SAVE_KEY) || ''; } catch (e) { console.warn('the play note carries no save: storage could not be read', e); return ''; } }
 function playNoteState() {
   if (!S || RT.readOnly) return { world: 'not loaded' };   // a newer page's save: no world was read
   const ex = S.exp;
@@ -8908,6 +8765,8 @@ function playNoteState() {
 }
 
 // ===================== 18. Boot =====================
+import { makeBootScreens } from "./src/ui/boot-screens.mjs";
+import { savedRealmSeed } from "./src/store/saved-realm.mjs";
 // A save from a newer page stays as stored: the page reads nothing from it, writes nothing and ignores input.
 // A loaded save that cannot be shown is kept the same way, with its own line and the page's line beside Reset game.
 function readOnlyNewer() { RT.readOnly = true; }
@@ -8915,15 +8774,8 @@ function readOnlyBroken() { RT.readOnly = true; RT.broken = true; document.getEl
 // The device's way out (no page needed): ✓ arms, ✓ again keeps the old save whole under its own key (one per move, never replacing an older one) and starts a new world.
 // Only the page's Reset game erases a save. Any other key is refused with the usual bump and clears the arm.
 const KEPT_KEY = 'mb-save-kept';
-// The release's one-time notice, shown on this device the first time it opens after the reset, then never again (S.resetSeen). The copywriter's words of 6 Nov 2026 (keys:
-// reset.notice.companion, reset.button.companion). No numbers, no talk of versions or saves.
-const RESET_TEXT = { lines: ['The world has changed.', 'New mibis live in it now.'], button: 'Explore' };
-function drawNotice() {
-  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
-  viewBg();
-  RESET_TEXT.lines.forEach((l, i) => text(l, 225, 279 + i * 24, C.bone, 2, 'center'));
-  drawLine({ ok: RESET_TEXT.button, ctx: '', back: '' });
-}
+// The screens outside the game: src/ui/boot-screens.mjs draws them, the page says what each shows. The notice is the release's, up on this device the first time it opens after the reset, then never again (S.resetSeen).
+const { drawNotice, drawWait, drawKept, drawLoadFailed } = makeBootScreens({ R: (...a) => R(...a), text: (...a) => text(...a), viewBg: () => viewBg(), drawLine: o => drawLine(o), C });
 function actNotice(k) {
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
   if (k !== 'confirm') { FX.bumpAt = NOW; return; }
@@ -8936,56 +8788,37 @@ const randomSeed = () => PLAYTEST_SEEDS[Math.floor(Math.random() * PLAYTEST_SEED
 // makes the realm on its own thread as it always did.
 const OFF_PAGE = typeof Worker !== 'undefined' && !(document.querySelector && document.querySelector('script[type="importmap"]'));
 placesOn(OFF_PAGE);   // the same page that has the realm's worker has the places' workers
-function drawMaking() {
-  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
-  viewBg();
-  text(RT.placeWait && pkgOf() === 'part' ? NOT_ON_COMPANION : LAND_COMING, 225, 289, C.bone, 2, 'center');
-  drawWaitPips();
-  drawLine({ ok: '', ctx: '', back: '' });
+// The wait's pips fill from the real steps and never go back. While places are being made in the worker they count those places' stages (and, at the set-out, the places laid out), nothing else.
+// Otherwise they count the realm worker's stages (RT.wait; with no realm being made that part is whole) and, only while the art is coming in, the loaders' files (FILES): a new world's wait has no
+// files owed. The bar is never full while the wait is on: the screen goes away when the land is ready.
+function waitPipsNow() {
+  const pw = RT.placeWait, r = RT.wait || (RT.making ? { done: 0, of: 1 } : { done: 1, of: 1 });
+  const now = pw ? placeWaitPips(pw.cells.map(c => stageOf(pw.seed, pw.slot, pw.v, c)), pw.laid, pw.laying)
+    : Math.min(PIPS - 1, (RT.artHold ? artHeld() : RT.filesFollow) ? waitPips(r.done, r.of, FILES.done, FILES.of) : fracPips(r.done, r.of));
+  RT.pips = Math.max(RT.pips || 0, now);
+  return RT.pips;
 }
-// The first-load wait's measure (option A, ui-play-layout-1): ten pips, 14 × 8 lp, 4 apart, centred 32 lp under the line's centre: mint when done, ink with a 2 lp slate edge when not. They fill from the real steps
-// (the realm worker's stages in RT.wait, the loaders' files in FILES) and never go back; with no realm being made the realm part is whole. UI component on the device's screen, drawn in code (rule 18).
-function drawWaitPips() {
-  const pw = RT.placeWait;   // waiting for places made in the worker: the pips count the places that are here (and, at the set-out, laid out), nothing else
-  if (pw) RT.pips = Math.max(RT.pips || 0, placeWaitPips(pw.cells.map(c => stageOf(pw.seed, pw.slot, pw.v, c)), pw.laid, pw.laying));   // each place's real stages in the worker count (#104), not only the places made
-  else {
-    const r = RT.wait || (RT.making ? { done: 0, of: 1 } : { done: 1, of: 1 });
-    // the files are part of this wait only while the art is coming in (a new world's wait has none owed); the bar is never full while the wait is on (the screen goes away when the land is ready)
-    RT.pips = Math.max(RT.pips || 0, Math.min(PIPS - 1, (RT.artHold ? artHeld() : RT.filesFollow) ? waitPips(r.done, r.of, FILES.done, FILES.of) : fracPips(r.done, r.of)));
-  }
-  const w = 14, h = 8, gap = 4, x0 = Math.round(225 - (PIPS * w + (PIPS - 1) * gap) / 2), y0 = 289 + 32 - h / 2;
-  for (let i = 0; i < PIPS; i++) { const x = x0 + i * (w + gap); if (i < RT.pips) R(x, y0, w, h, C.mint); else { R(x, y0, w, h, C.slate); R(x + 2, y0 + 2, w - 4, h - 4, C.ink); } }
+function drawMaking() { drawWait(RT.placeWait && pkgOf() === 'part' ? NOT_ON_COMPANION : LAND_COMING, waitPipsNow()); }
+const waitStep = (done, of) => { RT.wait = { done, of }; };   // the realm worker's real stages, for the wait's pips (waitPipsNow)
+// The realm made (or read back) off the page. How it came (RT.makeHow) and what each step took (RT.makeTimes) are kept for the measuring tools; if it could not be, the page makes the realm itself and the cause is logged.
+function realmOffPage(seed) {
+  RT.makingAt = performance.now();
+  return readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, e => { console.warn('the realm was not made off the page; the page makes it', e); RT.makeHow = 'page'; });
 }
-const waitStep = (done, of) => { RT.wait = { done, of }; };   // the realm worker's real stages, for the wait's pips (drawWaitPips)
 function newWorldLive(keepGame = true) {   // the menu's New world keeps the game (only the map is new); a save that could not be read starts whole (keepGame false)
-  const seed = urlSeed() ?? randomSeed(), done = () => { RT.making = false; newRealm(seed, NEW_GEN, keepGame && S && S.regions ? S.wid : undefined, keepGame && S && S.regions ? keepOfGame(S) : undefined); RT.mp = null; RT.key = null; mapCv = null; transition(); };
+  const seed = urlSeed() ?? randomSeed();
+  const done = () => { const kept = keepGame && S && S.regions ? S : null; RT.making = false; newRealm(seed, NEW_GEN, kept ? kept.wid : undefined, kept ? keepOfGame(kept) : undefined); RT.mp = null; RT.key = null; mapCv = null; transition(); };
   if (!OFF_PAGE) { done(); return; }
-  RT.making = true; RT.makingAt = performance.now(); RT.wait = null; RT.pips = 0;   // a new world's wait starts empty, whatever the first load reached
-  readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.makeMs = performance.now() - RT.makingAt; done(); });
-}
-// The seed of the realm a saved game plays (generator 7), read from the save without loading it; null for no save, another generator, or a save that cannot be read.
-function savedRealmSeed() {
-  try { const raw = localStorage.getItem(SAVE_KEY) ?? (COMPANION.slot === 'A' ? localStorage.getItem(LEGACY_KEY) : null), s = raw && JSON.parse(raw), r = s && Array.isArray(s.regions) && s.regions[0];
-    return r && r.gen === 7 && typeof r.seed === 'number' ? r.seed : null; } catch (e) { return null; }
+  RT.making = true; RT.wait = null; RT.pips = 0;   // a new world's wait starts empty, whatever the first load reached
+  realmOffPage(seed).then(() => { RT.makeMs = performance.now() - RT.makingAt; done(); });
 }
 function drawNewer() {
-  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
-  viewBg();
-  const bx = NOW - FX.bumpAt < 160 && motion() ? (Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1) : 0;
-  text(RT.broken ? 'This save can’t be shown · kept untouched' : 'Newer save · untouched · reload plays it', 225 + bx, 289, C.bone, 2, 'center');
-  if (RT.armNew) text('The mibis stay with the old save', 225 + bx, 311, C.amber, 2, 'center');
-  if (RT.broken) text(buildTag(REL.build), 225, 333, C.bone, 1, 'center');   // a save that cannot be shown is a break line: it carries the build
-  drawLine({ ok: RT.broken ? (RT.armNew ? 'Confirm: new world' : 'Start a new world') : 'Reload', ctx: '', back: '' });
+  const dx = NOW - FX.bumpAt < 160 && motion() ? (Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1) : 0;   // a refused press shakes the lines
+  drawKept({ broken: RT.broken, armed: RT.armNew, dx, build: REL.build });
 }
-function drawArtFailed() {   // the art or the place did not load: said plainly, one way on (reload), nothing drawn in old art
-  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
-  viewBg();
-  text('The land didn’t load · reload', 225, 289, C.bone, 2, 'center');
-  const w = ART_WHY[0], lead = w ? w.part : (ART_DONE.atlas && !ART48.ready) ? 'atlas' : 'places', why = w ? (w.why || w.file) : (ART_DONE.atlas && !ART48.ready) ? (ART48.refusedWhy || 'core set missing') : 'not ready';
-  const bl = breakLines({ lead, why, build: REL.build, measure: str => textW(str, 1), maxW: 420, maxLines: 2 });   // the detail wraps at words, its error text cut from the middle, "build <sha>" whole at the end
-  window.__mbBreakLines = bl.lines;   // a test's read-only view of the detail lines drawn
-  bl.lines.forEach((l, i) => text(l, 225, 313 + i * 10, C.bone, 1, 'center'));
-  drawLine({ ok: 'Reload', ctx: '', back: '' });
+function drawArtFailed() {   // which part did not load, and why
+  const w = ART_WHY[0], atlas = ART_DONE.atlas && !ART48.ready;
+  window.__mbBreakLines = drawLoadFailed({ lead: w ? w.part : atlas ? 'atlas' : 'places', why: w ? (w.why || w.file) : atlas ? (ART48.refusedWhy || 'core set missing') : 'not ready', build: REL.build });   // a test's read-only view of the detail lines drawn
 }
 function actReadOnly(k) {
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
@@ -8994,14 +8827,15 @@ function actReadOnly(k) {
   if (!RT.armNew) { RT.armNew = 1; return; }
   let raw = null;
   try { raw = localStorage.getItem(SAVE_KEY); if (raw != null) { let at = Date.now(); while (localStorage.getItem(KEPT_KEY + '-' + at) != null) at++;   // one key per move: an older kept save is never replaced
-      localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept'); } }
+      localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept');
+      localStorage.removeItem(SAVE_KEY); } }   // kept whole: the slot is empty for the new world (save() never writes over bytes it cannot read)
   catch (e) { RT.armNew = 0; FX.bumpAt = NOW; return; }   // it cannot be kept: nothing changes
-  RT.readOnly = false; RT.broken = false; RT.armNew = 0; const note = document.getElementById('resetNote'); if (note) note.hidden = true;
+  RT.readOnly = false; RT.broken = false; RT.armNew = 0; document.getElementById('resetNote').hidden = true;
   newWorldLive(false);
 }
 function boot(seed) {
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(seed ?? urlSeed());
-if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
+if (!RT.readOnly && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 RT.artHold = !window.__places;   // the first frame waits for the art and the place; the tests hand them over at once and are not held
 const startLoads = () => {
   loadAtlas();   // the 48 px place art
@@ -9020,50 +8854,48 @@ if (RT.artHold) REL.ready.then(startLoads); else startLoads();   // in the page 
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
-// The side panel's two sections start collapsed on every load.
 // Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.
 { const btn = document.getElementById('resetGame'), ask = document.getElementById('resetAsk'), yes = document.getElementById('resetYes'), no = document.getElementById('resetNo');
   const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
   btn.addEventListener('click', () => { ask.hidden = false; yes.focus(); });
   no.addEventListener('click', back);
-  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', SAVE_KEY + '.pre10', V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
+  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', SAVE_KEY + '.pre10', V7_KEY]) localStorage.removeItem(k); } catch (e) { }
     window.__mbResetting = true; location.reload(); }); }
 // The Station page wrote the shared save: take its part (dock, accepted crates, mibis, the Probe) and keep ours.
 // A reset there (the save erased) reloads this page too.
 window.addEventListener('storage', e => {
   if (e.key !== SAVE_KEY && e.key !== null) return;
   if (window.__mbResetting) return;
-  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (_) { }
+  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (err) { console.warn('the save another tab wrote could not be read; the page reloads', err); }
   if (!raw) { window.__mbResetting = true; location.reload(); return; }
-  save(false, true);   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
+  save({ noWrite: true });   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
 });
 // A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
-if (ld === true) { try { if (S.exp && S.exp.shield <= 0 && !S.exp.dark) goDark(S.exp);   // an old save with no plates opens in the realm, dark (night step 1), never on the ended card
-  if (S.exp && S.day.spent >= DAY.light) nightPasses(); if (S.phase === 'station') S.phase = 'setup';
+if (ld === true) { try { if (S.exp && S.exp.shield <= 0 && !S.exp.dark) goDark(S.exp);   // an old save with no plates opens in the realm, dark, never on the ended card
+  if (S.exp && S.day.spent >= DAY.light) nightPasses();
   if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; render(NOW / 1000); }
   catch (e) { console.error(e); readOnlyBroken(); } }
-else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';
 SLEEP.holdAtBoot();   // a sleep still pending keeps this page from writing
 RT.bootHold = false; save();
 if (!RT.readOnly) SLEEP.start().catch(e => { console.warn('the sleeper did not start', e); });   // the key at the first boot (and its pub), and a committed sleep finished
-try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
-if (OPT.dev || new URLSearchParams(location.search).has('observer')) setObserver(true);   // the Developer tools option opens the Observer, the page's developer panel
+let observer = OPT.dev || new URLSearchParams(location.search).has('observer');   // the Developer tools option opens the Observer, the page's developer panel
+try { if (localStorage.getItem('mb-observer') === '1') observer = true; } catch (e) { /* storage blocked: there is no kept choice to read */ }
+if (observer) setObserver(true);
 fit();
 requestAnimationFrame(frame);
 }
 // Start. With a Worker the realm is made (or read back) off the page first, and the loading line shows meanwhile; a saved game of another generator, or none, is a new world with the seed chosen here so its realm can be made at once.
-{ const saved = savedRealmSeed(), seed = saved ?? urlSeed() ?? randomSeed();
-  if (!OFF_PAGE) boot(null);
-  else { RT.making = true; RT.filesFollow = true; drawMaking(); vctx.drawImage(scr, 0, 0);
-    const showWait = () => { if (!RT.making) return; drawMaking(); vctx.drawImage(scr, 0, 0); requestAnimationFrame(showWait); };   // the page is live while the realm is made in the worker: the pips move with its stages
-    requestAnimationFrame(showWait);
-    readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
+if (!OFF_PAGE) boot(null);
+else { const saved = savedRealmSeed(k => localStorage.getItem(k), COMPANION.slot === 'A' ? [SAVE_KEY, LEGACY_KEY] : [SAVE_KEY]), seed = saved ?? urlSeed() ?? randomSeed();
+  RT.making = true; RT.filesFollow = true;
+  const showWait = () => { if (!RT.making) return; drawMaking(); vctx.drawImage(scr, 0, 0); requestAnimationFrame(showWait); };   // the page is live while the realm is made in the worker: the pips move with its stages
+  showWait();
+  realmOffPage(seed).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-// test-harness only (s32): the words as bone glyphs on a bare canvas, the crop a screenshot of the band is judged against; and the band's text box
-window.__mb = { onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, lightningLift, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkSeen, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
-  CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isSeen, veilable, signsAt, stormLevel, inFog,
-  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideApplies, crossLanding, patchStep, inRange, TEST,
-  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, fogEdgeReady: () => !!FOGEDGE, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, cellFog, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
+window.__mb = { onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, lightningLift, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkSeen, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+  CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, menuItems, leftCounts, leftPhrase, reachCounts, isSeen, veilable, signsAt, stormLevel, inFog,
+  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideApplies, crossLanding, patchStep, inRange, TEST,
+  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, fogEdgeReady: () => !!FOGEDGE, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, cellFog, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, carriedMibis, partnerMibi, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, RIDE, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }

@@ -15,6 +15,7 @@ test("what a page finds: nothing, a v10 save, a v8 or v9 save, a newer save, byt
   assert.deepEqual(resetPlan(JSON.stringify({ v: 10, seed: 1 })), { action: "play" });
   assert.deepEqual(resetPlan(JSON.stringify({ v: 9, seed: 1 })), { action: "reset", from: 9 });
   assert.deepEqual(resetPlan(JSON.stringify({ v: 8, seed: 1 })), { action: "reset", from: 8 });
+  assert.deepEqual(resetPlan(JSON.stringify({ v: 7, seed: 1 })), { action: "reset", from: 7 });
   assert.deepEqual(resetPlan(JSON.stringify({ v: 11 })), { action: "newer" });
   for (const raw of ["{not json", "[]", "7", JSON.stringify({ v: 3 }), JSON.stringify({ seed: 1 })]) assert.deepEqual(resetPlan(raw), { action: "broken" }, raw);
 });
@@ -60,6 +61,34 @@ test("1b. a v8 save: the same, resetFrom 8", () => {
   const raw = v8Raw(), p = page({ "mb-save-v8": raw });
   assert.equal(p.store[p.KEY + ".pre10"], raw); const now = JSON.parse(p.store[p.KEY]);
   assert.equal(now.v, 10); assert.equal(now.resetFrom, 8); assert.deepEqual(now.mibis, []); assert.equal(now.regions[0].gen, 5); assert.equal(p.run("RT.notice"), true);
+});
+
+test("1c. a save from before v8, under its own key: the same reset, resetFrom 7; the copy is its bytes exactly, they stay where they were, and the new world plays", () => {
+  const raw = JSON.stringify({ v: 7, seed: 31, turn: 4, known: [0], found: ["freeid"], phase: "setup", mibis: [{ id: 1, name: "Dot", sp: 0, born: 0 }], home: { e: 3, d: 1, s: 0, pods: [{ sp: 1, g: "wood", how: "ground" }] } });
+  const p = page({ "mb-exploration-v7": raw });
+  assert.equal(p.store[p.KEY + ".pre10"], raw, "the kept copy is the original bytes");
+  assert.equal(p.store["mb-exploration-v7"], raw, "and they stay under their own key");
+  const now = JSON.parse(p.store[p.KEY]);
+  assert.equal(now.v, 10); assert.equal(now.resetFrom, 7); assert.deepEqual(now.mibis, []); assert.deepEqual(now.bay, []); assert.equal(now.st, undefined, "nothing of the old save is carried into the new world");
+  assert.equal(p.run("RT.notice"), true, "the reset's notice is up");
+  p.key("confirm"); assert.equal(p.run("RT.notice"), false); assert.ok(!p.run("!!RT.readOnly"));
+  p.key("confirm"); assert.notEqual(p.S.phase, "setup", "the new world takes a press");
+  assert.equal(p.store[p.KEY + ".pre10"], raw, "the copy is untouched by play");
+  const q = page(p.store);   // a reload plays the new world; the old key is not read again
+  assert.equal(q.run("S.wid"), now.wid); assert.ok(!q.run("RT.notice"), "the notice does not come again"); assert.equal(q.store[q.KEY + ".pre10"], raw); assert.equal(q.store["mb-exploration-v7"], raw);
+});
+test("1d. bytes under the old key that are no save from before v8: a new world starts, nothing is copied and they are left as they are", () => {
+  for (const other of ["{not json", "[]", JSON.stringify({ v: 3, seed: 1 }), JSON.stringify({ seed: 1 })]) {
+    const p = page({ "mb-exploration-v7": other });
+    assert.ok(!p.run("!!RT.readOnly"), other); assert.equal(p.S.phase, "setup"); assert.ok(!p.run("RT.notice"), "no reset, no notice");
+    assert.equal(p.store["mb-exploration-v7"], other, "left as they are"); assert.equal(p.store[p.KEY + ".pre10"], undefined, "no copy");
+  }
+});
+test("1e. a copy of the old save that cannot be made: nothing is reset, the page opens read-only and the old bytes stay", () => {
+  const raw = JSON.stringify({ v: 7, seed: 31 });
+  const back = new Proxy({ "mb-exploration-v7": raw }, { set: (t, k, v) => { if (!String(k).endsWith(".pre10")) t[k] = v; return true; } });   // storage that drops the copy
+  const p = page(back);
+  assert.equal(p.run("RT.readOnly"), true); assert.equal(p.store["mb-exploration-v7"], raw); assert.ok(!Object.keys(p.store).some((k) => k.startsWith("mb-save-v8")), "no world was written");
 });
 
 test("3. a save copy that fails: read-only, nothing written, the bytes stay where they were", () => {

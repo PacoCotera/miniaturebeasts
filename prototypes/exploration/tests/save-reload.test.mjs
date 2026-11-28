@@ -4,6 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
+import { savedRealmSeed } from "../src/store/saved-realm.mjs";
 
 const page = store => makePage({ gen: 7, store, console: "collect", els: true, canvas: true, raf: "count" });
 
@@ -42,6 +43,22 @@ test("load() logs the cause when it cannot read a save, and still gives a screen
   assert.equal(b.run("RT.readOnly"), true, "kept read-only, never written");
   assert.ok(b.errors.length >= 1, "the cause was logged (console.error), not swallowed");
   assert.doesNotThrow(() => b.run("render(0)"), "a working screen: Start a new world is offered");
+});
+
+test("the stored save's realm seed is read before boot: this page's own save, else the shared old key; none for bytes it cannot use", () => {
+  const a = page({}); a.run("newWorld(7); save()");
+  const raw = a.store[a.KEY], seed = a.run("S.seed"), from = store => k => store[k] ?? null;
+  assert.equal(savedRealmSeed(from(a.store), [a.KEY]), seed, "the save the page wrote");
+  assert.equal(savedRealmSeed(from({ "mb-save-v8": raw }), [a.KEY, "mb-save-v8"]), seed, "the shared old key when this Companion has no save");
+  const other = JSON.parse(raw); other.regions[0].seed = seed + 1;
+  assert.equal(savedRealmSeed(from({ [a.KEY]: raw, "mb-save-v8": JSON.stringify(other) }), [a.KEY, "mb-save-v8"]), seed, "its own save comes first");
+  assert.equal(savedRealmSeed(from({ "mb-save-v8": raw }), [a.KEY]), null, "a key that was not asked for is not read");
+  assert.equal(savedRealmSeed(from({}), [a.KEY, "mb-save-v8"]), null, "no save");
+  const old = JSON.parse(raw); old.regions[0].gen = 6;
+  assert.equal(savedRealmSeed(from({ [a.KEY]: JSON.stringify(old) }), [a.KEY]), null, "a realm of another generator");
+  assert.equal(savedRealmSeed(from({ [a.KEY]: "{not a save" }), [a.KEY]), null, "bytes that do not parse");
+  assert.equal(savedRealmSeed(from({ [a.KEY]: JSON.stringify({ v: 10, st: {} }) }), [a.KEY]), null, "a save with no realm yet");
+  assert.equal(savedRealmSeed(() => { throw new Error("storage blocked"); }, [a.KEY]), null, "storage that cannot be read");
 });
 
 test("a kept Companion that cannot be read: the page starts as a new one, says why, and leaves the bytes as they are", () => {
