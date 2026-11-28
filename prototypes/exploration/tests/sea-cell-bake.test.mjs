@@ -6,7 +6,7 @@ import { PLACES, makePage } from "./page-harness.mjs";
 import { bakedCell, genWorld7, cellWorldXY } from "../src/world7.mjs";
 import { cellTerrain, TV } from "../src/gen7/place.mjs";
 import { seaTerrain, isSeaCell } from "../src/gen7/sea.mjs";
-import { MW, MH } from "../src/world.mjs";
+import { MW, MH, L, softGround, bankEdges } from "../src/world.mjs";
 import { reachCellsIn, TIER } from "../src/map-rules.mjs";
 
 const ctx = PLACES.ctx, v = 3;
@@ -61,10 +61,17 @@ test("a sea cell bakes: shallows along the line, deep beyond it, deep never besi
 
 // nothing asks for a sea cell yet: every cell the reach (the worker's list, the Station's package) can name, from every spawn and both tiers, is a land cell
 for (const seed of [13, 7, 20]) {
-  test(`seed ${seed}: no reach list names a sea cell`, () => {
+  test(`seed ${seed}: no reach list names a sea cell (no partner); a swimmer's names only wades`, () => {
     const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(${seed});`); const slot = JSON.parse(p.run("JSON.stringify(G.slot)")), G = genWorld7(seed, slot), seen = new Set(), sea = [];
-    for (const s of G.spawns) for (const t of [1, 2]) for (const c of reachCellsIn(G, s, TIER[t].range, {})) { seen.add(c); const [X, Y] = cellWorldXY(slot, c); if (isSeaCell(seed, X, Y)) sea.push(c); }
+    // opts {} (no partner), and the opts the page passes with a swimmer riding (abOpts: sure + bank 'all', over the soft ground and banks the page attaches in worldOf)
+    G.soft = softGround(G, seed); G.banks = bankEdges(G, seed);
+    const swim = [], keysOf = opts => { const out = new Set(); for (const s of G.spawns) for (const t of [1, 2]) for (const c of reachCellsIn(G, s, TIER[t].range, opts)) { seen.add(c); const [X, Y] = cellWorldXY(slot, c); if (isSeaCell(seed, X, Y)) out.add(c); } return [...out]; };
+    sea.push(...keysOf({}));
     assert.ok(seen.size > 5, "reach cells were listed");
-    assert.deepEqual(sea, [], "sea keys in the reach");
+    assert.deepEqual(sea, [], "sea keys in the reach with no partner");
+    // FOUND by the swimmer case: a swimmer's reach (sure) can name a wide-water cell, only through a soft-ground wade (a water cell with land on two opposite sides). 1b owns that caller: it gets the new sea IR.
+    swim.push(...keysOf({ sure: true, bank: "all" }));
+    assert.ok(swim.every(c => G.soft.wade[c] === 1 && G.land[c] === L.WATER && !G.ford[c]), "every sea key a swimmer's reach names is a wade cell");
+    console.log(`seed ${seed}: sea keys in the reach, no partner ${sea.length}, swimmer ${swim.length} [${swim.join(",")}]`);
   });
 }
