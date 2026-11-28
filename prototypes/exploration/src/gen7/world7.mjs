@@ -1,4 +1,4 @@
-// Generator 7 for the page: the region as the page's world, and a cell as the page's layout. The page imports this one module (the test harness binds a page's `./src/<name>.mjs` imports).
+// Generator 7 for the page: the region as the page's world, and a cell as the page's layout.
 //   genWorld7(seed, slot)        the region of slot [ax, ay] of the realm of `seed` (src/gen7/region.mjs), the page's G
 //   cellWorldXY(slot, cell)      the realm cell [X, Y] of a region cell
 //   layout7(ctx, G, seed, slot, key)   the page's layout of a land cell: its IR, baked in the page, adapted. ctx: { ts, terrains, desc }
@@ -7,10 +7,11 @@ import { WINDOW_STAGES, BAKE_STAGES } from '../waitpips.mjs';
 import { cellIR, raisedAt, CW, CH, COAST_REACH, sectorOf } from './place.mjs';
 import { inlandOf } from './levels.mjs';
 import { MW, MH } from '../logic/world.mjs';
-import { bakeCell, reviveLayers } from './bake7.mjs';
-export { reviveLayers };
+import { bakeCell } from './bake7.mjs';
 import { adaptCell } from './adapt7.mjs';
 
+export { reviveLayers } from './bake7.mjs';
+export { BANK_EI } from './adapt7.mjs';
 export { realm7, CW, CH, REALM_REV };
 // The wild Loika's haunts and routines (walk W2): an overlay read from a mounted place, never part of the land (src/gen7/haunts.mjs)
 export { makeHauntWalk } from './haunt-walk.mjs';

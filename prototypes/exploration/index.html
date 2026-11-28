@@ -239,7 +239,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, TERR, genWorld, genPlace, placeTrees, depotCells as depotCellsIn } from "./src/logic/world.mjs";
-import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf, makeHauntWalk } from "./src/gen7/world7.mjs";
+import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, BANK_EI, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf, makeHauntWalk } from "./src/gen7/world7.mjs";
 import { nightTable } from "./src/night.mjs";
 import { newSeen, seenFromOld, reveal as seenReveal, markWalked, markBeen, walkedCell as seenWalked, fogState as seenFog, veilable, anySeen, tileBit, unveiled as seenUnveiled, unveiledRows, rowsCopy, liftRound, liftSquare, liftLine, liftFlood, walkLift as seenWalkLift, liftWhere, seenShare, liftAll, veilMask } from "./src/logic/seen.mjs";
 import { cardStep } from "./src/render/card-motion.mjs";
@@ -4473,7 +4473,7 @@ function realmTurn(turned, pending) {
     if (left === 1) say('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.', ['lampLow', PLACE_KIND[G.land[c]], null, 0]); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) say('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.', ['lampOut', PLACE_KIND[G.land[c]], null, 0]); }
   // What the walk dug (a bank, or the burrow) shifts back with the turn: said as the world's, crediting the mibi that dug it (or not naming it, if it has left the Companion). One partner a walk, so one line.
   { const ex = S.exp, bankN = ex && ex.dug ? ex.dug.length : 0, burrow = !!(ex && ex.burrowDug), dm = ex && ex.pt && (bankN || burrow) ? carriedMibis().find(m => m.id === ex.pt.id) : null;
-    if (bankN || burrow) { const kind = PLACE_KIND[G.land[burrow ? G.gate : ex.dug[0] >= (1 << 20) ? ex.pos : ex.dug[0] >> 1]], who = dm ? dm.name : null;
+    if (bankN || burrow) { const kind = PLACE_KIND[G.land[burrow ? G.gate : ex.dug[0] >= BANK_EI ? ex.pos : ex.dug[0] >> 1]], who = dm ? dm.name : null;
       say(burrow ? (who ? 'The ground shifted, and the burrow ' + who + ' dug out is narrow again.' : 'The ground shifted, and the burrow is narrow again.')
         : who ? 'The ground shifted, and the ' + (bankN === 1 ? 'bank ' + who + ' dug is' : 'banks ' + who + ' dug are') + ' whole again.' : 'The ground shifted, and the dug bank is whole again.', ['shift', kind, ex.pt.id, burrow ? 1 : bankN]); } }
   // Movement: a species you know first; a direction only when the herd really drifted one way.

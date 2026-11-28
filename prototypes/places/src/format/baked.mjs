@@ -6,9 +6,9 @@
 // A value that changes in play is player state and stays in the save (a strike's age advances there, as the veil and the finds do); the file holds the bake's value.
 import { writePlace, FORMAT_VERSION } from './write.mjs';
 import { readPlace } from './read.mjs';
+import { FIND_KINDS } from '../bake/steps.mjs';
 
 const CW = 24, CH = 28;   // a generated place's tiles (exploration/src/gen7/world.mjs); a cell's baked place has a one-tile apron, so its origin is one tile before the cell's own
-export const FIND_KINDS = ['pod', 'fruit', 'dew', 'stone', 'material'];   // the order the format's `kinds` index (places/src/bake/ldtk.mjs)
 const xy = (a) => ({ x: a[0], y: a[1] });
 
 export function writeBaked(ir, place, { seed, cell }) {

@@ -4,6 +4,7 @@
 // to be out of foot reach (and so are the finds).
 import { BakeError, PLACE_SIZES } from './ldtk.mjs';
 import { cliffInfo, gullies, thicketDonor } from './openedges.mjs';
+import { footprintCells, spriteFor } from './steps.mjs';
 
 // Groves, not an orchard (walk content, lead's look at the Hollow Tree's whole view): the trees of a place stand in clumps of 3-5 that touch or overlap their crowns, with open
 // glades between and a few lone trees; never an even lattice, rows or rings. Measured on the nearest-neighbour spacing of the standing things (trees and boulders), in cells.
@@ -20,26 +21,6 @@ export const onFoot = (play) => play === 'walk' || play === 'scree' || play === 
 
 // The open style (walk content B5): a 24 x 28 place has no edge ring; its sides run on into the neighbour cell. Today's 18 x 22 places keep their walls.
 export const isOpenStyle = (ir) => ir.w === 24 && ir.h === 28;
-
-export function spriteFor(tileset, group, kind) {
-  const i = tileset.sprites.findIndex((s) => s.group === group && s.kind === kind);
-  return i < 0 ? null : { index: i, sprite: tileset.sprites[i] };
-}
-
-// Cells blocked by prop footprints: Set of y * w + x. footprint is flat dx, dy pairs.
-export function footprintCells(ir, tileset) {
-  const cells = new Map(); // cell -> prop
-  for (const p of ir.props) {
-    const s = spriteFor(tileset, 'prop', p.kind);
-    if (!s) continue;
-    const fp = s.sprite.footprint;
-    for (let i = 0; i + 1 < fp.length; i += 2) {
-      const x = p.cx + fp[i], y = p.cy + fp[i + 1];
-      if (x >= 0 && y >= 0 && x < ir.w && y < ir.h) cells.set(y * ir.w + x, p);
-    }
-  }
-  return cells;
-}
 
 // The tiles a crown hangs over, as the page's adapter reckons them (adapter.mjs: a crown's box at 48 px, a tile's pawn as its centre and a margin round it).
 export const CROWN_MARGIN = 6;

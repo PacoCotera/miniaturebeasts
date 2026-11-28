@@ -4,12 +4,12 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import Ajv from 'ajv';
 import * as G from '../format/gen/place.mjs';
+import { FIND_KINDS } from './steps.mjs';
 
 export const LDTK_VERSION = '1.5.3';
 export const GRID = 16;
 export const PLACE_W = 18, PLACE_H = 22;   // today's places; a place may also be 24 x 28 (the open style, walk content B5)
 export const PLACE_SIZES = [[18, 22], [24, 28]];
-export const FIND_KINDS = ['pod', 'fruit', 'dew', 'stone', 'material'];
 export const LAYERS = ['Canopy', 'Marks', 'Props', 'Decals', 'Terrain'];
 export const ENTITY_FIELDS = {
   Prop: ['kind'], Decal: ['kind'], Canopy: ['kind'], Heart: ['kinds', 'species', 'revealLine', 'reachBy'], Clue: ['tell', 'path'],

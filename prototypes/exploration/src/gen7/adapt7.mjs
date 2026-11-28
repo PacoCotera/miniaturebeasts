@@ -3,15 +3,17 @@
 // Everything the cell holds comes from the IR (src/gen7/hold.mjs): finds, spawns, the ways in, the landmark and its name, the signs and the strike marks. There is no heart: nothing in a
 // cell is picked by the page, and no world edge is laid over the ground (the terrain at the cell's border already is the neighbour's).
 import { T, T_BLOCK, L, hash } from '../logic/world.mjs';
+import { RIM_BIT } from '../logic/rim.mjs';
 
-export const DRAWN_PIECES = new Set();   // the set pieces the page draws with a signed picture (index.html propPiece): none yet; 'heart-slab' is a named empty slot (art/props has no picture for it)
+const DRAWN_PIECES = new Set();   // the set pieces the page draws with a signed picture (index.html propPiece): none yet; 'heart-slab' is a named empty slot (art/props has no picture for it)
 export const INNER ={ w: 24, h: 28 };
-export const BANK_EI = 1 << 20, BANK_ROWS = 4;   // a tile bank's id base (index.html keeps it in step) and its rows: the lip and the three face rows
+export const BANK_EI = 1 << 20, BANK_ROWS = 4;   // a tile bank's id base (the page reads it: a dug id at or above it is a bank's) and its rows: the lip and the three face rows
 const PRESS_PROPS = ['boulder-a', 'boulder-a-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
 const SLAB_EVERY = 5;   // about one place in five lays a slab
 const RING_DEPTH = 2;   // tiles in from a side the range haze or a closed side's thicket takes (the page's LINE_DEPTH 3 counts the apron)
 const CROWN_MARGIN = 6;  // pixels at 48 px round a crown's box that still count as under it
 const SIDE_STEP = { N: 'up', S: 'down', W: 'left', E: 'right' };
+const STEPS = [[1, 0, 'right'], [-1, 0, 'left'], [0, 1, 'down'], [0, -1, 'up']];
 
 // o: { key, cell, land (L.*), G (the region), seed }
 export function adaptCell(place, ir, ts, terrains, o) {
@@ -28,9 +30,8 @@ export function adaptCell(place, ir, ts, terrains, o) {
     const b = P(x, y); if (!((place.blockMask[b >> 3] >> (b & 7)) & 1)) continue;
     if (place.terrain[b] === cliffV) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; steep[I(x, y)] = 1; } else if (!T_BLOCK[tiles[I(x, y)]]) { tiles[I(x, y)] = T.ROCK; steep[I(x, y)] = 1; }
   }
-  const rimBits = new Uint8Array(NP);   // the steps a rim line refuses (openedges.rimSteps, bits up 1, down 2, left 4, right 8): a ring cell walks, the step across its drawn line does not (bugs #99, #100)
+  const rimBits = new Uint8Array(NP);   // the steps a rim line refuses (openedges.rimSteps, the bits of logic/rim.mjs RIM_BIT): a ring cell walks, the step across its drawn line does not (bugs #99, #100)
   if (place.rimSteps) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) rimBits[I(x, y)] = place.rimSteps[P(x, y)];
-  const RIM_BIT = { '0,-1': 1, '0,1': 2, '-1,0': 4, '1,0': 8 };
   const propFoot = new Uint8Array(NP);   // the tiles a prop stands on (a steep tile under a prop shows the prop)
   for (const p of place.props) {
     const s = ts.sprites[p.kind], cx = Math.floor(p.x / 48) - 1, cy = Math.floor(p.y / 48) - 1;
@@ -90,13 +91,17 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const compId = new Uint8Array(NP), compOfSide = {}; let nc = 0;
   // every tile along a way in (a wall may split a run: its middle can lie on a cut-off strip while the rest of the run leads to the main ground)
   const runPts = (op) => { const out = []; for (let k = op.from - 1; k <= op.to - 1; k++) out.push(op.side === 'N' ? { x: k, y: 0 } : op.side === 'S' ? { x: k, y: h - 1 } : op.side === 'W' ? { x: 0, y: k } : { x: w - 1, y: k }); return out; };
-  for (const pt of [spawnPt, ...openings.map(arrive), ...openings.flatMap(runPts)]) {
-    if (!walks(pt.x, pt.y)) continue;
-    let id = compId[I(pt.x, pt.y)];
-    if (!id) { id = ++nc; const stack = [I(pt.x, pt.y)]; compId[stack[0]] = id;
-      while (stack.length) { const i = stack.pop(), x = i % w, y = (i / w) | 0;
-        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (!compId[j] && !T_BLOCK[tiles[j]] && !(rimBits[i] & RIM_BIT[dx + ',' + dy])) { compId[j] = id; stack.push(j); } } } }
-  }
+  // The one walk on foot: every walkable tile reached from the seeds takes `v` in `mark` (a tile already marked is left). shut(i): a tile the walk never steps into (a seed on one still starts);
+  // rim: the step across a drawn rim line is not taken. Returns the number of seeds that started.
+  const flood = (mark, v, seeds, shut = null, rim = false) => {
+    const stack = [];
+    for (const pt of seeds) { const i = I(pt.x, pt.y); if (walks(pt.x, pt.y) && !mark[i]) { mark[i] = v; stack.push(i); } }
+    const started = stack.length;
+    while (stack.length) { const i = stack.pop(), x = i % w, y = (i / w) | 0;
+      for (const [dx, dy, dir] of STEPS) { const X = x + dx, Y = y + dy, j = I(X, Y); if (walks(X, Y) && !mark[j] && !(shut && shut(j)) && !(rim && rimBits[i] & RIM_BIT[dir])) { mark[j] = v; stack.push(j); } } }
+    return started;
+  };
+  for (const pt of [spawnPt, ...openings.map(arrive), ...openings.flatMap(runPts)]) if (walks(pt.x, pt.y) && !compId[I(pt.x, pt.y)]) flood(compId, ++nc, [pt], null, true);
   const reach = compId.map(v => v ? 1 : 0), size = new Array(nc + 1).fill(0); for (let i = 0; i < NP; i++) size[compId[i]]++;
   let mainComp = 1; for (let k = 1; k <= nc; k++) if (size[k] > size[mainComp]) mainComp = k;   // the biggest ground: where a walk that comes from no side starts
   // the IR names the ground the cell's finds lie on (src/gen7/hold.mjs `ground`): a walk that comes from no side starts there, on a way in that leads to it
@@ -109,7 +114,6 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const touches = {}; openings.forEach(op => { if (runPts(op).some(pt => walks(pt.x, pt.y) && compId[I(pt.x, pt.y)] === mainComp)) touches[op.side] = 1; });
   openings.forEach(op => { const pt = arrive(op); if (compOfSide[op.side] == null) { if (touches[op.side]) compOfSide[op.side] = mainComp; else if (walks(pt.x, pt.y)) compOfSide[op.side] = compId[I(pt.x, pt.y)]; } });
   const nextTo = (x, y) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const X = x + dx, Y = y + dy; return X >= 0 && Y >= 0 && X < w && Y < h && reach[I(X, Y)]; });
-  const standable = (x, y) => x >= 0 && y >= 0 && x < w && y < h && !T_BLOCK[tiles[I(x, y)]];
   // finds: a pod is a slot (the world's pods take them), the rest are the page's features. A find nobody could stand beside is dropped.
   const KIND = { fruit: 'b', dew: 'u', stone: 'k', material: 'n' }, count = {}, next = k => (count[k] = (count[k] ?? -1) + 1);
   const feats = [], podSlots = [], finds = [];
@@ -119,11 +123,8 @@ export function adaptCell(place, ir, ts, terrains, o) {
   if (o.shut) for (const side of ['N', 'S', 'W', 'E']) if (openings.some(op => op.side === side) && o.shut(side))
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if ((side === 'N' && y < RING_DEPTH) || (side === 'S' && y >= h - RING_DEPTH) || (side === 'W' && x < RING_DEPTH) || (side === 'E' && x >= w - RING_DEPTH)) ring[I(x, y)] = 1;
   // the ground walked on from the ways in that are open (a shut side's ways in lead nowhere now)
-  const live = new Uint8Array(NP), lq = [];
-  for (const op of openings) if (!(o.shut && o.shut(op.side))) for (const pt of runPts(op)) { const i = I(pt.x, pt.y); if (walks(pt.x, pt.y) && !live[i]) { live[i] = 1; lq.push(i); } }
-  for (let h2 = 0; h2 < lq.length; h2++) { const i = lq[h2], x = i % w, y = (i / w) | 0;
-    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (!live[j] && !ring[j] && !T_BLOCK[tiles[j]]) { live[j] = 1; lq.push(j); } } }
-  const ground = lq.length ? live : reach;   // a cell with no way in open now keeps the ground its ways in lead to
+  const live = new Uint8Array(NP);
+  const ground = flood(live, 1, openings.filter(op => !(o.shut && o.shut(op.side))).flatMap(runPts), j => ring[j]) ? live : reach;   // a cell with no way in open now keeps the ground its ways in lead to
   const used = new Set();
   const okAt = (x, y, bare) => x >= 0 && y >= 0 && x < w && y < h && ground[I(x, y)] && !ring[I(x, y)] && !T_BLOCK[tiles[I(x, y)]] && !used.has(I(x, y)) && (!bare || clear[I(x, y)]);
   const settle = (x, y, bare) => {
@@ -180,12 +181,9 @@ export function adaptCell(place, ir, ts, terrains, o) {
       && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => free(x + dx, y + dy) && standOn(x - dx, y - dy));
     // slabs-gen7-build-5: fits() also needs "the slab tile solid leaves compId's reach whole" (a slab in a one-wide way would split the walk from a way in): the same flood as compId's, the slab tile shut.
     const wholeWith = (sx, sy) => {
-      const seen = new Uint8Array(NP), stack = [], shut = I(sx, sy);
-      for (const pt of [spawnPt, ...openings.flatMap(runPts)]) { const i = I(pt.x, pt.y); if (walks(pt.x, pt.y) && i !== shut && !seen[i]) { seen[i] = 1; stack.push(i); } }
-      while (stack.length) { const i = stack.pop(), x = i % w, y = (i / w) | 0;
-        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (!seen[j] && j !== shut && !T_BLOCK[tiles[j]] && !(rimBits[i] & RIM_BIT[dx + ',' + dy])) { seen[j] = 1; stack.push(j); } } }
-      for (let i = 0; i < NP; i++) if (compId[i] && i !== shut && !seen[i]) return false;
-      return true;
+      const seen = new Uint8Array(NP), shut = I(sx, sy);
+      flood(seen, 1, [spawnPt, ...openings.flatMap(runPts)].filter(pt => I(pt.x, pt.y) !== shut), j => j === shut, true);
+      return !compId.some((id, i) => id && i !== shut && !seen[i]);
     };
     const cands = [];   // the flood runs for the best-scoring tiles only, in order: the next best tile when one fails
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { if (!fits(x, y)) continue; cands.push({ x, y, sc: hash(o.seed, 'slab7at', o.cell, x, y) }); }
@@ -199,10 +197,8 @@ export function adaptCell(place, ir, ts, terrains, o) {
   }
   // a cup stands where the pawn can come to it: its tile or one beside it is on the walk round the standing features (a hollow or a stone beside it can shut it in with the blocked ground); else it moves to the nearest tile that is
   {
-    const solidF = new Set(feats.filter(f => f.kind !== 'u').map(f => I(f.x, f.y))), walked = new Uint8Array(NP), wq = [];
-    for (const op of openings) for (const pt of runPts(op)) { const i = I(pt.x, pt.y); if (walks(pt.x, pt.y) && !solidF.has(i) && !walked[i]) { walked[i] = 1; wq.push(i); } }
-    for (let k = 0; k < wq.length; k++) { const x = wq[k] % w, y = (wq[k] / w) | 0;
-      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (!walked[j] && !solidF.has(j) && !T_BLOCK[tiles[j]]) { walked[j] = 1; wq.push(j); } } }
+    const solidF = new Set(feats.filter(f => f.kind !== 'u').map(f => I(f.x, f.y))), walked = new Uint8Array(NP);
+    flood(walked, 1, openings.flatMap(runPts).filter(pt => !solidF.has(I(pt.x, pt.y))), j => solidF.has(j));
     const came = (x, y) => [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const X = x + dx, Y = y + dy; return X >= 0 && Y >= 0 && X < w && Y < h && walked[I(X, Y)]; });
     for (const f of feats) {
       if (f.kind !== 'u' || came(f.x, f.y)) continue;

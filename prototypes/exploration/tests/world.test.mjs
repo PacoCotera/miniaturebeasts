@@ -84,7 +84,7 @@ test("purity, by source: no page state, DOM, storage, clock, randomness, drawing
   const code = blank(MODULE_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/]) assert.doesNotMatch(code, re);
   const imports = MODULE_SRC.split("\n").filter((l) => /^\s*import\b/.test(l));
-  assert.deepEqual(imports, ['import { mulberry32 } from "../../core/base/random.mjs";'], "the one import is the core's random module");
+  assert.deepEqual(imports, ['import { mulberry32 } from "../../../core/base/random.mjs";'], "the one import is the core's random module");
 });
 
 test("unknown generators are refused; the module knows generators 1 to 5, the page plays generator 7 only, and new worlds take generator 7", () => {
@@ -370,19 +370,19 @@ test("atlas: a blocking tile never draws as lawn; without its own pieces it take
   assert.ok(withBlock.length > 0); for (const p of withBlock) assert.deepEqual(A.placeLayers(p.lay, p.seed, none, 0, p.level), { ok: false }, p.key);
   const flat = places.find(p => !p.lay.tiles.some(t => blockKinds.includes(t))); if (flat) assert.ok(A.placeLayers(flat.lay, flat.seed, none, 0, flat.level).ok, "a place with no blocking terrain kind");
 });
-test("atlas: pure and integer only, by source; its only import is ./world.mjs; no export shadows a page identifier", () => {
+test("atlas: pure and integer only, by source; its only import is the world module; no export shadows a page identifier", () => {
   const code = blank(ATLAS_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /Math\.round/, /Math\.hypot/, /Math\.sqrt/]) assert.doesNotMatch(code, re, String(re));
   assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
-  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["./world.mjs"]);
+  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["../logic/world.mjs"]);
   const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
   for (const k of Object.keys(A)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
 });
-test("view: pure and integer only, by source; its only import is ../world.mjs; no export shadows a page identifier", () => {
+test("view: pure and integer only, by source; its only import is the world module; no export shadows a page identifier", () => {
   const code = blank(VIEW_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /Math\.round/, /Math\.hypot/, /Math\.sqrt/]) assert.doesNotMatch(code, re, String(re));
   assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
-  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["../world.mjs"]);
+  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["../logic/world.mjs"]);
   assert.equal((code.match(/\bimport\b/g) || []).length, 1, "one import");
   const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
   for (const k of Object.keys(V)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
