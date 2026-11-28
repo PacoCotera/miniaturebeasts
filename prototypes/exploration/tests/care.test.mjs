@@ -1188,15 +1188,7 @@ test("bond-walks-fix-1: each Play together press shows its own lines in order; n
   assert.ok(!/bonded|once more|twice more/.test(p.run("FX.msg")));
 });
 
-// ---- Ageing in turns: the age words, the stage words, and the real time a mibi has been the player's ----
-const AGE_FNS = ["ageTurns", "stageNote", "growIn", "turnsFor", "turnsUntil", "yoursLine"];
-const AGE_WORLD = (S, day) => { const ctx = vm.createContext({ console, S, Date: clockAt(day || "2026-10-27"), JUVENILE_TURNS: 2, ELDER_TURNS: 16 });
-  const names = ["stageAt", "turnsShort", "ageLine", "yoursText", ...AGE_FNS], at = (n, k = ctx) => vm.runInContext(source(n), k);
-  return vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx); };
-test("age words: the page's functions are the Station's text, character for character", async () => {
-  const W = await import("../../station/src/age-words.mjs");
-  for (const n of AGE_FNS) assert.equal(source(n), W[n].toString(), n);
-});
+// ---- Ageing in turns: the stage words (the age words and the Yours line are the Station's, station/src/age-words.mjs and its tests) ----
 test("stage words: young on the chips (the Mibis list, the Partner card, the mibi page, the Home card); adult and elder as they were", () => {
   assert.match(PAGE, /const STAGE_WORD = \{ juvenile: 'young', adult: 'adult', elder: 'elder' \}/);
   assert.ok(!/chip\([^)]*, st, stageFill/.test(PAGE), "no chip draws the raw stage");
@@ -1208,30 +1200,6 @@ test("stage boundaries on the Companion: young below 2, adult through 17, an eld
   assert.match(PAGE, /const JUVENILE_TURNS = PLAYTEST_ON \? PLAYTEST\.settings\.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON \? PLAYTEST\.settings\.elderTurns : 16;/);   // the game's own 2 and 16; the preset's numbers only under ?playtest
   const g = { born: 0, grownTurn: 5, bonded: true }; for (const [turn, want] of [[20, "adult"], [21, "elder"]]) { S.turn = turn; assert.equal(t.mibiStage(g), want, "grown at 5, turn " + turn); }
   S.turn = 21; assert.equal(t.agedNow(g), true); S.turn = 22; assert.equal(t.agedNow(g), false); S.turn = 18; assert.equal(t.agedNow(m), true);
-});
-test("the age line: {n} turns old, then what the stage means; never a countdown to elder", () => {
-  const S = save({ turn: 26 }), a = AGE_WORLD(S), at = (m, turn) => { S.turn = turn; return a.ageLine(m); };
-  assert.equal(at({ born: 1 }, 26), "25 turns old · an elder for 7 turns");
-  assert.equal(at({ born: 0 }, 18), "18 turns old · an elder from this turn"); assert.equal(at({ born: 0 }, 19), "19 turns old · an elder for 1 turn");
-  assert.equal(at({ born: 0 }, 17), "17 turns old", "an adult says nothing more here; no countdown to elder"); assert.equal(at({ born: 0 }, 2), "2 turns old");
-  assert.equal(at({ born: 25 }, 26), "1 turn old · grows up next turn"); assert.equal(at({ born: 24 }, 26), "2 turns old", "grown on the clock");
-  assert.equal(at({ born: 25 }, 25), "new this turn · grows up in 2 turns");
-  assert.equal(at({ born: 25, bonded: true }, 26), "1 turn old · grows up next turn", "a bonded young mibi grows on the clock like any other");
-  assert.equal(at({ born: 0, bonded: true, grownTurn: 2 }, 20), "20 turns old · an elder for 2 turns", "an elder from grownTurn + 16");
-  S.turn = 26; assert.deepEqual([{ born: 26 }, { born: 25 }, { born: 1 }].map(m => a.turnsShort(m)), ["new", "1 turn", "25 turns"]);
-});
-test("Yours: calendar days on the device's own clock, then months, then years; the date; an older save says at least", () => {
-  const S = save({ turn: 1 }), at = (since, now, extra = {}) => AGE_WORLD(S, now).yoursText(Object.assign({ since: new Date(...since, 12).getTime() }, extra));
-  assert.equal(at([2026, 9, 14], "2026-10-27"), "yours for 13 days · since 14 Oct");
-  assert.equal(at([2026, 9, 27], "2026-10-27"), "yours since today"); assert.equal(at([2026, 9, 26], "2026-10-27"), "yours for a day · since 26 Oct");
-  assert.equal(at([2026, 9, 25], "2026-10-27"), "yours for 2 days · since 25 Oct");
-  assert.equal(at([2026, 0, 1], "2026-04-10"), "yours for 99 days · since 1 Jan"); assert.equal(at([2026, 0, 1], "2026-04-11"), "yours for 3 months · since 1 Jan");
-  assert.equal(at([2025, 9, 14], "2026-10-27"), "yours for 12 months · since Oct 2025", "an earlier year: month and year");
-  assert.equal(at([2024, 10, 27], "2026-10-27"), "yours for 23 months · since Nov 2024"); assert.equal(at([2024, 9, 27], "2026-10-27"), "yours for 2 years · since Oct 2024");
-  assert.equal(at([2026, 9, 28], "2026-10-27"), "yours since today", "a clock behind `since` is never a negative count");
-  assert.equal(at([2026, 9, 14], "2026-10-27", { sinceFloor: true }), "yours for at least 13 days", "an older save: no made-up date");
-  assert.equal(at([2026, 9, 27], "2026-10-27", { sinceFloor: true }), "yours since today or before");
-  const none = AGE_WORLD(S).yoursText; assert.equal(none({ id: 1 }), "", "no `since` yet (hatched while the Companion was away): nothing, never a guess"); assert.equal(none({ since: null }), "");
 });
 test("the dock copies since and sinceFloor: a mibi already known, a new one, and one with no clock", () => {
   const S = save({ carried: [1], bay: [], known: [], retSeen: [], pods: [], dockSeen: 0 });
