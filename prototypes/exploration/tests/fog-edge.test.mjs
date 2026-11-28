@@ -3,10 +3,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import * as V from "../src/view.mjs";
+import * as EDGE from "../src/render/edge.mjs";
 import { applyLight, lightState } from "../../places/src/ground.mjs";
 
 const SIGHT = 4, E = { cx: 20 * 48 + 24, cy: 20 * 48 + 24, r: Math.round((SIGHT + .5) * 48), seed: 777 };
-const hit = (px, py, e = E) => V.fogBandHit(px, py, e);
+const hit = (px, py, e = E) => EDGE.fogBandHit(px, py, e);
 // share of fog in the 4 x 4 block at depth d past the start radius along angle 0 (the wobble is constant across the block's few pixels: use the exact depth)
 const shareAt = (d, theta = 0.3) => {
   const w = V.fogWobble(theta, E.seed), R = E.r + w + d; let n = 0, m = 0;
@@ -14,15 +15,15 @@ const shareAt = (d, theta = 0.3) => {
     // a pixel whose depth is d: walk along theta, then step onto the Bayer cell's coordinates by shifting only the lookup (depth the same)
     const px = Math.round(E.cx + Math.cos(theta) * R), py = Math.round(E.cy + Math.sin(theta) * R);
     const bx = (px & ~3) + x, by = (py & ~3) + y; m++;
-    const dd = d; if (dd >= V.FOG_BAND_PX || (dd > 0 && V.BAYER4[(by & 3) * 4 + (bx & 3)] * V.FOG_BAND_PX < dd * 16)) n++;
+    const dd = d; if (dd >= EDGE.FOG_BAND_PX || (dd > 0 && V.BAYER4[(by & 3) * 4 + (bx & 3)] * EDGE.FOG_BAND_PX < dd * 16)) n++;
   }
   return n / m;
 };
 
 test("(a) across the band the fog share of a 4x4 block rises 25 / 50 / 75 percent, full fog beyond", () => {
-  assert.equal(V.FOG_BAND_PX, 2.5 * 48);
+  assert.equal(EDGE.FOG_BAND_PX, 2.5 * 48);
   const near = (a, b) => assert.ok(Math.abs(a - b) <= .13, a + " vs " + b);
-  assert.equal(shareAt(-1), 0); near(shareAt(V.FOG_BAND_PX * .25), .25); near(shareAt(V.FOG_BAND_PX * .5), .5); near(shareAt(V.FOG_BAND_PX * .75), .75); assert.equal(shareAt(V.FOG_BAND_PX + 1), 1);
+  assert.equal(shareAt(-1), 0); near(shareAt(EDGE.FOG_BAND_PX * .25), .25); near(shareAt(EDGE.FOG_BAND_PX * .5), .5); near(shareAt(EDGE.FOG_BAND_PX * .75), .75); assert.equal(shareAt(EDGE.FOG_BAND_PX + 1), 1);
   // and through the real function, measured over a ring of world pixels at a fixed depth band
   for (const [lo, hi, want] of [[10, 30, .13], [50, 70, .45], [90, 110, .8]]) {
     let n = 0, t = 0;
@@ -71,12 +72,12 @@ test("(d) the fog band dithers at the storm band's dot size: one 4 x 4 Bayer cel
     const e = { cx: 0, cy: py, r: 1e7, seed }, fx = Math.round(e.r + V.fogWobble(0, seed) + 60);   // a pixel 60 px past the start (half the 120 px band) on the pixel's own row
     const dF = V.fogDepth(fx, py, e), bayF = V.BAYER4[(py & 3) * 4 + (px & 3)];
     // the fog pixel's x sets the depth, so compare the lookup on the same cell: shift the pixel by whole cells (multiples of 4) in x and y, the answer is the same
-    assert.equal(V.fogBandHit(fx, py, e), V.fogBandHit(fx, py, { ...e, cy: py + 0 }));
-    assert.equal(V.fogBandHit(fx, py + 4, { ...e, cy: py + 4 }), V.fogBandHit(fx, py, e), "period 4 in y");
-    assert.equal(V.fogBandHit(fx, py, e), V.BAYER4[(py & 3) * 4 + (fx & 3)] * V.FOG_BAND_PX < dF * 16, "fog: the Bayer cell indexes by the pixel (x&3, y&3)");
+    assert.equal(EDGE.fogBandHit(fx, py, e), EDGE.fogBandHit(fx, py, { ...e, cy: py + 0 }));
+    assert.equal(EDGE.fogBandHit(fx, py + 4, { ...e, cy: py + 4 }), EDGE.fogBandHit(fx, py, e), "period 4 in y");
+    assert.equal(EDGE.fogBandHit(fx, py, e), V.BAYER4[(py & 3) * 4 + (fx & 3)] * EDGE.FOG_BAND_PX < dF * 16, "fog: the Bayer cell indexes by the pixel (x&3, y&3)");
     const dS = V.stormBandDepth(darkW + V.stormWobble(py, seed) - 72, py, darkW, seed);   // 72 px inside the 144 px storm band (half)
-    assert.equal(V.stormBandHit(darkW + V.stormWobble(py, seed) - 72, py, px, darkW, seed), bayF * V.BAND_PX < dS * 16, "storm: the same indexing");
-    assert.equal(V.stormBandHit(darkW + V.stormWobble(py, seed) - 72, py, px + 4, darkW, seed), V.stormBandHit(darkW + V.stormWobble(py, seed) - 72, py, px, darkW, seed), "period 4 in x");
+    assert.equal(EDGE.stormBandHit(darkW + V.stormWobble(py, seed) - 72, py, px, darkW, seed), bayF * V.BAND_PX < dS * 16, "storm: the same indexing");
+    assert.equal(EDGE.stormBandHit(darkW + V.stormWobble(py, seed) - 72, py, px + 4, darkW, seed), EDGE.stormBandHit(darkW + V.stormWobble(py, seed) - 72, py, px, darkW, seed), "period 4 in x");
   }
   // one matrix, 4 x 4
   assert.equal(V.BAYER4.length, 16);
@@ -92,7 +93,7 @@ test("(e) over a VEILED place the veil fades across the band: full on the clear 
   const rings = [[-60, 0], [0, 30], [30, 60], [60, 90], [90, 120]], veil = rings.map(() => 0), tot = rings.map(() => 0);
   for (let y = 0; y < W; y++) for (let x = 0; x < W; x++) {
     const d = V.fogDepth(win.x + x, win.y + y, E), v = b[y * W + x], i = rings.findIndex(([lo, hi]) => d >= lo && d < hi);
-    if (d >= V.FOG_BAND_PX) { assert.equal(v, 1, "beyond the band: fog only"); continue; }
+    if (d >= EDGE.FOG_BAND_PX) { assert.equal(v, 1, "beyond the band: fog only"); continue; }
     assert.ok(v === 5 || v === 1 || v === 9 || v === 2, "only clear, fog or veil values: " + v);
     if (i >= 0) { tot[i]++; if (v === 9 || v === 2) veil[i]++; }
   }
