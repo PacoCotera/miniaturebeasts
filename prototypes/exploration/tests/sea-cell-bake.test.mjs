@@ -7,9 +7,9 @@ import { bakedCell, genWorld7, cellWorldXY } from "../src/world7.mjs";
 import { cellTerrain, TV } from "../src/gen7/place.mjs";
 import { seaTerrain, isSeaCell } from "../src/gen7/sea.mjs";
 import { MW, MH } from "../src/world.mjs";
+import { reachCellsIn, TIER } from "../src/map-rules.mjs";
 
 const ctx = PLACES.ctx, v = 3;
-const cls = t => (t === TV.WATER || t === TV.DEEP ? "sea" : t === TV.SAND ? "sand" : "land");
 // seeds 13 and 7, and the seed of his 178 save (seed 20, region 2,2)
 function borders(seed) {
   const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(${seed});`); const slot = JSON.parse(p.run("JSON.stringify(G.slot)")), G = genWorld7(seed, slot), out = [];
@@ -25,14 +25,14 @@ function borders(seed) {
 }
 
 for (const seed of [13, 7, 20]) {
-  test(`seed ${seed}: along every coast border the tiles are the same shore tiles from both sides`, () => {
+  test(`seed ${seed}: along every coast border the tiles are the same terrain value (shallows stay shallows, deep stays deep) from both sides`, () => {
     const list = borders(seed); assert.ok(list.length >= 5, "the region has coast borders");
     let tiles = 0, shore = 0;
     for (const b of list) {
       const s = seaTerrain(seed, b.X, b.Y), l = cellTerrain(seed, b.X2, b.Y2);
       for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) {
         const lx = s.x0 + x - l.x0, ly = s.y0 + y - l.y0; if (lx < 0 || ly < 0 || lx >= l.w || ly >= l.h) continue;
-        const a = cls(s.terrain[y * s.w + x]), c = cls(l.terrain[ly * l.w + lx]); tiles++; if (a !== "land") shore++;
+        const a = s.terrain[y * s.w + x], c = l.terrain[ly * l.w + lx]; tiles++; if (a === TV.WATER || a === TV.DEEP || a === TV.SAND) shore++;
         assert.equal(a, c, `seed ${seed} cells ${b.X},${b.Y} / ${b.X2},${b.Y2} tile ${s.x0 + x},${s.y0 + y}`);
       }
     }
@@ -58,3 +58,13 @@ test("a sea cell bakes: shallows along the line, deep beyond it, deep never besi
   const land = bakedCell(ctx, seed, slot, ((b.Y2 - slot[1] * MH) * MW + (b.X2 - slot[0] * MW)), v);
   assert.ok(land.ir.hearts && land.ir.terrain.length === cellTerrain(seed, b.X2, b.Y2).terrain.length && land.ir.terrain.every(k => k !== TV.DEEP || cellTerrain(seed, b.X2, b.Y2).terrain.includes(TV.DEEP)), "a land cell is baked through its own IR (cellIR), as before");
 });
+
+// nothing asks for a sea cell yet: every cell the reach (the worker's list, the Station's package) can name, from every spawn and both tiers, is a land cell
+for (const seed of [13, 7, 20]) {
+  test(`seed ${seed}: no reach list names a sea cell`, () => {
+    const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(${seed});`); const slot = JSON.parse(p.run("JSON.stringify(G.slot)")), G = genWorld7(seed, slot), seen = new Set(), sea = [];
+    for (const s of G.spawns) for (const t of [1, 2]) for (const c of reachCellsIn(G, s, TIER[t].range, {})) { seen.add(c); const [X, Y] = cellWorldXY(slot, c); if (isSeaCell(seed, X, Y)) sea.push(c); }
+    assert.ok(seen.size > 5, "reach cells were listed");
+    assert.deepEqual(sea, [], "sea keys in the reach");
+  });
+}

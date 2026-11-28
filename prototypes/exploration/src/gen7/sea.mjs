@@ -17,9 +17,20 @@ export function seaTerrain(seed, X, Y) {
   // where the coast line says land (or a ford's shallows) over the window and R tiles round it: a function of the world tile alone, so both sides of every border see the same
   const dry = new Uint8Array(ew * eh);
   for (let y = 0; y < eh; y++) for (let x = 0; x < ew; x++) { const v = shoreValue(seed, S.shoreCells, x0 - R + x, y0 - R + y); dry[y * ew + x] = v === null || v <= 0 ? 1 : 0; }
-  const wet = (x, y) => { if (x < 0 || y < 0 || x >= w || y >= h) return true; const v = t[y * w + x]; return v === TV.WATER || v === TV.DEEP; };
+  // every tile a neighbouring land cell's window covers takes that land cell's own terrain value, exactly (land cells do not change), so a tile is the same value from both sides of a border
+  const given = new Uint8Array(w * h);
+  for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) {
+    if ((di || dj) && !isSeaCell(seed, X + di, Y + dj)) {
+      const l = cellTerrain(seed, X + di, Y + dj);
+      for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) {
+        const sx = l.x0 + x - x0, sy = l.y0 + y - y0; if (sx < 0 || sy < 0 || sx >= w || sy >= h) continue;
+        terrain[sy * w + sx] = l.terrain[y * l.w + x]; given[sy * w + sx] = 1;
+      }
+    }
+  }
+  const wet = (x, y) => { if (x < 0 || y < 0 || x >= w || y >= h) return true; const v = terrain[y * w + x]; return v === TV.WATER || v === TV.DEEP; };
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    if (t[y * w + x] !== TV.WATER) continue;
+    if (given[y * w + x] || terrain[y * w + x] !== TV.WATER) continue;
     let deep = true;
     for (let j = -R; j <= R && deep; j++) for (let i = -R; i <= R; i++) if (i * i + j * j <= R * R && dry[(y + R + j) * ew + x + R + i]) { deep = false; break; }   // land within R tiles keeps it shallow
     for (let j = -1; j <= 1 && deep; j++) for (let i = -1; i <= 1; i++) if (!wet(x + i, y + j)) { deep = false; break; }   // and so does land beside it in the generator's own terrain (deep meets water only)
