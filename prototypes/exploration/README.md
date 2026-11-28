@@ -2,6 +2,8 @@
 
 **The standalone "Companion Field Test" page is retired** (owner 11-18: "retire that field test implementation please, it's too old"). This file is now the game's Companion screen only: `/play/` loads it in a frame (`exploration/?embed`). On the site it answers only with a query: with none it is not found (owner 11-18: "don't keep old stale URLs that nobody uses, just delete it"; `ops/sandbox/Caddyfile`); any query keeps the page as before, and `exploration/?observer` is the device with the Observer panel (a developer tool). Tests and tools that open the page directly add `?test`.
 
+How the code is laid out (the layers, their folders, who may import whom): [`STRUCTURE.md`](STRUCTURE.md).
+
 Builds exploration round 3 ([`design/proposals/exploration-round-3.md`](../../design/proposals/exploration-round-3.md), its build scope, with warm stones kept scarce) on top of round 2 ([`exploration-round-2.md`](../../design/proposals/exploration-round-2.md)) and the four-button control scheme ([`companion-controls.md`](../../design/proposals/companion-controls.md)), and Companion mode ([`companion-mode.md`](../../design/proposals/companion-mode.md): the active mibi screen, Energy via the Probe, the ← key), on an honest simulation of the Companion screen: a fogged 16×20 world map, living places under a survey veil, the action clock, storms and fog banks, materials with a purpose, up to three mibis with you and their care, and End expedition → the sealed bay → world turn. Since round 8 the Station is its own page, [`prototypes/station/`](../station/README.md) (1024×600), sharing this page's save: cargo reaches it only when the Companion is docked there ([`station-loop.md`](../../design/proposals/station-loop.md) §2, §9).
 
 ## Controls

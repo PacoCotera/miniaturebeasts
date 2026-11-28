@@ -125,6 +125,10 @@ jobs:
       - name: Install the exploration page's packages (the generator's noise and queue)
         if: steps.scope.outputs.docs != 'true'
         run: npm ci --prefix prototypes/exploration --no-audit --no-fund --silent
+      - name: The Companion's layers hold (no module imports a layer it may not)
+        if: steps.scope.outputs.docs != 'true'
+        # prototypes/exploration/tools/import-check.mjs reads src/layers.json (prototypes/exploration/STRUCTURE.md): logic imports nothing above it. Reads the sources only; well under a second.
+        run: node prototypes/exploration/tools/import-check.mjs
       - name: Bundle the pages (Vite)
         if: steps.scope.outputs.docs != 'true'
         # prototypes/vite.config.mjs bundles the Station, play and exploration pages into content-hashed chunks with modulepreload (the spec JSON and p-queue inside, the pictures and metrics hashed) and
