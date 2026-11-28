@@ -2,7 +2,7 @@
 // The page's grid is PW x PH (28 x 32) until places of two sizes land in the page, so the 18 x 22 place is centred in it: the cells around it are
 // rock (never walked), and `lay.baked.ox/oy` say where it sits. Terrain becomes the page's tile T, prop footprints become TRUNK (a tree, which has
 // a canopy) or ROCK, tall grass becomes T.TALL; the heart and the openings come from the place's entities.
-import { T, T_BLOCK, L, PW, PH, TERR } from '../../exploration/src/world.mjs';
+import { T, T_BLOCK, L, PW, PH, TERR } from '../../exploration/src/logic/world.mjs';
 import { shapeEdges, sideXY, DIR_OF } from './edges.mjs';
 import { thicketDonor } from './bake/openedges.mjs';
 

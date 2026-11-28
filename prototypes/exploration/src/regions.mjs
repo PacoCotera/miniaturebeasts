@@ -5,7 +5,7 @@
 //   save v10 on disk: { v: 10, seed (= regions[0].seed), began, here, regions: [Region …], resetFrom?, …the realm's fields… }
 //   Region = { id, n, kind: "home", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
 //              closes, closed, exploredN, seenN, map: { …MAP_KEYS… } }
-import { MW, MH, GENS, hash, ROSTER, FAMILY_GROUND } from "./world.mjs";
+import { MW, MH, GENS, hash, ROSTER, FAMILY_GROUND } from "./logic/world.mjs";
 import { LANGUAGE, kindLands } from "../../species/framework/language.mjs";
 import { newSeen, isRecord, seenFromOld } from "./logic/seen.mjs";
 

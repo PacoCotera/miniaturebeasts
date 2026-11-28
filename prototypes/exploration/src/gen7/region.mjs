@@ -4,7 +4,7 @@
 // the swim island, the set pieces (gate, deep stone, swim gate, five starts, outposts, beacons), trails by A* with ports, and today's region checks.
 // Every decision is a hash of the realm seed and a world position (and the region's attempt number), never of the order regions were opened in.
 import FlatQueue from 'flatqueue';
-import { hash, makeRng, MW, MH, L, EDGE, G2, WALK_MIN, BIOME_GROUND, cdist, cxy, cheb, passableIn, canStepIn, edgeIndex } from '../world.mjs';
+import { hash, makeRng, MW, MH, L, EDGE, G2, WALK_MIN, BIOME_GROUND, cdist, cxy, cheb, passableIn, canStepIn, edgeIndex } from '../logic/world.mjs';
 import { ATLAS } from '../regions.mjs';
 import { buildRealm, rawRealm, editE0, RW, RH, CW, CH, NB8, isSaddle, levelZones, closeLevels, fixSaddles } from './world.mjs';
 import { realmFeatures } from './features.mjs';

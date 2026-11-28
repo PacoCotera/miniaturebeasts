@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 
 
 // The page in a sandbox: every DOM and canvas call lands on an inert stub; localStorage is `store`.

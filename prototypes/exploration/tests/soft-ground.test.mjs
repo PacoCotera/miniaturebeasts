@@ -2,7 +2,7 @@
 //   node --test prototypes/exploration/tests/soft-ground.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 import { makePage } from "./page-harness.mjs";
 
 const { MW, MH, L, EDGE, DIRS } = W, NC = MW * MH;

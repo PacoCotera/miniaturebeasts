@@ -2,7 +2,7 @@
 // The baked place is the cell with its one-tile apron (26 x 30); the page's cell is the 24 x 28 inside it, so lay tile (x, y) is place tile (x + 1, y + 1) and the view is given ox = oy = -1.
 // Everything the cell holds comes from the IR (src/gen7/hold.mjs): finds, spawns, the ways in, the landmark and its name, the signs and the strike marks. There is no heart: nothing in a
 // cell is picked by the page, and no world edge is laid over the ground (the terrain at the cell's border already is the neighbour's).
-import { T, T_BLOCK, L, hash } from './world.mjs';
+import { T, T_BLOCK, L, hash } from '../logic/world.mjs';
 
 export const DRAWN_PIECES = new Set();   // the set pieces the page draws with a signed picture (index.html propPiece): none yet; 'heart-slab' is a named empty slot (art/props has no picture for it)
 export const INNER ={ w: 24, h: 28 };

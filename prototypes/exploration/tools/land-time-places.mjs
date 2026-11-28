@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdirSync, cpSync, readFileSync, writeFileSync } from 'node:fs';
 const [out, baseLevels, runsS, ...cells] = process.argv.slice(2), runs = +runsS, here = new URL('.', import.meta.url).pathname, QJS = '/home/mb/mb/hw-tools/quickjs-ng/bin/qjs';
 const median = a => a.slice().sort((x, y) => x - y)[a.length >> 1];
-const patch = t => t.replaceAll("'../../../core/base/", "'../core/base/").replace("from './world.mjs'", "from './worldstub.mjs'").replace("from '../world.mjs'", "from './worldstub.mjs'");
+const patch = t => t.replaceAll("'../../../core/base/", "'../core/base/").replace("from './world.mjs'", "from './worldstub.mjs'").replace("from '../logic/world.mjs'", "from './worldstub.mjs'");
 const rows = [];
 for (const c of cells) {
   const [seed, X, Y] = c.split(':'), dn = `${out}/n-${seed}-${X}-${Y}`, db = `${out}/b-${seed}-${X}-${Y}`;

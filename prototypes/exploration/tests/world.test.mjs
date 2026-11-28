@@ -1,4 +1,4 @@
-// The seeded world (src/world.mjs): generator 1 against its golden vectors (tests/world-vectors.json, captured from the page
+// The seeded world (src/logic/world.mjs): generator 1 against its golden vectors (tests/world-vectors.json, captured from the page
 // before the world moved out of it), the module's purity, the generator recorded in the save (`gen`, absent means 1) through
 // the page itself, and the Station's save reader keeping `gen` untouched. Generator 2 (terrain levels and stairs): its
 // golden vectors, its integer purity, its invariants over seeds 0–999 (places on 0–99) and canStepIn on hand-built worlds.
@@ -10,20 +10,20 @@ import { loadPage, fakeCanvas, paletteLook, PAGE, MODULE, SCRIPT, STONE_ART } fr
 import { blank } from "../../face/tools/blank.mjs";
 import { detail } from "../../core/base/noise.mjs";
 import { NOISE_VECTORS } from "./noise-vectors.mjs";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 import { PLAYTEST_SEEDS, PLAYTEST_REALM_REV, PLAYTEST_BIOME_V } from "../src/playtest-seeds.mjs";
 import { REALM_REV } from "../src/gen7/region.mjs";
 import { WORDS } from "../src/data/words.mjs";
 import * as R from "../src/regions.mjs";
-import * as A from "../src/atlas.mjs";
+import * as A from "../src/render/atlas.mjs";
 import * as V from "../src/render/view.mjs";
 import * as SHAPE from "../src/render/edge.mjs";
 import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs, viewOut, ATLAS_CASES, atlasCaseOut, atlasPlaces, syntheticPieces, SYNTH_TONE, NO_MACRO, PROOF_GRID, proofStates, fnv as fnvStr } from "../tools/world-vectors.mjs";
 
 const VECTORS = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
-const MODULE_SRC = readFileSync(new URL("../src/world.mjs", import.meta.url), "utf8");
+const MODULE_SRC = readFileSync(new URL("../src/logic/world.mjs", import.meta.url), "utf8");
 const VIEW_SRC = readFileSync(new URL("../src/render/view.mjs", import.meta.url), "utf8");
-const ATLAS_SRC = readFileSync(new URL("../src/atlas.mjs", import.meta.url), "utf8");
+const ATLAS_SRC = readFileSync(new URL("../src/render/atlas.mjs", import.meta.url), "utf8");
 const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
 const LIFE = { roster: W.ROSTER, genLife: (G, seed) => W.genLife(G, seed, W.ROSTER) };   // the roster column
 const API = { hash: W.hash, L: W.L, genWorld: s => W.genWorld(s, 1), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells, ...LIFE };
@@ -235,7 +235,7 @@ test("view: src/render/view.mjs gives every literal case in world-vectors.json, 
   assert.deepEqual(at("camAt at 32 (today's value)"), { x: 239, y: 492 }, "today's camera on main at 32 px");
   assert.deepEqual(at("visTiles at spawn"), { tx0: 9, ty0: 20, tx1: 19, ty1: 31 }, "11 × 12 tiles");
 });
-// ---- src/atlas.mjs: the per-tile layers of a 48 px place, on the synthetic catalogue in world-vectors.json ----
+// ---- src/render/atlas.mjs: the per-tile layers of a 48 px place, on the synthetic catalogue in world-vectors.json ----
 const SYN = () => A.catalogue(VECTORS.atlas.catalogue, VECTORS.atlas.levelTone);
 const vecPlaces = () => atlasPlaces(W).map(p => { const lay = W.genPlace(p.G, p.seed, p.key); return { ...p, lay, level: p.G.level ? p.G.level[lay.cell] : null }; });
 test("atlas: the synthetic catalogue and the literal cases in world-vectors.json", () => {

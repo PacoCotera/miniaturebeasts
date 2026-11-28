@@ -5,7 +5,7 @@ import { realm7 } from '../src/gen7/region.mjs';
 import { levelsOf, findWayup, tileLevel, CW, CH } from '../src/gen7/levels.mjs';
 import { wetCell } from '../src/gen7/levels.mjs';
 import { RW, RH } from '../src/gen7/world.mjs';
-import { L as LAND } from '../src/world.mjs';
+import { L as LAND } from '../src/logic/world.mjs';
 
 const args = process.argv.slice(2), opt = (n, d) => { const i = args.indexOf('--' + n); return i < 0 ? d : args[i + 1]; };
 const SEEDS = String(opt('seeds', '7,13')).split(',').map(Number), WINDOWS = JSON.parse(readFileSync(new URL('./land-windows.json', import.meta.url), 'utf8'));

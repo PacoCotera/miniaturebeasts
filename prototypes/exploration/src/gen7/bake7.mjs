@@ -1,12 +1,12 @@
 // Generator 7: a cell's IR to the baked place, in the page. The same steps as places/src/bake/build.mjs buildPlace (the dual grid by terrain layers, open edges, depth-packed ground, the block mask,
 // the records), without that module's imports of the LDtk reader (Ajv, node:fs), which a browser cannot load; tests/gen7-bake.test.mjs holds the two equal on sample cells. The layer descriptors
 // come from art/gen7/layers.json (tools/gen7-layers.mjs), the tile set from the baked .mbtiles. Pure: no page state.
-import { terrainLayers, packDepth, EMPTY, FILL_CODE, splitCode } from '../../places/src/dualgrid.mjs';
-import { ALT_CODE, applyOpenEdges, cliffInfo, rimSteps } from '../../places/src/bake/openedges.mjs';
-import { cliffDecals } from '../../places/src/bake/southruns.mjs';
+import { terrainLayers, packDepth, EMPTY, FILL_CODE, splitCode } from '../../../places/src/dualgrid.mjs';
+import { ALT_CODE, applyOpenEdges, cliffInfo, rimSteps } from '../../../places/src/bake/openedges.mjs';
+import { cliffDecals } from '../../../places/src/bake/southruns.mjs';
 
 export const FIND_KINDS = ['pod', 'fruit', 'dew', 'stone', 'material'];
-import { FORMAT_VERSION } from '../../places/src/format/write.mjs';   // the place format (2: the cell carries the bake's hold outputs, baked-package-8): the one place it is set
+import { FORMAT_VERSION } from '../../../places/src/format/write.mjs';   // the place format (2: the cell carries the bake's hold outputs, baked-package-8): the one place it is set
 
 const spriteFor = (ts, group, kind) => { const i = ts.sprites.findIndex(s => s.group === group && s.kind === kind); return i < 0 ? null : { index: i, sprite: ts.sprites[i] }; };
 function footprintCells(ir, ts) {

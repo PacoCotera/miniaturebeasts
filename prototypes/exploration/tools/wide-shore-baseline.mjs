@@ -5,7 +5,7 @@ import { writeFileSync } from 'node:fs';
 const mod = await import(process.argv[2] || '../src/gen7/place.mjs');
 const { cellTerrain, contextOf } = mod;
 const { RW } = await import('../src/gen7/world.mjs');
-const { L } = await import('../src/world.mjs');
+const { L } = await import('../src/logic/world.mjs');
 export const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
 const out = {};
 for (const seed of SEEDS) {

@@ -3,7 +3,7 @@
 // The range rule is G1's as round 4 tested it (the range rule 3 A and B); every number is *greybox* (the designer's to tune).
 //   a habit: shake (after rain, the moment it stops), calm (a wary one comes near her), sleep (curled at her bed, from dusk)
 //   a play: tell (2 to 4 actions, the individual's), then four beats; ✓ facing her in sight during a play is a note
-import { hash, rnd } from './world.mjs';
+import { hash, rnd } from './logic/world.mjs';
 import { haunt as hauntOf } from './gen7/haunts.mjs';
 
 export const HABITS = Object.freeze(['shake', 'calm', 'sleep']);

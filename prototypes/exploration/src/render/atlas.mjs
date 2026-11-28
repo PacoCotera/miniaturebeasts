@@ -2,7 +2,7 @@
 // no page state, DOM, storage, clock, randomness, drawing or float. It reads names from the catalogue, never from file names, so
 // meadow.json can rename a piece without a code change: the exact colour decode, the catalogue, the core set, the biome palette and
 // the per-tile layers each 48 px tile of a place is built from.
-import { PW, PH, T, T_BLOCK, TERR, hash } from './world.mjs';
+import { PW, PH, T, T_BLOCK, TERR, hash } from '../logic/world.mjs';
 
 export const QUADS = ['nw', 'ne', 'se', 'sw'];
 export const SHORE_STATES = ['fill', 'edgeh', 'edgev', 'outer', 'inner'];

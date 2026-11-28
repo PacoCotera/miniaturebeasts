@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 import { freshSt, dockKey } from "../../station/src/state.mjs";
 import { regionRecord, blankMap } from "../src/regions.mjs";
-import { hash } from "../src/world.mjs";
+import { hash } from "../src/logic/world.mjs";
 import { syntheticPieces, SYNTH_TONE } from "../tools/world-vectors.mjs";
 
 

@@ -5,7 +5,7 @@ import { realm7 } from '../src/gen7/region.mjs';
 import { cellIR, decorOf } from '../src/gen7/place.mjs';
 import { landmarksOf } from '../src/gen7/landmarks.mjs';
 import { isStartCell } from '../src/gen7/hold.mjs';
-import { hash, L, MW, MH } from '../src/world.mjs';
+import { hash, L, MW, MH } from '../src/logic/world.mjs';
 import { ATLAS } from '../src/regions.mjs';
 
 const [s0, s1, per, out] = [Number(process.argv[2] || 7), Number(process.argv[3] || 7), Number(process.argv[4] || 100), process.argv[5]];

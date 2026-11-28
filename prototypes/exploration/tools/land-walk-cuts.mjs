@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { CW, CH, levelsOf, raised } from '../src/gen7/levels.mjs';
 import { realm7, genRegion7 } from '../src/gen7/region.mjs';
-import { MW, MH } from '../src/world.mjs';
+import { MW, MH } from '../src/logic/world.mjs';
 import { cellIR, TV } from '../src/gen7/place.mjs';
 import { bakeCtx } from './gen7-render.mjs';
 import { cliffInfo } from '../../places/src/bake/openedges.mjs';

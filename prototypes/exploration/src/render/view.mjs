@@ -1,7 +1,7 @@
 // The Companion's place view (C2a): tile size, the centred camera, the visible range, tile and screen coordinates, the
 // sprite anchor, and the two tests the edge cues use. No page state, DOM, clock, storage or randomness. The camera and the coordinates are integer only
 // (the caller rounds the tween; division is Math.floor on integers); the storm, fog and puff shapes further down are not.
-import { PW, PH } from '../world.mjs';
+import { PW, PH } from '../logic/world.mjs';
 
 export const TS = 48, SPR = 32;                                    // the place tile; today's sprite box
 export const ON_SCREEN = { x0: 17, y0: 49, x1: 433, y1: 547 };     // a 32 px creature centred in its cell shows whole

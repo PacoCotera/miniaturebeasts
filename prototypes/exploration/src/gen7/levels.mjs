@@ -9,7 +9,7 @@ import { hash2, subSeed } from '../../../core/base/noise.mjs';
 import { div, shr, quot } from '../../../core/base/whole.mjs';
 import RULE from './land-rule.json' with { type: 'json' };
 import { RW, RH, CW, CH, fieldsAt, heightAt, noiseField } from './world.mjs';
-import { L as LAND, MW, MH } from '../world.mjs';
+import { L as LAND, MW, MH } from '../logic/world.mjs';
 
 export { CW, CH };
 export const WTW = RW * CW, WTH = RH * CH;                // the realm in tiles

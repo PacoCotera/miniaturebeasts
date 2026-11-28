@@ -71,7 +71,7 @@ export function startPackage(sv, opts = {}) {
     try {
       const want = wantOf(sv); if (!want) { packageState.phase = 'none'; DONE_KEY = key; return null; }
       packageState.startedAt = performance.now(); const tI = packageState.startedAt;
-      const [world7, realmStore, place, realm, places, store] = await Promise.all([import('../../exploration/src/world7.mjs'), import('../../exploration/src/realm-store.mjs'), import('../../exploration/src/gen7/place.mjs'), import('../../exploration/src/gen7/region.mjs'), import('../../exploration/src/place-store.mjs'), import('../../exploration/src/package-store.mjs')]);
+      const [world7, realmStore, place, realm, places, store] = await Promise.all([import('../../exploration/src/gen7/world7.mjs'), import('../../exploration/src/realm-store.mjs'), import('../../exploration/src/gen7/place.mjs'), import('../../exploration/src/gen7/region.mjs'), import('../../exploration/src/place-store.mjs'), import('../../exploration/src/package-store.mjs')]);
       const tk = performance.now(), kit = await loadKit({ world7, places }), kv = await store.idbKv(), t0 = performance.now();
       packageState.steps = { imports: Math.round(tk - tI), kit: Math.round(t0 - tk) }; packageState.phase = 'baking';
       const r = await bakePackage(want, {

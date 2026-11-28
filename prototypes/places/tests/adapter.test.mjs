@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { adaptPlace } from '../src/adapter.mjs';
-import { T, T_BLOCK, PW, PH } from '../../exploration/src/world.mjs';
+import { T, T_BLOCK, PW, PH } from '../../exploration/src/logic/world.mjs';
 import { ts, place, placeX, places } from './render-helpers.mjs';
 
 const terrains = JSON.parse(readFileSync(path.join(places, 'baked', 'terrain.json'), 'utf8')).terrains;

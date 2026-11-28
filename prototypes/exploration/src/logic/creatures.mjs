@@ -1,6 +1,6 @@
 // Creatures: the rules that read only what they are handed. X is the action's view of the place: its layout (lay), its live list (live)
 // and the explorer's tile (P).
-import { T, man } from '../world.mjs';
+import { T, man } from './world.mjs';
 
 // The nearest hole within maxD steps that no creature is hiding in, or null.
 export function nearestHole(X, c, maxD) {

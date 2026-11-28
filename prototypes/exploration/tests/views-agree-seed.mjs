@@ -3,7 +3,7 @@
 // CI shards can share the time. The floors are a third of the old three-seed floors (cells > 600, sides > 2400), and the 20% bar holds for each seed.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { softGround, bankEdges } from "../src/world.mjs";
+import { softGround, bankEdges } from "../src/logic/world.mjs";
 import { realm7 } from "../src/gen7/region.mjs";
 import { cellIR } from "../src/gen7/place.mjs";
 import { ATLAS } from "../src/regions.mjs";

@@ -11,7 +11,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { cellTerrain, TV, CW, CH, RW, RH } from '../src/gen7/place.mjs';
 import { genRegion7 } from '../src/gen7/region.mjs';
-import { MW, MH } from '../src/world.mjs';
+import { MW, MH } from '../src/logic/world.mjs';
 
 const NB4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 const seed = +process.argv[2], dir = process.argv[3], fresh = process.argv.includes('--fresh'), pi = process.argv.indexOf('--parts'), partsOut = pi > 0 ? process.argv[pi + 1] : null;

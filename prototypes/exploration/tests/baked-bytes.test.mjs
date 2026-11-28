@@ -3,11 +3,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { PLACES, makePage } from "./page-harness.mjs";
-import { bakedCell, layout7, genWorld7 } from "../src/world7.mjs";
+import { bakedCell, layout7, genWorld7 } from "../src/gen7/world7.mjs";
 import { writeBaked, readBaked } from "../../places/src/format/baked.mjs";
 import { writePlace } from "../../places/src/format/write.mjs";
 import { readPlace } from "../../places/src/format/read.mjs";
-import { MW, MH } from "../src/world.mjs";
+import { MW, MH } from "../src/logic/world.mjs";
 
 const ctx = PLACES.ctx, v = 3;
 const slots = {};   // the region a new world of the seed starts in, as the page makes it

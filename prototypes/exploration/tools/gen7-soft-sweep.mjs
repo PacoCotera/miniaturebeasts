@@ -1,7 +1,7 @@
 // Generator 7 soft ground in the places (tuliko-soft-7-1): per seed, the soft cells and edges softGround names, and how many of them the places lay tiles for (ir.soft: mud, scree),
 // regions with a Tuliko gate (at least one laid tile), and the tiles laid.
 // node tools/gen7-soft-sweep.mjs [seed ...]   (default 7 13 42)
-import { MW, MH, softGround } from '../src/world.mjs';
+import { MW, MH, softGround } from '../src/logic/world.mjs';
 import { genRegion7 } from '../src/gen7/region.mjs';
 import { cellIR } from '../src/gen7/place.mjs';
 

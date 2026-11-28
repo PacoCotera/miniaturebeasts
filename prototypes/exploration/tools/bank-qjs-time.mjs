@@ -7,7 +7,7 @@ import { realm7 } from '../src/gen7/region.mjs';
 import { levelsOf, windowLevels, findWayup } from '../src/gen7/levels.mjs';
 const [out, baseLevels, runsS, ...cells] = process.argv.slice(2), runs = +runsS, here = new URL('..', import.meta.url).pathname, QJS = '/home/mb/mb/hw-tools/quickjs-ng/bin/qjs';
 const median = (a) => a.slice().sort((x, y) => x - y)[a.length >> 1];
-const patch = (t) => t.replaceAll("'../../../core/base/", "'../core/base/").replace("from './world.mjs'", "from './worldstub.mjs'").replace("from '../world.mjs'", "from './worldstub.mjs'");
+const patch = (t) => t.replaceAll("'../../../core/base/", "'../core/base/").replace("from './world.mjs'", "from './worldstub.mjs'").replace("from '../logic/world.mjs'", "from './worldstub.mjs'");
 const RUN = `const inQjs = typeof globalThis.scriptArgs !== 'undefined';
 let text;
 if (inQjs) { const std = await import('qjs:std'); text = std.loadFile(globalThis.scriptArgs[1]); }

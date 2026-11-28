@@ -4,7 +4,7 @@
 //   node --test prototypes/exploration/tests/region-turn.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 import * as R from "../src/regions.mjs";
 import { readFileSync } from "node:fs";
 import { makePage } from "./page-harness.mjs";

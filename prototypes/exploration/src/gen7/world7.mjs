@@ -2,19 +2,19 @@
 //   genWorld7(seed, slot)        the region of slot [ax, ay] of the realm of `seed` (src/gen7/region.mjs), the page's G
 //   cellWorldXY(slot, cell)      the realm cell [X, Y] of a region cell
 //   layout7(ctx, G, seed, slot, key)   the page's layout of a land cell: its IR, baked in the page, adapted. ctx: { ts, terrains, desc }
-import { genRegion7, realm7, REALM_REV } from './gen7/region.mjs';
-import { WINDOW_STAGES, BAKE_STAGES } from './waitpips.mjs';
-import { cellIR, raisedAt, CW, CH, COAST_REACH, sectorOf } from './gen7/place.mjs';
-import { inlandOf } from './gen7/levels.mjs';
-import { MW, MH } from './world.mjs';
+import { genRegion7, realm7, REALM_REV } from './region.mjs';
+import { WINDOW_STAGES, BAKE_STAGES } from '../waitpips.mjs';
+import { cellIR, raisedAt, CW, CH, COAST_REACH, sectorOf } from './place.mjs';
+import { inlandOf } from './levels.mjs';
+import { MW, MH } from '../logic/world.mjs';
 import { bakeCell, reviveLayers } from './bake7.mjs';
 export { reviveLayers };
 import { adaptCell } from './adapt7.mjs';
 
 export { realm7, CW, CH, REALM_REV };
 // The wild Loika's haunts and routines (walk W2): an overlay read from a mounted place, never part of the land (src/gen7/haunts.mjs)
-export { makeHauntWalk } from './gen7/haunt-walk.mjs';
-export { sitesOf as hauntSites, spotsFor as hauntSpots, hauntsOn, hauntsKept, hauntsApart, doingsOf, haunt as hauntAt, standAt as hauntStand, nameOf as loikaName, isWary, routineOf } from './gen7/haunts.mjs';   // CW x CH: the tiles of a cell; the page's PW x PH is the place with its apron
+export { makeHauntWalk } from './haunt-walk.mjs';
+export { sitesOf as hauntSites, spotsFor as hauntSpots, hauntsOn, hauntsKept, hauntsApart, doingsOf, haunt as hauntAt, standAt as hauntStand, nameOf as loikaName, isWary, routineOf } from './haunts.mjs';   // CW x CH: the tiles of a cell; the page's PW x PH is the place with its apron
 // The sector of a region (place.mjs sectorOf, every place of it, made from the realm alone: no place is built): per cell 4 x 4 blocks of ground class and level bit, and the realm's lines, marks,
 // destinations and stairs by cell. Plain data, so the places worker can make it and send it. { cls, lv: Uint8Array(NC * 16), lines: [{ c, k, pts }], marks: [{ c, k, x, y, ax }], dest: [{ c, kind }], ramps: [{ c, dir, x, y, hiA }] };
 // positions are in tiles from the region's own corner (the page's cell 0), not the realm's.

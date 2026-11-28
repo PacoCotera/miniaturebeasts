@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { makePage } from "./page-harness.mjs";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 
 
 // generator 6: the composed places (the first pods land in the template's find slots). The first pod is home, so the signs and hints of these suites show (the first walk holds them: the tests at the end of this file)

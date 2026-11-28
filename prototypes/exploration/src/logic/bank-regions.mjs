@@ -1,5 +1,5 @@
 // The Rupar's earth banks are made a region at a time (gen7/levels.mjs regionBanks); a place's window reads the lists of the regions it touches.
-import { MW, MH, cxy } from "../world.mjs";
+import { MW, MH, cxy } from "./world.mjs";
 import { ATLAS } from "../regions.mjs";
 
 const BANK_WINDOW = 2;   // cells: a place's window reads this far round the cell (levels.mjs rule.window)

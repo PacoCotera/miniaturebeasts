@@ -11,7 +11,7 @@
 import { paintLand } from './render/landpaint.mjs';
 import { realm7, setRealm7 } from './gen7/region.mjs';
 import { decorOf, presetHollowSites, banksOfRegion, madeBanks, presetBanks } from './gen7/place.mjs';
-import { bakedCell, sectorOfRegion } from './world7.mjs';
+import { bakedCell, sectorOfRegion } from './gen7/world7.mjs';
 import { BAKE_STAGES, WINDOW_STAGES } from './waitpips.mjs';
 import { renderGround, PlaceGroundCache, wholeScale } from '../../places/src/ground.mjs';
 

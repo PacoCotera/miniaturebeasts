@@ -4,7 +4,7 @@
 // C1: the share of the place's 24 x 28 tiles that are on the realm's level for the cell is over half (water cells count as low). River raised: tiles raised in a river place, and raised tiles inside the place's wet flags.
 import { realm7 } from '../src/gen7/region.mjs';
 import { levelsOf, levelCell, CW, CH } from '../src/gen7/levels.mjs';
-import { L } from '../src/world.mjs';
+import { L } from '../src/logic/world.mjs';
 import { RW, RH } from '../src/gen7/world.mjs';
 
 const args = process.argv.slice(2), opt = (n, d) => { const i = args.indexOf('--' + n); return i < 0 ? d : args[i + 1]; };

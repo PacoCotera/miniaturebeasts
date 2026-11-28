@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import { makePage } from "./page-harness.mjs";
 import { LOIKA_POOL, NAMES, ROUTINE, HAUNT_KINDS, sitesOf, spotsFor, doingsOf, haunts0, hauntsOn, nightStep, haunt, routineOf, nameOf, isLate } from "../src/gen7/haunts.mjs";
 import { DAY } from "../src/data/words.mjs";
-import { routineBase } from "../src/walk-data.mjs";
+import { routineBase } from "../src/data/walk-data.mjs";
 
 const frame = JSON.parse(readFileSync(new URL("../../species/frames/language/species-S01.json", import.meta.url), "utf8"));
 

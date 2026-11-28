@@ -1,13 +1,13 @@
-// Tree kinds (src/world.mjs treeKindAt and placeTrees; the page's wiring): the kind rule per region kind, a fruit tree's shake and its bloom, a hollow
+// Tree kinds (src/logic/world.mjs treeKindAt and placeTrees; the page's wiring): the kind rule per region kind, a fruit tree's shake and its bloom, a hollow
 // trunk as the hole a shy one hides in, the Shade place, the Woods and Shade on the map, and an old save's walked places (tests/fixtures/old-save-walked.json).
 //   node --test prototypes/exploration/tests/trees.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { makePage } from "./page-harness.mjs";
-import { genWorld, genPlace, placeTrees, treeKindAt, MW, MH, PW, PH, T, L } from "../src/world.mjs";
+import { genWorld, genPlace, placeTrees, treeKindAt, MW, MH, PW, PH, T, L } from "../src/logic/world.mjs";
 import { mapHooks } from "../src/mapkinds.mjs";
-import { KINDS, treeSprites, shadeMossLut } from "../src/trees48.mjs";
+import { KINDS, treeSprites, shadeMossLut } from "../src/render/trees48.mjs";
 
 const SEEDS = [3, 4, 9, 12];
 const places = (G, seed) => { const out = []; for (let c = 0; c < MW * MH; c++) if (G.comp[c]) out.push(placeTrees(G, seed, genPlace(G, seed, String(c)))); return out; };

@@ -7,7 +7,7 @@
 // The unit is the REGION: the cells are written in bake order as they land (a package is usable while it grows: `done` of `order`), and a package of another rev or tile set is another id, removed once the new one is whole.
 import { REALM_REV } from './gen7/region.mjs';
 import { PLACE_REV } from './place-store.mjs';
-import { MW, MH, DIRS, cxy, cheb, passableIn, canStepIn } from './world.mjs';
+import { MW, MH, DIRS, cxy, cheb, passableIn, canStepIn } from './logic/world.mjs';
 import { reachCellsIn, tierOf } from './map-rules.mjs';
 import { writeBaked, readBaked } from '../../places/src/format/baked.mjs';
 export const cellOfBytes = readBaked;   // the one read path: the bytes to the { ir, place } layout() reads

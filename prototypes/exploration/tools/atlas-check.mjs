@@ -12,7 +12,7 @@
 //   overrides (storm, optional: defaults to dark2 on an entry with mat "grass", else to dark), counted per field in the summary. Every palette found must be the same (name and
 //   entries), whatever the order of the manifests. With --drop, a sheet's PLTE may hold only colours in that palette, used or not, its
 //   tRNS-0 slot included, and a levelTone that uses light or dark needs at least one palette entry with mat "grass".
-// - Pieces: decodeExact, catalogue and coreSet from src/atlas.mjs, as the page runs them, against the palette's colours.
+// - Pieces: decodeExact, catalogue and coreSet from src/render/atlas.mjs, as the page runs them, against the palette's colours.
 //   Each piece needs name, status (candidate or signed), kind, offset [x, y] and either sheet, x, y, w, h or file.
 // - Prints each piece ok or its refusal, the catalogue keys with their counts, the missing core keys, the blocking kinds with no
 //   stand-in, and the statuses. Exit 1 on any refusal or missing core key. Reads files only; writes nothing.
@@ -21,7 +21,7 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { inflateSync } from "node:zlib";
-import { decodeExact, catalogue, coreMissing, paletteTable, overrideCounts, stormOnGrass, PLACE_OVERRIDES, QUADS, LIP_STATES } from "../src/atlas.mjs";
+import { decodeExact, catalogue, coreMissing, paletteTable, overrideCounts, stormOnGrass, PLACE_OVERRIDES, QUADS, LIP_STATES } from "../src/render/atlas.mjs";
 import { PALETTE, DARK_OF, LIGHT_OF } from "../src/data/palette.mjs";
 
 // The page's palette as RGB: the palette module's colours through the page's own HEX and RGB declarations.

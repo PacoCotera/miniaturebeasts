@@ -4,7 +4,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 
 const { L, MW, MH } = W, N = MW * MH;
 const seeds = Array.from({ length: 200 }, (_, i) => i);

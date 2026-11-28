@@ -22,7 +22,7 @@ test("the worker gets the bake (first: true) before the warm", async () => {
   globalThis.Worker = class { constructor() {} postMessage(m) { msgs.push(m); } terminate() {} };
   const store = await import("../src/place-store.mjs");
   const { PLACES } = await import("./page-harness.mjs");
-  const { realm7 } = await import("../src/world7.mjs");
+  const { realm7 } = await import("../src/gen7/world7.mjs");
   store.placesOn(true);
   const seed = 44; realm7(seed);
   const ex = { pos: 100, reach: [101, 102, 103] }, kit = { ctx: PLACES.ctx };

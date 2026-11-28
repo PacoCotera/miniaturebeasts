@@ -1,7 +1,7 @@
 // W3, ease and keeping still (walk-design-1 W3; G1's rules, round 4, moved into the realm). Pure: the page gives a small view of the place (`env`) and the wild one's state; nothing is stored here.
 //   env: { ground(x, y): 'cover' | 'open' | 'plain', blocks(x, y): a prop or a raised edge (blocks sight), wind: 'N'|'E'|'S'|'W'|null, rain, fog }
 //   a wild one (a named Loika): { x, y, ease: 0 grazing | 1 ears up | 2 watching | 3 gone, quiet, crowd, wary (the table's -1, 0, 1) }
-import { carryOf, windRow, WIND_DIRS, partnerCost } from './walk-data.mjs';
+import { carryOf, windRow, WIND_DIRS, partnerCost } from './data/walk-data.mjs';
 import { DAY, partOfDay } from './data/words.mjs';
 
 export const EASE = Object.freeze({ grazing: 0, ears: 1, watching: 2, gone: 3 });

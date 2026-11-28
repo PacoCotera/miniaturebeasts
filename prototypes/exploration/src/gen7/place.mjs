@@ -8,7 +8,7 @@
 //   - ways up sit on existing straight south faces of that land, nearest the stair's port, where the region chose the stair for that face; nothing is carved (Rule 5.5);
 //   - the passes of Rule 1.4 run on a window of 5 x 7 cells round the cell, and the cell's tiles plus a one-tile apron are cut out of it;
 // Rule 1.8: every terrain boundary is drawn only by the dual grid's corner pieces; nothing here composites or overlays.
-import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world.mjs';
+import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../logic/world.mjs';
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, portAt, edgeOfStep, route, NC } from './region.mjs';
@@ -23,7 +23,7 @@ import { holdOf } from './hold.mjs';
 import { touchesRaised, partAt, PART, FACE_ROWS } from '../../../places/src/bake/relief.mjs';
 import { landmarksOf, forgetLandmarks } from './landmarks.mjs';
 import { maskFn } from './places.mjs';
-import { shoreValue, sandWidth, SHORE_SHALLOW } from '../shore7.mjs';
+import { shoreValue, sandWidth, SHORE_SHALLOW } from './shore7.mjs';
 
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14, PATHTOP: 19, FORD: 20, BRIDGE: 21 };   // FORD and BRIDGE: walkable ground over a stream and over a river (streams.mjs; drawn as the path until painted). PATHTOP: the path on a raised top (a value of `top`, never of the terrain: the tile stays cliff; drawn as the path)
 // the pairs the set draws (art/places/terrain.json values): a terrain meets another only as one of these (the set's `lowers`); every 2 x 2 block of logic tiles holds at most three terrains (terrain layers),

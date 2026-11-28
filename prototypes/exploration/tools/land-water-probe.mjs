@@ -2,7 +2,7 @@
 import { realm7 } from '../src/gen7/region.mjs';
 import { levelsOf, tileLevel, wetCell, CW, CH } from '../src/gen7/levels.mjs';
 import { RW, RH } from '../src/gen7/world.mjs';
-import { L as LAND } from '../src/world.mjs';
+import { L as LAND } from '../src/logic/world.mjs';
 const seed = +process.argv[2], L = levelsOf(realm7(seed).realm), re = L.realm; let best = 99, at = null, cells = 0, wetCells = 0;
 const wet = (x, y) => { const cx = Math.floor(x / CW), cy = Math.floor(y / CH); return !!wetCell(L, cx, cy)[(y - cy * CH) * CW + x - cx * CW]; };
 for (let Y = 3; Y < RH - 3; Y++) for (let X = 3; X < RW - 3; X++) { const c = Y * RW + X; if (re.land[c] === LAND.WATER) continue;

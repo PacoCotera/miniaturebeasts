@@ -19,7 +19,7 @@
 // (tx - ax, ty - ay) where buildMapPB today draws a wood tuft at (tx, ty).
 //
 // Palette entries each kind uses (all core names; asleep they go through the fog table, the Shade through SHADE_WASH):
-import { mulberry32 } from "../../core/base/random.mjs";
+import { mulberry32 } from "../../../core/base/random.mjs";
 
 export const PALETTE_USED = {
   fruit: ['ink', 'soil', 'bark', 'forest', 'leaf', 'grass', 'sprout', 'lime', 'cream', 'blush', 'pink', 'peach', 'coral', 'red', 'wine', 'pine', 'ink'],

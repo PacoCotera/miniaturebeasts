@@ -3,7 +3,7 @@
 // For every land cell of each world: (1) every blocking tile has a picture under it (water, thicket or cliff terrain, a prop's footprint, a cliff piece, an earth bank, a drawn set piece); (2) every walkable edge tile
 // whose step across is refused by the tile beyond has its cause drawn on our side of the border (cliff terrain, a cliff piece, or the neighbour's prop in the apron). Prints one JSON line of counts, then the failures; exit 1 on any.
 import { makePage, PLACES } from "../tests/page-harness.mjs";
-import { T_BLOCK } from "../src/world.mjs";
+import { T_BLOCK } from "../src/logic/world.mjs";
 
 const sprites = PLACES.ts.sprites, CLIFFISH = /^cliff-|^way-up|^lip|^stair/;
 const cliffV = PLACES.terrains.find(t => t.id === "cliff").value;

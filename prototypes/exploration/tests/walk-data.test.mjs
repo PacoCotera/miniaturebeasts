@@ -1,8 +1,8 @@
-// L2b: the walk data (src/walk-data.mjs) and the SPECIES rows the page builds from it.
+// L2b: the walk data (src/data/walk-data.mjs) and the SPECIES rows the page builds from it.
 //   node --test prototypes/exploration/tests/walk-data.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, stepFrames } from "../src/walk-data.mjs";
+import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, stepFrames } from "../src/data/walk-data.mjs";
 import { makePage } from "./page-harness.mjs";
 import { plain } from "./walk-fixture.mjs";
 

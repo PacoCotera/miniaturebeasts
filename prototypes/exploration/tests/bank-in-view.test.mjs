@@ -2,7 +2,7 @@
 //   node --test prototypes/exploration/tests/bank-in-view.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 
 const { T, PW, PH, BANK_IN } = W;
 const SEEDS = [7, 1, 2, 3, 11, 19, 23, 42];

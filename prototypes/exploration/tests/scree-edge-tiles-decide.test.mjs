@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { MW, MH } from "../src/world.mjs";
+import { MW, MH } from "../src/logic/world.mjs";
 
 const mibi = (id, sp) => ({ id, name: "Fig", sp, born: 0, outings: 0, notches: 2, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null });
 const walk7 = (seed, sp) => { const p = makePage({ gen: 7, console: "silent" });

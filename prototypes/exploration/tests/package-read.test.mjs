@@ -5,7 +5,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { memKv, deflateCell, openPackage, putCell, putRegion, finishPackage, bytesOfCell, cellOfBytes } from "../src/package-store.mjs";
 import { PLACES } from "./page-harness.mjs";
-import { bakedCell } from "../src/world7.mjs";
+import { bakedCell } from "../src/gen7/world7.mjs";
 
 const asked = [];
 globalThis.Worker = class { constructor() { asked.push("worker made"); } postMessage(m) { asked.push(m.op); } terminate() {} };
