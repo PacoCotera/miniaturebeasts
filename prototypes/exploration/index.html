@@ -255,7 +255,8 @@ import { fogEdgeRead, fogEdges, FOG_EDGE_FILES } from "./src/fogedge.mjs";
 import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from "./src/shore7.mjs";
 import { makeMapPaint } from "./src/map-paint.mjs";
 import { makeMapSigns } from "./src/render/map-signs.mjs";
-import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { NB9, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, edgeFade, fogFade, pickE } from "./src/render/edge.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
 import { TAB, TAG, findTabY, rectsMeet, tabPointer, tabRect } from "./src/render/cues.mjs";
 import { POSE, CR_MOVING } from "./src/render/creature-poses.mjs";
@@ -6116,18 +6117,8 @@ function caveLight(lay, live, P) {
 // (this level fading into the next one), chosen from the 4 sides and 4 corners where the neighbour is darker.
 // The 4x4 Bayer pattern is baked into the variant through the same LUTs; variants are built on first use and cached.
 // Every builder works on the tile's own size, n = pb.w (32 today), and caches by (mask, n); the fade stays 16 px wide.
-const FADE_W = 16, EDGE_FADE = new Map(), EDGE_TILE = new Map();
+const EDGE_TILE = new Map();
 const STORM_K = { 32: 2.4, 48: 1.4 };   // 48 is the ratio 7/5, taken as stormCols48 in integers;   // the approaching storm's dark columns per column of gap still to close, per tile size (the gap is fractional)
-function edgeFade(mask, n) { // per pixel: how far (0..1) toward the darker level, strongest at the borders
-  const fk = mask + '|' + n; let f = EDGE_FADE.get(fk); if (f) return f; f = new Float32Array(n * n);
-  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { let t = 0;
-    const sides = [[1, y + .5], [2, n - x - .5], [4, n - y - .5], [8, x + .5]];
-    for (const [bit, d] of sides) if (mask & bit) t = Math.max(t, 1 - d / FADE_W);
-    const corners = [[16, x + .5, y + .5], [32, n - x - .5, y + .5], [64, n - x - .5, n - y - .5], [128, x + .5, n - y - .5]];
-    for (const [bit, dx, dy] of corners) if (mask & bit) t = Math.max(t, 1 - Math.hypot(dx, dy) / FADE_W);
-    f[y * n + x] = t; }
-  EDGE_FADE.set(fk, f); return f;
-}
 // The seen land's lookup at light level lv: at dusk (6) the one lit-land map (DUSKLIT), whichever way the tile is drawn (dusk-mesh-fix-4); else the level's table.
 const litLut = lv => lv === 6 && RT.remap[6] === DUSK ? DUSKLIT : RT.remap[lv];
 function edgeTile(pbKey, pb, L, mask) {
@@ -6139,15 +6130,8 @@ function edgeTile(pbKey, pb, L, mask) {
     u[o] = (f[o] > (BAYER[(y & 3) * 4 + (x & 3)] + .5) / 16 ? b : a)[c]; }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
 }
-// The fog bank's edge: a seen tile beside fogged ones fades into the fog table over the whole tile (n px), dithered,
-// so the boundary is soft and round-ish like the cave light. Cached per tile, light level and side mask.
-const FOG_FADE = new Map();
-function fogFade(mask, n) { const fk = mask + '|' + n; let f = FOG_FADE.get(fk); if (f) return f; f = new Float32Array(n * n);
-  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { let t = 0;
-    for (const [bit, d] of [[1, y + .5], [2, n - x - .5], [4, n - y - .5], [8, x + .5]]) if (mask & bit) t = Math.max(t, 1 - d / n);
-    for (const [bit, dx, dy] of [[16, x + .5, y + .5], [32, n - x - .5, y + .5], [64, n - x - .5, n - y - .5], [128, x + .5, n - y - .5]]) if (mask & bit) t = Math.max(t, 1 - Math.hypot(dx, dy) / n);
-    f[y * n + x] = t * .9; }
-  FOG_FADE.set(fk, f); return f; }
+// The fog bank's edge tile: a seen tile beside fogged ones fades into the fog table over the whole tile (n px), dithered,
+// so the boundary is soft and round-ish like the cave light. Cached per tile, light level and side mask (the fade tables: render/edge.mjs).
 function fogEdgeTile(pbKey, pb, L, mask, veil) {
   const n = pb.w, key = 'f' + pbKey + '|' + L + '|' + mask + (veil ? 'v' : '') + '|' + n + '|' + RT.remap.id; let cv = EDGE_TILE.get(key); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = n;
@@ -6171,7 +6155,6 @@ function veilEdgeTile(pbKey, pb, L, mask) {
 // At 48 px the veil and fog edges are drawn in eighths (12 px): eighthGrid opens the per-tile rule by a disc of 2 tiles (cut-only), and a pixel takes the far
 // side by coverE, the 5 × 5 samples (±6 px) over its eighth and the 8 around it. Bit 8 of an eighth's mask is its own state, bits 0–7 its neighbours (N, NE, E,
 // SE, S, SW, W, NW).
-const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
 // A 48 px edge canvas: each opaque pixel through near(c, x, y) or far(c, x, y), by the coverage of mask m9 (or by pick for the storm step).
 // a fog-band tile moves with the hero: made by edge48, drawn, then dropped from its cache so a long walk keeps nothing
 function fogBandTile(key, pb, pick, near, far) { const cv = edge48(key, pb, pick, near, far); EDGE_TILE.delete(key + '|' + RT.remap.id); return cv; }
@@ -6546,7 +6529,6 @@ function drawPatchBody(t) {
     if (ones === 0 || ones === 36) return null;
     const ms = []; for (let j = 1; j <= 4; j++) for (let i = 1; i <= 4; i++) { let m = b[j * 6 + i] ? 256 : 0; NB9.forEach(([dx, dy], k) => { if (b[(j + dy) * 6 + i + dx]) m |= 1 << k; }); ms.push(m); }
     return { key: own.toString(36) + '.' + ring.toString(36), ms }; };
-  const pickE = ms => { const cv = ms.map(coverE); return (x, y) => cv[((y / 12) | 0) * 4 + ((x / 12) | 0)][(y % 12) * 12 + x % 12]; };
   const bk = bakedView(lay), bandOn = !!bk && ts === 48 && darkW > 0, bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
   if (bk) { hazeSync(lay); const vp = veilPlanOf(lay); bk.setVeil(vp && vp.plan, vp ? vp.id : ''); }   // the edge veil: the coast and the sides past the Probe's reach
