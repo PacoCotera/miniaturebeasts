@@ -8,6 +8,7 @@ import { cellIR, raisedAt, CW, CH, COAST_REACH, sectorOf } from './gen7/place.mj
 import { inlandOf } from './gen7/levels.mjs';
 import { MW, MH } from './world.mjs';
 import { bakeCell, reviveLayers } from './bake7.mjs';
+import { isSeaCell, seaIR } from './gen7/sea.mjs';
 export { reviveLayers };
 import { adaptCell } from './adapt7.mjs';
 
@@ -45,7 +46,7 @@ export const cellWorldXY = (slot, cell) => [slot[0] * MW + (cell % MW), slot[1] 
 // stage(n): told as stage n of BAKE_STAGES (src/waitpips.mjs) of the place finishes: the terrain window's own stages 1..WINDOW_STAGES (the worker counts them, place.mjs F6_STAGE), then its IR (decor, holds), then its bake.
 // The wait's pips count them (#104).
 export function bakedCell(ctx, seed, slot, cell, v, stage = null) {   // v: the realm's kind version (biomeVersion), which lists its creatures come from
-  const [X, Y] = cellWorldXY(slot, cell), ir = cellIR(seed, X, Y, v); if (stage) stage(WINDOW_STAGES + 1);
+  const [X, Y] = cellWorldXY(slot, cell), ir = isSeaCell(seed, X, Y) ? seaIR(seed, X, Y) : cellIR(seed, X, Y, v); if (stage) stage(WINDOW_STAGES + 1);
   const place = bakeCell(ir, ctx); if (stage) stage(BAKE_STAGES);
   return { ir, place };
 }
