@@ -280,6 +280,7 @@ import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBoo
 import { readOptions } from "./src/options.mjs";
 import { SOUNDS, tallyTick, playNotes, soundOff } from "./src/sound/blips.mjs";
 import { PALETTE, DARK_OF, LIGHT_OF } from "./src/data/palette.mjs";
+import { NUM_WORD, numWord, cap } from "./src/data/text.mjs";
 import { rimRefuses } from "./src/logic/rim.mjs";
 import { nearestHole, seekPace, whereWord } from "./src/logic/creatures.mjs";
 const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot
@@ -338,11 +339,6 @@ const mibiSpName = m => spOf(m.sp).name ?? m.spName ?? CARE_TEXT.spOther;
 const abTextOf = sp => spOf(sp).abText ?? CARE_TEXT.abOther;
 // The card forms of an ability line, for the cards that clip the full one: abCard (both halves where they fit), abCardShort (the tight one, where a stage word is added); each falls back to the one before.
 const abCardOf = (sp, short) => { const s = spOf(sp); return (short ? s.abCardShort : null) ?? s.abCard ?? abTextOf(sp); };
-
-// ===================== 2. Seeded RNG and noise =====================
-const NUM_WORD = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
-const numWord = n => NUM_WORD[n] || String(n);
-const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 
 // ===================== 3. World generation =====================
 const TEST = { calm: false, at: null, clock: null,
