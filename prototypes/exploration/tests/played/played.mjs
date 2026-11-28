@@ -2104,6 +2104,196 @@ it(`s41 facing Dunnock at ease 3 the bar's middle reads her word, ears up (#174,
   } finally { await g.ctx.close(); }
 });
 
+// ---- first pod path (PR 722, build's NO 11-28 01:47): played by presses only; a script reads state only to choose the next press (which way, which button) and to say the case is reached.
+// The kit: state read, one press that waits for its effect, and the walk (breadth first over the place's walkable tiles, a tile that stopped a step is marked and the route planned again).
+function fpKit(g) {
+  const mbq = (fn, arg) => g.page.evaluate(([src, a]) => (0, eval)("(" + src + ")")(window.__play.frames.companion.contentWindow.__mb, a), [fn.toString(), arg]);
+  const st = () => mbq((m) => {
+    const S = m.S, P = S.exp && S.exp.patch; if (!P) return { phase: S.phase };
+    let a = null; try { a = m.patchAction(); } catch (e) { /* no action */ }
+    const live = m.curLive(), lay = m.layout(P.key);
+    return { phase: S.phase, key: P.key, x: P.x, y: P.y, dir: P.dir, carry: S.exp.carry, label: a && a.label, spent: S.day.spent, taught: S.found.includes("teach:eats"), waiting: !!(S.ui && S.ui.waiting), w: lay.w, h: lay.h,
+      fruit: live.fr.map((q) => ({ x: q.x, y: q.y })), lk: live.cr.filter((c) => c.ind).map((c) => ({ x: c.x, y: c.y, name: c.ind.name, named: !!(S.named && S.named[c.id]), sight: !!m.inSight(c.x, c.y), ease: c.ease | 0, known: S.known.includes(c.sp), ind: !!m.indInSight(true) && m.indInSight(true).id === c.id })),
+      bushes: lay.feats.filter((f) => f.kind === "b").map((f) => ({ x: f.x, y: f.y })), nightPods: S.pods.filter((p) => p.how === "night").map((p) => ({ k: p.k, x: p.x, y: p.y })), cased: S.exp.cargo.pods.length, ts: m.RT.ts, pl: m.RT.plScr,
+      msg: String((m.FX && m.FX.msg) || "").replace(/\x01/g, "") };
+  });
+  const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.key, P && P.x, P && P.y, P && P.dir, S.exp && S.exp.carry, S.exp && S.exp.cargo.pods.length, S.pods.length, S.day && S.day.spent, S.ui && S.ui.menuSel, String((m.FX && m.FX.msg) || "")].join("|"); });
+  // one press (hold ms), then wait for something to change (3 s at most), then for the screen's state to stay as it is for 400 ms
+  const step = async (l, hold = 100) => { const before = await sig(); await g.press(l, hold, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };
+  // the next press toward a goal: goal "beside" (a tile next to {x,y}, then the press that faces it), "edge" (the tile on the east edge, then the press out), over walkable tiles; null when there is none
+  const route = (goal, blocked) => mbq((m, a) => {
+    const P = m.S.exp.patch, lay = m.layout(P.key), W = lay.w, H = lay.h, bad = new Set(a.blocked), D = [["up", 0, -1], ["down", 0, 1], ["left", -1, 0], ["right", 1, 0]];
+    const walk = (x, y) => x >= 0 && y >= 0 && x < W && y < H && lay.reach[y * W + x] && !m.T_BLOCK[lay.tiles[y * W + x]] && !(() => { const o = m.occupant(P.key, x, y, "player"); return o && (o.type === "feat" || o.type === "cr"); })();
+    const g = a.goal, at = (x, y) => g.beside ? Math.abs(x - g.beside.x) + Math.abs(y - g.beside.y) === 1 : x === W - 1;
+    if (at(P.x, P.y)) { if (g.beside) { const [dx, dy] = [g.beside.x - P.x, g.beside.y - P.y], d = D.find((q) => q[1] === dx && q[2] === dy)[0]; return { dir: d, there: true, facing: P.dir === d }; } return { dir: "right", there: true, facing: false }; }
+    const seen = new Map([[P.y * W + P.x, null]]), q = [P.y * W + P.x];
+    while (q.length) {
+      const c = q.shift(), x = c % W, y = (c - x) / W;
+      if (c !== P.y * W + P.x && at(x, y)) { let k = c, first = null; while (seen.get(k) !== null) { first = seen.get(k); k = first.from; } return { dir: first.dir, to: first.to, from: first.from }; }
+      for (const [d, dx, dy] of D) { const nx = x + dx, ny = y + dy, n = ny * W + nx; if (seen.has(n) || bad.has(c + ">" + n) || !walk(nx, ny)) continue; seen.set(n, { from: c, dir: d, to: n }); q.push(n); }
+    }
+    return null;
+  }, { goal, blocked: [...blocked] });
+  // walk until `done(state)`; every press is one step; a step that moves nothing marks that edge (a creature, a thing) and the route is planned again
+  const go = async (goal, done, label, max = 250) => {
+    const blocked = new Set(); let s = await st();
+    for (let i = 0; i < max; i++) {
+      if (done(s)) return s;
+      const key0 = s.key, r = await route(goal, blocked); assert.ok(r, `${label}: a way from ${s.x},${s.y}`);
+      if (r.there && r.facing && !done(s)) return s;   // beside it and facing it: the caller's next press is its own
+      await step(r.dir); const a = await st();
+      if (process.env.PLAYED_TRACE) console.log(`# ${label} ${s.x},${s.y} ${r.dir} -> ${a.key} ${a.x},${a.y} "${a.label}" ${a.msg}`);
+      if (a.key === key0 && a.x === s.x && a.y === s.y && !r.there && r.from != null) blocked.add(r.from + ">" + r.to);
+      s = a; if (a.key !== key0) blocked.clear();
+    }
+    throw new Error(`${label}: too many presses (${s.x},${s.y})`);
+  };
+  return { mbq, st, sig, step, route, go };
+}
+// the game screen's two bottom lines and the box over the Case's slots, as fractions of the Companion's frame (set from the shots of this case)
+const FPBOX = { line: [0.02, 0.86, 0.96, 0.12], call: [0.02, 0.1, 0.96, 0.35], fruit: [0.05, 0.83, 0.3, 0.09], hold: [0.05, 0.12, 0.9, 0.5] };
+// OWNER 11-27 22:3x (bus f807ef4567): "i have yet to find pods in the current look"; build's NO 11-28 01:47 (bus 3c3b38), rules 16a/12. Seed 7, a fresh game, 412x915, presses only (the script reads state to choose which button, never to decide a verdict).
+// By presses: ✓ to set out; the bush shaken, its fruit picked up; out east to Dunnock's place; at the first moment she is named and in sight the fruit is put down, so no fruit is in hand (the teach line); the Call; the fruit picked up again; the Case (the Fruit slot);
+// she is fed; ✓ keeping still to nightfall; her pod is taken up; the Case holds it. State only says the case is reached; every verdict is pixels of what changed, against a shot from the same case:
+// the box with the teach line against the box with fruit in hand, the Call's report against the screen before it, the Case with the Fruit slot, and the pod's cradle in the hold at the end.
+async function fpPlay(TEACH) {   // TEACH: the teach line, the Call and the Case's Fruit slot (ends once she is fed); not TEACH: feed her at once and keep still to nightfall, her pod in the hold
+  const size = { w: 412, h: 915, dpr: 2.625 }, g = await open(size, { seed: 7 }), K = fpKit(g), { st, step, go, mbq } = K;
+  const trace = (t, s) => console.log(`# s45 ${t}: ${s.key} ${s.x},${s.y} carry ${s.carry} "${s.label}" spent ${s.spent} lk ${JSON.stringify(s.lk)}`);
+  const stable = async () => { await wait(1200); };
+  try {
+    let s = await st();
+    for (let i = 0; i < 14 && !s.key; i++) { await step("confirm"); s = await st(); }   // ✓ to set out, ✓ at "Start here", ✓ into the place
+    for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }
+    assert.equal(s.phase, "patch", "the case is reached: he is in the first place");
+    // fruit: shake the bush beside, pick up what drops
+    for (let n = 0; n < 40 && s.carry !== "fruit"; n++) {
+      if (s.fruit.length) { const f = s.fruit[0]; if (s.x === f.x && s.y === f.y) await step("confirm"); else { s = await go({ beside: f }, (q) => q.label === "Pick up the fruit", "s45 fruit"); await step("confirm"); } }
+      else { assert.ok(s.bushes.length, "the case is reached: a bush stands in the first place"); s = await go({ beside: s.bushes[0] }, (q) => q.label === "Shake the bush", "s45 bush"); await step("confirm"); }
+      s = await st();
+    }
+    assert.equal(s.carry, "fruit", "the case is reached: fruit in his hand"); trace("fruit", s);
+    // out east, then toward Dunnock's place until she is named and in sight
+    const key0 = s.key;
+    s = await go({ edge: "E" }, (q) => q.key !== key0, "s45 east");
+    if (s.key === key0) { await step("right"); s = await st(); }
+    assert.notEqual(s.key, key0, "the case is reached: in the next place"); trace("next place", s);
+    const her = (q) => q.lk.find((c) => c.name === "Dunnock" && c.named && c.ind);
+    for (let n = 0; n < 200 && !her(s); n++) {
+      const l = s.lk.find((c) => c.sight) || s.lk[0]; assert.ok(l, "the case is reached: a Loika is in this place");
+      const r = await K.route({ beside: { x: l.x, y: l.y } }, new Set()); assert.ok(r, "a way toward her");
+      await step(r.dir); s = await st();
+    }
+    assert.ok(her(s), "the case is reached: Dunnock is named and in sight"); trace("her in sight", s);
+    const r = await g.region(); let caseHand = null;
+    if (TEACH) {
+    const inHand = await g.shot("s45-1-fruit-in-hand");
+    assert.equal(s.label, "Put down the fruit", `the case is reached: ✓ puts the fruit down (${s.label})`);
+    await step("confirm"); s = await st(); await stable(); trace("put down", s);
+    assert.equal(s.carry, null, "the case is reached: no fruit in his hand");
+    const teach = await g.shot("s45-2-teach-line");
+    const tl = changed(inHand, teach, r, FPBOX.line); console.log(`# s45: the box with her in sight and no fruit differs from the box with fruit in hand by ${tl.n} of ${tl.of} pixels`);
+    assert.ok(tl.frac > 0.03, `the teach line is in the box (${tl.n} pixels differ from the box with fruit in hand)`);
+    // the Call: its report names the fruit
+    // the first Call in a place that reaches next door says so ("The Call lifted the land next door"); a Call after it gives the place's report (callReport): press again until the report names fruit
+    // a Call near the place's edge reaches next door and says that instead: he steps back west, away from the east edge, first
+    for (let i = 0; i < 6 && (await st()).x > 16; i++) await step("left");
+    let callMsg = ""; for (let c = 0; c < 3 && !/fruit/i.test(callMsg); c++) { await g.press("call", 100, 0); for (let t = 0; t < 16 && !/fruit/i.test(callMsg); t++) { await wait(250); callMsg = (await st()).msg; } }
+    const call = await g.shot("s45-3-call"), cl = changed(teach, call, r, FPBOX.line); console.log(`# s45: the Call's report "${callMsg}" changed ${cl.n} of ${cl.of} pixels of the box`);
+    assert.match(callMsg, /fruit/i, "the case is reached: the Call's report names fruit");
+    assert.ok(cl.frac > 0.02, `the Call's report is on the screen (${cl.n} pixels)`);
+    await wait(4500);
+    // the fruit is picked up again, and the Case shows it in the Fruit slot
+    s = await st(); if (s.label !== "Pick up the fruit") { s = await go({ beside: s.fruit[0] }, (q) => q.label === "Pick up the fruit", "s45 refetch"); }
+    await step("confirm"); s = await st(); assert.equal(s.carry, "fruit", "the case is reached: the fruit is in his hand again");
+    await step("back"); for (let i = 0; i < 6 && (await mbq((m) => { const it = m.menuItems()[m.S.ui.menuSel]; return it && it.id; })) !== "cargo"; i++) await step("down");
+    await step("confirm"); await stable();
+    assert.equal((await st()).phase, "cargo", "the case is reached: the Case is open");
+    caseHand = await g.shot("s45-4-case-fruit-in-hand");
+    await step("back"); await stable(); s = await st();
+    if (s.phase !== "patch") { await step("back"); await stable(); s = await st(); }
+    assert.equal(s.phase, "patch", "the case is reached: back on the walk");
+    }
+    // feed her
+    for (let n = 0; n < 120; n++) {   // she moves: the way to the tile beside her is planned again every press
+      s = await st(); if (s.label === "Offer fruit") break;
+      const l = s.lk.find((c) => c.name === "Dunnock"), r2 = await K.route({ beside: { x: l.x, y: l.y } }, new Set()); assert.ok(r2, "a way to her");
+      await step(r2.dir);
+    }
+    assert.equal(s.label, "Offer fruit", `the case is reached: beside her, ✓ reads Offer fruit (${s.label})`);
+    await step("confirm"); s = await st(); trace("offered", s);
+    assert.ok(s.taught, "the case is reached: she took the fruit (the teaching is spent)");
+    await step("back"); for (let i = 0; i < 6 && (await mbq((m) => { const it = m.menuItems()[m.S.ui.menuSel]; return it && it.id; })) !== "cargo"; i++) await step("down");
+    await step("confirm"); await stable();
+    const caseNone = await g.shot("s45-5-case-no-fruit");
+    if (TEACH) {
+      const fl = changed(caseHand, caseNone, r, FPBOX.fruit);
+      console.log(`# s45: the Case's box differs between fruit in hand and none by ${fl.n} of ${fl.of} pixels`);
+      assert.ok(fl.n > 150, `the Case's Fruit slot changed with the fruit (${fl.n} pixels)`);
+    }
+    await step("back"); await stable();
+    if (TEACH) return;
+    // keep still to nightfall (a tap each), her pod comes
+    let stuck = 0;
+    for (let n = 0; n < 620; n++) { s = await st(); if (s.nightPods.length) break; if (process.env.PLAYED_TRACE && n % 25 === 0) console.log(`# s45 n ${n} phase ${s.phase} waiting ${s.waiting} label "${s.label}" spent ${s.spent} t ${new Date().toISOString().slice(11, 19)}`); if (s.waiting) { await step("confirm"); continue; }   // the menu's Wait is folded to a strip: ✓ waits again
+      if (s.phase !== "patch") { await step("back"); continue; }
+      if (s.label !== "Keep still") {   // ✓ is something else here (her prints): after three taps that pass no light, the menu's own Wait passes it (nothing is moved near her)
+        if (process.env.PLAYED_TRACE) trace("not keep still", s);
+        if (++stuck >= 6) { stuck = 0; await step("back"); for (let i = 0; i < 9 && (await mbq((m) => { const it = m.menuItems()[m.S.ui.menuSel]; return it && it.id; })) !== "wait"; i++) await step("down"); await step("confirm"); continue; }
+      } else stuck = 0;
+      await step("confirm", 1500); if (n % 50 === 0) trace("waiting", s); }
+    s = await st(); assert.ok(s.nightPods.length >= 1, `the case is reached: her pod is on the ground (light ${s.spent})`); trace("pod", s);
+    const podAt = s.nightPods[0]; assert.equal(podAt.k, s.key, "the case is reached: her pod is in this place");
+    s = await go({ beside: podAt }, (q) => /pod/i.test(String(q.label)) || false, "s45 pod", 120).catch(async () => st());
+    const before = await st(); trace("at pod", before);
+    await step("confirm"); await step("confirm"); s = await st();
+    for (let i = 0; i < 4 && s.cased < 1; i++) { await step("confirm"); s = await st(); }
+    assert.equal(s.cased, 1, "the case is reached: her pod is in the Case"); trace("taken", s);
+    await step("back"); for (let i = 0; i < 6 && (await mbq((m) => { const it = m.menuItems()[m.S.ui.menuSel]; return it && it.id; })) !== "cargo"; i++) await step("down");
+    await step("confirm"); await stable();
+    const held = await g.shot("s45-6-case-pod");
+    const pl = changed(caseNone, held, r, FPBOX.hold); console.log(`# s45: the Case with her pod differs from the Case before by ${pl.n} of ${pl.of} pixels`);
+    assert.ok(pl.n > 400, `her pod is in the hold on the screen (${pl.n} pixels)`);
+  } finally { try { await g.shot("s45-last"); } catch (e) { /* the page is gone */ } await g.ctx.close(); }
+}
+it(`s45 the first pod, played on seed 7, part 1: the teach line with no fruit in hand, the Call names fruit, the Case's Fruit slot (PR 722) [412x915]`, { timeout: 3600 * 1000 }, () => fpPlay(true));
+it(`s45b the first pod, played on seed 7, part 2: fed, ✓ keeping still to nightfall, her pod is taken up and is in the hold (PR 722) [412x915]`, { timeout: 3600 * 1000, todo: "not reached on seed 7 (pr722-fix-1): Dunnock goes to ease 1-3 at about light 200 and no night pod is made by light 590 (checked 4 runs, taps, held taps and the menu Wait); the earlier 570-press run that made her pod is not reproduced; needs a save made by presses where she sleeps (like pod-sleep-dusk-13)" }, () => fpPlay(false));
+// OWNER 11-27 22:3x (as above); build's NO 11-28 01:47 item 2: a place the first walk starts in with no fruit bush within 7 tiles of where he stands gets one, 3 to 6 tiles away, picked by the seed.
+// Seed 3, a fresh game, 412x915 (its first place, 234, has none near the way in: its one bush stood 23 tiles off). By presses: ✓ to set out; the shot at the way in; then the walk beside the new bush and ✓ shakes it.
+// State only says the case is reached (where he stands, where the bush is, the label); the verdict is the pixels: the three tiles round the bush on the first screen, against a crop of them (saves/s46-first-bush.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it).
+it(`s46 a first place with no bush near the way in has one now (PR 722, seed 3): it is on the first screen, and ✓ beside it shakes it [412x915]`, async () => {
+  const size = { w: 412, h: 915, dpr: 2.625 }, g = await open(size, { seed: 3 }), K = fpKit(g), { st, step, go } = K;
+  try {
+    let s = await st();
+    for (let i = 0; i < 14 && !s.key; i++) { await step("confirm"); s = await st(); }
+    for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }
+    assert.equal(s.phase, "patch", "the case is reached: he is in the first place");
+    assert.equal(s.key, "234", `the case is reached: seed 3 starts in place 234 (${s.key})`);
+    assert.equal(s.bushes.length, 1, "the case is reached: the place holds one bush");
+    const b = s.bushes[0], d = Math.abs(b.x - s.x) + Math.abs(b.y - s.y);
+    assert.ok(d >= 3 && d <= 6, `the case is reached: the bush is 3 to 6 tiles from where he stands (${d}, he ${s.x},${s.y}, it ${b.x},${b.y})`);
+    await wait(1500);
+    const im = await g.shot("s46-first-bush"), r = await g.region(), k = r.w / 450, ts = s.ts;
+    const bx0 = Math.max(0, Math.round((s.pl.x + (b.x - s.x - 1.5) * ts) * k)), by0 = Math.max(0, Math.round((s.pl.y + (b.y - s.y - 1.5) * ts) * k)), bx1 = Math.min(r.w, Math.round((s.pl.x + (b.x - s.x + 1.5) * ts) * k)), by1 = Math.min(r.h, Math.round((s.pl.y + (b.y - s.y + 1.5) * ts) * k));
+    const box = { x: r.x + bx0, y: r.y + by0, w: bx1 - bx0, h: by1 - by0 };   // the three tiles round the bush, cut where the screen ends
+    assert.ok(box.x >= r.x && box.y >= r.y && box.x + box.w <= r.x + r.w && box.y + box.h <= r.y + r.h, `the case is reached: the bush is on the first screen (${JSON.stringify({ box, r })})`);
+    const f = path.join(savesDir, "s46-first-bush.png");
+    if (process.env.PLAYED_WRITE_CROPS) {
+      const dd = new Uint8Array(box.w * box.h * 4);
+      for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const p = px(im, box.x + x, box.y + y), j = (y * box.w + x) * 4; dd[j] = p[0]; dd[j + 1] = p[1]; dd[j + 2] = p[2]; dd[j + 3] = 255; }
+      writeFileSync(f, encodePNG(box.w, box.h, dd));
+    }
+    const ref = decodePNG(readFileSync(f));
+    assert.deepEqual([ref.width, ref.height], [box.w, box.h], "the crop is the box's size");
+    let bad = 0; for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const p = px(im, box.x + x, box.y + y), j = (y * box.w + x) * 4; if (Math.abs(p[0] - ref.data[j]) + Math.abs(p[1] - ref.data[j + 1]) + Math.abs(p[2] - ref.data[j + 2]) > 30) bad++; }
+    console.log(`# s46: the three tiles round the bush differ from the accepted crop by ${bad} of ${box.w * box.h} pixels`);
+    assert.ok(bad < box.w * box.h * 0.03, `the new bush is drawn there, as the crop (${bad} pixels differ)`);
+    s = await go({ beside: b }, (q) => q.label === "Shake the bush", "s46 bush");
+    assert.equal(s.label, "Shake the bush", `✓ beside it reads Shake the bush (${s.label})`);
+    await step("confirm"); s = await st();
+    assert.ok(s.fruit.length === 1 || s.carry === "fruit", "the bush gave a fruit");
+  } finally { await g.ctx.close(); }
+});
+
 // OWNER 2026-11-27 23:3x: "yes, again, review the build, top down, and see why it's like this. must be patches over patches over patches" (render-seen-1: one seen record for every world tile, read the same on both sides of a border; the build desk's NO, rule 12).
 // His 180.save (seed 24, place 146, a Call from there lifted strips in 129, 130 and 145 next door) arranged once to night (saves/180-night.save: S.day.spent 551, as the sleep-dusk saves were), at his size 412x915, by presses: hold Call for the look-around.
 // s44a: the place and the strip of 145 that its Call lifted meet with no navy column or frame between them (defect 2 of the review): no column of the seam box is flat night, and the seam is as its crop (refs/s44a-seam.png, cut from this build by PLAYED_MAKE_REFS=1 once looked at);

@@ -1092,6 +1092,8 @@ const ownPodLying = () => S.pods.find(p => p.how === 'own' && !p.h) || null;
 function loikaTeach() {
   const pr = printsToRead(); if (pr) return habName(pr.c) + ' · ' + WORDS.prints.read;
   const c = indInSight(), ap = c && firstWalk() ? approachTeach(c) : null; if (ap) { RT.approachUp = ap; return ap.t; }   // first-walk-teach-approach-1
+  const ct = c || indInSight(true);   // pr722-fix-1: before her first feed her kind is not known yet, so indInSight() is null; the teach asks for any named Loika in sight (not bolted)
+  if (ct && (ct.ease | 0) < 3 && firstWalk() && S.exp.carry !== 'fruit' && S.named && S.named[ct.id] && spOf(ct.sp).eats && !S.found.includes('teach:eats')) { const n = S.named[ct.id], long = WORDS.pod.fruitTeach(n); return long.length <= 44 ? long : WORDS.pod.fruitTeachShort(n); }   // first-pod-fix-1 (1): a named Loika met, no fruit in hand: where the food comes from (spent at her first feed); editorial's words, bus 2dd0bb
   const cd = c && habCardNext(c); return cd ? habName(c) + ' · ' + cd : '';
 }
 const waysLine = b => b ? FIRST_TEXT.goal.feed(b.name) : FIRST_TEXT.goal.find;
@@ -1874,7 +1876,7 @@ function placeLine(lay, P, noKinds) {
 const placeState = lay => walkedCell(lay.cell) ? WORDS.explored : WORDS.nothingSeen;
 // The Call's report: the place and what is there to take, each with its direction: "Meadow · explored · a pod north, fruit west", or "A pod north, a strike mark west" before the place is explored.
 function callReport(lay, P) {
-  const left = leftPhrase(lay.cell, P, 44);
+  const left = leftPhrase(lay.cell, P, 44, null, true);
   if (walkedCell(lay.cell)) return placeLand(lay) + ' · ' + WORDS.explored + ' · ' + (left || WORDS.left);
   return left ? cap1(left) : '';   // nothing in sight: no line (the ✓ word, "Face the …", points on)
 }
@@ -1917,7 +1919,7 @@ function leftItemsAll(c) {
 function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, tuft: 0, strike: 0, slab: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
 function leftTotal(c) { const n = leftCounts(c); return Object.values(n).reduce((a, b) => a + b, 0); }
 // What is left, each kind with the way to its nearest one from where you stand: "a pod east, a warm stone north-west".
-const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], tuft: ['a tuft', 'tufts'], strike: WORDS.strike.left, slab: ['a pushed slab', 'pushed slabs'] };   // [copy] slab: editorial, bus 3d8754
+const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], tuft: ['a tuft', 'tufts'], strike: WORDS.strike.left, slab: ['a pushed slab', 'pushed slabs'], fruit: ['fruit', 'fruit'], slabU: ['a slab to push', 'slabs to push'] };   // [copy] slab: editorial, bus 3d8754; fruit, slabUnpushed: editorial, bus 2dd0bb (first-pod-fix-1)
 // The way to one takeable from where you stand: " close by", " west", " in the cave".
 function wayTo(near, P) { const dx = near.x - P.x, dy = near.y - P.y;
   return near.cave ? ' in the cave' : cheb(near, P) <= 2 ? ' close by' : ' ' + (dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))) || 'close by'); }
@@ -1926,8 +1928,14 @@ function nearestTake(c, P) {
   const its = leftItems(c); if (!its.length || !P) return null;
   const near = its.reduce((a, b) => cheb(a, P) <= cheb(b, P) ? a : b); return LEFT_WORDS[near.k][0] + wayTo(near, P);
 }
-function leftPhrase(c, P, room, kinds) {
-  const items = leftItems(c).filter(i => !kinds || kinds.includes(i.k)), w = LEFT_WORDS;
+// first-pod-fix-1 (3): the Call's report also lists the fruit in sight (a full bush, fruit on the ground) and a slab not yet pushed; the pips and counts stay the finds'
+function callExtras(c) {
+  const key = String(c), lay0 = layout(key), out = leftItemsAll(c).filter(i => i.k === 'fruit'); if (!passable(c)) return out;
+  for (const f of lay0.feats) if (f.kind === 's' && !fs(key, f.id).moved && fs(key, f.id).left == null && unveiled(key, f.x, f.y) && (lay0.cave || reachableTile(lay0, f.x, f.y))) out.push({ k: 'slabU', x: f.x, y: f.y });
+  return out;
+}
+function leftPhrase(c, P, room, kinds, call) {
+  const items = (call ? [...leftItems(c), ...callExtras(c)] : leftItems(c)).filter(i => !kinds || kinds.includes(i.k)), w = LEFT_WORDS;
   let out = '';
   for (const k of Object.keys(w)) { const its = items.filter(i => i.k === k); if (!its.length) continue;
     let dir = '';
@@ -7954,6 +7962,7 @@ function caseCells() {
   for (let i = 0; i < np; i++) cells.push({ k: 'pod', i, x: 40 + i * (2 * r + 12), y: 228 - r, w: 2 * r, h: 2 * r, r });
   ['e', 'd', 's'].forEach((s, i) => cells.push({ k: 'sup', s, x: 222 + i * 66, y: 198, w: 56, h: 60 }));
   for (let i = 0; i < SATCHEL; i++) cells.push({ k: 'smp', i, x: 36 + (i % 4) * 96, y: 270 + Math.floor(i / 4) * 68, w: 88, h: 60 });
+  if (S.exp) cells.push({ k: 'fru', i: 0, x: 36, y: 506, w: 88, h: 30 });   // first-pod-fix-1 (5): the Fruit slot, on a walk
   return cells;
 }
 const caseKeyOf = c => c.k + ':' + (c.k === 'sup' ? c.s : c.i);
@@ -7977,6 +7986,7 @@ function caseThing(c) {   // what is under the bracket: { name, how, took, forS,
   if (c.k === 'pod') { const p = (h.pods || [])[c.i]; if (!p) return { name: W.cradleFree, how: W.cradleFreeHow };
     return { name: podName(p), how: W.podHow[p.bur ? 'dug' : 'ground'], took: p.got, forS: W.podAt, thing: p }; }
   if (c.k === 'sup') return { name: W.supply[c.s], how: W.supplyLine(h[c.s] | 0) };
+  if (c.k === 'fru') return { name: W.fruit, how: S.exp && S.exp.carry === 'fruit' ? W.fruitHeld : W.fruitNone };
   const st = sampleStacks(h.samples)[c.i], s = st && st.list[st.list.length - 1]; if (!s) return { name: W.placeFree, how: W.placeFreeHow };   // a stack shows its latest find
   if (st.list.length > 1) return { name: W.stackName[s.item] + ' · ' + st.list.length, how: W.stackFrom([...new Set(st.list.map(q => q.name))]), forS: W.atStation(W.forStation[s.chapter] || ''), thing: s };   // a stack: the kind, the count, who they are from
   return { name: s.name + '’s ' + WORDS.habit.sampleName[s.item], how: W.sampleHow[s.habit] || '', took: s.got, forS: W.atStation(W.forStation[s.chapter] || ''), thing: s };
@@ -8023,6 +8033,7 @@ function drawCargo(t) {
   for (const c of cells) {
     if (c.k === 'pod') { const cx = c.x + c.r, cy = c.y + c.r, p = (h.pods || [])[c.i]; caseCradle(cx, cy, c.r); if (p) { if (isNightPod(p)) blit(podPic(p, 1, 'case'), cx - 16, cy - 9); else blit(podArt(POD_SHELL[p.g] || 'bone', 2), cx - 15, cy - 16); } }
     else if (c.k === 'sup') { caseHollow(c.x, c.y, c.w, c.h); blitScaled(ICON[{ e: 'energy', d: 'data', s: 'essence' }[c.s]](), c.x + 14, c.y + 6, 2); text(String(h[c.s] | 0), c.x + 28, c.y + 40, C.soil, 2, 'center'); }
+    else if (c.k === 'fru') { caseHollow(c.x, c.y, c.w, c.h); text(W.fruit, c.x + 10, c.y + 8, C.soil, 2); if (S.exp && S.exp.carry === 'fruit') blit(FRUIT2(), c.x + c.w - 30, c.y + 6); }
     else if (c.k === 'smp') { caseHollow(c.x, c.y, c.w, c.h); const st = sampleStacks(h.samples)[c.i]; if (st && st.item === 'tuft') blitScaled(ICON.tuft(), c.x + 30, c.y + 20, 2); else if (st) { text(W.slotWord[st.item], c.x + c.w / 2, c.y + 8, C.soil, 2, 'center'); blitScaled(ICON.paw('soil'), c.x + 14, c.y + 32, 2); } if (st) text(String(st.list.length), c.x + c.w - 8, c.y + c.h - 20, C.soil, 2, 'right'); }   // [art] whisker and shed claw: no signed picture yet, the place stays empty
   }
   brackets(cur.x - 4, cur.y - 4, cur.w + 8, cur.h + 8, C.orange);
