@@ -2,9 +2,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import * as V from "../src/view.mjs";
+import * as EDGE from "../src/render/edge.mjs";
 
 const SEED = 12345, DARK_W = 336, SCR = 700;
-const hit = (ds, py, px) => V.stormBandHit(ds, py, px, DARK_W, SEED);
+const hit = (ds, py, px) => EDGE.stormBandHit(ds, py, px, DARK_W, SEED);
 // the storm-pixel share of an aligned 16 x 16 window at depth d inside the band on one pixel row band (the wobble is constant across a window of one row: use a row, x spread)
 const shareAt = (d, py0) => { const e = DARK_W + V.stormWobble(py0, SEED); let n = 0, m = 0;
   for (let y = py0 - (py0 & 3); y < py0 - (py0 & 3) + 4; y++) if (V.stormWobble(y, SEED) === V.stormWobble(py0, SEED)) for (let x = 0; x < 4; x++) { m++; if (hit(e - d, y, x)) n++; }
@@ -27,7 +28,7 @@ test("(b) the same world pixel takes the same table whatever the camera does (no
     assert.equal(hit(ds, wy, wx), hit((wx - 144) + 48, wy, wx));
   }
   // the pattern repeats with the Bayer cell (4 px) at a constant depth
-  for (let wx = 0; wx < 40; wx++) assert.equal(V.stormBandHit(DARK_W - 70, 12, wx, DARK_W, SEED) , V.stormBandHit(DARK_W - 70, 12, wx + 4, DARK_W, SEED));
+  for (let wx = 0; wx < 40; wx++) assert.equal(EDGE.stormBandHit(DARK_W - 70, 12, wx, DARK_W, SEED) , EDGE.stormBandHit(DARK_W - 70, 12, wx + 4, DARK_W, SEED));
   // not per tile: inside one 48 px tile the table changes along the row
   const ds0 = DARK_W + V.stormWobble(100, SEED) - 72; let flips = 0; for (let x = 1; x < 48; x++) if (hit(ds0, 100, x) !== hit(ds0, 100, x - 1)) flips++;
   assert.ok(flips > 4, "the dither changes pixel by pixel inside a tile");
