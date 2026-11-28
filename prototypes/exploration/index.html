@@ -2716,10 +2716,11 @@ function hearLineOf(c) {
 function nameKind(nm, sp) { return nm + ' · ' + WORDS.ease.wildKind(spOf(sp).name); }
 // the candidates for the bottom line under a wild one in sight, longest first (the line takes the first that fits): its ease, whether this step would be heard creeping and walking, how long it lets you stay
 function wildCtx(c, nm) {
-  const hl = hearLineOf(c); if (!hl) return null;
+  const hl = hearLineOf(c);
+  if (!hl) { if ((c.ease | 0) < 3) return null; const g = nm || spName(c.sp); return [g + ' · ' + WORDS.ease.stage[3], WORDS.ease.stage[3], g]; }   // bug174: gone (ease 3) she is still in sight: the bar says her stage, no heard/stay (hearLineOf has none)
   const E = WORDS.ease, who = nm || spName(c.sp), curled = curledNow(c), settling = !!c.hb && c.hb.k === 'sleep' && !(c.ease >= 1), es = curled || settling ? E.asleepShort : (c.ease | 0) < 1 && habDay()['fed:' + c.id] ? E.fed : E.stage[c.ease | 0], full = E.hear(hl.c, hl.w), cr = E.hearCreep(hl.c), st = hl.left == null ? "" : E.stayShort(hl.left), j = (...p) => p.filter(Boolean).join(" · "), cd = habCardNext(c), cde = curled ? "" : es;   // W4: the card line, what is still to learn
-  if (HUD.ok) return [...(st ? [j(who, es, st), j(who, st)] : []), ...(cd ? [j(who, cde, cd), j(who, cd)] : []), j(who, es), who];   // W6a: the carry ring says whether a step would be heard (rule 21); the stay stays, and the stand-in "creep heard · walk unheard" goes
-  return [j(who, es, full, st), j(who, full, st), j(who, full), ...(cd ? [j(who, cde, cd), j(who, cd)] : []), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), who];
+  if (HUD.ok) return [...(st ? [j(who, es, st), j(who, st)] : []), ...(cd ? [j(who, cde, cd), j(who, cd)] : []), j(who, es), es, who];   // W6a: the carry ring says whether a step would be heard (rule 21); the stay stays, and the stand-in "creep heard · walk unheard" goes
+  return [j(who, es, full, st), j(who, full, st), j(who, full), ...(cd ? [j(who, cde, cd), j(who, cd)] : []), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), es, who];
 }
 // the nearest named Loika (an individual) in sight within 10 tiles that has not gone, or null
 function indInSight(anyKind) {   // anyKind: skip the known-kind and the settled check: any one standing in view (herNamed asks whether any one is in sight)
@@ -9317,7 +9318,7 @@ function lineBase() {
           ctx = [wk + hw, wk]; }   // her name is never alone, and the diet fallbacks are not appended
         else if (nm) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h);
           ctx = [nm + hw + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + hw, nm].concat(ctx); }
-        if (o.c.ind) { const w = wildCtx(o.c, nm && !S.known.includes(o.c.sp) ? nameKind(nm, o.c.sp) : nm); if (w) wild = nm && !S.known.includes(o.c.sp) ? w.filter(s => s.includes(nm)) : w; } }   // her kind unidentified: the name is never alone   // walk W3: the line under a wild one in sight: its ease, whether this step would be heard, how long it lets you stay
+        if (o.c.ind) { const w = wildCtx(o.c, nm && !S.known.includes(o.c.sp) ? nameKind(nm, o.c.sp) : nm); if (w) wild = nm && !S.known.includes(o.c.sp) ? w.filter(s => s.includes(nm) || [...WORDS.ease.stage, WORDS.ease.asleepShort, WORDS.ease.fed].includes(s)) : w; } }   // bug174: her bare word stays a candidate (no room for name and word: the word shows)   // her kind unidentified: the name is never alone   // walk W3: the line under a wild one in sight: its ease, whether this step would be heard, how long it lets you stay
       if (S.ui.swap) { const sw = swapState(); if (sw && sw.night) return L1(WORDS.pod.take, '', WORDS.pod.leave, fieldFrozen()); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
       if (!lay.cave && !a.ctx && !(o && o.type === 'cr')) { const sl2 = screenLoika(), w2 = sl2 && sl2.c, n2 = w2 && S.named && S.named[w2.id]; if (w2 && n2 && !S.known.includes(w2.sp)) wild = [nameKind(n2, w2.sp)]; else if (w2) wild = wildCtx(w2, n2); }   // not faced, but in sight: the same line
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
