@@ -24,7 +24,7 @@ StyleDictionary.registerFormat({
   format: ({ dictionary }) =>
     JSON.stringify({ palette: "station", colours: [...colours(dictionary, "core"), ...colours(dictionary, "station")].map((t) => [t.path[2], val(t)]) }, null, 1) + "\n",
 });
-// The Companion's palette: the core 48, then its three sage colours, as exploration/index.html's PALETTE.
+// The Companion's palette: the core 48, then its three sage colours; exploration/src/data/palette.mjs hands it to the page.
 StyleDictionary.registerFormat({
   name: "mb/companion-js",
   format: ({ dictionary }) =>
