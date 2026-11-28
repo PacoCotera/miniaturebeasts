@@ -29,7 +29,7 @@ try {
   await page.waitForFunction(() => window.__mb && window.__mb.TEST, null, { timeout: 60000 }); await page.waitForTimeout(1500);
   for (const [px, py] of patches) {
     await page.evaluate(([s, px, py, hx, hy]) => { const m = window.__mb; m.TEST.calm = true; m.newWorld(s, 2); const pos = py * m.MW + px; m.startExpedition("weather", pos); m.S.exp.fog = null; m.S.exp.storm = null; m.S.exp.pos = pos; m.enterPatch();
-      m.S.exp.patch.x = hx; m.S.exp.patch.y = hy; m.S.veil[m.S.exp.patch.key] = new Array(m.PH).fill(0x0fffffff); }, [seed, px, py, hx, hy]);
+      m.S.exp.patch.x = hx; m.S.exp.patch.y = hy; m.S.seen.tile[m.S.exp.patch.key] = new Array(m.PH).fill(0x0fffffff); }, [seed, px, py, hx, hy]);
     for (const [name, spent] of scan ? [["day", 30]] : [["1-day", 30], ["2-dusk", 160], ["3-night", 190]]) {
       await page.evaluate((s) => { const m = window.__mb; m.S.day.spent = s; m.RT.key = null; }, spent);
       await page.waitForTimeout(700);

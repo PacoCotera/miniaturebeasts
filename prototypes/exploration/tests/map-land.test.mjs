@@ -50,15 +50,15 @@ test("the painted land: found has no night, never been in is darker, not seen is
         for (let y = (s >> 1) - 10; y < (s >> 1) + 10; y++) for (let x = (s >> 1) - 10; x < (s >> 1) + 10; x++) { const i = ((b.y + y) * cv.width + b.x + x) * 4; n++;
           if (isRGB(d, i, night)) ni++; if (isRGB(d, i, ink)) dark++; else land++; lum += d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11; }
         return { n, night: ni, ink: dark, nonInk: land, lum: lum / n }; };
-      const found = ex.reach.find((c) => m.explored(c) || (m.S.called && m.S.called[c]));
-      const others = ex.reach.filter((c) => c !== found && m.S.revealed[c] && m.passable(c) && m.G.land[c] !== m.L.WATER && m.fogState(c) === 2);
+      const found = ex.reach.find((c) => m.explored(c) || (m.S.seen.walked && m.S.seen.walked[c]));
+      const others = ex.reach.filter((c) => c !== found && m.S.seen.rev[c] && m.passable(c) && m.G.land[c] !== m.L.WATER && m.cellFog(c) === 2);
       const inRange = (c) => { const X = c % m.MW, Y = (c / m.MW) | 0; return X >= spec.X0 + 1 && X < spec.X0 + q.n - 1 && Y >= spec.Y0 + 1 && Y < spec.Y0 + q.n - 1; };
       const never = others.find(inRange);
-      let unseen = -1; for (let c = 0; c < m.MW * m.MH; c++) if (!m.S.revealed[c] && inRange(c) && [c - 1, c + 1, c - m.MW, c + m.MW].every((n) => !m.S.revealed[n])) { unseen = c; break; }
+      let unseen = -1; for (let c = 0; c < m.MW * m.MH; c++) if (!m.S.seen.rev[c] && inRange(c) && [c - 1, c + 1, c - m.MW, c + m.MW].every((n) => !m.S.seen.rev[n])) { unseen = c; break; }
       const res = { same, found: found != null ? stat(cv1, found) : null, never: never != null ? stat(cv1, never) : null, unseen: unseen >= 0 ? stat(cv1, unseen) : null, fogN: m.FOGV.n };
       // a cell is found: the painting is a new one
       const target = others.find((c) => c !== never) ?? never; res.target = target != null;
-      if (target != null) { m.S.called[target] = 1; res.changed = m.landImage(spec) !== cv1; }
+      if (target != null) { m.S.seen.walked[target] = 1; res.changed = m.landImage(spec) !== cv1; }
       return res;
     });
     assert.equal(r.same, true, "the same state gives the same cached painting");

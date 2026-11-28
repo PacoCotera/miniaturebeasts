@@ -14,7 +14,7 @@ test("three seeds: the Station's reach for a cell equals the Companion's, at bot
   for (const seed of SEEDS) {
     p.run(`newWorld(${seed})`);
     // a save that has seen a block of land round the first light: not a first set-out
-    p.run(`(() => { const s = cxy(G.spawns[0]); for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) if (Math.abs(x - s.x) <= 5 && Math.abs(y - s.y) <= 5) S.revealed[y * MW + x] = 1; })()`);
+    p.run(`(() => { const s = cxy(G.spawns[0]); for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) if (Math.abs(x - s.x) <= 5 && Math.abs(y - s.y) <= 5) S.seen.rev[y * MW + x] = 1; })()`);
     for (const tier of [1, 2]) {
       p.run(`S.tier = ${tier}`);
       const sv = JSON.parse(JSON.stringify(p.run(`serialize(S)`)));
@@ -44,7 +44,7 @@ test("the last start crosses the save as the region's map.lastPos", async () => 
   const p = makePage({ console: "silent", els: true, raf: 1, anonPods: true, gen: 7 });
   await new Promise(r => setTimeout(r, 200));
   p.run(`newWorld(9)`);
-  p.run(`S.revealed[G.spawns[0]] = 1; S.ui.lastPos = G.spawns[0]`);
+  p.run(`S.seen.rev[G.spawns[0]] = 1; S.ui.lastPos = G.spawns[0]`);
   const sv = JSON.parse(JSON.stringify(p.run(`serialize(S)`)));
   assert.equal(mapOf(sv).lastPos, p.run(`G.spawns[0]`));
 });
@@ -53,7 +53,7 @@ test("the place screen's cursor rests as built: the last start, even when a save
   const p = makePage({ console: "silent", els: true, raf: 1, anonPods: true, gen: 7 });
   await new Promise(r => setTimeout(r, 200));
   p.run(`newWorld(9)`);
-  p.run(`(() => { const s = cxy(G.spawns[0]); for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) if (Math.abs(x - s.x) <= 4 && Math.abs(y - s.y) <= 4) S.revealed[y * MW + x] = 1; S.ui.sel = 0; })()`);
+  p.run(`(() => { const s = cxy(G.spawns[0]); for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) if (Math.abs(x - s.x) <= 4 && Math.abs(y - s.y) <= 4) S.seen.rev[y * MW + x] = 1; S.ui.sel = 0; })()`);
   const cells = p.run(`(() => { const o = []; for (let c = 0; c < MW * MH; c++) if (placeValid(c)) o.push(c); return o; })()`);
   assert.ok(cells.length > 4);
   const last = cells[0], planned = cells[cells.length - 1];

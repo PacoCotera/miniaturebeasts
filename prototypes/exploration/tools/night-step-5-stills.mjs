@@ -46,7 +46,7 @@ try {
       if (part === "dusk" || part === "night") m.habDay()[m.habKey(c, "sleep")] = "played";
       for (const dir of ["up", "down", "left", "right"]) { const [fx, fy] = m.DIRS[dir], x = c.x - fx * d, y = c.y - fy * d; let ok = x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1;
         for (let k = 0; ok && k <= d; k++) { const tx = c.x - fx * k, ty = c.y - fy * k; if (!lay.reach[ty * lay.w + tx] || m.T_BLOCK[lay.tiles[ty * lay.w + tx]]) ok = false; }
-        if (ok) { P.x = x; P.y = y; P.dir = dir; m.unveil(P.key, P.x, P.y, 12); return { ok: true, sleeper: m.sleeperOf(c), curled: m.curledNow(c), dir }; } }
+        if (ok) { P.x = x; P.y = y; P.dir = dir; m.lightningLift(P.key, P.x, P.y, 12); return { ok: true, sleeper: m.sleeperOf(c), curled: m.curledNow(c), dir }; } }
       return { ok: false }; }, { id: pick.id, spent, d });
     const shot = async (name, ms = 900) => { await page.waitForTimeout(ms); await page.screenshot({ path: `${out}/${w}-land${seed}-${name}.png` }); };
     const note = async (name) => { await page.waitForTimeout(7000); const o = await f.evaluate(() => { const m = window.__mb, t = m.noteTarget(); if (!t) return null; m.noteHabit(t); const n = m.S.exp.stats.noted; return n[n.length - 1]; }); console.log(w, seed, name, JSON.stringify(o)); await shot(name, 500); };

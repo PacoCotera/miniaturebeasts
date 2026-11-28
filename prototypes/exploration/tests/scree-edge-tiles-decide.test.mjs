@@ -18,10 +18,10 @@ test("a scree edge crosses over open ground on both sides of the seam; its two c
     for (const i of edges.slice(0, 2)) {   // two edges a seed keep the run short
       const a = i >> 1, dir = i & 1 ? "down" : "right", b = dir === "down" ? a + MW : a + 1;
       const go = (x, y) => { p.run(`S.exp.start = ${a}; S.exp.pos = ${a}; S.exp.range = 4; enterPatch(); if (RT.view) endView(); S.exp.patch.x = ${x}; S.exp.patch.y = ${y}; FX.msg = ''; crossEdge(${JSON.stringify(dir)})`); };
-      const info = J(p, `(() => { S.exp.start = ${a}; S.exp.pos = ${a}; S.exp.range = 4; enterPatch(); if (RT.view) endView(); const la = layout(String(${a})), lb = layout(String(${b})); if (!la.tiles || !lb.tiles || !la.raisedFn || !lb.raisedFn) return null;
+      const info = J(p, `(() => { S.exp.start = ${a}; S.exp.pos = ${a}; S.exp.range = 4; enterPatch(); if (RT.view) endView(); const la = layout(String(${a})), lb = layout(String(${b})); if (!sideReady(la, lb)) return null;
         const east = ${JSON.stringify(dir)} === 'right', len = east ? la.h : la.w, out = [];
-        for (let k = 0; k < len; k++) { const ax = east ? la.w - 1 : k, ay = east ? k : la.h - 1, bx = east ? 0 : k, by = east ? k : 0;
-          const ok = !T_BLOCK[la.tiles[ay * la.w + ax]] && !T_BLOCK[lb.tiles[by * lb.w + bx]] && !levelBlocks(la, ax, ay, lb, bx, by);
+        for (let k = 0; k < len; k++) { const ax = east ? la.w - 1 : k, ay = east ? k : la.h - 1;
+          const ok = !!landingOf(la, lb, ${JSON.stringify(dir)}, ax, ay);
           const q = crossingAt(la, ax, ay); out.push({ ax, ay, ok, gate: !!(q && !q.bank && q.dir === ${JSON.stringify(dir)}) }); }
         return out; })()`);
       if (!info) continue;

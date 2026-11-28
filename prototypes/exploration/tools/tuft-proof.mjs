@@ -38,7 +38,7 @@ const setup = await page.evaluate(({ key, id }) => {
   const far = list[0].mark || list[0].stand;
   c.x = far.x + 7; c.y = far.y; c.gone = null; c.ease = 0; c.st = "idle"; c.ind.go = { part: m.dayPart(), t: { x: c.x, y: c.y } };
   const side = [[1, 0], [-1, 0], [0, 1], [0, -1]].find(([dx, dy]) => m.passable(far.x + dx, far.y + dy));
-  m.unveil(key, far.x, far.y, 8); P.x = far.x + side[0]; P.y = far.y + side[1]; P.dir = side[0] ? (side[0] > 0 ? "left" : "right") : (side[1] > 0 ? "up" : "down");
+  m.lightningLift(key, far.x, far.y, 8); P.x = far.x + side[0]; P.y = far.y + side[1]; P.dir = side[0] ? (side[0] > 0 ? "left" : "right") : (side[1] > 0 ? "up" : "down");
   window.__pr = { mark: far, side }; return { mark: far, side }; }, pick);
 if (setup.none) { console.log("no prints"); process.exit(1); }
 const act = () => page.evaluate(() => { const m = window.__mb, a = m.patchAction(), s0 = m.S.day.spent, e0 = m.S.exp.cargo.s, t0 = m.curLive().tf.length; a.run(); return { label: a.label, spentDelta: m.S.day.spent - s0, essenceDelta: m.S.exp.cargo.s - e0, tufts: [t0, m.curLive().tf.length] }; });

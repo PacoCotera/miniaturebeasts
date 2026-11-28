@@ -11,7 +11,7 @@ const page = () => makePage({ console: "silent", els: true, raf: 1 }).run;
 // A new world with a patch open on a place that has a stone; returns the runner. The stone is made storm-charged (+3) or warm.
 function setup(kind, energy) {
   const run = page(); run("newWorld(7)");
-  run(`(() => { const cell = S.revealed.findIndex((v, i) => passable(i) && G.land[i] !== L.WATER && layout(String(i)).feats.some(f => f.kind === 'k'));
+  run(`(() => { const cell = S.seen.rev.findIndex((v, i) => passable(i) && G.land[i] !== L.WATER && layout(String(i)).feats.some(f => f.kind === 'k'));
     startExpedition('weather', cell); const ex = S.exp, key = String(cell), f = layout(key).feats.find(f => f.kind === 'k');
     ensureLive(key); ex.patch = { key, x: f.x, y: f.y + 1, dir: 'up', noise: 'creep' }; ex.cargo.e = ${energy}; window.T = { key, f };
     if (${kind === "storm"}) setFS(key, f.id, { ch: 3 }); else { setFS(key, f.id, { ws: S.turn }); } })()`);

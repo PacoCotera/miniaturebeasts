@@ -15,7 +15,7 @@ function game() {
     S.carried = [1]; S.lead = 1; S.turn = 40; S.known = [0, 1, 2]; S.found = ['freeid']; S.tier = 2; S.nextId = 30;
     S.hold = { e: 3, d: 4, s: 2, pods: [{ id: 'w0', k: '5', sp: 0, h: 1, bur: 1, g: 'meadow', how: 'ground' }] };
     S.bay = [{ id: 'b1', n: 1, at: 5, e: 1, d: 1, s: 1, pods: [{ id: 'w1', k: '6', sp: 1, h: 1, bur: 1, g: 'meadow', how: 'ground' }] }];
-    S.pins = [{ k: '5', t: 'x' }]; S.veil = { 5: 1 }; S.visited[5] = 1; S.revealed[5] = 1; save();`);
+    S.pins = [{ k: '5', t: 'x' }]; S.seen.tile = { 5: 1 }; S.seen.been[5] = 1; S.seen.rev[5] = 1; save();`);
   const st = freshSt(p.S.wid, 40); st.e = 7; st.d = 8; st.s = 9; st.known = [0, 1, 2]; st.mibis = [{ id: 1, name: "Dot", sp: 0, born: -9, bonded: true, notches: 2 }, { id: 2, name: "Tam", sp: 1, born: -5, notches: 1 }];
   st.tray = [{ id: "t1", sp: 0, g: "meadow", how: "ground", gs: 5, n: 0, idd: 0, st: [] }];
   p.writeSt(st);
@@ -41,8 +41,8 @@ test("New world: every kept thing is still there, the carried mibi is home, the 
   assert.equal(p.run("S.bay.length"), 1, "the sealed crate is kept");
   // the map is new: no pins, no veil, no progress, one region
   assert.deepEqual(J(p, "S.pins"), []);
-  assert.deepEqual(J(p, "S.veil"), {});
-  assert.equal(p.run("S.visited.some(Boolean) || S.revealed.some(c => c)"), false, "no map progress");
+  assert.deepEqual(J(p, "S.seen.tile"), {});
+  assert.equal(p.run("S.seen.been.some(Boolean) || S.seen.rev.some(c => c)"), false, "no map progress");
   assert.equal(p.run("S.regions.length"), 1);
   // the stored save: the Station's part is the same one
   const sv = p.sv();

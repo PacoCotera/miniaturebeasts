@@ -8,7 +8,7 @@ import { WORDS } from "../src/words.mjs";
 const W = WORDS.teachWalk;
 const setup = `(() => { const m = __mb, S = m.S; m.startExpedition('weather', G.spawns[0]);
   for (const c of [...new Set(S.cr.filter(q => q.sp === 0).map(q => q.c))]) { if (!G.comp[c] || G.land[c] === L.WATER) continue; const key = String(c), live = ensureLive(key); const q = live.cr.find(x => x.sp === 0 && x.ind);
-    if (!q) continue; S.exp.pos = key; enterPatch(key); S.known = [0, ...S.known.filter(k => k !== 0)]; const c2 = curLive().cr.find(x => x.id === q.id), P = S.exp.patch; P.x = c2.x + 6; P.y = c2.y; P.dir = "left"; unveil(key, c2.x, c2.y, 8);
+    if (!q) continue; S.exp.pos = key; enterPatch(key); S.known = [0, ...S.known.filter(k => k !== 0)]; const c2 = curLive().cr.find(x => x.id === q.id), P = S.exp.patch; P.x = c2.x + 6; P.y = c2.y; P.dir = "left"; lightningLift(key, c2.x, c2.y, 8);
     return true; } return false; })()`;
 
 test("a named Loika in sight that has not heard you: step slowly; once she hears you: keep still; both only on a first walk", () => {

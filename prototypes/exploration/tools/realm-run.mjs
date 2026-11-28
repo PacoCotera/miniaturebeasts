@@ -80,7 +80,7 @@ export function runBot({ seed = 7, gen = 7, expeditions = 20, mibis = 0, dock = 
     const road = from => p.run(`(() => { const goal = ${start}, seen = new Map([[${from}, null]]), q = [${from}];
       for (let i = 0; i < q.length; i++) { const c = q[i]; if (c === goal) break;
         for (const d of ["up", "right", "down", "left"]) { if (!canStep(c, d)) continue; const t = c + (d === "up" ? -MW : d === "down" ? MW : d === "left" ? -1 : 1);
-          if (!seen.has(t) && (S.visited[t] || t === goal)) { seen.set(t, [c, d]); q.push(t); } } }
+          if (!seen.has(t) && (S.seen.been[t] || t === goal)) { seen.set(t, [c, d]); q.push(t); } } }
       const out = []; for (let c = goal; seen.get(c); c = seen.get(c)[0]) out.unshift(seen.get(c)[1]); return seen.has(goal) ? out : null; })()`);
     for (let stall = 0; S().exp && pos() !== start && stall < 60; stall++) {
       if (phase() !== "map") { key("back"); continue; }

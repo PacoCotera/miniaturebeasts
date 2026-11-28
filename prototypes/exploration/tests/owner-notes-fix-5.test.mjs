@@ -9,13 +9,12 @@ const SETUP = "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176)
 test("#83 a young mibi stays young while its two hours run, however many turns pass; it grows when they are over", () => {
   const p = makePage({ console: "silent", canvas: true });
   p.run(SETUP);
-  p.run("S.mibis = [{ id: 1, name: 'Dot', sp: 0, born: 0, grownTurn: null, growAt: Date.now() + GROW_UP_MS }]; S.turn = 40;");
+  p.run("S.mibis = [{ id: 1, name: 'Dot', sp: 0, born: 0, grownTurn: null, growAt: Date.now() + 2 * 3600 * 1000 }]; S.turn = 40;");   // the Station sets growAt two hours after the hatch (station/src/state.mjs)
   assert.equal(p.run("mibiStage(S.mibis[0])"), "juvenile", "40 empty turns do not grow it");
   assert.equal(p.run("grownNow(S.mibis[0])"), false);
   p.run("S.mibis[0].growAt = Date.now() - 1;");
   assert.equal(p.run("mibiStage(S.mibis[0])"), "adult", "two real hours after the hatch it is grown");
   assert.equal(p.run("grownNow(S.mibis[0])"), true, "and the walk's end plays the grow-up moment");
-  assert.equal(p.run("GROW_UP_MS"), 2 * 3600 * 1000);
 });
 
 test("#83 a mibi with no hatch clock keeps the turn rule", () => {
@@ -48,12 +47,13 @@ test("#85 a Call at a corner of an explored place lifts the strips next door, an
   p.run("{ const P = S.exp.patch; P.x = 0; P.y = 1; RT.pl = null; }");
   p.run("callPlace();");
   const nk = p.run("String(S.exp.patch.key * 1 - 16)");   // the place above
-  assert.ok(p.run(`!!(S.veilPre && S.veilPre['${nk}'])`), "the Call lifted a strip there");
-  // the held view's veil for that never-walked place: only the lifted tiles are open
-  const v = p.run(`(() => { const nl = { w: 28, h: 28, baked: { ox: 0, oy: 0, place: { w: 28, h: 28 } } }, veil = new Uint8Array(28 * 28).fill(1); return Array.from(unwalkedVeil(veil, nl, S.veilPre['${nk}'])); })()`);
-  const open = v.reduce((n, x) => n + (x ? 0 : 1), 0);
-  assert.ok(open > 0 && open < v.length, "some of the neighbour is lit, not all: " + open);
-  assert.equal(p.run(`unwalkedVeil(new Uint8Array(4).fill(0), { w: 2, h: 2, baked: { ox: 0, oy: 0, place: { w: 2, h: 2 } } }, null).join('')`), "1111", "no Call, wholly veiled as before");
+  assert.ok(p.run(`!!(S.seen.tile && S.seen.tile['${nk}'])`), "the Call lifted a strip there");
+  // the held view's veil for that never-walked place: only the lifted tiles are open (the one record, read through veilMask)
+  const lit = () => p.run(`(() => { const nl = layout('${nk}'), v = veilMask(S.seen, nl, nl.w, nl.h, 0, 0); let n = 0; for (let i = 0; i < v.length; i++) if (!v[i]) n++; return [n, v.length]; })()`);
+  const [open, all] = lit();
+  assert.ok(open > 0 && open < all, "some of the neighbour is lit, not all: " + open);
+  p.run(`delete S.seen.tile['${nk}']`);
+  assert.equal(lit()[0], 0, "no Call, wholly veiled as before");
 });
 
 

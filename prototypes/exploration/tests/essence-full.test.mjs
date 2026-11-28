@@ -11,7 +11,7 @@ const page = () => makePage({ console: "silent", els: true, raf: 1 }).run;
 // A world with a patch open on a passable cell, the Essence hold set to `s`.
 function setup(s) {
   const run = page(); run("newWorld(7)");
-  run(`(() => { const cell = S.revealed.findIndex((v, i) => passable(i) && G.land[i] !== L.WATER);
+  run(`(() => { const cell = S.seen.rev.findIndex((v, i) => passable(i) && G.land[i] !== L.WATER);
     startExpedition('weather', cell); const ex = S.exp, key = String(cell); ensureLive(key);
     ex.patch = { key, x: 5, y: 5, dir: 'up', noise: 'creep' }; ex.cargo.s = ${s}; window.T = { key }; })()`);
   return run;

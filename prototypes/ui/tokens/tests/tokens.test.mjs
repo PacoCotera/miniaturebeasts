@@ -1,4 +1,4 @@
-// The token outputs hold exactly the values the faces use today: the Station's palettes/station.json and the Companion's PALETTE in exploration/index.html.
+// The token outputs hold exactly the values the faces use: the Station's palettes/station.json, and the Companion's PALETTE, which its page reads from the output and which must match tokens.json.
 // Run: node --test prototypes/ui/tokens/tests/tokens.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -14,9 +14,9 @@ test("the Station output equals palettes/station.json (names, values, order)", (
   assert.deepEqual(got, want);
 });
 
-test("the Companion output equals the PALETTE table of exploration/index.html", async () => {
-  const html = fs.readFileSync(root + "prototypes/exploration/index.html", "utf8");
-  const want = new Function("return " + html.match(/const PALETTE = (\[[\s\S]*?\n\]);/)[1])();
+test("the Companion output equals tokens.json: the core colours, then the Companion's own (names, values, order)", async () => {
+  const { color } = JSON.parse(fs.readFileSync(root + "prototypes/ui/tokens/tokens.json", "utf8"));
+  const want = [color.core, color.companion].flatMap((group) => Object.entries(group).map(([name, token]) => [name, token.$value]));
   const { PALETTE } = await import(out("companion-colors.mjs"));
   assert.deepEqual(PALETTE, want);
 });

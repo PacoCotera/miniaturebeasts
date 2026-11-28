@@ -36,7 +36,7 @@ const toLoika = (page, name) => page.evaluate(({ seed, name }) => {
     S.exp.pos = key; m.enterPatch(key); const P = S.exp.patch, lay = m.curLay(); S.known = [0, ...S.known.filter(k => k !== 0)];
     const live2 = m.curLive(), c2 = live2.cr.find(x => x.id === q.id); S.exp.storm = null; live2.strike = null;
     const spot = [[3, 0, "left"], [-3, 0, "right"], [0, 3, "up"], [0, -3, "down"]].find(([dx, dy]) => m.passable(c2.x + dx, c2.y + dy)); if (!spot) continue;
-    P.x = c2.x + spot[0]; P.y = c2.y + spot[1]; P.dir = spot[2]; m.unveil(key, c2.x, c2.y, 7);
+    P.x = c2.x + spot[0]; P.y = c2.y + spot[1]; P.dir = spot[2]; m.lightningLift(key, c2.x, c2.y, 7);
     if (name) { S.named = { [c2.id]: name }; S.metIds = [String(c2.id)]; c2.ind.name = name; }
     m.advance("patch", { noise: "creep", moved: true }); return { key, id: c2.id }; }
   return null; }, { seed, name });

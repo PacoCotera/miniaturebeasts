@@ -49,8 +49,6 @@ export function pickSigns(entries, revealedCount) {
   const all = [...entries].sort((a, b) => b.pri - a.pri || a.c - b.c);
   return all.filter((e, i) => e.pri >= 9 || i < cap);
 }
-// The kinds at a cell in the order the page says them.
-export const kindsAt = (entry) => entry ? SIGN_ORDER.map(k => entry.list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind) : [];
 
 // A wild one's known places by part of day: where she was seen to keep, from the Companion's part of the save. `seenAt` is the save's record of
 // where each was last seen ({ k: place key, x, y, sp, t }); `keeps` (her page's record, when the save has it) is { id: { <part of day>: place key } }.

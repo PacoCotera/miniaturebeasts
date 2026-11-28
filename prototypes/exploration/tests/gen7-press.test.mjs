@@ -23,7 +23,7 @@ function setup() {
   p.run(`(() => { const P = S.exp.patch, lay = layout(P.key), live = S.exp.live[P.key];
     lay.feats.push({ id: 'tk', kind: 'k', x: ${stone.x}, y: ${stone.y}, ch: 2 }, { id: 'tu', kind: 'u', x: ${cup.x}, y: ${cup.y}, full: true }, { id: 'tb', kind: 'b', x: ${bush.x}, y: ${bush.y} },
       { id: 'tq', kind: 'q', x: ${mark.x}, y: ${mark.y}, born: S.turn, glass: false });
-    live.tf.push({ x: ${tuft.x}, y: ${tuft.y} }); S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); })()`);
+    live.tf.push({ x: ${tuft.x}, y: ${tuft.y} }); S.seen.tile[P.key] = new Array(lay.h).fill(0x0fffffff); })()`);
   return { p, w: makeWalker(p, {}), spots: { stone, cup, bush, mark, tuft } };
 }
 const hold = p => JSON.parse(p.run("JSON.stringify({ e: S.exp.cargo.e, d: S.exp.cargo.d, s: S.exp.cargo.s, a: S.exp.actions })"));

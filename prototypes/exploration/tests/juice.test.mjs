@@ -6,7 +6,7 @@ import { makePage } from "./page-harness.mjs";
 const page = () => makePage({ console: "silent", els: true, raf: 1 }).run;
 function setup() {
   const run = page(); run("newWorld(7)");
-  run(`(() => { const cell = S.revealed.findIndex((v, i) => passable(i) && G.land[i] !== L.WATER && layout(String(i)).feats.some(f => f.kind === 'k'));
+  run(`(() => { const cell = S.seen.rev.findIndex((v, i) => passable(i) && G.land[i] !== L.WATER && layout(String(i)).feats.some(f => f.kind === 'k'));
     startExpedition('weather', cell); const ex = S.exp, key = String(cell), f = layout(key).feats.find(f => f.kind === 'k');
     ensureLive(key); ex.patch = { key, x: f.x, y: f.y + 1, dir: 'up', noise: 'creep' }; ex.cargo.e = 0; window.T = { key, f };
     setFS(key, f.id, { ch: 3 }); })()`);
@@ -39,7 +39,7 @@ test("a full hold takes nothing and shows no juice", () => {
 
 test("every row of the table has a sound and a known counter or none", () => {
   const run = setup(); run("RM.matches = false");
-  assert.equal(run("Object.keys(JUICE).every(k => Array.isArray(JUICE[k].snd) && JUICE[k].snd.length > 0)"), true);
+  assert.equal(run("Object.keys(JUICE).every(k => Array.isArray(SOUNDS[k]) && SOUNDS[k].length > 0)"), true);
 });
 
 test("a fruit pick-up says where it goes", () => {

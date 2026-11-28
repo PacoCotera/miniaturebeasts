@@ -98,7 +98,7 @@ const FIND = `(() => { let best = null, tried = 0; for (const c of [...new Set(S
   const company = live.cr.filter(q => q.id !== ls[0].id && !q.hide && (q.ind ? q.ind.doings.wary >= .5 : (q.b || 0) <= .55)).length;
   if (!best || (company > 0 && !best.company)) best = { key, id: ls[0].id, company }; if (best.company || tried >= 4) break; }
   return best ? JSON.stringify(best) : 'null'; })()`;
-const NEWDAY = (key, day) => `(() => { const ex = S.exp; S.day = freshDay(); S.turn = ${day - 1}; ex.ending = 0; ex.live = {}; ex.storm = stormFor(+${JSON.stringify(key)}); if (${day} === 1) ex.storm.x -= 2 * ex.storm.dir; ex.stray = null; ex.shield = ex.smax; S.exp.pos = ${JSON.stringify(key)}; enterPatch(${JSON.stringify(key)}); unveil(${JSON.stringify(key)}, 15, 15, 40); return 1; })()`;
+const NEWDAY = (key, day) => `(() => { const ex = S.exp; S.day = freshDay(); S.turn = ${day - 1}; ex.ending = 0; ex.live = {}; ex.storm = stormFor(+${JSON.stringify(key)}); if (${day} === 1) ex.storm.x -= 2 * ex.storm.dir; ex.stray = null; ex.shield = ex.smax; S.exp.pos = ${JSON.stringify(key)}; enterPatch(${JSON.stringify(key)}); lightningLift(${JSON.stringify(key)}, 15, 15, 40); return 1; })()`;
 
 function playSeed(seed, pol) {
   const p = makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });

@@ -20,7 +20,7 @@ const nk = p.run("String(S.exp.patch.key * 1 + 1)");
 p.run(`S.exp.reach = S.exp.reach.filter(c => c !== ${nk}); S.exp.reach.push(${nk}); S.pods = [{ id: 'in', k: '${nk}', x: 1, y: S.exp.patch.y - 1, sp: 0, h: 1, g: 'grass', how: 'ground' }];`);
 const hex = p.run("HEX");
 const shot = name => {
-  p.run("scr.px().fill(-1); NOW += 2000; drawPatch(NOW / 1000); drawEdgeCues(NOW / 1000);");
+  p.run("scr.px().fill(-1); NOW += 2000; drawPatch(NOW / 1000); drawEdgeCues();");
   const px = p.run("scr").px(), w = p.run("scr.width"), h = p.run("scr.height"), rgb = Buffer.alloc(w * h * 3);
   for (let i = 0; i < w * h; i++) { const c = hex[px[i]] || "#000000"; rgb[i * 3] = parseInt(c.slice(1, 3), 16); rgb[i * 3 + 1] = parseInt(c.slice(3, 5), 16); rgb[i * 3 + 2] = parseInt(c.slice(5, 7), 16); }
   writeFileSync(`${out}/${name}.png`, png(w, h, rgb));
