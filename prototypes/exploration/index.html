@@ -2393,7 +2393,7 @@ function carryRing() {
 function hearLineOf(c) {
   const P = S.exp.patch, lay = curLay(), env = easeEnvNow(), w = wariness1(c.ind.doings.wary); if ((c.ease | 0) >= 3) return null;
   const f = frontOf(P), free = f.x >= 0 && f.y >= 0 && f.x < lay.w && f.y < lay.h && !!lay.reach[f.y * lay.w + f.x] && !T_BLOCK[lay.tiles[f.y * lay.w + f.x]] && !occupant(P.key, f.x, f.y, 'player'), x = free ? f.x : P.x, y = free ? f.y : P.y;
-  const cr = easeHeardAt(env, c, x, y, 'creep', w), wk = easeHeardAt(env, c, x, y, 'walk', w), left = stayLeft(env, { ...c, wary: w }, P);
+  const cr = easeHeardAt(env, c, x, y, 'creep', w), wk = easeHeardAt(env, c, x, y, 'walk', w), left = fedToday(c) ? null : stayLeft(env, { ...c, wary: w }, P);   // a fed one is not heard for the stay (pod-ease-fix): no count
   return { c: cr, w: wk, left };
 }
 // a met one whose kind is not yet identified is named with what she is, never alone: "Hazel · Loika" (the one place that builds it)

@@ -2222,6 +2222,12 @@ async function fpPlay(TEACH) {   // TEACH: the teach line, the Call and the Case
     assert.equal(s.label, "Offer fruit", `the case is reached: beside her, ✓ reads Offer fruit (${s.label})`);
     await step("confirm"); s = await st(); trace("offered", s);
     assert.ok(s.taught, "the case is reached: she took the fruit (the teaching is spent)");
+    if (!TEACH) {   // pod-ease-fix-2: fed, her bottom line never counts the stay (it never fires for a fed one)
+      const cands = await mbq((m) => { const c = m.curLive().cr.find((q) => q.ind && q.ind.name === "Dunnock"); return c ? m.wildCtx(c, "Dunnock") : null; });
+      console.log(`# s45 fed bottom line: ${JSON.stringify(cands)}`);
+      assert.ok(cands && cands.length, "the bottom line has candidates for her");
+      assert.ok(!cands.some((t) => /stay/i.test(t)), `no stay in the bottom line after feeding (${JSON.stringify(cands)})`);
+    }
     await step("back"); for (let i = 0; i < 6 && (await mbq((m) => { const it = m.menuItems()[m.S.ui.menuSel]; return it && it.id; })) !== "cargo"; i++) await step("down");
     await step("confirm"); await stable();
     const caseNone = await g.shot("s45-5-case-no-fruit");
