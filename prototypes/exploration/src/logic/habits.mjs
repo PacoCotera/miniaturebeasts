@@ -5,7 +5,7 @@
 //   a play: tell (2 to 4 actions, the individual's), then four beats; ✓ facing her in sight during a play is a note
 import { hash, rnd } from '../world.mjs';
 import { haunt as hauntOf } from '../gen7/haunts.mjs';
-import { DAY } from '../words.mjs';
+import { DAY } from '../data/words.mjs';
 
 export const HABITS = Object.freeze(['shake', 'calm', 'sleep']);
 export const BEATS = 4;

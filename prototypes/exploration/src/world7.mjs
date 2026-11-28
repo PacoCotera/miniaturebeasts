@@ -49,7 +49,7 @@ export function bakedCell(ctx, seed, slot, cell, v, stage = null) {   // v: the 
   const place = bakeCell(ir, ctx); if (stage) stage(BAKE_STAGES);
   return { ir, place };
 }
-// baked: the cell's { ir, place } as the places worker made it (src/place-store.mjs); without it the cell is baked here. The sides that are shut are applied here, on the page, to the baked cell.
+// baked: the cell's { ir, place } as the places worker made it (src/store/place-store.mjs); without it the cell is baked here. The sides that are shut are applied here, on the page, to the baked cell.
 export function layout7(ctx, G, seed, slot, key, shut, v, baked = null) {   // shut(side): the side is past the Probe's range or closed, so its band is not walked (the page's crossReason)
   const cell = +key, { ir, place: stored } = baked || bakedCell(ctx, seed, slot, cell, v), place = { ...stored }, lay = adaptCell(place, ir, ctx.ts, ctx.terrains, { key, cell, land: G.land[cell], G, seed, shut });
   const [X, Y] = cellWorldXY(slot, cell);

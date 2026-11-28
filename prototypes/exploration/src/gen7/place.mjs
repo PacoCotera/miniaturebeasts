@@ -1166,7 +1166,7 @@ function landOf(seed) {
   let all = null;
   return { T, G: worldGround(seed), biome, mask: maskFn(seed), W: WTW, H: WTH, get wayups() { return all || (all = stairs.filter(st => st.wayup).map(st => st.wayup)); }, wayupsNear, slots };
 }
-const SITES = new Map();   // the Hollow Tree sites made so far, by seed: 'ax,ay' -> { x, y, slot } or null. The decor of the seed makes into it; a site made off the page (src/realm-worker.mjs) is merged in by presetHollowSites
+const SITES = new Map();   // the Hollow Tree sites made so far, by seed: 'ax,ay' -> { x, y, slot } or null. The decor of the seed makes into it; a site made off the page (src/worker.mjs) is merged in by presetHollowSites
 const siteCacheOf = seed => { let m = SITES.get(seed); if (!m) { if (SITES.size > 3) SITES.clear(); m = new Map(); SITES.set(seed, m); } return m; };
 // sites: what a decor's madeSites() sent: [{ slot, x, y }] or [{ slot, none: true }]; a slot already known is left as it is
 export const presetHollowSites = (seed, sites) => { const m = siteCacheOf(seed); for (const s of sites || []) { const k = s.slot[0] + ',' + s.slot[1]; if (!m.has(k)) m.set(k, s.none ? null : { x: s.x, y: s.y, slot: [s.slot[0], s.slot[1]] }); } };

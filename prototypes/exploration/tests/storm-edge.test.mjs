@@ -1,7 +1,7 @@
 // The storm's soft edge in the place view (#149, round 2): a 3-tile band of the 4x4 Bayer dither, depth continuous per world pixel, with a smooth seeded per-pixel-row wobble.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import * as V from "../src/view.mjs";
+import * as V from "../src/render/view.mjs";
 import * as EDGE from "../src/render/edge.mjs";
 
 const SEED = 12345, DARK_W = 336, SCR = 700;

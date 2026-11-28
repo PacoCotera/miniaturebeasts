@@ -3,7 +3,7 @@
 // size) the buffer covers, so a camera view and the whole place use the same code.
 import { blitRle } from './blit.mjs';
 import { sixteenOf } from './sixteen.mjs';
-import { BAYER4 } from '../../exploration/src/view.mjs';
+import { BAYER4 } from '../../exploration/src/render/view.mjs';
 
 export const CUT_RADIUS = 22;        // pixels at 48 px: the explorer's cut-out in a canopy
 export const CUT_THRESHOLD = 8;      // the 4 x 4 Bayer matrix below this drops the pixel: a 50% dither disc

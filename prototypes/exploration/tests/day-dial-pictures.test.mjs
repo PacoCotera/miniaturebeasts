@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { DAY, partOfDay } from "../src/words.mjs";
+import { DAY, partOfDay } from "../src/data/words.mjs";
 import { PARTS } from "../src/logic/habits.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");

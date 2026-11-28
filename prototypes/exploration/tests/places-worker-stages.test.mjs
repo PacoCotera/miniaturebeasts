@@ -19,7 +19,7 @@ class FakeWorker {
   terminate() { return this.w.terminate(); }
 }
 globalThis.Worker = FakeWorker;
-const store = await import("../src/place-store.mjs");
+const store = await import("../src/store/place-store.mjs");
 
 test("a place made in the worker reports its stages, in order, before it is made", async (t) => {
   t.after(() => { for (const w of threads) w.terminate(); });

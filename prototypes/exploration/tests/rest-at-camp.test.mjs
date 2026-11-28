@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { DAY, WORDS, restTarget } from "../src/words.mjs";
+import { DAY, WORDS, restTarget } from "../src/data/words.mjs";
 import { holdRun } from "../src/logic/ease.mjs";
 
 const start = () => { const p = makePage({ gen: 7, store: {}, console: "collect", els: true, canvas: true, raf: "count" }); p.run("newWorld(7); TEST.calm = true; startExpedition('weather', G.spawns[0]);"); return p; };

@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { DAY, DAY_TEXT, partOfDay, clockToNext } from "../src/words.mjs";
+import { DAY, DAY_TEXT, partOfDay, clockToNext } from "../src/data/words.mjs";
 
 const page = store => makePage({ gen: 7, store, console: "collect", els: true, canvas: true, raf: "count" });
 const start = () => { const p = page({}); p.run("newWorld(7); TEST.calm = true; startExpedition('weather', G.spawns[0]);"); return p; };

@@ -5,7 +5,7 @@ import { blitTile } from './blit.mjs';
 import { sixteenOf } from './sixteen.mjs';
 import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } from './sprites.mjs';
 import { duskTable, duskLitRgb } from '../../exploration/src/render/dusk.mjs';
-import { BAYER4 } from '../../exploration/src/view.mjs';
+import { BAYER4 } from '../../exploration/src/render/view.mjs';
 import { NB9, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX } from '../../exploration/src/render/edge.mjs';
 
 // Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade, 5 night (the clock's night: the page gives the set its nightMap; none given, it is dark2), 6 dark (the clock's dusk, the one-step table).

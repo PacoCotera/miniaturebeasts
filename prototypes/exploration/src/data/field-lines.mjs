@@ -1,6 +1,6 @@
 // The lines the field says, one table per speaker, so the words change without code: the first walk's goal and teaching lines, the bag choice at a find,
 // the signs' lines, what an act that takes or gives answers, and the dock's lines. A [copy] mark is a line still waiting for the copywriter's final word.
-import { WORDS } from "../words.mjs";
+import { WORDS } from "./words.mjs";
 
 // The first walk (before the first pod is home): every player string of it.
 export const FIRST_TEXT = {

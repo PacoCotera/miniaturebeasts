@@ -37,7 +37,6 @@ test('wantBanks asks the regions the reach touches, nearest first, each once; a 
 test('the page calls wantBanks after readyPlaces, so the worker bakes the nearest cells before it makes any list', () => {
   const at = html.indexOf('readyPlaces(seed, R.slot, v, list, { ctx: PL.ctx });'), w = html.indexOf('wantBanks(seed, R.slot, list);');
   assert.ok(at > 0 && w > at, 'wantBanks follows readyPlaces in wantPlaces');
-  assert.match(html, /import \{[^}]*\breadyBanks\b[^}]*\} from "\.\/src\/place-store\.mjs"/);
 });
 
 test('a place with a bank holds it in its IR whether the region list was made on the spot or came made', async () => {

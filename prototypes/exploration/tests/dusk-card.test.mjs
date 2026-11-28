@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { makePage } from "./page-harness.mjs";
-import { DAY } from "../src/words.mjs";
+import { DAY } from "../src/data/words.mjs";
 import { NIGHT_CARDS } from "../src/render/night-cards.mjs";
 
 const upTo = (n) => DAY.parts.slice(0, n).reduce((a, q) => a + q[1], 0);   // the light spent when part n begins

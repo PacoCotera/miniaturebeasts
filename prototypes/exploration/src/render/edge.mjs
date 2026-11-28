@@ -1,6 +1,6 @@
 // The edge shapers (render layer): where fog, veil and storm meet clear ground, drawn per pixel from the 4 × 4 Bayer matrix. Pure and integer: no page state, DOM, clock or storage.
 // Moved as they were from view.mjs (the eighths, the storm step, the fog and storm bands) and from the page (the two fade tables, the eighth picker); no look change.
-import { BAYER4, BAND_PX, stormBandDepth, fogDepth } from '../view.mjs';
+import { BAYER4, BAND_PX, stormBandDepth, fogDepth } from './view.mjs';
 
 export const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];   // N, NE, E, SE, S, SW, W, NW
 

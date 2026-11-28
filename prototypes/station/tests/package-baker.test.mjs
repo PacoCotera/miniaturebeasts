@@ -5,22 +5,22 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { wantOf, bakePackage } from "../src/package-baker.mjs";
-import * as store from "../../exploration/src/package-store.mjs";
-import { memKv } from "../../exploration/src/package-store.mjs";
+import * as store from "../../exploration/src/store/package-store.mjs";
+import { memKv } from "../../exploration/src/store/package-store.mjs";
 import * as W7 from "../../exploration/src/world7.mjs";
 import { biomeVersion } from "../../exploration/src/logic/regions.mjs";
 import { realm7 } from "../../exploration/src/gen7/region.mjs";
 import { decorSites, madeBanks } from "../../exploration/src/gen7/place.mjs";
-import { placesTag } from "../../exploration/src/place-store.mjs";
+import { placesTag } from "../../exploration/src/store/place-store.mjs";
 import { readTileSet } from "../../places/src/format/read.mjs";
 
 const R = new URL("../../", import.meta.url), bytes = (p) => new Uint8Array(readFileSync(new URL(p, R)));
 const tsB = bytes("places/baked/ninja-test.mbtiles"), terB = bytes("places/baked/terrain.json"), layB = bytes("exploration/art/gen7/layers.json");
 const kit = { ctx: { ts: readTileSet(tsB), terrains: JSON.parse(new TextDecoder().decode(terB)).terrains, desc: W7.reviveLayers(JSON.parse(new TextDecoder().decode(layB))) }, tag: placesTag(tsB, terB, layB) };
 
-// the places worker's own module (exploration/src/realm-worker.mjs) run in this thread behind a Worker's face: the same messages in and out
+// the places worker's own module (exploration/src/worker.mjs) run in this thread behind a Worker's face: the same messages in and out
 const SELF = { postMessage: (m) => setImmediate(() => cur && cur.onmessage && cur.onmessage({ data: m })), onmessage: null };
-globalThis.self = SELF; await import("../../exploration/src/realm-worker.mjs");
+globalThis.self = SELF; await import("../../exploration/src/worker.mjs");
 let cur = null;
 const makeWorker = () => (cur = { onmessage: null, onerror: null, postMessage: (m) => setImmediate(() => SELF.onmessage({ data: m })), terminate() { cur = null; } });
 const deps = (kv, extra = {}) => ({ store, kv, kit, makeWorker, now: () => performance.now(), realm: async (seed) => { realm7(seed); }, world: { genWorld7: W7.genWorld7, realm7, decorSites, madeBanks }, ...extra });
