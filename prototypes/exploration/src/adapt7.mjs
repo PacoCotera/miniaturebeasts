@@ -147,6 +147,15 @@ export function adaptCell(place, ir, ts, terrains, o) {
     if (f.hollow != null) e.hollow = f.hollow;
     feats.push(e);
   });
+  // first-pod-fix-1 (2): a place the first walk can start in (one of the region's spawn places) always holds a fruit bush within a few tiles of the way in, so a new player has fruit to bring to a Loika.
+  // Nothing is added when a bush already stands there. The lead named this land change (the freeze exception for this one rule).
+  if (o.G && o.G.spawns && o.G.spawns.includes(o.cell) && !feats.some(f => f.kind === 'b' && Math.abs(f.x - spawnPt.x) + Math.abs(f.y - spawnPt.y) <= 7)) {
+    let bestB = null, bsc = -1;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const d = Math.abs(x - spawnPt.x) + Math.abs(y - spawnPt.y);
+      if (d < 3 || d > 6 || !okAt(x, y, true) || !nextTo(x, y)) continue;
+      const sc = hash(o.seed, 'firstbush7', o.cell, x, y); if (sc > bsc) { bsc = sc; bestB = { x, y }; } }
+    if (bestB) { used.add(I(bestB.x, bestB.y)); finds.push({ x: bestB.x, y: bestB.y, what: 'fruit', i: -1 }); feats.push({ id: 'b' + next('b'), kind: 'b', x: bestB.x, y: bestB.y }); }
+  }
   const taken = new Set(feats.map(f => f.y * w + f.x)), G = o.G;
   const specials = []; if (G && o.cell === G.gate) specials.push({ id: 'g', kind: 'g' }); if (G && o.cell === G.deep) specials.push({ id: 'd', kind: 'd' });
   for (const s of specials) {   // the burrow and the deep stone: on reachable ground, far from the way in, by seed
