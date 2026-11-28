@@ -77,6 +77,12 @@ let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; const W = F1.width, H = F1.height;
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; if (F1.data[i] !== F2.data[i] || F1.data[i + 1] !== F2.data[i + 1] || F1.data[i + 2] !== F2.data[i + 2]) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } }
 expect(x1 >= 0, "the toast shows in the frame: nothing differs between the frame with it and the frame without");
 const crop = (F, a, b, c, d) => { const w = c - a + 1, h = d - b + 1, out = Buffer.alloc(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const s = ((b + y) * F.width + a + x) * 4, o = (y * w + x) * 4; for (let k = 0; k < 4; k++) out[o + k] = F.data[s + k]; } return { w, h, buf: out }; };
+// PR 718: the Nursery's toast lies under the last shelf row. The shelf rows' box (the page's own numbers, the page at the frame's left edge) is cropped from both frames: with the toast up it is the crop without it.
+const nz = (await get(() => window.__st.specs().pods)).regions.page.nursery, sh = nz.shelf, shelfBottom = sh.top + sh.pitch * sh.visible;
+const rowsUp = crop(F1, sh.x, sh.top, sh.x + sh.w - 1, shelfBottom - 1), rowsGone = crop(F2, sh.x, sh.top, sh.x + sh.w - 1, shelfBottom - 1);
+console.log(`the toast box: y ${y0}..${y1}; the shelf rows end at y ${shelfBottom}`);
+expect(rowsUp.buf.equals(rowsGone.buf), "the shelf rows' crop changed while the toast was up: the toast covers a row");
+expect(y0 >= shelfBottom, "the toast's box starts at y " + y0 + ", above the end of the last shelf row (" + shelfBottom + ")");
 const cg = crop(F1, x0, y0, x1, y1); writeFileSync(path.join(OUT, "grow-toast.png"), encodePNG(cg.w, cg.h, cg.buf));
 console.log(`the toast crop: ${cg.w}x${cg.h} at ${x0},${y0}`);
 
