@@ -274,47 +274,19 @@ import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
 // the rules the Station's map room shares (map-room build): reach, where a start may go, the marks
 import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBook } from "./src/map-rules.mjs";
 import { readOptions } from "./src/options.mjs";
+import { PALETTE, DARK_OF, LIGHT_OF } from "./src/data/palette.mjs";
 const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
-   offscreen 450×600 frame at 1:1 device pixels, from the fixed palette below,
+   offscreen 450×600 frame at 1:1 device pixels, from the fixed palette (src/data/palette.mjs),
    with tile maps, small sprites and a bitmap font. The frame is then blitted to
    the page and scaled without smoothing.
    Rules are separate from rendering. All world randomness is seeded.
-   Sections: 0 palette · 1 constants · 2 RNG · 3 world · 4 patch layouts
+   Sections: 1 constants · 2 RNG · 3 world · 4 patch layouts
    5 state & persistence · 6 map rules · 7 patch rules · 8 creatures & partner
    9 End expedition, the sealed bay & world turn · 10+ rendering, input, page
    ===================================================================== */
-
-// ===================== 0. Screen palette (data; maps 1:1 to an LVGL palette) =====================
-// 51 colours (the first 48 and the three sage). Every pixel the screen shows is one of these. Names are used by the art code.
-const PALETTE = [
-  ['void', '#0c0a12'], ['ink', '#1a1725'], ['night', '#29253a'], ['slate', '#3d3954'], ['stone', '#5d5974'], ['mist', '#8d8aa6'],
-  ['fog', '#c6c4d8'], ['bone', '#f1ebdf'], ['white', '#ffffff'],
-  ['paper', '#f5e6c4'], ['sand', '#e6c98c'], ['clay', '#bf9157'], ['bark', '#7d5435'], ['soil', '#4b3023'],
-  ['pine', '#173b2d'], ['forest', '#23623c'], ['leaf', '#329245'], ['grass', '#5cbb4c'], ['sprout', '#98d85c'], ['lime', '#d4f281'],
-  ['deep', '#142650'], ['sea', '#1e5196'], ['river', '#3084d8'], ['sky', '#5bb9f3'], ['ice', '#a9e6ff'],
-  ['tealD', '#0f4c50'], ['teal', '#1f9d8f'], ['aqua', '#45d8be'], ['mint', '#adf6e0'],
-  ['plumD', '#3c1e6c'], ['plum', '#6f41c6'], ['lilac', '#a87bf3'], ['lavender', '#dbc0ff'],
-  ['wine', '#6b1e33'], ['red', '#c93440'], ['coral', '#ff5f57'], ['peach', '#ffa67c'], ['blush', '#ffd4bf'],
-  ['rust', '#a6420c'], ['orange', '#f2671b'], ['amber', '#ffa83f'],
-  ['gold', '#d89b14'], ['yellow', '#ffd441'], ['cream', '#fff4a6'],
-  ['magenta', '#c3387e'], ['pink', '#ff80c0'],
-  ['rock', '#847fa8'], ['rockL', '#bab6d4'],
-  ['sageL', '#bfccb6'], ['sage', '#87947f'], ['sageD', '#556251'],
-];
-// One step darker (storm light, shade, outlines) and one step lighter (highlights).
-const DARK_OF = { void: 'void', ink: 'void', night: 'ink', slate: 'night', stone: 'slate', mist: 'stone', fog: 'mist', bone: 'fog', white: 'bone',
-  paper: 'sand', sand: 'clay', clay: 'bark', bark: 'soil', soil: 'ink', pine: 'ink', forest: 'pine', leaf: 'forest', grass: 'leaf', sprout: 'grass', lime: 'sprout',
-  deep: 'ink', sea: 'deep', river: 'sea', sky: 'river', ice: 'sky', tealD: 'ink', teal: 'tealD', aqua: 'teal', mint: 'aqua',
-  plumD: 'ink', plum: 'plumD', lilac: 'plum', lavender: 'lilac', wine: 'night', red: 'wine', coral: 'red', peach: 'coral', blush: 'peach',
-  rust: 'soil', orange: 'rust', amber: 'orange', gold: 'bark', yellow: 'gold', cream: 'yellow', magenta: 'wine', pink: 'magenta', rock: 'stone', rockL: 'rock', sageL: 'sage', sage: 'sageD', sageD: 'ink' };
-const LIGHT_OF = { void: 'ink', ink: 'night', night: 'slate', slate: 'stone', stone: 'mist', mist: 'fog', fog: 'bone', bone: 'white', white: 'white',
-  paper: 'bone', sand: 'paper', clay: 'sand', bark: 'clay', soil: 'bark', pine: 'forest', forest: 'leaf', leaf: 'grass', grass: 'sprout', sprout: 'lime', lime: 'cream',
-  deep: 'sea', sea: 'river', river: 'sky', sky: 'ice', ice: 'white', tealD: 'teal', teal: 'aqua', aqua: 'mint', mint: 'white',
-  plumD: 'plum', plum: 'lilac', lilac: 'lavender', lavender: 'white', wine: 'red', red: 'coral', coral: 'peach', peach: 'blush', blush: 'bone',
-  rust: 'orange', orange: 'amber', amber: 'cream', gold: 'yellow', yellow: 'cream', cream: 'white', magenta: 'pink', pink: 'blush', rock: 'rockL', rockL: 'fog', sageL: 'bone', sage: 'sageL', sageD: 'sage' };
 
 // ===================== 1. Constants =====================
 const SCR_W = 450, SCR_H = 600, HUD_H = 32, LINE_H = 36, VIEW_Y = HUD_H, VIEW_H = SCR_H - HUD_H - LINE_H; // view 450×532

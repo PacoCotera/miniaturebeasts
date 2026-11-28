@@ -5,11 +5,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { pageRGB, pageTables } from "../tools/atlas-check.mjs";
+import { PALETTE as PAL } from "../src/data/palette.mjs";
 
 const here = p => fileURLToPath(new URL(p, import.meta.url));
 const html = readFileSync(here("../index.html"), "utf8");
-const palSrc = /const PALETTE = \[([\s\S]*?)\n\];/.exec(html)[1];
-const PAL = [...palSrc.matchAll(/\['(\w+)', '(#[0-9a-f]{6})'\]/g)].map(m => [m[1], m[2]]);
 const LETTERS = /const RUN_LETTERS = '([^']+)'/.exec(html)[1];
 const CORE_N = Number(/const CORE_N = (\d+)/.exec(html)[1]);
 const meadow = JSON.parse(readFileSync(here("../../../art/companion-48/terrain/meadow/meadow-palette.json"), "utf8"));

@@ -55,6 +55,7 @@
     "about": "Code the Companion shares with other pages, by path under prototypes/ (longest match wins), and the packages.",
     "core/base/": "logic",
     "species/framework/": "data",
+    "ui/tokens/out/": "data",
     "places/src/bake/": "logic",
     "places/src/format/": "logic",
     "places/src/dualgrid.mjs": "logic",
