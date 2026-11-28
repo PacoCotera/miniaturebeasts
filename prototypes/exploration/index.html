@@ -900,8 +900,6 @@ function warmTick() {   // each frame: if where the walk stands changed, the lis
     const t0 = performance.now(); try { while (WARM.queue.length && performance.now() - t0 < WARM_EAGER_MS) if (!warmStep(WARM.queue[0].key, WARM.queue[0].dir)) WARM.queue.shift(); } catch (e) { WARM.queue.shift(); console.warn('warming a cell failed', e); } }
   if (WARM.queue.length && !WARM.cb && !document.hidden) WARM.cb = warmIdle(warmRun);
 }
-// The Probe is reading the next places: cells wait in the queue and the page is in view (a landing has its own sign). Under a held test clock a frame is a still picture, so it never shows there.
-const probeReading = () => WARM.queue.length > 0 && !WARM.cold && !document.hidden && TEST.clock == null && TEST.at == null;
 // Entered cold: the rest is built a step a frame (about 8 ms of work a frame) while the walk stays live; the arrival look starts when the land is ready.
 function warmLanding() {
   const c = WARM.cold, P = S.exp && S.exp.patch;
@@ -6997,11 +6995,6 @@ function edgeTabs() {
     t.cy = m.y > VIEW_Y + (VIEW_H >> 1) ? m.y - g4 : m.y + m.h + g4; }
   return kept;
 }
-// The Probe's pulse in the top bar while the neighbours are read ahead: a small ring in the map's ink that breathes; [art] slot probe-pulse.
-function drawProbePulse(x, y) {
-  const r = motion() ? 3 + Math.floor((NOW / 150) % 4) : 5;
-  R(x - r, y - r, 2 * r + 1, 1, C.sand); R(x - r, y + r, 2 * r + 1, 1, C.sand); R(x - r, y - r, 1, 2 * r + 1, C.sand); R(x + r, y - r, 1, 2 * r + 1, C.sand); R(x - 1, y - 1, 3, 3, C.paper);   // a square pulse frame (palette pixels)
-}
 // After drawPatch, before the message box: the tabs, clipped to the view. A tab's fill flashes cream for 160 ms when it first shows.
 function drawEdgeCues() {
   const tabs = edgeTabs(), seen = RT.tabSeen || (RT.tabSeen = new Map()), keep = new Set();
@@ -7208,7 +7201,6 @@ function drawHUD() {
   // right of the partner's token: the three counters, battery and radio (the storm and the fog bank are on the bottom line)
   let rx = drawStatus(SCR_W - 6) - 2;
   rx -= countersW(ex.cargo); drawCounters(rx, ex.cargo, 'x'); rx -= 6;
-  if (S.phase === 'patch' && probeReading()) { drawProbePulse(rx - 8, 16); rx -= 18; }
   // docked mid-expedition: the chip after the pods and crate count (the crate count gives way when it would not fit); the partner moves after it
   const chipW = fieldFrozen() ? textW(DOCK_TEXT.chip, 2) + 16 : 0, crateW = S.bay.length ? 19 + textW(String(S.bay.length), 2) + 6 : 0;
   if (S.bay.length && !(chipW && x + crateW + chipW > rx - 4)) x = drawCrateCount(x);
