@@ -12,7 +12,6 @@ const SLAB_EVERY = 5;   // about one place in five lays a slab
 const RING_DEPTH = 2;   // tiles in from a side the range haze or a closed side's thicket takes (the page's LINE_DEPTH 3 counts the apron)
 const CROWN_MARGIN = 6;  // pixels at 48 px round a crown's box that still count as under it
 const SIDE_STEP = { N: 'up', S: 'down', W: 'left', E: 'right' };
-export const sideDir = s => SIDE_STEP[s];
 
 // o: { key, cell, land (L.*), G (the region), seed }
 export function adaptCell(place, ir, ts, terrains, o) {
