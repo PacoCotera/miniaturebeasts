@@ -1267,7 +1267,8 @@ const ownPodLying = () => S.pods.find(p => p.how === 'own' && !p.h) || null;
 function loikaTeach() {
   const pr = printsToRead(); if (pr) return habName(pr.c) + ' · ' + WORDS.prints.read;
   const c = indInSight(), ap = c && firstWalk() ? approachTeach(c) : null; if (ap) { RT.approachUp = ap; return ap.t; }   // first-walk-teach-approach-1
-  if (c && firstWalk() && S.exp.carry !== 'fruit' && S.named && S.named[c.id] && spOf(c.sp).eats && !S.found.includes('teach:eats')) { const n = S.named[c.id], long = WORDS.pod.fruitTeach(n); return long.length <= 44 ? long : WORDS.pod.fruitTeachShort(n); }   // first-pod-fix-1 (1): a named Loika met, no fruit in hand: where the food comes from (spent at her first feed); editorial's words, bus 2dd0bb
+  const ct = c || indInSight(true);   // pr722-fix-1: before her first feed her kind is not known yet, so indInSight() is null; the teach asks for any named Loika in sight (not bolted)
+  if (ct && (ct.ease | 0) < 3 && firstWalk() && S.exp.carry !== 'fruit' && S.named && S.named[ct.id] && spOf(ct.sp).eats && !S.found.includes('teach:eats')) { const n = S.named[ct.id], long = WORDS.pod.fruitTeach(n); return long.length <= 44 ? long : WORDS.pod.fruitTeachShort(n); }   // first-pod-fix-1 (1): a named Loika met, no fruit in hand: where the food comes from (spent at her first feed); editorial's words, bus 2dd0bb
   const cd = c && habCardNext(c); return cd ? habName(c) + ' · ' + cd : '';
 }
 const waysLine = b => b ? FIRST_TEXT.goal.feed(b.name) : FIRST_TEXT.goal.find;
