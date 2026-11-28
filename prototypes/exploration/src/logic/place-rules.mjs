@@ -35,3 +35,9 @@ export function pressOn(lay, o, f) {
   const m = lay.press ? lay.press[f.y * lay.w + f.x] : 0;
   return m === 1 ? 'stone' : m === 2 ? 'tree' : null;
 }
+
+// A thing counts as left to take only if the explorer can stand on its tile or beside it: a reachable tile that is not under the range haze or a closed side's band.
+export function reachableTile(lay, x, y) {
+  const open = (X, Y) => X >= 0 && Y >= 0 && X < lay.w && Y < lay.h && !!lay.reach[Y * lay.w + X] && !(lay.lines && lay.lines.cells.has(Y * lay.w + X));
+  return open(x, y) || open(x + 1, y) || open(x - 1, y) || open(x, y + 1) || open(x, y - 1);
+}
