@@ -20,7 +20,7 @@ function DockScreen({ api }) {
   const box = s.box, style = box ? { left: px(box[0]), top: px(box[1]), width: px(box[2]), height: px(box[3]) } : undefined, laptop = s.laptop;
   const ew = Math.min(s.sheetW || 358, 464), eh = Math.round((ew * EP_H) / EP_W);
   return (
-    <Dialog.Root open={open} onOpenChange={(v) => { setOpen(v); api.onOpenChange && api.onOpenChange(v); }}>
+    <Dialog.Root modal={!laptop} open={open} onOpenChange={(v) => { setOpen(v); api.onOpenChange && api.onOpenChange(v); }}>
       <Dialog.Trigger id="dockScreenBtn" className={"ctl" + (box ? "" : " hidden")} style={style} aria-label={NAME} title={NAME}>
         <canvas ref={mini} width={184} height={66} className="dsmini" />
         {s.hand ? <span className="swdot dsdot" aria-hidden="true" /> : null}
