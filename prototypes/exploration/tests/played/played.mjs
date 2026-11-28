@@ -2006,10 +2006,16 @@ it(`s38 he walks up to Nut with fruit in hand and she eats from it (#179, his sa
     assert.equal(s.carry, "fruit", "the case is reached: he holds fruit");
     assert.ok(s.nut && s.nut.ease === 3, `the case is reached: Nut is up (ease ${s.nut && s.nut.ease})`);
     assert.equal(s.dim, true, "the case is reached: ✓ shows the dim line");
+    assert.equal(s.label, "Back off and keep still", "the dim line says what to do");
     await g.shot("s38-dim-line");
     // step off, right, until Nut has calmed (ease 0): the bolt ends only after six actions more than four tiles off
     // (right to five tiles off, then back and forth between five and six tiles off, so he never leaves her place)
-    for (let i = 0; i < 24 && s.nut && s.nut.ease !== 0; i++) { await step(s.nut.x + 6 <= s.x ? "left" : "right"); s = await st(); trace("off", s); }
+    // (bug179-hand-fruit-5: once he is five tiles off he also presses ✓ twice, fruit down and up again, as he did on live: a bolted Loika does not come for it, so the count goes on)
+    let fruitTried = false;
+    for (let i = 0; i < 24 && s.nut && s.nut.ease !== 0; i++) {
+      await step(s.nut.x + 6 <= s.x ? "left" : "right"); s = await st(); trace("off", s);
+      if (!fruitTried && s.x - s.nut.x >= 5 && s.nut.ease === 3) { fruitTried = true; await step("confirm"); s = await st(); trace("down", s); await step("confirm"); s = await st(); trace("up", s); assert.equal(s.carry, "fruit", "the fruit is in his hand again"); }
+    }
     assert.ok(s.nut && s.nut.ease === 0, `the case is reached: Nut has calmed (ease ${s.nut && s.nut.ease})`);
     // walk back to her with taps; she must stay at ease 0 on the way
     let n = 0;
