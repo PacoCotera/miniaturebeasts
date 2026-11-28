@@ -255,7 +255,6 @@ import { fogEdgeRead, fogEdges, FOG_EDGE_FILES } from "./src/fogedge.mjs";
 import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from "./src/shore7.mjs";
 import { makeMapPaint } from "./src/map-paint.mjs";
 import { makeMapSigns } from "./src/render/map-signs.mjs";
-import { breakLines, buildTag } from "./src/breakline.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
 import { TAB, TAG, findTabY, rectsMeet, tabPointer, tabRect } from "./src/render/cues.mjs";
@@ -2816,7 +2815,7 @@ function placePartnerNear(key, P) {
     const x = P.x + dx, y = P.y + dy; if (!occupant(key, x, y)) { live.pt = { x, y, st: 'follow', face: 1 }; return; }
   }
 }
-// The wait for places made in the worker (the set-out's reach, a cell entered before its place is here): the page stays live and the loading line's pips count the places that are here (RT.placeWait; drawWaitPips).
+// The wait for places made in the worker (the set-out's reach, a cell entered before its place is here): the page stays live and the loading line's pips count the places that are here (RT.placeWait; waitPipsNow).
 const yieldTurn = () => new Promise(res => setTimeout(res, 0));
 function beginPlaceWait(seed, slot, v, cells, laying) {
   startPlaceWait(RT, { seed, slot, v, cells, laying, laid: 0 }, performance.now());   // a new wait starts empty, whatever the last one reached; one asked inside a set-out's wait goes on under its pips
@@ -8963,6 +8962,8 @@ function playNoteState() {
 }
 
 // ===================== 18. Boot =====================
+import { makeBootScreens } from "./src/ui/boot-screens.mjs";
+import { savedRealmSeed } from "./src/store/saved-realm.mjs";
 // A save from a newer page stays as stored: the page reads nothing from it, writes nothing and ignores input.
 // A loaded save that cannot be shown is kept the same way, with its own line and the page's line beside Reset game.
 function readOnlyNewer() { RT.readOnly = true; }
@@ -8970,15 +8971,8 @@ function readOnlyBroken() { RT.readOnly = true; RT.broken = true; document.getEl
 // The device's way out (no page needed): ✓ arms, ✓ again keeps the old save whole under its own key (one per move, never replacing an older one) and starts a new world.
 // Only the page's Reset game erases a save. Any other key is refused with the usual bump and clears the arm.
 const KEPT_KEY = 'mb-save-kept';
-// The release's one-time notice, shown on this device the first time it opens after the reset, then never again (S.resetSeen). The copywriter's words of 6 Nov 2026 (keys:
-// reset.notice.companion, reset.button.companion). No numbers, no talk of versions or saves.
-const RESET_TEXT = { lines: ['The world has changed.', 'New mibis live in it now.'], button: 'Explore' };
-function drawNotice() {
-  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
-  viewBg();
-  RESET_TEXT.lines.forEach((l, i) => text(l, 225, 279 + i * 24, C.bone, 2, 'center'));
-  drawLine({ ok: RESET_TEXT.button, ctx: '', back: '' });
-}
+// The screens outside the game: src/ui/boot-screens.mjs draws them, the page says what each shows. The notice is the release's, up on this device the first time it opens after the reset, then never again (S.resetSeen).
+const { drawNotice, drawWait, drawKept, drawLoadFailed } = makeBootScreens({ R: (...a) => R(...a), text: (...a) => text(...a), viewBg: () => viewBg(), drawLine: o => drawLine(o), C });
 function actNotice(k) {
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
   if (k !== 'confirm') { FX.bumpAt = NOW; return; }
@@ -8991,56 +8985,37 @@ const randomSeed = () => PLAYTEST_SEEDS[Math.floor(Math.random() * PLAYTEST_SEED
 // makes the realm on its own thread as it always did.
 const OFF_PAGE = typeof Worker !== 'undefined' && !(document.querySelector && document.querySelector('script[type="importmap"]'));
 placesOn(OFF_PAGE);   // the same page that has the realm's worker has the places' workers
-function drawMaking() {
-  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
-  viewBg();
-  text(RT.placeWait && pkgOf() === 'part' ? NOT_ON_COMPANION : LAND_COMING, 225, 289, C.bone, 2, 'center');
-  drawWaitPips();
-  drawLine({ ok: '', ctx: '', back: '' });
+// The wait's pips fill from the real steps and never go back. While places are being made in the worker they count those places' stages (and, at the set-out, the places laid out), nothing else.
+// Otherwise they count the realm worker's stages (RT.wait; with no realm being made that part is whole) and, only while the art is coming in, the loaders' files (FILES): a new world's wait has no
+// files owed. The bar is never full while the wait is on: the screen goes away when the land is ready.
+function waitPipsNow() {
+  const pw = RT.placeWait, r = RT.wait || (RT.making ? { done: 0, of: 1 } : { done: 1, of: 1 });
+  const now = pw ? placeWaitPips(pw.cells.map(c => stageOf(pw.seed, pw.slot, pw.v, c)), pw.laid, pw.laying)
+    : Math.min(PIPS - 1, (RT.artHold ? artHeld() : RT.filesFollow) ? waitPips(r.done, r.of, FILES.done, FILES.of) : fracPips(r.done, r.of));
+  RT.pips = Math.max(RT.pips || 0, now);
+  return RT.pips;
 }
-// The first-load wait's measure (option A, ui-play-layout-1): ten pips, 14 × 8 lp, 4 apart, centred 32 lp under the line's centre: mint when done, ink with a 2 lp slate edge when not. They fill from the real steps
-// (the realm worker's stages in RT.wait, the loaders' files in FILES) and never go back; with no realm being made the realm part is whole. UI component on the device's screen, drawn in code (rule 18).
-function drawWaitPips() {
-  const pw = RT.placeWait;   // waiting for places made in the worker: the pips count the places that are here (and, at the set-out, laid out), nothing else
-  if (pw) RT.pips = Math.max(RT.pips || 0, placeWaitPips(pw.cells.map(c => stageOf(pw.seed, pw.slot, pw.v, c)), pw.laid, pw.laying));   // each place's real stages in the worker count (#104), not only the places made
-  else {
-    const r = RT.wait || (RT.making ? { done: 0, of: 1 } : { done: 1, of: 1 });
-    // the files are part of this wait only while the art is coming in (a new world's wait has none owed); the bar is never full while the wait is on (the screen goes away when the land is ready)
-    RT.pips = Math.max(RT.pips || 0, Math.min(PIPS - 1, (RT.artHold ? artHeld() : RT.filesFollow) ? waitPips(r.done, r.of, FILES.done, FILES.of) : fracPips(r.done, r.of)));
-  }
-  const w = 14, h = 8, gap = 4, x0 = Math.round(225 - (PIPS * w + (PIPS - 1) * gap) / 2), y0 = 289 + 32 - h / 2;
-  for (let i = 0; i < PIPS; i++) { const x = x0 + i * (w + gap); if (i < RT.pips) R(x, y0, w, h, C.mint); else { R(x, y0, w, h, C.slate); R(x + 2, y0 + 2, w - 4, h - 4, C.ink); } }
+function drawMaking() { drawWait(RT.placeWait && pkgOf() === 'part' ? NOT_ON_COMPANION : LAND_COMING, waitPipsNow()); }
+const waitStep = (done, of) => { RT.wait = { done, of }; };   // the realm worker's real stages, for the wait's pips (waitPipsNow)
+// The realm made (or read back) off the page. How it came (RT.makeHow) and what each step took (RT.makeTimes) are kept for the measuring tools; if it could not be, the page makes the realm itself and the cause is logged.
+function realmOffPage(seed) {
+  RT.makingAt = performance.now();
+  return readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, e => { console.warn('the realm was not made off the page; the page makes it', e); RT.makeHow = 'page'; });
 }
-const waitStep = (done, of) => { RT.wait = { done, of }; };   // the realm worker's real stages, for the wait's pips (drawWaitPips)
 function newWorldLive(keepGame = true) {   // the menu's New world keeps the game (only the map is new); a save that could not be read starts whole (keepGame false)
-  const seed = urlSeed() ?? randomSeed(), done = () => { RT.making = false; newRealm(seed, NEW_GEN, keepGame && S && S.regions ? S.wid : undefined, keepGame && S && S.regions ? keepOfGame(S) : undefined); RT.mp = null; RT.key = null; mapCv = null; transition(); };
+  const seed = urlSeed() ?? randomSeed();
+  const done = () => { const kept = keepGame && S && S.regions ? S : null; RT.making = false; newRealm(seed, NEW_GEN, kept ? kept.wid : undefined, kept ? keepOfGame(kept) : undefined); RT.mp = null; RT.key = null; mapCv = null; transition(); };
   if (!OFF_PAGE) { done(); return; }
-  RT.making = true; RT.makingAt = performance.now(); RT.wait = null; RT.pips = 0;   // a new world's wait starts empty, whatever the first load reached
-  readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.makeMs = performance.now() - RT.makingAt; done(); });
-}
-// The seed of the realm a saved game plays (generator 7), read from the save without loading it; null for no save, another generator, or a save that cannot be read.
-function savedRealmSeed() {
-  try { const raw = localStorage.getItem(SAVE_KEY) ?? (COMPANION.slot === 'A' ? localStorage.getItem(LEGACY_KEY) : null), s = raw && JSON.parse(raw), r = s && Array.isArray(s.regions) && s.regions[0];
-    return r && r.gen === 7 && typeof r.seed === 'number' ? r.seed : null; } catch (e) { return null; }
+  RT.making = true; RT.wait = null; RT.pips = 0;   // a new world's wait starts empty, whatever the first load reached
+  realmOffPage(seed).then(() => { RT.makeMs = performance.now() - RT.makingAt; done(); });
 }
 function drawNewer() {
-  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
-  viewBg();
-  const bx = NOW - FX.bumpAt < 160 && motion() ? (Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1) : 0;
-  text(RT.broken ? 'This save can’t be shown · kept untouched' : 'Newer save · untouched · reload plays it', 225 + bx, 289, C.bone, 2, 'center');
-  if (RT.armNew) text('The mibis stay with the old save', 225 + bx, 311, C.amber, 2, 'center');
-  if (RT.broken) text(buildTag(REL.build), 225, 333, C.bone, 1, 'center');   // a save that cannot be shown is a break line: it carries the build
-  drawLine({ ok: RT.broken ? (RT.armNew ? 'Confirm: new world' : 'Start a new world') : 'Reload', ctx: '', back: '' });
+  const dx = NOW - FX.bumpAt < 160 && motion() ? (Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1) : 0;   // a refused press shakes the lines
+  drawKept({ broken: RT.broken, armed: RT.armNew, dx, build: REL.build });
 }
-function drawArtFailed() {   // the art or the place did not load: said plainly, one way on (reload), nothing drawn in old art
-  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
-  viewBg();
-  text('The land didn’t load · reload', 225, 289, C.bone, 2, 'center');
-  const w = ART_WHY[0], lead = w ? w.part : (ART_DONE.atlas && !ART48.ready) ? 'atlas' : 'places', why = w ? (w.why || w.file) : (ART_DONE.atlas && !ART48.ready) ? (ART48.refusedWhy || 'core set missing') : 'not ready';
-  const bl = breakLines({ lead, why, build: REL.build, measure: str => textW(str, 1), maxW: 420, maxLines: 2 });   // the detail wraps at words, its error text cut from the middle, "build <sha>" whole at the end
-  window.__mbBreakLines = bl.lines;   // a test's read-only view of the detail lines drawn
-  bl.lines.forEach((l, i) => text(l, 225, 313 + i * 10, C.bone, 1, 'center'));
-  drawLine({ ok: 'Reload', ctx: '', back: '' });
+function drawArtFailed() {   // which part did not load, and why
+  const w = ART_WHY[0], atlas = ART_DONE.atlas && !ART48.ready;
+  window.__mbBreakLines = drawLoadFailed({ lead: w ? w.part : atlas ? 'atlas' : 'places', why: w ? (w.why || w.file) : atlas ? (ART48.refusedWhy || 'core set missing') : 'not ready', build: REL.build });   // a test's read-only view of the detail lines drawn
 }
 function actReadOnly(k) {
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
@@ -9051,12 +9026,12 @@ function actReadOnly(k) {
   try { raw = localStorage.getItem(SAVE_KEY); if (raw != null) { let at = Date.now(); while (localStorage.getItem(KEPT_KEY + '-' + at) != null) at++;   // one key per move: an older kept save is never replaced
       localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept'); } }
   catch (e) { RT.armNew = 0; FX.bumpAt = NOW; return; }   // it cannot be kept: nothing changes
-  RT.readOnly = false; RT.broken = false; RT.armNew = 0; const note = document.getElementById('resetNote'); if (note) note.hidden = true;
+  RT.readOnly = false; RT.broken = false; RT.armNew = 0; document.getElementById('resetNote').hidden = true;
   newWorldLive(false);
 }
 function boot(seed) {
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(seed ?? urlSeed());
-if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
+if (!RT.readOnly && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
 RT.artHold = !window.__places;   // the first frame waits for the art and the place; the tests hand them over at once and are not held
 const startLoads = () => {
   loadAtlas();   // the 48 px place art
@@ -9075,7 +9050,6 @@ if (RT.artHold) REL.ready.then(startLoads); else startLoads();   // in the page 
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
-// The side panel's two sections start collapsed on every load.
 // Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.
 { const btn = document.getElementById('resetGame'), ask = document.getElementById('resetAsk'), yes = document.getElementById('resetYes'), no = document.getElementById('resetNo');
   const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
@@ -9088,37 +9062,36 @@ if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) 
 window.addEventListener('storage', e => {
   if (e.key !== SAVE_KEY && e.key !== null) return;
   if (window.__mbResetting) return;
-  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (_) { }
+  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (err) { console.warn('the save another tab wrote could not be read; the page reloads', err); }
   if (!raw) { window.__mbResetting = true; location.reload(); return; }
   save(false, true);   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
 });
 // A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
-if (ld === true) { try { if (S.exp && S.exp.shield <= 0 && !S.exp.dark) goDark(S.exp);   // an old save with no plates opens in the realm, dark (night step 1), never on the ended card
-  if (S.exp && S.day.spent >= DAY.light) nightPasses(); if (S.phase === 'station') S.phase = 'setup';
+if (ld === true) { try { if (S.exp && S.exp.shield <= 0 && !S.exp.dark) goDark(S.exp);   // an old save with no plates opens in the realm, dark, never on the ended card
+  if (S.exp && S.day.spent >= DAY.light) nightPasses();
   if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; render(NOW / 1000); }
   catch (e) { console.error(e); readOnlyBroken(); } }
-else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';
 SLEEP.holdAtBoot();   // a sleep still pending keeps this page from writing
 RT.bootHold = false; save();
 if (!RT.readOnly) SLEEP.start().catch(e => { console.warn('the sleeper did not start', e); });   // the key at the first boot (and its pub), and a committed sleep finished
-try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
-if (OPT.dev || new URLSearchParams(location.search).has('observer')) setObserver(true);   // the Developer tools option opens the Observer, the page's developer panel
+let observer = OPT.dev || new URLSearchParams(location.search).has('observer');   // the Developer tools option opens the Observer, the page's developer panel
+try { if (localStorage.getItem('mb-observer') === '1') observer = true; } catch (e) { /* storage blocked: there is no kept choice to read */ }
+if (observer) setObserver(true);
 fit();
 requestAnimationFrame(frame);
 }
 // Start. With a Worker the realm is made (or read back) off the page first, and the loading line shows meanwhile; a saved game of another generator, or none, is a new world with the seed chosen here so its realm can be made at once.
-{ const saved = savedRealmSeed(), seed = saved ?? urlSeed() ?? randomSeed();
-  if (!OFF_PAGE) boot(null);
-  else { RT.making = true; RT.filesFollow = true; drawMaking(); vctx.drawImage(scr, 0, 0);
-    const showWait = () => { if (!RT.making) return; drawMaking(); vctx.drawImage(scr, 0, 0); requestAnimationFrame(showWait); };   // the page is live while the realm is made in the worker: the pips move with its stages
-    requestAnimationFrame(showWait);
-    readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
+if (!OFF_PAGE) boot(null);
+else { const saved = savedRealmSeed(k => localStorage.getItem(k), COMPANION.slot === 'A' ? [SAVE_KEY, LEGACY_KEY] : [SAVE_KEY]), seed = saved ?? urlSeed() ?? randomSeed();
+  RT.making = true; RT.filesFollow = true;
+  const showWait = () => { if (!RT.making) return; drawMaking(); vctx.drawImage(scr, 0, 0); requestAnimationFrame(showWait); };   // the page is live while the realm is made in the worker: the pips move with its stages
+  showWait();
+  realmOffPage(seed).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-// test-harness only (s32): the words as bone glyphs on a bare canvas, the crop a screenshot of the band is judged against; and the band's text box
-window.__mb = { onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, lightningLift, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkSeen, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
-  CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isSeen, veilable, signsAt, stormLevel, inFog,
-  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideApplies, crossLanding, patchStep, inRange, TEST,
-  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, fogEdgeReady: () => !!FOGEDGE, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, cellFog, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
+window.__mb = { onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, lightningLift, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkSeen, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+  CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, menuItems, leftCounts, leftPhrase, reachCounts, isSeen, veilable, signsAt, stormLevel, inFog,
+  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideApplies, crossLanding, patchStep, inRange, TEST,
+  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, fogEdgeReady: () => !!FOGEDGE, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, cellFog, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, carriedMibis, partnerMibi, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, RIDE, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
