@@ -2116,9 +2116,11 @@ it(`s42 in a place the top bar is drawn whole and the frame goes on to the botto
   const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S; return { phase: S.phase, key: S.exp && S.exp.patch && S.exp.patch.key, queued: m.WARM.queue.length, cold: !!m.WARM.cold }; });
   try {
     let s = await st();
-    for (let i = 0; i < 12 && !s.key; i++) { await g.press("confirm", 100, 900); s = await st(); }   // ✓ to set out, ✓ at "Start here", ✓ into the place
-    for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }                    // the place is built by a worker: wait until he is in it
-    for (let t = 0; t < 300 && s.cold; t++) { await wait(100); s = await st(); }                    // and until the landing is done
+    // ✓ to set out, ✓ at "Start here", ✓ into the place. The place is built by a worker, slowly on a busy machine: on the map one ✓ asks for it, and another only after 10 s without him in it
+    for (let t0 = Date.now(), last = 0; !s.key && Date.now() - t0 < 150000; s = await st()) {
+      if (s.phase !== "map" || Date.now() - last > 10000) { await g.press("confirm", 100, 900); last = Date.now(); } else await wait(200);
+    }
+    for (let t = 0; t < 600 && s.cold; t++) { await wait(100); s = await st(); }                    // and until the landing is done
     assert.ok(s.phase === "patch" && !s.cold, `the case is reached: he is in the first place and the landing is done (${JSON.stringify(s)})`);
     // every frame the browser paints for 8 s while the places next door are read (a screenshot cannot say which frame it caught); kept as they came and read one at a time below
     const cdp = await g.ctx.newCDPSession(g.page), raw = [];
