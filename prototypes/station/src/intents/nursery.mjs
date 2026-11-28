@@ -62,7 +62,7 @@ export function podIntent(h, target, verb) {
   if ((p.act ?? "grow") === "grow") {
     const r = S.growPod(st, pod, h.settings, h.now()); if (!r.ok) { h.say(Sg.noCapsule); return; }
     h.save(); const left = rowsOf(h); p.view = "nursery"; p.askGo = false; p.ring = { z: "caps", i: r.capsule }; p.first = 0; void left;
-    h.say(fill(Sg.grew, { when: MINUTES(Sg, N.capsuleOf(h.st, r.capsule, h.settings, h.now()).left) }));   // the capsule's own wall-clock minutes left (one number, as its label and plate show), not the bud's full-pace minutes return;
+    h.say(fill(Sg.grew, { when: MINUTES(Sg, N.capsuleOf(h.st, r.capsule, h.settings, h.now()).left) })); return;   // the capsule's own wall-clock minutes left (one number, as its label and plate show), not the bud's full-pace minutes
   }
   if (!p.askGo) { p.askGo = true; h.say(Sg.letGoAsk); return; }   // letting go is two presses of ✓ (the page's act; the old held ✓ lived on the rack)
   S.returnPod(st, pod); h.save(); h.say(Sg.letGone);
