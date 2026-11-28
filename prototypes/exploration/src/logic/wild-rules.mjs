@@ -34,3 +34,8 @@ export function printMark(lay, stand, free) {
 }
 // the way the turned sign points: from her print toward where she went, as the nearest of four headings (0 north, 1 east, 2 south, 3 west); null when it does not point
 export const dewDir = p => { if (!p.to) return null; const at = p.mark || p.stand, dx = p.to.x - at.x, dy = p.to.y - at.y; return dx || dy ? { h: Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0) } : null; };
+
+// A named Loika's night pod: a pod record with how 'night' that carries her id (loika), her name (nm) and her bed's tile (bx, by).
+export const isNightPod = p => !!p && p.how === 'night' && p.loika != null;
+// what a pod's record keeps of her wherever it goes (the ground, the Case, the crate); nothing for any other pod
+export const nightOf = p => p.loika != null ? { loika: p.loika, nm: p.nm, bx: p.bx, by: p.by } : {};
