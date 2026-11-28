@@ -12,6 +12,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { decodePNG, encodePNG } from "../../../ui/png.mjs";
 import { cardFrames, CARD_W, CARD_H } from "../../src/render/card-motion.mjs";
+import { isSeaCell } from "../../src/gen7/sea.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
@@ -2453,6 +2454,83 @@ it(`s42 in a place the top bar is drawn whole and the frame goes on to the botto
     assert.ok(lit.plates > 200 && lit.counters > 200, `the top bar is drawn whole: the reach grid and plates, and the three counters (${JSON.stringify(lit)})`);
     assert.ok(lit.line > 200, `the frame went on past the top bar: the bottom line is drawn (${lit.line} lit pixels)`);
     assert.equal(other, 0, "beside the counters the bar is its own dark in every frame, but for the pulse's ring");
+  } finally { await g.ctx.close(); }
+});
+
+// OWNER 2026-11-27 23:3x / 23:4x ("review the build, top down ... patches over patches"; his #178, #141, #180), render-window-1b-2 (PR 748, build desk's read): the walking view at a border draws its neighbour through the one
+// 48 px window drawer, land and sea alike. By presses at 412x915, his saves: 180 (place 146) and 178 (place 186, the coast). He walks with the arrow held until he stops at a border, lets go, then holds the arrow again (the peek).
+// State only asserts the case is reached (he is at a border, still in his place; on 178 the neighbour is a sea-routed cell, isSeaCell true, and its baked view is here, not a wade). The verdict is the screen:
+// the neighbour's band is drawn (not one flat colour, not the map's fog) and no straight box edge crosses the seam.
+const WALK_DIRS = { right: [1, 0], left: [-1, 0], down: [0, 1], up: [0, -1] };
+const SEAM_CASES = [
+  { save: "180", place: "146", sea: false },
+  { save: "178", place: "186", pre: "down", sea: true, skip: "not reached by presses: in 202 the shore stops him at x=20 of 24, water holds the east edge; a walk to a land tile on the border is owed" },
+];
+for (const c of SEAM_CASES) (c.skip ? it.skip : it)(`s47 the walking view at a border draws the neighbour by the one window drawer (his ${c.save} save, place ${c.place}${c.sea ? ", a sea cell" : ""}): the seam lines up [${SIZES[0].w}x${SIZES[0].h}]`, async () => {
+  const g = await open(SIZES[0], c.save);
+  try {
+    const at0 = await g.where();
+    assert.deepEqual([at0.phase, at0.key], ["patch", c.place], "the case is reached: he stands in the place of his note");
+    let place = c.place;
+    if (c.pre) {   // his 178 coast: the sea lies off the east border of the place below (202), so he walks south over the border first, arrow held until the place changes
+      await g.hold(c.pre); for (let i = 0; i < 60 && (await g.where()).key === c.place; i++) await wait(300); await g.release(); await wait(1500);
+      place = (await g.where()).key; assert.notEqual(place, c.place, "the case is reached: he crossed into the next place");
+    }
+    // the borders of this place whose neighbour is the kind of the case (a sea-routed cell, or a seen land cell), found by the sea route's own test read in node beside the page
+    const nb = await g.page.evaluate((key) => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, R = S.regions.find((r) => r.id === S.here), MW = m.MW, MH = m.MH, cx = +key % MW, cy = (+key / MW) | 0, out = {};
+      for (const [d, dx, dy] of [["right", 1, 0], ["down", 0, 1], ["left", -1, 0], ["up", 0, -1]]) { const X = cx + dx, Y = cy + dy; out[d] = X >= 0 && Y >= 0 && X < MW && Y < MH ? { seen: !!S.seen.rev[Y * MW + X], X, Y } : null; }
+      return { out, MW, MH, slot: R.slot, seed: S.regions[0].seed }; }, place);
+    const dirs = ["right", "down", "left", "up"].filter((d) => { const q = nb.out[d]; if (!q) return false; const sea = isSeaCell(nb.seed, nb.slot[0] * nb.MW + q.X, nb.slot[1] * nb.MH + q.Y); return c.sea ? sea : q.seen && !sea; });
+    console.log(`# s47 ${c.save}: borders with the case's kind of neighbour: ${dirs.join(", ") || "none"}`);
+    assert.ok(dirs.length, "the case is reached: the place has a neighbour of the case's kind beside it");
+    const dims = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, p = m.S.exp.patch, l = m.layout(String(p.key)); return { key: String(p.key), x: p.x, y: p.y, w: l.w, h: l.h }; });
+    const atEdge = (d, q) => d === "right" ? q.x === q.w - 1 : d === "left" ? q.x === 0 : d === "down" ? q.y === q.h - 1 : q.y === 0;
+    let border = null;
+    for (const dir of dirs) {
+      const perp = dir === "right" || dir === "left" ? ["up", "down"] : ["left", "right"];
+      let q = null;
+      for (let tries = 0; tries < 8; tries++) {
+        let last = null;
+        await g.hold(dir);
+        for (let i = 0; i < 40; i++) { await wait(300); const w = await g.where(); if (last && w.key === last.key && w.x === last.x && w.y === last.y && i > 2) break; last = w; }
+        await g.release(); await wait(600);
+        q = await dims(); console.log(`# s47 ${c.save}: ${dir} try ${tries}: ${JSON.stringify(q)}`);
+        if (q.key !== place || atEdge(dir, q)) break;
+        const side = perp[0] === "up" ? (q.y < q.h / 2 ? "down" : "up") : (q.x < q.w / 2 ? "right" : "left"); await g.press(side, 100, 700); await g.press(side, 100, 700);   // something was in the way before the edge: a step or two aside, then on
+      }
+      if (q.key !== place || !atEdge(dir, q)) continue;
+      if (!c.sea) await g.press("call", 100, 2500);   // standing at the edge the Call lifts the neighbour's strip on this side (ledger s2); a sea cell needs no lift
+      await g.hold(dir); await wait(3500);   // a fresh press at the border, held: the peek
+      const w2 = await dims();
+      if (w2.key === place && w2.x === q.x && w2.y === q.y) { border = { dir, at: q }; break; }
+      await g.release(); await wait(600);
+    }
+    assert.ok(border, "the case is reached: he is held at a border of his place, in his place, the arrow held");
+    const [dx, dy] = WALK_DIRS[border.dir];
+    const pg = await g.page.evaluate(([dx, dy, key]) => {
+      const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, R = S.regions.find((r) => r.id === S.here), MW = m.MW, MH = m.MH;
+      const cx = +key % MW, cy = (+key / MW) | 0, X = cx + dx, Y = cy + dy, nk = String(Y * MW + X);
+      const have = m.placeHave(nk), lay = have ? m.layout(nk) : null;
+      return { nk, X, Y, MW, MH, slot: R.slot, seed: S.regions[0].seed, inGrid: X >= 0 && Y >= 0 && X < MW && Y < MH, have, baked: !!(lay && lay.baked) };
+    }, [dx, dy, place]);
+    const info = { ...pg, isSea: isSeaCell(pg.seed, pg.slot[0] * pg.MW + pg.X, pg.slot[1] * pg.MH + pg.Y) };   // the sea route's own test, read in node beside the page
+    console.log(`# s47 ${c.save}: border ${border.dir} of ${place}, neighbour ${JSON.stringify(info)}`);
+    assert.ok(info.inGrid, "the case is reached: a neighbour lies past that border");
+    if (c.sea) {
+      assert.equal(info.isSea, true, "the case is reached: the neighbour drawn is a sea-routed cell (isSeaCell true), not a wade");
+      assert.ok(info.have && info.baked, "the case is reached: the worker has sent the sea cell and its baked view is here to draw");
+    }
+    const r = await g.region(), im = await g.shot(`s47-${c.save}`);
+    await g.release();
+    const f = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: Math.round(r.h * 0.72) };
+    const band = border.dir === "right" ? { x: f.x + Math.round(f.w * 0.82), y: f.y, w: Math.round(f.w * 0.18), h: f.h } : border.dir === "left" ? { x: f.x, y: f.y, w: Math.round(f.w * 0.18), h: f.h }
+      : border.dir === "down" ? { x: f.x, y: f.y + Math.round(f.h * 0.82), w: f.w, h: Math.round(f.h * 0.18) } : { x: f.x, y: f.y, w: f.w, h: Math.round(f.h * 0.18) };
+    const seen = new Set(); for (let y = band.y; y < band.y + band.h; y += 2) for (let x = band.x; x < band.x + band.w; x += 2) { const p = px(im, x, y); seen.add((p[0] >> 3) << 10 | (p[1] >> 3) << 5 | (p[2] >> 3)); }
+    console.log(`# s47 ${c.save}: the neighbour's band holds ${seen.size} colours`);
+    assert.ok(seen.size > 12, `the neighbour is drawn: its band is baked ground, not one flat colour (${seen.size} colours)`);
+    const e = longestEdge(im, { x: r.x, w: r.w, y: r.y + Math.round(r.h * 0.3), h: Math.round(r.h * 0.5) });   // the middle rows: the diagonal neighbour beyond the lifted strip stays under the map fog, its dark edge is not the seam
+    console.log(`# s47 ${c.save}: longest straight edge ${e.n} device px (${e.dir} ${e.at})`);
+    assert.ok(e.n < 120, `the seam lines up: no straight box edge across it (${e.n} device pixels along ${e.dir} ${e.at})`);
   } finally { await g.ctx.close(); }
 });
 });
