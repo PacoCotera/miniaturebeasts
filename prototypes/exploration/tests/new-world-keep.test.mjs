@@ -4,13 +4,16 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 import { freshSt } from "../../station/src/state.mjs";
+import { PLAYTEST_SEEDS } from "../src/playtest-seeds.mjs";
 
 const J = (p, src) => JSON.parse(p.run("JSON.stringify(" + src + ")"));
 const page = (store = {}) => makePage({ gen: 7, store, console: "collect", els: true, canvas: true, raf: "count" });
 
-// A game with something in every place the player keeps things.
+// A game with something in every place the player keeps things. Its land is of a seed New world never picks (the pick is random, from the playtest list), so the seed after New world is always another.
+const OLD_SEED = 5;
+assert.ok(!PLAYTEST_SEEDS.includes(OLD_SEED), "the old land's seed is not on the list New world picks from");
 function game() {
-  const p = page(); p.run("newWorld(11); TEST.calm = true;");
+  const p = page(); p.run(`newWorld(${OLD_SEED}); TEST.calm = true;`);
   p.run(`S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 3, notches: 2, bonded: true, plays: 3, grownTurn: -9 }, { id: 2, name: 'Tam', sp: 1, born: -5, outings: 1, notches: 1, bonded: false, plays: 1, grownTurn: null });
     S.carried = [1]; S.lead = 1; S.turn = 40; S.known = [0, 1, 2]; S.found = ['freeid']; S.tier = 2; S.nextId = 30;
     S.hold = { e: 3, d: 4, s: 2, pods: [{ id: 'w0', k: '5', sp: 0, h: 1, bur: 1, g: 'meadow', how: 'ground' }] };

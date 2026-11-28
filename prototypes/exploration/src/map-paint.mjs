@@ -4,6 +4,11 @@
 // (env.S reads the page's S every time, so a new world or a loaded save is seen at once).
 import { MW, MH, L, clamp, cxy } from "./world.mjs";
 
+// the map mark of each landmark kind
+const LM_MARK = { windstep: 'windstep', 'hollow-tree': 'hollowtree', 'split-stone': 'splitstone', reedpool: 'reedpool' };
+// The size of a place's mark in a cell of cs px: 26 on the reach view's 72 px cells, 18 on its 48 px cells, 12 on the full map.
+export const markSizeFor = cs => cs >= 72 ? 26 : cs >= 48 ? 18 : 12;
+
 export function makeMapPaint(env) {
   // The opening's painting as a generator (a screen waits for it across frames): each next() is one frame of waiting; the last returns the canvas.
   function* landPaint(spec) { let cv; while (!(cv = env.landTry(spec))) yield; return cv; }
@@ -15,7 +20,7 @@ export function makeMapPaint(env) {
     const found = env.walkedCell(c), been = !!S.seen.into[c]; if (!found && !been) return null;
     if (!env.placeHave(String(c))) return null;   // its place is still being made: no mark yet
     const lay = env.layout(String(c)), bk = lay.baked; if (!bk || !lay.landmark) return null;   // a mark stands only at a landmark: the land holds few
-    const lm = { x: lay.landmark.x - bk.ox, y: lay.landmark.y - bk.oy }, mk = env.walkPB(`mark-${env.LM_MARK[lay.landmark.kind]}-${found ? 'found' : 'been'}-${size}`, size, size), pad = 2;
+    const lm = { x: lay.landmark.x - bk.ox, y: lay.landmark.y - bk.oy }, mk = env.walkPB(`mark-${LM_MARK[lay.landmark.kind]}-${found ? 'found' : 'been'}-${size}`, size, size), pad = 2;
     return { mk, x: Math.round(Math.max(cx + pad, Math.min(cx + cs - mk.w - pad, cx + (lm.x + .5) / bk.w * cs - mk.w / 2))), y: Math.round(Math.max(cy + pad, Math.min(cy + cs - mk.h - pad, cy + (lm.y + .5) / bk.h * cs - mk.h / 2))) };
   }
   // A sign's spot in its cell: at the heart's spot in the place (the others beside it), not in corner slots.

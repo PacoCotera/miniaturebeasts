@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { fixture, plain } from "./walk-fixture.mjs";
 import { makePage } from "./page-harness.mjs";
 import { viewOf, camAt } from "../src/view.mjs";
+import { slideOffsets } from "../src/render/slide.mjs";
 
 const W = 18, H = 22;
 
@@ -108,16 +109,15 @@ test("bug #37: a real step off the edge, up, down, left and right, lands on the 
 });
 
 test("bug #37: the slide scrolls the view by what keeps the pawn on its line of the map: a screen when both places are flush, a few tiles more or less when their cameras differ", () => {
-  const p = makePage({ gen: 7, console: "silent", els: true, raf: 1 }), run = p.run; p.run("newWorld(7); RT.ts = 48;");
-  const off = (dir, pl0, pl1) => plain(run(`slideOffsets({ dx: ${dir[0]}, dy: ${dir[1]}, pl: ${JSON.stringify(pl0)} }, ${JSON.stringify(pl1)}, 450, 500)`));
-  // right, pawn in the right column of the old screen (x 402 of 450) and one tile on, in the left column of the new one (x 24): the plain screen
-  assert.deepEqual(off([1, 0], { x: 426, y: 200 }, { x: 24, y: 200 }), { old: { x: -450, y: 0 }, nw: { x: 450, y: 0 } });
+  const off = (dir, pl0, pl1) => plain(slideOffsets({ dx: dir[0], dy: dir[1], pl: pl0 }, pl1, 48, 450, 500));   // the rule itself (src/render/slide.mjs), at the 48 px tile
+  // right, pawn in the right column of the old screen (x 402 of 450) and one tile on, in the left column of the new one (x 24): the plain screen; the pawn rides between its two spots
+  assert.deepEqual(off([1, 0], { x: 426, y: 200 }, { x: 24, y: 200 }), { old: { x: -450, y: 0 }, nw: { x: 450, y: 0 }, rides: true });
   // the next place's camera is 30 px off along the edge (it is wider, so the pawn is further from its edge): the layers shift along the edge by the difference, the old one by it at the end, the new one at the start
-  assert.deepEqual(off([1, 0], { x: 426, y: 200 }, { x: 24, y: 230 }), { old: { x: -450, y: 30 }, nw: { x: 450, y: -30 } });
-  assert.deepEqual(off([0, -1], { x: 200, y: 24 }, { x: 170, y: 476 }), { old: { x: -30, y: 500 }, nw: { x: 30, y: -500 } }, "up: the same, along the other axis");
-  // no pawn position (a cut, or the first frame): the plain slide; a distance that is no screen: the plain slide
-  assert.deepEqual(off([0, 1], null, { x: 200, y: 24 }), { old: { x: 0, y: -500 }, nw: { x: 0, y: 500 } });
-  assert.deepEqual(off([1, 0], { x: 426, y: 200 }, { x: 2000, y: 200 }), { old: { x: -450, y: 0 }, nw: { x: 450, y: 0 } });
+  assert.deepEqual(off([1, 0], { x: 426, y: 200 }, { x: 24, y: 230 }), { old: { x: -450, y: 30 }, nw: { x: 450, y: -30 }, rides: true });
+  assert.deepEqual(off([0, -1], { x: 200, y: 24 }, { x: 170, y: 476 }), { old: { x: -30, y: 500 }, nw: { x: 30, y: -500 }, rides: true }, "up: the same, along the other axis");
+  // no pawn position (a cut, or the first frame): the plain slide; a distance that is no screen: the plain slide; the pawn rides in neither
+  assert.deepEqual(off([0, 1], null, { x: 200, y: 24 }), { old: { x: 0, y: -500 }, nw: { x: 0, y: 500 }, rides: false });
+  assert.deepEqual(off([1, 0], { x: 426, y: 200 }, { x: 2000, y: 200 }), { old: { x: -450, y: 0 }, nw: { x: 450, y: 0 }, rides: false });
 });
 
 test("the veil words on an 18×22 place: a veiled stone says so until a Call lifts it", () => {

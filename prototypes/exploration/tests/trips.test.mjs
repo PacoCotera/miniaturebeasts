@@ -174,9 +174,9 @@ test("End expedition while docked at the start", () => {
   S.day = { spent: 4, camps: 0, pend: { trail: [], storm: [] }, camp: null };
   const writeSt = () => { store["mb-save-v8"] = JSON.stringify(Object.assign({}, S, { st })); };
   const sv = () => JSON.parse(store["mb-save-v8"]);
-  const t = load(["endExpedition", "freshDay", "holdEmpty", "exploredAny", "carriedMibis", "mibiById", "save", "storedSt", "stPart", "isDocked", "syncStation", "carryApply",
+  const t = load(["endExpedition", "freshDay", "holdEmpty", "exploredAny", "carriedMibis", "mibiById", "save", "storedSave", "stPart", "isDocked", "syncStation", "carryApply",
     "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "fieldFrozen", ...TRIP], {
-    S, window: {}, RT: {}, FX: {}, NOW: 0, noteSet: () => {}, RIPE_PENDING: [], emptyLead: () => null, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
+    S, window: {}, RT: {}, FX: {}, NOW: 0, noteSet: () => {}, keepCompanion: () => {}, legacyTo: null, onStateChanged: () => {}, RIPE_PENDING: [], emptyLead: () => null, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
     CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ found: 1, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},

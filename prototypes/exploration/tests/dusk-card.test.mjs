@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { makePage } from "./page-harness.mjs";
 import { DAY } from "../src/words.mjs";
+import { NIGHT_CARDS } from "../src/render/night-cards.mjs";
 
 const upTo = (n) => DAY.parts.slice(0, n).reduce((a, q) => a + q[1], 0);   // the light spent when part n begins
 const duskAt = upTo(4);
@@ -23,7 +24,7 @@ test("the slots: all three point at their files; a card whose picture is not loa
   const p = makePage({ console: "silent", canvas: true });
   p.run("newWorld(7);");
   for (const k of ["dusk", "night", "dawn"]) {
-    assert.equal(p.run(`NIGHT_CARDS.${k}.file`), `art/cards/${k}-card-450x600.png`);
+    assert.equal(NIGHT_CARDS[k].file, `art/cards/${k}-card-450x600.png`);
     assert.equal(p.run(`cardShow('${k}')`), false, "picture not loaded: the message-box line stays");
   }
 });
