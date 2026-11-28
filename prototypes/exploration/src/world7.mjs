@@ -56,7 +56,7 @@ export function layout7(ctx, G, seed, slot, key, shut, v, baked = null) {   // s
   lay.coastWater = (x, y) => inlandOf(X * CW + x, Y * CH + y) < COAST_REACH;   // water within the coast band is the coast's: wide water, no way across
   lay.raisedFn =(x, y) => raisedAt(seed, X * CW + x, Y * CH + y);   // is this tile raised land (height lets you see further)
   // is a cliff drawn on this tile (cliff terrain, or a cliff piece box over it)? A level change at a border with none drawn is a slope and walks (design 2026-11-18, cliff-rules 4;
-  // bugs #45 #67: nothing the player cannot see may stop a step). Used on both sides of a border (index.html tileSide, crossLanding).
+  // bugs #45 #67: nothing the player cannot see may stop a step). Used on both sides of a border (src/logic/tile-sides.mjs).
   const cliffV = (ctx.terrains.find(t => t.id === 'cliff') || {}).value, pl = lay.baked.place, PW = pl.w, PH = pl.h;
   const cliffBoxes = pl.decals.map(d => { const s = ctx.ts.sprites[d.kind]; return /^cliff-|^way-up|^lip|^stair/.test(s.kind) ? [d.x - s.anchor48[0], d.y - s.anchor48[1], s.w48, s.h48] : null; }).filter(Boolean);
   lay.cliffShown = (x, y) => {

@@ -515,7 +515,7 @@ test("R2.2 the cell has ground g when one is in reach, and is the nearest such c
   let seen = 0;
   for (const s of [1, 2, 3, 7, 11, 42, 99]) for (const g of ["meadow", "pond", "rock", "wood"]) {
     const p = shedWorld(s, [REC({ g })], 9); p.run("startExpedition('weather', G.spawns[0])");
-    const pod = shedPods(p)[0], r = plain(p.run(`(() => { const cell = G.spawns[0], buried = S.pods.filter(q => q.h === 1 && q.bur === 1), fit = reachCells(cell, TIER[1].range).filter(c => podSite(c, buried)), a = cxy(cell);
+    const pod = shedPods(p)[0], r = plain(p.run(`(() => { const cell = G.spawns[0], buried = S.pods.filter(q => q.h === 1 && q.bur === 1), fit = reachCells(cell, TIER[1].range).filter(c => podSite(G, c, buried)), a = cxy(cell);
       return { fit: fit.map(c => ({ c, g: groundName(G.land[c], false), d: cheb(cxy(c), a) })) }; })()`));
     assert.ok(pod, `seed ${s} ${g}: a pod is placed`);
     const own = r.fit.filter(f => f.g === g);
