@@ -1,0 +1,34 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "The Bay's props (views/cargo-props.mjs; cargo.json)",
+ "note": "What the Bay's words take: words, counts, asset ids and flags. Props name what, never where: no rectangle, no measure, no layout rule and no colour (the face places everything from cargo.json). The form (narrow or wide) is the host's `narrow` flag on the message.",
+ "type": "object",
+ "required": ["state", "bay"],
+ "additionalProperties": true,
+ "properties": {
+  "state": {"enum": ["bay"]},
+  "berths": {"type": "integer"},
+  "regions": {"type": "object"},
+  "focus": {"type": "object"},
+  "bay": {
+   "type": "object",
+   "required": ["companion", "table", "ledge", "behind", "all", "shelf", "counters", "end"],
+   "additionalProperties": false,
+   "properties": {
+    "came": {"type": ["object", "null"], "required": ["tag", "picture"], "additionalProperties": false, "properties": {"tag": {"type": "string"}, "picture": {"type": "string"}}},
+    "companion": {"type": "object", "required": ["docked", "mark", "l1", "l2"], "additionalProperties": false, "properties": {"docked": {"type": "boolean"}, "mark": {"type": "string"}, "l1": {"type": "string"}, "l2": {"type": "string"}}},
+    "table": {"type": ["object", "null"], "required": ["parcel", "picture", "tag", "tagShort", "ring", "open"], "properties": {"parcel": {"type": "boolean"}, "picture": {"type": "string"}, "tag": {"type": "string"}, "tagShort": {"type": "string"}, "ring": {"type": "boolean"}, "open": {"type": "boolean"}, "pods": {"type": "array", "items": {"type": "object", "required": ["pic", "side"], "properties": {"pic": {"type": "string"}, "side": {"type": "boolean"}}}}, "mats": {"type": "array", "items": {"type": "object", "required": ["name", "amount", "pic"], "properties": {"name": {"type": "string"}, "amount": {"type": "string"}, "pic": {"type": "string"}}}}}},
+    "ledge": {"type": "array", "items": {"$ref": "crate"}},
+    "behind": {"type": "integer"},
+    "all": {"type": "string"},
+    "shelf": {"type": "object", "required": ["title", "count", "pods"], "additionalProperties": false, "properties": {"title": {"type": "string"}, "count": {"type": "string"}, "pods": {"type": "array", "items": {"type": "string"}}}},
+    "counters": {"type": "array", "items": {"type": "object", "required": ["key", "label", "value"], "additionalProperties": false, "properties": {"key": {"enum": ["e", "d", "s"]}, "label": {"type": "string"}, "value": {"type": "string"}}}},
+    "end": {"type": "string"}
+   }
+  }
+ },
+ "$defs": {
+  "crate": {"type": "object", "required": ["parcel", "picture", "tag", "tagShort", "ring"], "properties": {"parcel": {"type": "boolean"}, "picture": {"type": "string"}, "tag": {"type": "string"}, "tagShort": {"type": "string"}, "ring": {"type": "boolean"}}},
+  "table": {"type": "object", "required": ["parcel", "picture", "tag", "tagShort", "ring", "open"], "properties": {"parcel": {"type": "boolean"}, "picture": {"type": "string"}, "tag": {"type": "string"}, "tagShort": {"type": "string"}, "ring": {"type": "boolean"}, "open": {"type": "boolean"}, "pods": {"type": "array", "items": {"type": "object", "required": ["pic", "side"], "properties": {"pic": {"type": "string"}, "side": {"type": "boolean"}}}}, "mats": {"type": "array", "items": {"type": "object", "required": ["name", "amount", "pic"], "properties": {"name": {"type": "string"}, "amount": {"type": "string"}, "pic": {"type": "string"}}}}}}
+ }
+}

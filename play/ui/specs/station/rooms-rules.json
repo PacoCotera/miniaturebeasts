@@ -1,0 +1,16 @@
+{
+ "_note": "The rules of the Vivarium's rooms, read by station/src/state.mjs and by every view that shows a price, a find or a settling time: nothing here is typed in a layout. A room takes Energy on the ladder, its theme's one find (only while `needFind` is on) and a settling time; nothing hurries a room.",
+ "max": 10,
+ "ladder": { "first": [4, 8, 12], "step": 4, "note": "Energy for rooms 2, 3 and 4, then 4 more each room" },
+ "settle": { "second": 1, "later": 2, "lifeSupport": 3, "note": "world turns a new room settles before it takes a mibi: room 2 one turn, rooms 3 on two, a water or air room three" },
+ "needFind": false,
+ "needFindNote": "the themed find is produced on Companion trips (a later pass): until it lands the flag is off and a room needs only its price and its settling; on, the Add a room row and panel need a find at home, and building the room consumes it",
+ "themes": [
+  { "id": "roots", "name": "Roots", "lifeSupport": false, "find": null, "note": "the first room: bought with the Station, never built" },
+  { "id": "reeds", "name": "Reeds", "lifeSupport": false, "find": { "id": "find-reeds", "name": "reed bundle" } },
+  { "id": "boulders", "name": "Boulders", "lifeSupport": false, "find": { "id": "find-boulders", "name": "moss stone" } },
+  { "id": "ferns", "name": "Ferns", "lifeSupport": false, "find": { "id": "find-ferns", "name": "fern crown" } }
+ ],
+ "standIn": ["Glade", "Mist", "Dell", "Brook", "Cairn", "Hollow"],
+ "standInNote": "names a room past the painted themes carries in tests and goldens only; the rooms pass brings their themes, paintings and finds, and the Add a room row offers a room only while a theme is unbuilt"
+}

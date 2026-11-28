@@ -1,0 +1,45 @@
+{
+ "_note": "The Bay's goldens (wide form): crates waiting (one to three, the Bay full, a portrait crate), empty, away, a crate open on the table, the end after ▼ All at once: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "states": {
+  "cargo-bay": {
+   "hash": "757cf2d0",
+   "png": "cargo-bay.png"
+  },
+  "cargo-bay-one": {
+   "hash": "312ef86a",
+   "png": "cargo-bay-one.png"
+  },
+  "cargo-bay-two": {
+   "hash": "d85373fd",
+   "png": "cargo-bay-two.png"
+  },
+  "cargo-bay-empty": {
+   "hash": "705dd9f9",
+   "png": "cargo-bay-empty.png"
+  },
+  "cargo-bay-away": {
+   "hash": "1c0b7bc1",
+   "png": "cargo-bay-away.png"
+  },
+  "cargo-bay-full": {
+   "hash": "4afeea6e",
+   "png": "cargo-bay-full.png"
+  },
+  "cargo-bay-portrait": {
+   "hash": "cc700bae",
+   "png": "cargo-bay-portrait.png"
+  },
+  "cargo-open": {
+   "hash": "c30de681",
+   "png": "cargo-open.png"
+  },
+  "cargo-open-no-pod": {
+   "hash": "443a86bc",
+   "png": "cargo-open-no-pod.png"
+  },
+  "cargo-end": {
+   "hash": "ddef188f",
+   "png": "cargo-end.png"
+  }
+ }
+}

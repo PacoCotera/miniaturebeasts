@@ -1,0 +1,44 @@
+/* The /admin/bugs page. Colours, fonts and the light/dark switch come from /admin/team/team.css (linked first, the same file the
+   /admin index uses); only the layout is here. Every colour has a system fallback, so if that file cannot load the page still reads.
+   Everything is under body.admin so team.css's own .card, .dot and #app rules do not leak in. */
+body.admin { margin: 0; background: var(--bg, Canvas); color: var(--text, CanvasText); font: 15px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, "Liberation Sans", sans-serif; }
+body.admin * { box-sizing: border-box; }
+body.admin a { color: inherit; text-decoration: none; }
+body.admin #app { max-width: 900px; margin: 0 auto; padding: 22px 16px 28px; }
+
+body.admin .back { display: inline-block; font-size: 14px; color: var(--busy, LinkText); margin: 0 2px 12px; }
+body.admin .head { margin: 0 2px 14px; }
+body.admin h1 { font-size: 30px; line-height: 1.1; margin: 0 0 6px; font-weight: 750; }
+body.admin .lede { color: var(--dim, GrayText); font-size: 16px; margin: 0; }
+body.admin .foot { color: var(--dim, GrayText); font-size: 13.5px; margin: 26px 2px 0; }
+body.admin .foot a { color: var(--busy, LinkText); }
+
+body.admin h2 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim, GrayText); margin: 20px 2px 8px; font-weight: 650; }
+body.admin .empty { color: var(--dim, GrayText); margin: 6px 2px; }
+
+/* One list: a row per bug, a thin rule between rows. The row is a <details>: shut it shows the line, open it shows the links. */
+body.admin .list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line, GrayText); }
+body.admin .list > li { border-bottom: 1px solid var(--line, GrayText); min-width: 0; }
+body.admin .bug summary { display: block; cursor: pointer; list-style: none; padding: 10px 4px; min-width: 0; }
+body.admin .bug summary::-webkit-details-marker { display: none; }
+body.admin .bug.blocks-play summary { border-left: 3px solid var(--bad, currentColor); padding-left: 9px; }
+body.admin .n { color: var(--dim, GrayText); font-size: 13.5px; }
+body.admin .title { font-weight: 650; overflow-wrap: anywhere; }
+body.admin .words { display: block; color: var(--dim, GrayText); margin: 2px 0 0; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+body.admin .bug[open] .words { display: block; white-space: pre-wrap; overflow: visible; }
+body.admin .meta { display: block; color: var(--dim, GrayText); font-size: 13px; margin: 3px 0 0; }
+body.admin .meta .stage { color: var(--text, CanvasText); font-weight: 650; }
+body.admin .more { padding: 0 4px 12px; font-size: 14px; overflow-wrap: anywhere; }
+body.admin .more a { color: var(--busy, LinkText); display: inline-block; padding: 6px 0; }
+body.admin .more .none { color: var(--dim, GrayText); }
+
+body.admin .closed { margin-top: 26px; }
+body.admin .closed > summary { cursor: pointer; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim, GrayText); font-weight: 650; padding: 6px 2px; }
+
+@media (min-width: 700px) { body.admin #app { padding: 26px 22px 28px; } }
+
+/* On its side: tighter */
+@media (orientation: landscape) and (max-height: 500px) {
+  body.admin #app { padding: 18px 48px 24px; }
+  body.admin h1 { font-size: 24px; }
+}

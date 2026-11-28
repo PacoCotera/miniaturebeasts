@@ -1,0 +1,112 @@
+// The open edges (walk content B5; art desk mibi-art abb33a65b, manifest.json "howLDtkPaints"): what the bake does with the cliff, the way up, the reed bank (a list of areas the reed sprites go in) and the low scrub.
+// Pure over the level IR and the set's layer descriptors (setload.layerDescriptors: `tall`, `variants`, `wayup` are indices into the baked tile set's rows).
+//   cliff   painted as the raised land, like any terrain: the rim all round the top is the cliff layer's own over sheet (over-cliff.png, drawn by the dual grid); the south faces, their end caps and the cast shade are placed pieces (cliffrules.mjs); a side is the rim alone.
+//   walking: relief.mjs names every cell's part; the ring, the face and the flank cells block (cliffInfo.blockCells); the top, the foot rows and the cells of a WayUp area walk.
+//   wayup   an area over the cliff's last row on a straight face, n >= 1 cells wide, with straight face one cell either side: for the dual columns x0..x0+n the left, middle and right pieces,
+//           row 1 for the face tile (corners 12) and row 0 for the tile above it (corners 15, s = 3); the piece is the one for the terrain below the face (grass or sand).
+//   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
+//   scrub   variants share every edge line; one per dual tile by hash.
+import { EMPTY, FILL_CODE, NE, NW, SE, SW, hash32, splitCode } from '../dualgrid.mjs';
+import { walled, PART, landOf, partAt } from './relief.mjs';
+
+export const ALT_CODE = 1024;   // a tile code from ALT_CODE up to FILL_CODE is ALT_CODE + 16 * (index of a row of the baked tile set) + the tile in it
+
+// the cells of a level the cliff terrain holds, the cells under a WayUp area, and the cells that block: relief.mjs's ring, face and flank cells (the lip, the cell under every south lip cell, the leaning sides and the end
+// pieces' rock rows); the top, the foot rows and the way up walk
+export function cliffInfo(ir, terrains) {
+  const cliff = terrains.find((t) => t.id === 'cliff'); if (!cliff) return { isCliff: () => false, wayup: new Set(), blockCells: new Set(), ringCells: new Set() };
+  const { w, h } = ir, V = cliff.value, at = (x, y) => ir.terrain[Math.max(0, Math.min(h - 1, y)) * w + Math.max(0, Math.min(w - 1, x))] === V;   // outside the place reads as the nearest edge cell
+  const wayup = new Set(); for (const a of ir.wayups || []) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) wayup.add(y * w + x);
+  const info = { isCliff: at, wayup, blockCells: new Set(), ringCells: new Set() }, A = landOf(ir, info);   // ringCells: the lip alone, which the level rules treat as a prop-sized obstacle
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = partAt(A, x, y); if (walled(A, x, y)) info.blockCells.add(y * w + x); if (p === PART.RING) info.ringCells.add(y * w + x); }
+  // the way up U (a WayUp area with `u`): no step between its cells and the cells beside it except on row L + 3, so the flanking columns block on the notch's rows L - 2, L - 1 and on L + 2 (rows L and L + 1 beside it are ring and face already)
+  for (const a of ir.wayups || []) if (a.u) for (const x of [a.x - 1, a.x + a.w]) for (const y of [a.y - 2, a.y - 1, a.y + 2]) if (x >= 0 && y >= 0 && x < w && y < h) info.blockCells.add(y * w + x);
+  return info;
+}
+
+// The rim line drawn at a ring cell's edge to a low cell (bugs #99, #100; cliff method R5: walking follows what is drawn). A ring cell is drawn as top grass with the dark line on its far edge only, so it walks and the step ACROSS
+// that edge is refused. Returns a Uint8Array of w * h: per cell the steps it may not take, bits RIM.up 1, down 2, left 4, right 8 (both sides of the edge carry the bit; a way up's cells are no rim).
+export const RIM = { up: 1, down: 2, left: 4, right: 8 };
+export function rimSteps(ir, terrains) {
+  const info = cliffInfo(ir, terrains), { w, h } = ir, A = landOf(ir, info), out = new Uint8Array(w * h);
+  for (const c of info.ringCells) {
+    const x = c % w, y = (c / w) | 0;
+    for (const [dx, dy, bit, back] of [[0, -1, RIM.up, RIM.down], [0, 1, RIM.down, RIM.up], [-1, 0, RIM.left, RIM.right], [1, 0, RIM.right, RIM.left]]) {
+      const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h || !A.low(X, Y) || A.way(X, Y)) continue;
+      out[c] |= bit; out[Y * w + X] |= back;
+    }
+  }
+  return out;
+}
+
+// A cell with the dense thicket all round it (the 3 x 3 block), or null: the donor of the closed looks (walk content B8), found in the level itself; terrains: terrain.json's list.
+// `place` is a level IR or a baked place (both carry w, h and a terrain grid).
+export function thicketDonor(place, terrains) {
+  const thick = (terrains.find((t) => t.id === 'thicket') || {}).value, w = place.w, h = place.h;
+  if (!thick) return null;
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    let all = true; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (place.terrain[(y + dy) * w + x + dx] !== thick) all = false;
+    if (all) return { x, y };
+  }
+  return null;
+}
+
+// 1-row gullies: a column of cliff, one low row, cliff again (the face cannot be drawn there)
+export function gullies(ir, terrains) {
+  const { isCliff } = cliffInfo(ir, terrains), out = [];
+  for (let y = 0; y + 2 < ir.h; y++) for (let x = 0; x < ir.w; x++) if (isCliff(x, y) && !isCliff(x, y + 1) && isCliff(x, y + 2)) out.push({ x, y: y + 1 });
+  return out;
+}
+
+// Rewrites the tile codes of dg's layers in place (dg: dualgrid.terrainLayers' output). ir: the level; terrains: terrain.json's list;
+// layers: Map(terrain value -> descriptor) of setload.layerDescriptors, whose kinds carry `rows` (indices into the baked tile set's rows: over, tall { s: [rows] }, variants, wayup { lowerId: row }).
+// `tone` is setload.layerDescriptors' tone ({ of, row, rowRaised }): the raised ground's own tone row. `litterTop` is its { over, fill } rows (the paler litter of a raised litter top), or null.
+// The cliff by "rim and face" (cliff-slice-1): the cliff layer needs no rewrite here (its rim and its raised quadrants are its own over sheet, its top the fill), the south faces, caps and shade are decals; the raised top takes the raised tone.
+export function applyOpenEdges(dg, ir, terrains, layers, tone = null, litterTop = null) {
+  const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
+  const { isCliff } = cliffInfo(ir, terrains);
+  const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
+  for (const layer of dg.layers) {
+    if (layer.tone) continue;
+    const d = layers.get(layer.terrain);   // the cliff layer needs no rewrite: its rim is its own over sheet (over-cliff.png), drawn by the dual grid like any ground
+    if (!d.kinds.some((k) => k.rows.variants)) continue;
+    for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
+      const c = layer.tiles[j * w1 + i]; if (c === EMPTY) continue;
+      const fill = c >= FILL_CODE, s0 = fill ? null : splitCode(c), full = fill || s0.full !== undefined, corner = full ? 15 : s0.slot;
+      if (full) continue;
+      const rows = d.kinds[s0.kind].rows;
+      if (rows.variants && corner > 0 && corner < 15) {
+        const n = vh(i, j) % (rows.variants.length + 1);
+        if (n > 0) layer.tiles[j * w1 + i] = ALT_CODE + 16 * rows.variants[n - 1] + corner;
+      }
+    }
+  }
+  // the litter top: a tile of the cliff's fill (four raised cells, or a side tile's two) draws the paler litter family (the litter layer's `top` kind, art-jobs/2026-11-16-top-ground-5) through the dual grid, the corners whose top ground is litter
+  // (four: its fill, one of three; one to three: the over case of those corners) in a layer drawn after the cliff's fill. Every other top ground keeps the cliff fill above, unchanged; no tint, blend or remap.
+  const lit = terrains.find((t) => t.id === 'litter'), cliffLayer = cliff && dg.layers.find((l) => l.terrain === cliff.value);
+  if (litterTop && lit && cliffLayer && ir.top) {
+    const tiles = new Uint16Array(cliffLayer.tiles.length).fill(EMPTY), strip = [1, 2, 1, 2, 1, 2, 1, 3];   // the fill's cells 1 to 3 (v0, v1, v2), weighted like the low litter fill: v0 and v1 common, v2 rare
+    const litAt = (x, y) => ir.top[Math.max(0, Math.min(h - 1, y)) * w + Math.max(0, Math.min(w - 1, x))] === lit.value;
+    let any = false;
+    for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
+      const idx = j * w1 + i;
+      if (cliffLayer.tiles[idx] < FILL_CODE) continue;   // not the cliff's fill: a rim, an edge the pieces draw, or already empty
+      const cs = [[i - 1, j - 1, NW], [i, j - 1, NE], [i - 1, j, SW], [i, j, SE]].filter(([x, y]) => isCliff(x, y));   // the raised corners (a side tile has two: its fill covers the low cell beside it)
+      if (cs.length < 2) continue;
+      const mask = cs.reduce((m, [x, y, bit]) => m | (litAt(x, y) ? bit : 0), 0);
+      if (mask === 0) continue;
+      tiles[idx] = mask === cs.reduce((m, [, , bit]) => m | bit, 0) ? ALT_CODE + 16 * litterTop.fill + strip[vh(i, j) % strip.length] : ALT_CODE + 16 * litterTop.over + mask;
+      any = true;
+    }
+    if (any) { const at = dg.layers.findIndex((l) => l.tone); dg.layers.splice(at < 0 ? dg.layers.length : at, 0, { terrain: lit.value, tiles }); }
+  }
+  // the raised top is plain raised fill: no tone patch on a tile whose four cells are all cliff, until a painted tone exists (map-cut-1b; the sheet stays in the set, nothing draws it)
+  const toneLayer = dg.layers.find((l) => l.tone);
+  if (cliff && toneLayer) {
+    for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
+      const c = toneLayer.tiles[j * w1 + i];
+      if (c !== EMPTY && isCliff(i - 1, j - 1) && isCliff(i, j - 1) && isCliff(i - 1, j) && isCliff(i, j)) toneLayer.tiles[j * w1 + i] = EMPTY;
+    }
+  }
+  // the way up: preview5-fix-1 (art director 2026-11-16) removed the old flat tan way-up tiles; the gap shows the ground below running up through it, and the way up still walks (relief.mjs WAY)
+}

@@ -1,0 +1,1226 @@
+// The Companion's care and carried set (the care save shape, C0): the real functions are read out of index.html and run
+// in a sandbox with the rest of the page stubbed, as in trips.test.mjs. Where a check needs the Station's side
+// (prototypes/station/src/state.mjs: stageAt, carriedIds, carryAdd, mergeCare, tripCarried), it runs once that side has
+// landed and is skipped until then, so the agreement tests switch on by themselves.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
+import path from "node:path";
+import vm from "node:vm";
+import { makePage } from "./page-harness.mjs";
+import { decodePNG } from "../tools/atlas-check.mjs";
+import { decodeExact } from "../src/render/atlas.mjs";
+import { SPECIES, SP_OTHER, spOf } from "../src/logic/species.mjs";
+import { numWord } from "../src/data/text.mjs";
+import { holdEmpty, exploredAny, tripRecord, tripsWith } from "../src/logic/expedition.mjs";
+import { sealedWords } from "../src/data/expedition-lines.mjs";
+import { MAT } from "../src/data/walk-lines.mjs";
+
+const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
+
+// The source of one top-level declaration: a function (to its closing brace) or a one-line const.
+function source(name) {
+  const fn = PAGE.match(new RegExp("^function " + name + "\\(", "m"));
+  if (fn) {
+    let i = PAGE.indexOf("{", fn.index), depth = 0, q = null;
+    for (; i < PAGE.length; i++) {
+      const c = PAGE[i];
+      if (q) { if (c === "\\") i++; else if (c === q) q = null; continue; }
+      if (c === "'" || c === '"' || c === "`") q = c;
+      else if (c === "/" && PAGE[i + 1] === "/") i = PAGE.indexOf("\n", i);
+      else if (c === "{") depth++;
+      else if (c === "}" && --depth === 0) return PAGE.slice(fn.index, i + 1);
+    }
+  }
+  const k = PAGE.match(new RegExp("^const " + name + " = .*$", "m"));
+  if (k) return k[0];
+  throw new Error("not found in index.html: " + name);
+}
+const plain = x => JSON.parse(JSON.stringify(x));
+// For the checks that run a few of the page's functions on their own over a stub species table (SPECIES in their context): the lookup over that table
+// (the real SP_OTHER for any other value) and the page's two accessors.
+const ACCESSOR = () => "const SP_OTHER = " + JSON.stringify(SP_OTHER) + ";\nconst spOf = sp => SPECIES[sp] ?? SP_OTHER;\n" + ["mibiSpName", "abTextOf"].map(source).join("\n") + "\n";
+
+// The Station's side, when it has landed.
+const ST = await import("../../station/src/state.mjs");
+ST.useNameList("en-short-1");   // the tests below show the archived English names (T-20261027-322)
+const station = (...names) => names.every(n => typeof ST[n] === "function") ? false : "the Station's side (" + names.join(", ") + ") has not landed on main";
+{ const { setFrames } = await import("../../station/src/genome.mjs"), dir = new URL("../../species/frames/language/", import.meta.url).pathname;
+  setFrames(readdirSync(dir).filter(f => f.startsWith("species-")).map(f => JSON.parse(readFileSync(path.join(dir, f), "utf8")))); }
+
+// A clock the sandbox reads through `new Date()`: day "YYYY-MM-DD" at noon local time.
+function clockAt(day) { const [y, m, d] = day.split("-").map(Number), at = new Date(y, m - 1, d, 12).getTime();
+  return class extends Date { constructor(...a) { super(...(a.length ? a : [at])); } }; }
+
+const CARE = ["mibiById", "listWords", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "homeMibis", "partnerMibi",
+  "grownNow", "agedNow", "rosterList", "canSwap", "releasedIds", "takeMibi", "leaveMibi", "bondCheck", "playWouldBond", "playsLeftLines", "migrateCarried", "normalizeCare",
+  "carryApply", "canWalk", "walkAll", "liveMibis", "setLead"];
+// The care functions over a world: S, docked or not, on a given day. ctx.S, ctx.Date and the flags can change between calls.
+function world(S, o = {}) {
+  const env = { docked: !!o.docked, log: [] };
+  const ctx = vm.createContext({ console, S, Date: clockAt(o.day || "2026-10-09"), JUVENILE_TURNS: 2, ELDER_TURNS: 16, CARRY_MAX: 3, BOND_PLAYS: 3, PLAYTEST_ON: !!o.playtest,
+    isDocked: () => env.docked, stPart: () => env.st || null, logEv: t => env.log.push(t) });
+  const names = CARE.filter(n => !["JUVENILE_TURNS", "CARRY_MAX"].includes(n));
+  const out = vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx);
+  return Object.assign(out, { ctx, env, setDay: d => { ctx.Date = clockAt(d); }, setS: s => { ctx.S = s; } });
+}
+const mibi = (id, name, o = {}) => Object.assign({ id, name, sp: (id - 1) % 3, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null }, o);
+const save = (o = {}) => Object.assign({ v: 8, turn: 3, exp: null, walkTurn: -1, mibis: [mibi(1, "Dot"), mibi(2, "Moss"), mibi(3, "Fig"), mibi(4, "Pip")], carried: [], lead: null, carrySeen: 0, carryRefused: [], trips: [] }, o);
+const stageCases = function* () { for (const born of [0, 1, 2, 3]) for (const bonded of [false, true]) for (const grownTurn of [null, 2, 5]) for (let turn = 0; turn <= 14; turn++) yield { born, bonded, grownTurn, turn }; };
+
+// ---- §3: one definition of the stage ----
+const STAGE_AT = `function stageAt(m, turn, j, e) {
+  if (m.grownTurn != null) return turn >= m.grownTurn + e ? 'elder' : 'adult';
+  const age = turn - (m.born || 0), young = m.growAt > 0 ? Date.now() < m.growAt : age < j; return young ? 'juvenile' : m.growAt > 0 || age < j + e ? 'adult' : 'elder';   // a hatched mibi grows up on the real clock (growAt, ms); one without it, on turns
+}`;
+test("stageAt is the C0 text exactly, and mibiStage reads it with the constants", () => {
+  assert.equal(source("stageAt"), STAGE_AT);
+  assert.match(source("mibiStage"), /stageAt\(m, S\.turn, JUVENILE_TURNS, ELDER_TURNS\)/);
+  const t = world(save());
+  assert.equal(t.stageAt({ born: 0 }, 1, 2, 6), "juvenile"); assert.equal(t.stageAt({ born: 0 }, 2, 2, 6), "adult"); assert.equal(t.stageAt({ born: 0 }, 8, 2, 6), "elder");
+  assert.equal(t.stageAt({ born: 0, bonded: true }, 30, 2, 6), "elder", "a bonded young mibi grows on the clock like any other");
+  assert.equal(t.stageAt({ born: 0, bonded: true, grownTurn: 7 }, 12, 2, 6), "adult"); assert.equal(t.stageAt({ born: 0, bonded: true, grownTurn: 7 }, 13, 2, 6), "elder");
+});
+test("T1 parity: the Companion's stageAt and the Station's agree on every case", { skip: station("stageAt") }, () => {
+  const t = world(save());
+  for (const c of stageCases()) { const m = { born: c.born, bonded: c.bonded, grownTurn: c.grownTurn };
+    assert.equal(t.stageAt(m, c.turn, 2, 6), ST.stageAt(m, c.turn, 2, 6), JSON.stringify(c)); }
+});
+
+// ---- Tend is gone ----
+test("Tend is gone: no action, rule, strings, care day or developer button; the page's care is Play together only", () => {
+  for (const w of ["canTend", "tendPress", "careDay", "newCareDay", "devCareDay", "tendDay", "TEND_MOMENT", "BOND_TENDS", "growCheck", "bondCare", "localDay"]) assert.ok(!PAGE.includes(w), w + " is gone from the page");
+  assert.ok(!/\btend\(|Tend /.test(PAGE.replace(/c-moment-tend-/g, "")), "no Tend in the page's words or code");
+  assert.ok(!/ontend|Walk together|Walk with|walk together/.test(PAGE.replace(/ontend/g, "")), "the press is Play together");
+});
+
+// ---- Play together ----
+test("Play together: all carried together, +1 outing and +1 play each, once per world turn, undocked, between expeditions", () => {
+  const S = save({ carried: [1, 2, 3] }), t = world(S), [dot, moss, fig, pip] = S.mibis;
+  const evs = t.walkAll();
+  assert.equal(evs.length, 3); assert.deepEqual(plain(evs.map(e => e.m.id)), [1, 2, 3], "carried order");
+  for (const m of [dot, moss, fig]) { assert.equal(m.outings, 1); assert.equal(m.plays, 1); }
+  assert.equal(pip.outings, 0); assert.equal(pip.plays, 0, "a mibi at home does not play");
+  assert.equal(t.walkAll(), null, "once per world turn"); assert.equal(dot.plays, 1);
+  S.turn = 4; t.env.docked = true; assert.equal(t.walkAll(), null, "docked: no play");
+  t.env.docked = false; S.exp = { n: 6 }; assert.equal(t.walkAll(), null, "mid-expedition: no play");
+  S.exp = null; S.carried = []; assert.equal(t.canWalk(), false, "no one with you");
+  S.carried = [1]; assert.ok(t.walkAll()); assert.equal(dot.plays, 2);
+});
+
+// ---- The bond ----
+test("the bond: the third play together bonds; the first two do not; never more than once", () => {
+  const S = save({ carried: [1, 2], turn: 1 }), t = world(S), [dot, moss] = S.mibis;
+  moss.plays = 0; for (let turn = 1; turn <= 3; turn++) { S.turn = turn; const evs = t.walkAll(); assert.deepEqual(plain(evs.map(e => e.bonded)), [turn === 3, turn === 3], "play " + turn); assert.equal(dot.bonded, turn === 3); }
+  assert.equal(dot.plays, 3); assert.equal(dot.bonded, true); assert.equal(moss.bonded, true);
+  assert.equal(t.bondCheck(dot), false, "once"); assert.ok(t.env.log.includes("Dot is bonded with you"));
+  S.turn = 4; assert.deepEqual(plain(t.walkAll().map(e => e.bonded)), [false, false], "already bonded: the bond never repeats");
+  assert.match(source("walkAll"), /bondCheck\(q\)/);
+});
+test("the bond: an expedition is not a play; plays carried over from a young mibi count; a bonded mibi is never unbonded", () => {
+  const S = save({ carried: [1], turn: 1 }), t = world(S), dot = S.mibis[0];
+  for (const fn of ["worldTurn", "regionTurn", "realmTurn", "endExpedition"]) assert.ok(!/\.plays|bondCheck\(|grownTurn =/.test(source(fn)), fn + " never counts a play, bonds or grows a mibi");
+  S.turn = 1; t.walkAll(); S.turn = 2; t.walkAll(); assert.equal(dot.bonded, false, "two plays while young");
+  assert.equal(t.mibiStage(dot), "adult", "grown on the clock at turn 2"); S.turn = 3; const evs = t.walkAll();
+  assert.equal(evs[0].bonded, true, "the third play bonds, after it grew"); assert.equal(dot.grownTurn, 2, "its adulthood is kept: born + JUVENILE_TURNS");
+});
+test("the bond: a young mibi is at most two plays from the bond before the clock grows it, so no bond lands on a young mibi", () => {
+  const S = save({ carried: [2], turn: 0 }), t = world(S), moss = S.mibis[1]; moss.born = 0;
+  S.turn = 0; t.walkAll(); S.turn = 1; t.walkAll(); assert.equal(moss.plays, 2); assert.equal(t.mibiStage(moss), "juvenile"); assert.equal(moss.bonded, false);
+  S.turn = 2; assert.equal(t.mibiStage(moss), "adult", "the world turned to born + 2");
+});
+test("the warning: only the play that will bond a carried mibi says 'a bond is for good'", () => {
+  const S = save({ carried: [1, 2] }), t = world(S), [dot, moss] = S.mibis;
+  assert.equal(t.playWouldBond(), false); dot.plays = 1; assert.equal(t.playWouldBond(), false, "one play: no warning");
+  dot.plays = 2; assert.equal(t.playWouldBond(), true, "two plays: the next one bonds"); dot.bonded = true; assert.equal(t.playWouldBond(), false, "a bonded mibi never warns");
+  moss.plays = 2; assert.equal(t.playWouldBond(), true, "any carried mibi will do"); S.carried = [1]; assert.equal(t.playWouldBond(), false, "a mibi at home does not warn");
+  assert.match(PAGE, /a\.k === 'play' && !a\.dim && playWouldBond\(\) \? \[CARE_TEXT\.playBond\]/);   // Riding's bottom line says it first
+  assert.equal(PAGE.match(/playBond: '([^']*)'/)[1], "a bond is for good");
+});
+test("the plays-left words: names and what is left, one line per count, never for a bonded mibi", () => {
+  const S = save({ carried: [1, 2, 3], turn: 1 }), t = world(S), [dot, moss, fig] = S.mibis;
+  const ctx = vm.createContext({ listWords: t.listWords }), T = vm.runInContext("({ " + PAGE.match(/^\s+playsLeft: .*$/m)[0].trim().replace(/,$/, "") + " })", ctx);
+  assert.equal(T.playsLeft(["Dot"], 2), "Dot · play twice more to bond"); assert.equal(T.playsLeft(["Dot", "Moss"], 1), "Dot and Moss · play once more to bond");
+  t.ctx.CARE_TEXT = T; dot.plays = 1; moss.plays = 1; fig.plays = 0; fig.bonded = true;
+  const evs = t.walkAll();   // dot, moss now at 2; fig bonded
+  assert.deepEqual(plain(t.playsLeftLines(evs)), ["Dot and Moss · play once more to bond"]);
+  S.turn = 2; dot.plays = 0; moss.plays = 1; const evs2 = t.walkAll();
+  assert.deepEqual(plain(t.playsLeftLines(evs2)), ["Dot · play twice more to bond", "Moss · play once more to bond"], "twos first, then ones");
+});
+test("the walks of an old save: plays back-filled once from tends; an old bonded young mibi goes on the clock", () => {
+  const S = save({ carried: [1], turn: 5 }), t = world(S), [dot, moss, fig] = S.mibis;
+  delete dot.plays; dot.tends = 2; dot.tendDay = "2026-10-09"; dot.care = 2; delete moss.plays; delete fig.plays;
+  Object.assign(fig, { bonded: true, bondCare: 1, tends: 3, born: 4 }); Object.assign(moss, { bonded: true, bondCare: 1, tends: 3, born: 0, grownTurn: null });
+  t.normalizeCare(S); assert.equal(dot.plays, 2, "Tends given count as plays"); assert.equal(dot.tends, 2, "tends stay in the old save"); assert.equal(dot.tendDay, "2026-10-09"); assert.equal(dot.care, 2);
+  dot.tends = 9; t.normalizeCare(S); assert.equal(dot.plays, 2, "the back-fill happens once, never read again");
+  assert.equal(moss.plays, 3); assert.equal(moss.grownTurn, null, "no grownTurn written: the clock decides");
+  assert.equal(t.mibiStage(moss), "adult", "old bonded young mibi, 5 turns old: grown on the clock");
+  assert.equal(t.mibiStage(fig), "juvenile", "born 4, 1 turn old: young, grows at turn 6"); S.turn = 6; assert.equal(t.mibiStage(fig), "adult");
+  assert.equal(t.grownNow(fig), true, "its grown-up line plays on the clock"); assert.equal(fig.grownTurn, null);
+  assert.ok(!/bondCare|tendDay|\.tends|\.care\b/.test(source("normalizeCare").replace(/m\.tends/g, "").replace(/\/\/.*$/gm, "")), "normalizeCare reads only tends, once");
+});
+
+// ---- The carried set: Take, Leave, the roster ----
+test("Take and Leave: docked between expeditions only; Take refused at three; leaving the lead clears it", () => {
+  const S = save({ carried: [1] }), t = world(S, { docked: false }), [dot, moss, fig, pip] = S.mibis;
+  assert.deepEqual(plain(t.takeMibi(moss)), { ok: false, why: "swap" }, "undocked: no swap"); assert.deepEqual(plain(S.carried), [1]);
+  assert.equal(t.leaveMibi(dot).ok, false, "undocked: no leave");
+  t.env.docked = true; S.exp = { n: 4 }; assert.deepEqual(plain(t.takeMibi(moss)), { ok: false, why: "swap" }, "mid-expedition, even docked"); assert.equal(t.leaveMibi(dot).ok, false);
+  S.exp = null;
+  assert.equal(t.takeMibi(fig).ok, true); assert.equal(t.takeMibi(moss).ok, true); assert.deepEqual(plain(S.carried), [1, 3, 2], "the end of the carried order");
+  assert.deepEqual(plain(t.takeMibi(pip)), { ok: false, why: "full" }); assert.equal(S.carried.length, 3);
+  S.lead = 3; assert.equal(t.leaveMibi(fig).ok, true); assert.equal(S.lead, null); assert.deepEqual(plain(S.carried), [1, 2]);
+  assert.equal(t.takeMibi(pip).ok, true); assert.deepEqual(plain(S.carried), [1, 2, 4]);
+});
+test("the roster: undocked or mid-expedition only the carried; docked the carried first, then home in hatch order", () => {
+  const S = save({ carried: [3, 1] }), t = world(S, { docked: false });
+  assert.deepEqual(t.rosterList().map(m => m.id), [3, 1]);
+  t.env.docked = true; assert.deepEqual(t.rosterList().map(m => m.id), [3, 1, 2, 4]);
+  S.exp = { n: 2 }; assert.deepEqual(t.rosterList().map(m => m.id), [3, 1]);
+  S.exp = null; S.carried = []; t.env.docked = false; assert.deepEqual(t.rosterList(), []);
+});
+test("partner: the lead if carried and grown; else the first grown carried; else none", () => {
+  const S = save({ turn: 3, carried: [2, 1, 3], lead: null }), t = world(S), [dot, moss, fig] = S.mibis;
+  moss.born = 3;   // a juvenile, first in carried order
+  assert.equal(t.partnerMibi().id, 1, "the first grown");
+  S.lead = 3; assert.equal(t.partnerMibi().id, 3, "the lead");
+  S.lead = 2; assert.equal(t.partnerMibi().id, 1, "a juvenile lead does not lead");
+  S.lead = 4; assert.equal(t.partnerMibi().id, 1, "a lead at home is treated as none");
+  dot.born = 3; fig.born = 3; assert.equal(t.partnerMibi(), null, "no one grown");
+  S.carried = []; assert.equal(t.partnerMibi(), null);
+});
+
+// ---- The expedition: outings, notches, the trip ----
+function ending(S, ex, reason = "night") {   // the night's end is the one that turns the world; "home" is a camp
+  if (!S.day) S.day = { spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null };
+  const t = vm.createContext({ console, S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 16,
+    holdEmpty, exploredAny, tripRecord, tripsWith, MAT, sendSleepersHome: () => {}, leaveSleepers: () => {},
+    reachCounts: () => ({ found: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
+    worldTurnQuick: () => { S.turn++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, spOf: s => ({ ab: ({ 0: "calm", 1: "dig", 2: "nose", 7: "bank", 19: "sure" })[s] }), transition: () => {}, save: () => {}, emptyLead: () => null });
+  const names = ["endExpedition", "turnPending", "newsCells", "freshDay", "carriedMibis", "mibiById"];
+  vm.runInContext(names.map(source).join("\n") + "\n;endExpedition(" + JSON.stringify(reason) + ");", Object.assign(t, { __ex: ex }));
+}
+test("an expedition: an outing to every carried mibi, notches to the bonded partner only, no care; the trip carries `carried`", () => {
+  const ex = n => ({ n, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { hearts: 1 }, stormCells: {}, entered: [0], met: [], moments: [], abUsed: true, tripPlaces: ["meadow"] });
+  const S = save({ carried: [1, 2, 3], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, seen: { been: {} } });
+  S.exp = Object.assign(ex(5), { pt: { id: 1 } });
+  ending(S, S.exp);
+  const [dot, moss, fig, pip] = S.mibis;
+  for (const m of [dot, moss, fig]) { assert.equal(m.outings, 1); assert.equal(m.plays, 0, "an expedition is not a play together"); }
+  assert.equal(pip.outings, 0); assert.equal(dot.notches, 0, "an unbonded partner earns no notch");
+  assert.deepEqual(plain(S.trips.at(-1)), { v: 1, n: 5, partner: 1, places: ["meadow"], storm: false, carried: [1, 2, 3] });
+  dot.bonded = true; S.exp = Object.assign(ex(6), { pt: { id: 1 }, cargo: { e: 1, d: 0, s: 0, pods: [] } }); ending(S, S.exp);
+  assert.equal(dot.notches, 1, "the bonded partner"); assert.equal(moss.notches, 0);
+  assert.deepEqual(plain(S.report.notch), { id: 1, name: "Dot", sp: 0, ab: "calm", n: 1 }, "named on End expedition as the outcome block's row, with no count");
+  assert.deepEqual(plain(S.report.lines), ["The world turned."], "never among the world lines");
+  assert.deepEqual(plain(S.bay.at(-1).lines), ["The world turned."], "the crate keeps the world's lines only");
+  moss.bonded = true; S.exp = Object.assign(ex(7), { pt: { id: 1 } }); ending(S, S.exp); assert.equal(moss.notches, 0, "a bonded mibi that is not the partner");
+  const rec = tripRecord({ n: 3 }, S.carried); S.carried.push(9);
+  assert.deepEqual(plain(rec.carried), [1, 2, 3], "a copy"); assert.deepEqual(tripRecord({ n: 3 }).carried, []);
+});
+// ---- The notch rule (ruling 17:33): only on an expedition that explored something; a break keeps it ----
+const notchExp = (calls, o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { calls, hearts: calls }, stormCells: {}, entered: [0], met: [], moments: [],
+  abUsed: 1, pt: { id: 1 }, tripPlaces: ["meadow"] }, o);
+const notchSave = () => save({ carried: [1], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, seen: { been: {} } });
+const NOTCH_LINE = "Dot gains a skill notch";
+test("notch: a bonded partner digs, enters no place, End expedition: notches unchanged, no notch line", () => {
+  const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 1;
+  S.exp = notchExp(0, { entered: [] }); ending(S, S.exp, "home");
+  assert.equal(dot.notches, 1); assert.ok(S.report.waited, "nothing explored");
+  assert.ok(!S.report.lines.includes(NOTCH_LINE)); assert.equal(S.report.notch, null, "no notch row");
+});
+test("notch: a bonded partner digs, makes a Call, then the Probe breaks: +1 and the line", () => {
+  const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 1;
+  S.exp = notchExp(1); ending(S, S.exp, "break");
+  assert.equal(dot.notches, 2);
+  assert.equal(S.report.notch && S.report.notch.name, "Dot", "the notch row"); assert.ok(!S.report.lines.includes(NOTCH_LINE), "never a world line");
+});
+test("notch: an unbonded partner makes a Call and digs: no notch", () => {
+  const S = notchSave(), dot = S.mibis[0];
+  S.exp = notchExp(1); ending(S, S.exp, "home");
+  assert.equal(dot.notches, 0);
+  assert.ok(!S.report.lines.includes(NOTCH_LINE)); assert.equal(S.report.notch, null, "no notch row");
+});
+test("notch: already at 3 stays 3, no line", () => {
+  const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 3;
+  S.exp = notchExp(1); ending(S, S.exp, "home");
+  assert.equal(dot.notches, 3);
+  assert.ok(!S.report.lines.includes(NOTCH_LINE)); assert.equal(S.report.notch, null, "no notch row");
+});
+test("notch: a bonded Tuliko partner earns a notch (named by kind and count on the row); still 3 at most", () => {
+  const S = notchSave(), dot = S.mibis[0]; dot.sp = 19; dot.bonded = true; dot.notches = 2;
+  S.exp = notchExp(0); ending(S, S.exp, "home");
+  assert.equal(dot.notches, 3); assert.deepEqual(plain(S.report.notch), { id: 1, name: "Dot", sp: 19, ab: "sure", n: 3 });
+  S.exp = notchExp(0, { n: 6 }); ending(S, S.exp, "home"); assert.equal(dot.notches, 3, "never past three");
+});
+test("T5: a trip record without `carried` reads as [partner] on the Station; with it, every id", { skip: station("tripCarried") }, () => {
+  assert.deepEqual(ST.tripCarried({ v: 1, n: 1, partner: 2, places: [], storm: false }), [2]);
+  assert.deepEqual(ST.tripCarried({ v: 1, n: 1, partner: null, places: [], storm: false }), []);
+  assert.deepEqual(ST.tripCarried(tripRecord({ n: 2, pt: { id: 1 } }, [1, 3])), [1, 3]);
+});
+
+// ---- §5: the save ----
+test("migration from `with`: the fixture's Companion part, and a second run changes nothing", () => {
+  const sv = FIXTURE(), t = world(sv);
+  t.migrateCarried(sv); t.normalizeCare(sv);
+  assert.deepEqual(plain(sv.carried), [1]); assert.equal(sv.lead, 1); assert.equal(sv.carrySeen, 0);
+  assert.ok(!("with" in sv)); assert.equal(sv.withSeen, 1, "withSeen kept, frozen, for the Station's step"); assert.deepEqual(plain(sv.carryRefused), []);
+  const [dot, moss, fig] = sv.mibis;
+  assert.deepEqual([dot.grownTurn, moss.grownTurn, fig.grownTurn], [null, null, null], "no grownTurn written: every mibi is on the clock");
+  for (const m of sv.mibis) { assert.equal(m.plays, 0); assert.equal(m.bondCare, undefined, "no old care field is added"); assert.equal(m.tends, undefined, "an old field is never added"); }
+  assert.deepEqual([t.mibiStage(dot), t.mibiStage(moss), t.mibiStage(fig)], ["adult", "juvenile", "adult"], "Moss, bonded and born at 3: young until the clock grows it");
+  sv.turn = 18; assert.equal(t.mibiStage(dot), "elder"); sv.turn = 4;
+  const once = JSON.stringify(sv); t.migrateCarried(sv); t.normalizeCare(sv); assert.equal(JSON.stringify(sv), once, "idempotent");
+  // `with` naming no mibi of the Companion's: nothing carried
+  const lost = { mibis: [mibi(1, "Dot")], with: 9, withSeen: 2, turn: 0 }; t.migrateCarried(lost); assert.deepEqual(plain(lost.carried), []);
+  const none = { mibis: [], with: null, turn: 0 }; t.migrateCarried(none); assert.deepEqual(plain(none.carried), []); assert.equal(none.lead, null);
+  assert.match(source("load"), /migrateCarried\(S\); normalizeCare\(S\);/);
+  assert.match(source("save"), /syncStation\(\); normalizeCare\(S\);/, "after every dock read, defaults only");
+  assert.ok(!/releasedIds/.test(source("save")), "save never drops released ids: only the dock gate does");
+});
+test("ruling 2 on the fixture: Moss, bonded and young, grows on the clock at turn 5 whether carried or at home; Dot elder at 18", () => {
+  const sv = FIXTURE(), t = world(sv); t.migrateCarried(sv); t.normalizeCare(sv);
+  const [dot, moss] = sv.mibis;
+  sv.turn = 4; assert.equal(t.mibiStage(moss), "juvenile"); assert.equal(t.grownNow(moss), false);
+  sv.turn = 5; assert.equal(t.mibiStage(moss), "adult", "at home, on the clock"); assert.equal(t.grownNow(moss), true, "its grown-up line plays at the world turn"); assert.equal(moss.grownTurn, null);
+  sv.turn = 18; assert.equal(t.mibiStage(dot), "elder");
+});
+test("normalizeCare: defaults for the additive fields; ids not in S.mibis dropped; old Tends back-filled into plays once", () => {
+  const S = { turn: 6, mibis: [{ id: 1, name: "Dot", born: 0, bonded: true, care: 2, tends: 3, bondCare: 2 }, { id: 2, name: "Moss", born: 5, bonded: true }, { id: 3, name: "Fig", born: 0 }], carried: [1, 7, 1, 2] };
+  const t = world(S); t.normalizeCare(S);
+  assert.deepEqual(plain(S.carried), [1, 2]); assert.equal(S.lead, null); assert.equal(S.carrySeen, 0); assert.deepEqual(plain(S.carryRefused), []);
+  assert.deepEqual([S.mibis[0].plays, S.mibis[0].grownTurn, S.mibis[0].tends, S.mibis[0].bondCare], [3, null, 3, 2], "plays from tends; the old fields stay as they were");
+  assert.deepEqual([S.mibis[1].plays, S.mibis[1].grownTurn], [0, null]);
+  assert.deepEqual(plain(S.mibis[2]), { id: 3, name: "Fig", born: 0, plays: 0, outings: 0, notches: 0, habitsDone: [], grownTurn: null });   // L2b: habitsDone, [] by default, the field habits it did on walks
+  const once = JSON.stringify(S); t.normalizeCare(S); assert.equal(JSON.stringify(S), once);
+  S.mibis[2].habitsDone.push("beacon-sit"); t.normalizeCare(S); assert.deepEqual(plain(S.mibis[2].habitsDone), ["beacon-sit"], "a set, never cleared by the normalize");
+});
+test("a new world: the carried set, no `with`; SAVE_V is 10 and the storage key keeps its name", () => {
+  assert.match(source("worldFields"), /mibis: \[\], carried: \[\], lead: null, carrySeen: 0, carryRefused: \[\]/);
+  assert.ok(!/\bwith: null\b|withSeen: 0, probeSeen/.test(source("worldFields")));
+  const p = makePage({ console: "silent" }); p.run("newWorld(7)");
+  assert.equal(p.sv().v, 10, "a new world is written as version 10"); assert.equal(p.run("SAVE_V"), 10);
+  assert.equal(p.KEY, "mb-save-v8@" + p.run("COMPANION.id"), "under the Companion's own key"); assert.equal(p.run("LEGACY_KEY"), "mb-save-v8", "and the shared key of earlier builds keeps its name");
+});
+
+// ---- §1: the Station's requests, applied at the dock (T3 and T7, the Companion's half) ----
+test("carryApply: in seq order, each once; full, carried, released and unknown refused and kept; home removes; twice changes nothing", () => {
+  const S = save({ carried: [1], lead: 1 }), t = world(S);
+  const st = { mibis: S.mibis.map(m => ({ id: m.id, name: m.name, released: false })), carryReqs: [{ seq: 2, op: "add", id: 3 }, { seq: 1, op: "add", id: 2 }] };
+  assert.deepEqual(plain(t.carryApply(S, st)), [{ op: "add", id: 2, ok: true }, { op: "add", id: 3, ok: true }]);
+  assert.deepEqual(plain(S.carried), [1, 2, 3]); assert.equal(S.carrySeen, 2); assert.deepEqual(plain(S.carryRefused), [], "an applied add appends nothing");
+  const after = JSON.stringify(S); t.carryApply(S, st); assert.equal(JSON.stringify(S), after, "apply twice: nothing");
+  st.carryReqs.push({ seq: 3, op: "add", id: 4 });
+  assert.deepEqual(plain(t.carryApply(S, st)), [{ op: "add", id: 4, ok: false, why: "full" }]);
+  assert.equal(S.carrySeen, 3, "a refusal advances carrySeen"); assert.deepEqual(plain(S.carryRefused), [{ seq: 3, id: 4, why: "full" }]);
+  st.carryReqs.push({ seq: 4, op: "home", id: 1 }, { seq: 5, op: "home", id: 4 });
+  t.carryApply(S, st); assert.deepEqual(plain(S.carried), [2, 3]); assert.equal(S.lead, null, "the lead went home"); assert.equal(S.carrySeen, 5);
+  assert.equal(S.carryRefused.length, 1, "a home that is a no-op appends nothing");
+  st.mibis[3].released = true;
+  st.carryReqs.push({ seq: 6, op: "add", id: 2 }, { seq: 7, op: "add", id: 4 }, { seq: 8, op: "add", id: 99 });
+  t.carryApply(S, st);
+  assert.deepEqual(plain(S.carryRefused), [{ seq: 6, id: 2, why: "carried" }, { seq: 7, id: 4, why: "released" }, { seq: 8, id: 99, why: "unknown" }], "the last three; the oldest dropped");
+  assert.equal(S.carrySeen, 8);
+});
+test("carryApply waits mid-expedition: carrySeen unchanged until the expedition ends", () => {
+  const S = save({ carried: [1], exp: { n: 4 } }), t = world(S), st = { mibis: [], carryReqs: [{ seq: 1, op: "add", id: 2 }] };
+  assert.deepEqual(plain(t.carryApply(S, st)), []); assert.equal(S.carrySeen, 0); assert.deepEqual(plain(S.carried), [1]);
+  S.exp = null; t.carryApply(S, st); assert.deepEqual(plain(S.carried), [1, 2]); assert.equal(S.carrySeen, 1);
+});
+test("T7, the Companion's half: it takes a third mibi while a Station add is queued; a full and then a released refusal in one dock", () => {
+  const S = save({ carried: [1, 2] }), t = world(S, { docked: true });
+  const st = { mibis: S.mibis.map(m => ({ id: m.id, released: m.id === 4 })), carryReqs: [{ seq: 1, op: "add", id: 3 }] };
+  t.takeMibi(S.mibis[3]);   // Pip: the Companion is full before the request applies
+  t.carryApply(S, st); assert.deepEqual(plain(S.carryRefused), [{ seq: 1, id: 3, why: "full" }]);
+  const S2 = save({ carried: [1, 2, 3] }), st2 = { mibis: S2.mibis.map(m => ({ id: m.id, released: m.id === 4 })), carryReqs: [{ seq: 1, op: "add", id: 4 }, { seq: 2, op: "home", id: 1 }, { seq: 3, op: "add", id: 4 }] };
+  t.setS(S2); t.carryApply(S2, st2);
+  assert.deepEqual(plain(S2.carryRefused), [{ seq: 1, id: 4, why: "released" }, { seq: 3, id: 4, why: "released" }]);
+  const S3 = save({ carried: [1, 2, 4] }), st3 = { mibis: S3.mibis.map(m => ({ id: m.id, released: m.id === 1 })), carryReqs: [{ seq: 1, op: "add", id: 3 }, { seq: 2, op: "add", id: 1 }] };
+  t.setS(S3); t.carryApply(S3, st3);
+  assert.deepEqual(plain(S3.carryRefused), [{ seq: 1, id: 3, why: "full" }, { seq: 2, id: 1, why: "released" }], "a later refusal never hides the full one");
+});
+
+// ---- syncStation: the dock gate, the bond OR, nothing read but the bond ----
+function dock(S, st, docked, log = []) {
+  const notes = [];
+  const ctx = vm.createContext({ console, S, CARRY_MAX: 3, SPECIES: [{ name: "Loika" }, { name: "Tuikis" }, { name: "Untuva" }], LAND_NAME: [], G: { land: [] },
+    stPart: () => st, isDocked: () => docked, clamp: (v, a, b) => Math.max(a, Math.min(b, v)), logEv: t => log.push(t), fxMsg: t => notes.push(t),
+    CARE_TEXT: { left: n => n + " stays home", took: n => n + " is with you", fullRefused: n => n + " stays home · full" } });
+  const names = ["syncStation", "carryApply", "mibiById", "normalizeCare", "releasedIds"];
+  vm.runInContext(ACCESSOR() + names.map(source).join("\n") + "\n;syncStation(); normalizeCare(S);", Object.assign(ctx, { JUVENILE_TURNS: 2 }));
+  return notes;
+}
+test("the dock: today's Station (no carryReqs) changes nothing; a request made away applies at the next dock, between expeditions", () => {
+  const S = save({ carried: [1], bay: [], known: [], retSeen: [], pods: [], dockSeen: 0, probeSeen: 0 });
+  const st = { wid: "w", accepted: [], known: [], mibis: S.mibis.map(m => ({ id: m.id, name: m.name, sp: m.sp, born: m.born, bonded: m.bonded })), dock: { docked: true }, dockN: 1, returned: [], withReq: { id: 2, seq: 1 } };
+  dock(S, st, true); assert.deepEqual(plain(S.carried), [1], "no carryReqs (and the old withReq) change nothing"); assert.equal(S.carrySeen, 0);
+  st.carryReqs = [{ seq: 1, op: "add", id: 2 }];
+  dock(S, st, false); assert.deepEqual(plain(S.carried), [1], "away, the dock already seen: it waits");
+  S.exp = { n: 3 }; st.dockN = 2; dock(S, st, true); assert.deepEqual(plain(S.carried), [1], "mid-expedition: it waits"); assert.equal(S.carrySeen, 0);
+  S.exp = null; st.dockN = 3; const notes = dock(S, st, true);
+  assert.deepEqual(plain(S.carried), [1, 2]); assert.equal(S.carrySeen, 1); assert.ok(notes.includes("Moss is with you"));
+  const once = JSON.stringify(S); dock(S, st, true); assert.equal(JSON.stringify(S), once, "a repeated dock changes nothing");
+});
+test("the dock: `bonded` flows in by OR; no care field is read from the Station; a new mibi starts with the defaults", () => {
+  const S = save({ carried: [1], bay: [], known: [], retSeen: [], pods: [], dockSeen: 0 });
+  S.mibis[0].bonded = true; S.mibis[0].plays = 1;
+  const st = { accepted: [], known: [], dock: { docked: true }, dockN: 1, returned: [], mibis: [
+    { id: 1, name: "Dot", sp: 0, born: 0, bonded: false, plays: 9, grownTurn: 1 },
+    { id: 2, name: "Moss", sp: 1, born: 0, bonded: true, plays: 9 },
+    { id: 5, name: "Kit", sp: 2, born: 3, bonded: false, plays: 4, outings: 4 }] };
+  dock(S, st, true);
+  const [dot, moss] = S.mibis, kit = S.mibis.find(m => m.id === 5);
+  assert.equal(dot.bonded, true, "the Station never unsets a bond"); assert.equal(dot.plays, 1); assert.equal(dot.grownTurn, null);
+  assert.equal(moss.bonded, true, "a legacy bond made on the Station flows in"); assert.equal(moss.plays, 0);
+  assert.deepEqual([kit.plays, kit.outings, kit.notches, kit.grownTurn], [0, 0, 0, null]);
+  assert.match(source("syncStation"), /q\.bonded = !!q\.bonded \|\| !!m\.bonded/);
+});
+
+// ---- The agreement tests that need the Station's side ----
+test("T2 fixture: both migrations; the carried set and every stage agree for turns 4–14", { skip: station("carriedIds", "stageAt", "normalize", "migrate") }, () => {
+  const sv = FIXTURE(), t = world(sv); t.migrateCarried(sv); t.normalizeCare(sv);
+  const st = ST.normalize(ST.migrate(sv.st, 1000, sv), 1000);
+  const twice = JSON.stringify(st); assert.equal(JSON.stringify(ST.normalize(ST.migrate(st, 1000, sv), 1000)), twice, "the Station's migration run twice gives the same JSON");
+  assert.deepEqual(plain(ST.carriedIds(st, sv)), plain(sv.carried));
+  assert.deepEqual(plain(st.carryReqs), [{ seq: 1, op: "add", id: 3 }]); assert.ok(!("withReq" in st));
+  for (let turn = 4; turn <= 14; turn++) { sv.turn = turn; st.turn = turn;
+    for (const m of sv.mibis) assert.equal(ST.mibiStage(st, st.mibis.find(q => q.id === m.id)), t.mibiStage(m), m.name + " at " + turn); }
+});
+test("T3 round trip: two Station adds apply; a third is refused on the Station", { skip: station("carryAdd", "carriedIds") }, () => {
+  const S = save({ carried: [1], v: 8 }), t = world(S, { docked: true });
+  const st = ST.normalize(Object.assign(ST.freshSt("w", 3, 1000), { mibis: S.mibis.map(m => ({ id: m.id, name: m.name, sp: m.sp, born: m.born, gs: m.id, bonded: false, released: false })) }), 1000);
+  assert.equal(ST.carryAdd(st, S, st.mibis[1]).ok, true); assert.equal(ST.carryAdd(st, S, st.mibis[2]).ok, true);
+  assert.deepEqual(plain(ST.carryAdd(st, S, st.mibis[3])), { ok: false, why: "full" });
+  t.carryApply(S, st); assert.equal(S.carried.length, 3); assert.equal(S.carrySeen, 2);
+});
+test("T4 merge: Companion care writes reach the Station by max and OR, and a second merge changes nothing", { skip: station("mergeCare") }, () => {
+  const S = save({ carried: [1], turn: 3 }), t = world(S);
+  const dot = S.mibis[0]; dot.plays = 2; dot.outings = 1; t.walkAll();
+  const st = { turn: 3, mibis: S.mibis.map(m => ({ id: m.id, name: m.name, outings: 0, notches: 0, bonded: m.id === 2 })), dock: { docked: true } };
+  ST.mergeCare(st, S); const once = JSON.stringify(st); ST.mergeCare(st, S); assert.equal(JSON.stringify(st), once);
+  const q = st.mibis[0]; assert.equal(q.plays, 3); assert.equal(q.plays, dot.plays); assert.equal(q.bonded, true, "the bond reaches the Station by OR"); assert.equal(dot.bonded, true);
+  assert.equal(st.mibis[1].bonded, true, "the Station's true stays true");
+});
+
+// ---- The words and the heart ----
+test("one strings table for care; the 24 px face and the 48 px token are missing assets, drawn only as labelled placeholders; the hearts are the painted files", () => {
+  assert.match(PAGE, /^const CARE_TEXT = \{$/m);
+  const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
+  const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({ PLAYTEST_ON: false }));
+  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "master"], ["c-heart-16", 16, 16, "master"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-sprite-other-32", 32, 32, "placeholder"], ["c-mini-other-12", 12, 12, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "signed"], ["c-moment-tend-S02-280x300", 280, 300, "signed"], ["c-moment-tend-S03-280x300", 280, 300, "signed"], ["c-moment-walk-S01-280x300", 280, 300, "signed"], ["c-moment-walk-S02-280x300", 280, 300, "signed"], ["c-moment-walk-S03-280x300", 280, 300, "signed"], ["c-moment-young-S01-280x300", 280, 300, "signed"], ["c-moment-young-S02-280x300", 280, 300, "signed"], ["c-moment-young-S03-280x300", 280, 300, "signed"], ...["LIP", "FACE", "SIDE", "SHADOW", "STAIR", "LANDING", "FOOT", "APRON_TOP"].map(id => [id, 32, 32, "stand-in"]),
+    ["c-creature-32", 32, 32, "stand-in"], ["c-pawn-32", 32, 32, "stand-in"], ["c-trunk-32", 32, 32, "stand-in"], ["c-step-32", 32, 32, "stand-in"], ["c-wade-32", 32, 32, "signed"], ["c-scree-32", 32, 32, "signed"], ["c-bank-32", 32, 32, "signed"], ["c-map-soft-26", 26, 26, "signed"], ["c-canopy-88x76", 88, 76, "stand-in"], ["c-roof-104x22", 104, 22, "stand-in"], ["c-open-night", 192, 192, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
+  for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
+  // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
+  const ids = ["c-face-24"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z-]+-\d+)'/g)].map(x => x[1]);
+  for (const id of ids) { assert.ok(calls.includes(id), id + " is drawn as its placeholder"); assert.equal(PAGE.split("'" + id + "'").length - 1, 2 + calls.filter(c => c === id).length, id + ": named in the register, the plate table and placeholderPlate calls only"); }
+  // the hearts are the pixel desk's files (art/companion-48/care/), drawn pixel for pixel by heartAt; their plates stand only until the files are in
+  const hearts = [...PAGE.matchAll(/heartAt\('(c-heart-\d+)'/g)].map(x => x[1]);
+  for (const id of ["c-heart-24", "c-heart-16"]) { assert.ok(hearts.includes(id), id + " is drawn by heartAt"); assert.equal(PAGE.split("'" + id + "'").length - 1, 3 + hearts.filter(c => c === id).length, id + ": named in the register, the plate table, the file list and heartAt calls only"); }
+  const ha = source("heartAt"); assert.match(ha, /CARE_ART\[id\]/); assert.match(ha, /placeholderPlate\(id, x, y, k\)/, "its plate while the file is not in");
+  const hp = source("placeholderPlate"); assert.match(hp, /CARE_ASSETS\.find/); assert.ok(!/ell\(|poly\(|pline\(|blit\(/.test(hp), "no drawn shape");
+  assert.ok(!/upArt\('mini'/.test(source("ringFace")) && /placeholderPlate\('c-face-24'/.test(source("ringFace")), "the 24 px face is its placeholder, never the HUD icon enlarged");
+  assert.ok(!/creatureArt\([^)]*1\.5\)/.test(PAGE), "no token drawn at 1.5× for the 48 px slot");
+});
+
+// ---- No count on the Companion (game designer, 16:24; the approved copy) ----
+test("no Companion line carries a skill count; the status line is exactly one listed line", () => {
+  assert.ok(!/of 3'|\(' \+ \w+\.notches|skill ' \+/.test(PAGE), "no 'N of 3' and no skill number in any line");
+  assert.match(source("endExpedition"), /logEv\(CARE_TEXT\.notch\(w\.name, spOf\(w\.sp\)\.ab, w\.notches\)\)/);
+  const LINES = { stLeads: "with you · leads the Probe", stCanLead: "with you · can lead the Probe", stTooYoung: "with you · too young for the Probe", stHome: "at home" };
+  for (const k of Object.keys(LINES)) assert.match(PAGE, new RegExp(k + ": '" + LINES[k] + "'"), "the page's table holds the approved line");
+  assert.ok(!/notches/.test(source("drawRiding")), "Riding says no skill count");
+});
+test("the approved strings: Play together's lines (the final words), the grow-up and full lines", () => {
+  const src = PAGE.match(/^const CARE_TEXT = \{$[^]*?^\};$/m)[0];
+  const T = vm.runInContext(source("listWords") + "\n" + src + "\n;CARE_TEXT", vm.createContext({ PLAYTEST_ON: false }));
+  assert.equal(T.playedOther("Dot", "meadow"), "Dot plays · it remembers the meadow"); assert.equal(T.playedOther("Fig", null), "Fig plays · it hasn’t been out yet"); assert.equal(T.playedOther("Fig", "mud"), "Fig crosses the mud");
+  assert.equal(T.played(["Dot", "Moss", "Fig"]), "Dot, Moss and Fig play together"); assert.equal(T.played(["Dot", "Moss"]), "Dot and Moss play together");
+  assert.equal(T.playLabel(["Dot"]), "Play with Dot"); assert.equal(T.playLabel(["Dot", "Moss"]), "Play together"); assert.equal(T.playOnce, "once a turn"); assert.equal(T.playBond, "a bond is for good");
+  assert.equal(T.playDocked, "docked · lift to play"); assert.equal(T.playAfter, "after the expedition"); assert.equal(T.playedTurn, "again after the next expedition");
+  assert.equal(T.playedRefused, "You played this turn · again after the next expedition"); assert.equal(T.playDockedRefused, "Lift the Companion to play");
+  assert.equal(T.playsLeft(["Dot"], 2), "Dot · play twice more to bond"); assert.equal(T.playsLeft(["Dot", "Moss"], 1), "Dot and Moss · play once more to bond");
+  assert.equal(T.bonded("Dot"), "Dot is bonded with you"); assert.equal(T.stHome, "at home");
+  assert.equal(T.grownLeads("Moss"), "Moss is grown · it leads the Probe now"); assert.equal(T.clockGrownHome("Fig"), "Fig is grown · at home");
+  assert.equal(T.fullRefused("Pip"), "Pip stays home: the Companion is full · leave one at home first");
+  assert.equal(T.playMidExp, "Play together when the expedition is over"); assert.equal(T.notch("Dot"), "Dot gains a skill notch");
+  assert.equal(T.noOneWith, "no one with you"); assert.equal(T.noOneGrown, "no one grown yet");
+  // the expedition choice's partner card, bottom-line context (companion-screens.md, "Expedition choice: the partner card")
+  const S = save({ carried: [], turn: 1 }), ctx = vm.createContext({ console, S, CARE_TEXT: T, JUVENILE_TURNS: 2, ELDER_TURNS: 16, SPECIES: [{ abText: "calms wary creatures" }, { abText: "sniffs out pods" }, { abText: "digs out narrow burrows" }] });
+  const pr = vm.runInContext(ACCESSOR() + ["partnerRow", "partnerMibi", "carriedMibis", "liveMibis", "mibiById", "isAdult", "mibiStage", "stageAt"].map(source).join("\n") + "\n;partnerRow", ctx);
+  assert.equal(pr(), "no one with you");
+  S.carried = [1]; assert.equal(pr(), "no one grown yet", "a juvenile with you, no one grown");
+  S.turn = 3; assert.equal(pr(), "Partner: Dot · calms wary creatures", "as built");
+  for (const k of Object.keys(T)) { const v = typeof T[k] === "function" ? T[k](/^play(Label|ed|sLeft)$/.test(k) ? ["Abcdefghij"] : "Abcdefghij") : T[k];
+    assert.ok(!/[{}]/.test(v), k + ": no placeholder braces"); }
+});
+
+// ---- Released mibis (C0 amendment) ----
+test("Take refuses a mibi the Station has released; a carried mibi already a duplicate refuses as carried", () => {
+  const S = save({ carried: [1] }), t = world(S, { docked: true }), [dot, moss, fig] = S.mibis;
+  t.env.st = { mibis: [{ id: 1, released: false }, { id: 2, released: true }, { id: 3, released: false }] };
+  assert.deepEqual(plain(t.takeMibi(moss)), { ok: false, why: "released" }); assert.deepEqual(plain(S.carried), [1]);
+  assert.deepEqual(plain(t.takeMibi(dot)), { ok: false, why: "carried" });
+  assert.equal(t.takeMibi(fig).ok, true, "a mibi the Station still houses");
+  t.env.st = null; assert.equal(t.takeMibi(moss).ok, true, "no Station part: nothing known as released");
+});
+test("after a dock, normalizeCare drops released ids from the carried set; without the Station's ids it keeps them", () => {
+  const S = save({ carried: [1, 2, 3], lead: 2 }), t = world(S);
+  t.normalizeCare(S); assert.deepEqual(plain(S.carried), [1, 2, 3]);
+  t.normalizeCare(S, new Set([2])); assert.deepEqual(plain(S.carried), [1, 3]);
+  const once = JSON.stringify(S); t.normalizeCare(S, new Set([2])); assert.equal(JSON.stringify(S), once, "idempotent");
+  // the page passes the released ids of the Station's part after every dock read
+  t.env.st = { mibis: [{ id: 3, released: true }, { id: 1, released: false }] };
+  t.normalizeCare(S, t.releasedIds()); assert.deepEqual(plain(S.carried), [1]);
+});
+
+test("a released mibi stays carried undocked with no new dock and mid-expedition; at the next dock between expeditions it is dropped", () => {
+  const S = save({ carried: [1, 2], bay: [], known: [], retSeen: [], pods: [], dockSeen: 1, probeSeen: 0 });
+  const st = { wid: "w", accepted: [], known: [], mibis: S.mibis.map(m => ({ id: m.id, name: m.name, sp: m.sp, born: m.born, bonded: m.bonded, released: m.id === 2 })), dock: { docked: false }, dockN: 1, returned: [] };
+  dock(S, st, false); assert.deepEqual(plain(S.carried), [1, 2], "undocked, no new dock: no drop");
+  S.exp = { n: 3 }; st.dockN = 2; dock(S, st, true); assert.deepEqual(plain(S.carried), [1, 2], "mid-expedition, docked: no drop");
+  st.dockN = 3; dock(S, st, false); assert.deepEqual(plain(S.carried), [1, 2], "mid-expedition, a new dock read after the lift: no drop");
+  S.exp = null; dock(S, st, false); assert.deepEqual(plain(S.carried), [1, 2], "between expeditions, undocked, that dock already seen: no drop");
+  st.dockN = 4; dock(S, st, true); assert.deepEqual(plain(S.carried), [1], "the next dock between expeditions: dropped");
+  const once = JSON.stringify(S); dock(S, st, true); assert.equal(JSON.stringify(S), once, "a repeated dock changes nothing");
+});
+test("the dock gate, run: mid-expedition or lifted with the dock seen, a released id changes nothing; docked between expeditions it is dropped, marked and the lead clears", () => {
+  const S = save({ carried: [1, 2], lead: 2, exp: { n: 3 }, bay: [], known: [], retSeen: [], pods: [], dockSeen: 1, probeSeen: 0 });
+  const st = { wid: "w", accepted: [], known: [], mibis: S.mibis.map(m => ({ id: m.id, name: m.name, sp: m.sp, born: m.born, bonded: m.bonded, released: m.id === 2 })), dock: { docked: true }, dockN: 2, returned: [] };
+  const held = () => [plain(S.carried), S.lead, S.mibis[1].released];
+  dock(S, st, true); assert.deepEqual(held(), [[1, 2], 2, undefined], "docked mid-expedition: carried, lead and the mark unchanged");
+  S.exp = null; assert.ok(st.dockN <= S.dockSeen);
+  dock(S, st, false); assert.deepEqual(held(), [[1, 2], 2, undefined], "lifted, that dock already seen: carried, lead and the mark unchanged");
+  st.dockN = 3; dock(S, st, true);
+  assert.deepEqual(plain(S.carried), [1], "dropped"); assert.equal(S.mibis[1].released, true, "marked"); assert.equal(S.lead, null, "the lead clears");
+});
+test("the dock: a Station mibi already released and new to the Companion is not created or logged", () => {
+  const S = save({ carried: [1], bay: [], known: [], retSeen: [], pods: [], dockSeen: 0, probeSeen: 0 });
+  const st = { wid: "w", accepted: [], known: [], dock: { docked: true }, dockN: 1, returned: [], mibis: [
+    ...S.mibis.map(m => ({ id: m.id, name: m.name, sp: m.sp, born: m.born, bonded: m.bonded, released: false })),
+    { id: 5, name: "Kit", sp: 2, born: 1, bonded: false, released: true },
+    { id: 6, name: "Ash", sp: 0, born: 1, bonded: false, released: false }] };
+  const log = []; dock(S, st, true, log);
+  assert.equal(S.mibis.find(m => m.id === 5), undefined, "not created"); assert.ok(!log.some(t => /Kit/.test(t)), "not logged");
+  assert.ok(S.mibis.find(m => m.id === 6), "a new live mibi still arrives"); assert.ok(log.some(t => /^Ash /.test(t)));
+  const once = JSON.stringify(S); dock(S, st, true); assert.equal(JSON.stringify(S), once, "a repeated dock changes nothing");
+});
+
+// ---- Undocked, a mibi at home is never named (K3) ----
+test("the expedition choice never names a mibi at home: no list, no count, no digger to fetch", () => {
+  const S = save({ carried: [], turn: 3, expN: 2, tier: 1, bay: [], revealed: [0], ui: { sel: 1, lastPos: null }, shield: 3 });
+  S.mibis[1].sp = 2;   // a grown digger at home
+  const said = [], noop = () => {}, id = x => x;
+  const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 16, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
+    SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs out narrow burrows" }],
+    FX: {}, goalForms: () => "", shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
+    panel: noop, card: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, firstPlacement: () => true, drawOpenLand: () => {}, stormFor: () => ({ dir: 1 }), stormAt: () => ({ dir: 1 }), teachStep: () => "", openWay: () => 0, brackets: noop, ringArt: noop, upArt: noop, silhouette: noop, podArt: noop, OPEN_ART: { ready: false }, G: { gate: 0 }, STAGE_WORD: {},
+    OPEN_TEXT: { dark: "dark", stormEast: "e", stormWest: "w", chargeStones: "charge", digs: n => n + " digs", needsTuikis: "needs a Tuikis", firstWalk: "first", firstFind: "find", firstGrows: "grows", flat: "flat", docked: "docked" },
+    CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows up in time", youngTime: "young · grows up in time" } });
+  const names = ["OPEN_FRAME_BASE", "openAlone", "openRect", "deepShown", "openCreature", "drawSetup", "digger", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
+  S.known = [2]; vm.runInContext(ACCESSOR() + names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
+  const home = S.mibis.map(m => m.name);
+  for (const line of said) for (const n of home) assert.ok(!line.includes(n), "names " + n + ": " + line);
+  assert.ok(said.includes("No one with you") && said.includes("dock to take one along") && said.includes("needs a Tuikis"), "none carried: No one with you (ruling 19:21)");
+  assert.ok(!said.includes("No partner"), "No partner only when juveniles are carried");
+  assert.ok(!said.some(l => /at home/.test(l)), "no at-home list or count");
+  for (const fn of ["lineFor", "drawSetup"]) assert.ok(!/mibiWith|homeMibis/.test(source(fn)));
+  assert.ok(!/take ' \+ d\.name/.test(PAGE), "the digger at home is never named on a refusal");
+});
+test("the page's help: the carried set and Play together; no Tend, no Spend time and no Habitat", () => {
+  const help = PAGE.slice(0, PAGE.indexOf("<script type=\"module\">"));   // the page before its script (the ?embed line in <head> is a classic script)
+  assert.match(help, /Up to three mibis are <b>with you<\/b>/); assert.match(help, /<b>Play together<\/b> once a turn, off the dock, with all of them/); assert.match(help, /Play together three times and a mibi is bonded, and a bond is for good\. A young mibi grows up in time\./); assert.ok(!/Tend|Walk together/.test(help), "the retired press is gone from the help");
+  assert.ok(!/spends time|One mibi is|Habitat/.test(PAGE), "retired words");
+});
+
+// ---- The Station's half, switched on when it lands ----
+const stationWorld = (S, docked = true) => { S.seed = 7; S.wid = "w7"; S.cr = []; S.bay = []; S.v = 8;
+  const st = ST.normalize(Object.assign(ST.freshSt("w7", S.turn, 1000), { mibis: S.mibis.map((m, i) => ({ id: m.id, name: m.name, sp: m.sp, gs: 100 + m.id, born: m.born, bonded: !!m.bonded, outings: 0, notches: 0, from: { n: 0, g: "", how: "" }, bay: i, released: false })) }), 1000);
+  if (docked) ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 1000); return st; };
+const reload = x => JSON.parse(JSON.stringify(x));
+test("T7, the Station's half: a full refusal shows once, null after it is seen, after a lift and redock and after a reload; other reasons show nothing",
+  { skip: station("carryRefusal", "seenCarryRefusal", "carryAdd", "dockKey") }, () => {
+  const S = save({ carried: [1, 2], turn: 3 }), t = world(S, { docked: true }); let st = stationWorld(S);
+  assert.equal(ST.carryAdd(st, S, st.mibis[2]).ok, true);   // Fig queued on the Station
+  t.takeMibi(S.mibis[3]);                                    // the Companion takes Pip first: full
+  t.carryApply(S, st); assert.deepEqual(plain(S.carryRefused), [{ seq: 1, id: 3, why: "full" }]);
+  assert.deepEqual(plain(ST.carryRefusal(st, S)), { seq: 1, id: 3, name: "Fig" });
+  ST.seenCarryRefusal(st, S); assert.equal(ST.carryRefusal(st, S), null);
+  ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 2000); ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 3000); assert.equal(ST.carryRefusal(st, S), null, "a lift and a redock");
+  st = ST.normalize(reload(st), 4000); assert.equal(ST.carryRefusal(st, reload(S)), null, "a reload of either page");
+  for (const why of ["carried", "released", "unknown"]) { const sv = reload(S); sv.carryRefused = [{ seq: 9, id: 1, why }]; assert.equal(ST.carryRefusal(st, sv), null, why); }
+  const sv = reload(S); sv.carryRefused = [{ seq: 10, id: 2, why: "full" }, { seq: 11, id: 4, why: "released" }];
+  assert.equal(ST.carryRefusal(st, sv).id, 2, "a later refusal never hides the full one"); ST.seenCarryRefusal(st, sv); assert.equal(ST.carryRefusal(st, sv), null, "both seen");
+});
+test("T4 with a lift, a redock and a reload: the Station's care mirror does not move", { skip: station("mergeCare", "dockKey", "normalize") }, () => {
+  const S = save({ carried: [1], turn: 3 }), t = world(S); const dot = S.mibis[0]; dot.plays = 2; dot.outings = 1; t.walkAll();
+  let st = stationWorld(S); ST.mergeCare(st, S); const care = s => JSON.stringify(s.mibis.map(q => [q.id, q.care, q.tends, q.outings, q.notches, q.bonded, q.bondCare ?? null, q.grownTurn ?? null]));
+  const once = care(st);
+  ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 2000); ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 3000); ST.mergeCare(st, S); assert.equal(care(st), once, "lift and redock");
+  st = ST.normalize(reload(st), 4000); ST.mergeCare(st, reload(S)); assert.equal(care(st), once, "reload");
+});
+test("T5: C8 marks only the partner; a carried mibi that is not the partner gets none", { skip: station("tripCarried", "dockKey") || (!("tripSeen" in ST.freshSt("w", 0, 0)) && "C8 has not landed on main") }, () => {
+  const S = save({ carried: [1, 2, 3], turn: 4 }); S.trips = [{ v: 1, n: 3, partner: 1, places: ["cave", "wood", "meadow"], storm: true, carried: [1, 2, 3] }];
+  const st = stationWorld(S, false); ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 1000);
+  for (const q of st.mibis.filter(q => q.id !== 1)) assert.ok(!q.marks || Object.values(q.marks).every(k => !k.steps), q.name + " gets no marks");
+});
+
+// ---- The care screens (companion-screens.md at 2c5044a: Mibis, the Lead card, released mibis, End expedition's notch row) ----
+test("setLead: a grown mibi with you, between expeditions only", () => {
+  const S = save({ turn: 3, carried: [1, 2, 3] }), t = world(S), [dot, moss, fig, pip] = S.mibis;
+  moss.born = 3;   // a juvenile with you
+  assert.equal(t.partnerMibi().id, 1);
+  assert.equal(t.setLead(fig), true); assert.equal(S.lead, 3); assert.equal(t.partnerMibi().id, 3);
+  assert.equal(t.setLead(moss), false, "never a juvenile"); assert.equal(S.lead, 3);
+  assert.equal(t.setLead(pip), false, "never a mibi at home"); assert.equal(S.lead, 3);
+  S.exp = { n: 4 }; assert.equal(t.setLead(dot), false, "never mid-expedition"); assert.equal(S.lead, 3); S.exp = null;
+  void dot;
+});
+test("released mibis: hidden from every list and count; the dock read marks them, drops them and clears the lead; Take refuses them", () => {
+  const S = save({ carried: [1, 2], lead: 2 }), t = world(S, { docked: true });
+  t.normalizeCare(S, new Set([2, 4]));
+  assert.deepEqual(plain(S.carried), [1]); assert.equal(S.lead, null, "the lead clears");
+  assert.equal(S.mibis[1].released, true); assert.equal(S.mibis[3].released, true); assert.equal(S.mibis[0].released, undefined);
+  assert.deepEqual(plain(t.liveMibis().map(m => m.id)), [1, 3]); assert.deepEqual(plain(t.homeMibis().map(m => m.id)), [3]);
+  assert.deepEqual(plain(t.rosterList().map(m => m.id)), [1, 3], "the roster closes up");
+  t.env.st = null; assert.deepEqual(plain(t.takeMibi(S.mibis[3])), { ok: false, why: "released" }, "the Companion's own mark refuses it");
+  const once = JSON.stringify(S); t.normalizeCare(S, new Set([2, 4])); assert.equal(JSON.stringify(S), once, "idempotent");
+  t.normalizeCare(S); assert.equal(S.mibis[1].released, true, "without the Station's ids nothing is un-released");
+  // the world turn's lines never name a released mibi; the screens count only the others
+  assert.match(source("realmTurn"), /liveMibis\(\)\.filter\(grownNow\)/);
+  for (const fn of ["drawRidingNone", "partnerRow", "drawSetup"]) assert.match(source(fn), /liveMibis\(\)/, fn + " counts only the mibis not released");
+  assert.ok(!/S\.mibis\.length/.test(source("drawRidingNone") + source("drawSetup") + source("partnerRow")), "no count over released mibis");   // Riding's list is rosterList(), which is live ones only
+});
+test("the active screen: a page gone goes to the page now at that index, or the last", () => {
+  const S = save({ carried: [1, 2, 3], ui: { aId: 3, aIdx: 2 } }), t = world(S, { docked: false });
+  const sh = vm.runInContext(source("shownMibi") + ";shownMibi", t.ctx);
+  assert.equal(sh().id, 3); t.normalizeCare(S, new Set([3])); assert.equal(sh().id, 2, "the last page");
+  S.ui.aId = 1; sh(); t.normalizeCare(S, new Set([1])); assert.equal(sh().id, 2, "the page now at index 0");
+});
+// End expedition: the outcome block, the notch row, the crates and the world lines, as drawn (text and pictures recorded).
+const { FIRST_TEXT } = await import("../src/data/field-lines.mjs");   // the first walk's words, as the page imports them
+function sealed(rep, lines, bay = 1) {
+  const said = [], faces = [], crates = [], dots = [], noop = () => {};
+  const ctx = vm.createContext({ console, S: { report: Object.assign({ n: 4, lines }, rep), bay: Array.from({ length: bay }, (_, i) => ({ id: "c" + i })) }, NOW: 0, FX: { transAt: 0 }, BAY: 3, TIER_NAME: ["", "starter", "early", "mid"],
+    numWord, sealedWords, C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x, cutLine: (x, w) => x,
+    text: (str, x, y, col, s) => said.push({ str: String(str), x, y, s: s || 2 }), ringFace: (x, y, sp, p) => faces.push({ x, y, sp, p }), crateIcon: (x, y) => crates.push({ x, y }), R: (x, y, w, h, c) => dots.push({ x, y, w, h, c }),
+    bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" }, FIRST_TEXT });
+  ctx.goalForms = () => "";
+  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine"];
+  vm.runInContext(names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
+  return { said, faces, crates, at: s2 => said.find(q => q.str === s2), world: dots.filter(d => d.c === "orange" && d.w === 4) };
+}
+test("End expedition: the notch is its own row under the outcome's last 2× line, the crates move down 28, no world line repeats it", () => {
+  const W = ["The Loikas moved north.", "The outpost in the wood burns low.", "A storm charged stones in the east."];
+  const y = { data: 6, tier: 3, moments: 2 };
+  let d = sealed({ sealed: { id: "c0", pods: [1, 2] }, yield: y, notch: { id: 1, name: "Pip", sp: 0 } }, W);
+  assert.equal(d.at("Pip gains a skill notch").y, 128); assert.equal(d.at("Pip gains a skill notch").x, 54);
+  assert.deepEqual(plain(d.faces), [{ x: 22, y: 125, sp: 0, p: true }], "the partner's ring face, teal, at (22, row top − 3)");
+  assert.equal(d.crates[0].y, 156); assert.equal(d.at("Meanwhile, the world turned").y, 156 + 142);
+  assert.deepEqual(d.world.map(q => q.y - 6), [346, 372, 398], "the first world line at c + 190 (wireframe 17)");
+  assert.equal(d.said.filter(q => /skill notch/.test(q.str)).length, 1, "one row, never a world line");
+  // every outcome in the table: crates without and with the notch
+  const cases = [[{ reason: "break", dropped: 2, lost: [] }, 162, 152, 190], [{ sealed: { id: "c0", pods: [] }, yield: y }, 128, 128, 156], [{ sealed: { id: "c0", pods: [] } }, 106, 104, 134],
+    [{ kept: true, yield: y }, 162, 152, 190], [{ kept: true }, 138, 128, 166], [{ empty: true }, 114, 104, 142]];
+  for (const [r, c0, top, c1] of cases) {
+    assert.equal(sealed(r, W).crates[0].y, c0, JSON.stringify(r) + ": crates, no notch");
+    const n = sealed(Object.assign({ notch: { id: 1, name: "Pip", sp: 0 } }, r), W);
+    assert.equal(n.at("Pip gains a skill notch").y, top, JSON.stringify(r) + ": notch row"); assert.equal(n.faces[0].y, top - 3); assert.equal(n.crates[0].y, c1, JSON.stringify(r) + ": crates, notch");
+  }
+  assert.equal(sealed({ waited: true, notch: { id: 1, name: "Pip", sp: 0 } }, W).faces.length, 0, "nothing explored: no notch row");
+  assert.equal(sealed({ waited: true }, W).crates[0].y, 138);
+});
+test("End expedition: world lines draw only while their foot stays on or above row 476; the first that fails ends the list", () => {
+  const wrap = l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], long = "x".repeat(60), short = "A storm charged stones.";
+  const rows = vm.runInContext(source("worldLineRows") + "\n" + source("WORLD_FOOT") + ";worldLineRows", vm.createContext({ PLAYTEST_ON: false }));
+  assert.deepEqual(plain(rows([long, long, short], 380, wrap).map(r => [r.y, r.foot])), [[380, 417], [426, 463]], "a break with a notch, two wrapped lines: the third, at 472, is cut");
+  assert.deepEqual(plain(rows([short, short, short], 380, wrap).map(r => r.foot)), [397, 423, 449], "three one-line world lines always fit");
+  assert.deepEqual(plain(rows([short, long, short], 406, wrap).map(r => r.y)), [406, 432], "a line fits at 432 only if its foot ≤ 476");
+  assert.equal(rows([long, short], 450, wrap).length, 0, "the first fails: nothing after it, no mark");
+  assert.equal(rows([short, short, short, short], 100, wrap).length, 3, "three at most");
+  // on the screen: a break with a notch and a full bay of wrapped lines (wireframe 19's case) keeps every foot on or above 476
+  const d = sealed({ kept: true, yield: { data: 6, tier: 3, moments: 2 }, notch: { id: 1, name: "Pip", sp: 0 } }, ["The Loikas spread out.", "Fig is grown · take Fig to bring it on expeditions.", "Moss is an elder now · slower, with keener senses."]);
+  assert.deepEqual(d.world.map(q => q.y - 6), [380, 406], "the third (foot 489) is cut");
+  for (const q of d.said.filter(q => q.x === 40)) assert.ok(q.y + 17 <= 476, "foot " + (q.y + 17));
+});
+test("End expedition after a break: the pods line in the copywriter's words (19:03)", () => {
+  for (const [n, line] of [[1, "One pod lies where it broke."], [2, "Two pods lie where it broke."], [3, "Three pods lie where it broke."], [0, "Nothing was in the hold."]])
+    assert.ok(sealed({ reason: "break", dropped: n, lost: [] }, []).at(line), line);
+});
+test("End expedition, Sealed: the trip line is built from what was sealed (pods and supplies, or supplies only)", () => {
+  assert.ok(sealed({ sealed: { id: "c0", pods: [], d: 2 } }, []).at("Expedition 4 · supplies"), "supplies only");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1], d: 2 } }, []).at("Expedition 4 · one pod and supplies"), "one pod and supplies");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1, 2], d: 4 } }, []).at("Expedition 4 · two pods and supplies"), "two pods and supplies");
+  assert.ok(!sealed({ sealed: { id: "c0", pods: [1], d: 1 } }, []).said.some(q => /what you carried|no pods/.test(q.str)), "never the old words");
+});
+test("End expedition, the hold-empty branch: the direction card, never the four nothings, and no yield line even when one is passed", () => {
+  const d = sealed({ empty: true, lead: { cell: 0, land: "wood", dir: "north", first: true, pod: true }, yield: { data: 0, tier: 0, moments: 0 } }, []);
+  assert.ok(d.at("Your pod still waits") && d.at("In the wood, north of where you set out.") && d.at("Start there and press ))) Call."), "the direction card");
+  assert.ok(!d.said.some(q => /Hold empty|Nothing to seal|bay is empty|Nothing to transfer|Data ·|No crate|crate this time/.test(q.str)), "no nothing, no yield line");
+  assert.equal(d.crates[0].y, 138, "the card is a headline and two lines: the crates sit one line lower");
+});
+test("End expedition after a break: 'Docking mends the Probe for free.'", () => {
+  assert.ok(sealed({ reason: "break", dropped: 0, lost: [] }, []).at("Docking mends the Probe for free."));
+});
+test("Cargo's preview predicts End: what the hold seals; an empty hold seals nothing", () => {
+  const run = (cargo, bay = [], yld = 2, dField = 0) => vm.runInContext(["sealPreview", "sealBranch"].map(source).join("\n") + "\n;sealPreview()",
+    vm.createContext({ S: { exp: { cargo, entered: [0], stats: { hearts: 1 }, shield: 3, smax: 3, dField }, bay }, WORDS: { waits: "Nothing explored · the world waits" }, BAY: 3, CAP: 20, walkYield: () => yld,
+      sealedWords, holdEmpty, exploredAny, isNightPod: () => false }));
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), [], "an empty hold seals nothing (Data comes only from readings and creature acts): no line");
+  assert.equal(run({ e: 0, d: 0, s: 0, pods: [1, 2] })[0], "Seals two pods + supplies · crate 1 of 3", "pods only in the hold: pods and supplies");
+  assert.equal(run({ e: 1, d: 2, s: 0, pods: [1] }, [{}])[0], "Seals one pod + supplies · crate 2 of 3");
+  assert.equal(run({ e: 0, d: 6, s: 0, pods: [] }, [], 6, 6)[0], "Seals the supplies · crate 1 of 3", "the Data already in the hold");
+  assert.deepEqual(plain(run({ e: 0, d: 1, s: 0, pods: [] }, [{}, {}, {}])), ["Bay full · your finds stay in the hold", "dock to free it"], "bay full, something in the hold: the bay-full lines");
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])), [], "bay full, hold empty: nothing to keep, no line");
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] }, [], 0)), [], "an old save with no yield and no hold: no line");
+  for (const o of [run({ e: 0, d: 0, s: 0, pods: [] }), run({ e: 0, d: 0, s: 0, pods: [] }, [{}, {}, {}])]) assert.ok(!o.some(l => /no crate|you still earn/.test(l)));
+  assert.doesNotMatch(source("sealPreview"), /no crate|you still earn/);
+});
+test("chips are 22 high, the label at top + 3, 8 px in from each side", () => {
+  assert.equal(source("chip"), "function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }");
+});
+
+// ---- The UI designer's rulings (19:21) and the docking copy (c7cbfa4) ----
+test("careQueue: bonds first in carried order, 2400 ms each; then one grow-up cut per mibi, 1200 ms apart; input held to 300 ms after the last cut", () => {
+  const q = vm.runInContext(source("careQueue") + "\n" + source("GROW_MS") + ";careQueue", vm.createContext({ BOND_MS: 2400 }));
+  const ev = (id, o) => Object.assign({ m: { id }, bonded: false, grown: false }, o);
+  // a Walk where three grow: cuts at 2400, 3600, 4800, held to 5100
+  let r = q([ev(1, { grown: true }), ev(2, { grown: true }), ev(3, { grown: true })], 2400);
+  assert.deepEqual(plain(r.cuts), [{ kind: "grow", id: 1, at: 2400 }, { kind: "grow", id: 2, at: 3600 }, { kind: "grow", id: 3, at: 4800 }]); assert.equal(r.lock, 5100);
+  // bonds play first, in carried order, then the grow cuts follow at 1200 ms steps
+  r = q([ev(1, { grown: true }), ev(2, { bonded: true }), ev(3, { bonded: true }), ev(4, { grown: true })], 2400);
+  assert.deepEqual(plain(r.cuts), [{ kind: "bond", id: 2, at: 2400 }, { kind: "bond", id: 3, at: 4800 }, { kind: "grow", id: 1, at: 7200 }, { kind: "grow", id: 4, at: 8400 }]);
+  assert.equal(r.lock, 8700);
+  // a play together that bonds: after the 1.8 s moment, held to the end of the bond
+  r = q([ev(1, { bonded: true })], 1800); assert.deepEqual(plain(r.cuts), [{ kind: "bond", id: 1, at: 1800 }]); assert.equal(r.lock, 4200);
+  r = q([ev(1, { grown: true })], 1800); assert.equal(r.lock, 2100, "one grow: 300 ms after its cut");
+  assert.equal(q([ev(1)], 1800).cuts.length, 0); assert.equal(q([ev(1)], 1800).lock, 300);
+  // the page applies them in turn, each from a timer the press set (never from a frame): each cut moves the view; a mibi shows juvenile until its own cut
+  assert.match(source("careLines"), /for \(const c of FX\.cuts\) setTimeout\(\(\) => \{ if \(!c\.done\) \{ c\.done = 1; S\.ui\.aId = c\.id; \} \}, c\.at - NOW\);/);
+  assert.doesNotMatch(source("drawRiding"), /S\.ui\.aId =/, "the render reads the shown page only");
+  assert.match(source("careLines"), /careQueue\(evs, dur\)/);
+});
+test("the docking copy (c7cbfa4): the Companion docks; it is never told to go to the Station", () => {
+  const T = vm.runInContext(source("listWords") + "\n" + PAGE.match(/^const CARE_TEXT = \{$[^]*?^\};$/m)[0] + "\n;CARE_TEXT", vm.createContext({ PLAYTEST_ON: false }));
+  assert.equal(T.takeOne, "dock to take one along"); assert.equal(T.takeAlong, "take mibis along"); assert.equal(T.whenDocked, "when docked");
+  assert.ok(!/'[^'\n]*(take one at the Station|dock at the Station|lift at the Station|consignment)[^'\n]*'/.test(PAGE), "no retired docking words in any string");
+});
+
+// ---- X1: a Station species the Companion does not know (design/proposals/station-build.md §2.3, spName) ----
+// The whole page script in a sandbox (as freeze.test.mjs runs it), with the Station's real code and frames: seedAdults S05 and S10
+// (sp 4 and 9 on the Station). The page now has rows for all twenty, so each page here has its SPECIES cut to the first three: S05 and S10 stand for a species the Companion has no entry for (the intent of X1), then dockKey, then the Companion reads the save.
+const X1 = await (async () => {
+  const { frameOf } = await import("../../station/src/genome.mjs");
+  const page = (store = {}) => { const p = makePage({ store }); p.run("SPECIES.length = 3"); p.putSt = st => { const o = JSON.parse(store[p.KEY]); o.st = JSON.parse(JSON.stringify(st)); store[p.KEY] = JSON.stringify(o); }; return p; };
+  // The Companion's world, the Station's write (S05 Dot and Moss, S10 Bean and Fig, docked), normalized as the Station does before every save,
+  // so each mibi carries the spName the Station's own normalize writes; `oldSave` drops it (a Station save from before the field).
+  function docked({ oldSave = false, seed = true } = {}) {
+    const p = page(); p.run("newWorld(1); save();");
+    const st = ST.normalize(ST.freshSt(p.S.wid, p.S.turn));
+    if (seed) assert.ok(ST.seedAdults(st, "S05", 3).ok && ST.seedAdults(st, "S10", 4).ok);
+    assert.ok(ST.dockKey(st, p.sv()).docked);
+    ST.normalize(st);
+    for (const m of st.mibis) assert.equal(m.spName, frameOf(m.species).species.name, "the Station's normalize writes spName");
+    if (oldSave) for (const m of st.mibis) delete m.spName;
+    p.putSt(st);
+    return { p, st, before: p.store[p.KEY] };
+  }
+  return { page, docked, frameOf };
+})();
+const COMPANION_NEW = ["mibis", "dockSeen", "log"];
+const without = (o, keys) => { const c = JSON.parse(JSON.stringify(o)); for (const k of keys) delete c[k]; return JSON.stringify(c); };
+
+test("X1 1: a save holding S05 and S10 mibis (sp 4 and 9, beyond the list the page is cut to here) loads: save() does not throw, and a page built from the result boots", () => {
+  const { p } = X1.docked();
+  assert.deepEqual(plain(p.sv().st.mibis.map(m => [m.name, m.sp, m.species])), [["Dot", 4, "S05"], ["Moss", 4, "S05"], ["Bean", 9, "S10"], ["Fig", 9, "S10"]], "the Station's real seeds");
+  assert.doesNotThrow(() => p.run("save()"));
+  assert.deepEqual(plain(p.S.mibis.map(m => [m.id, m.name, m.sp, m.species])), [[1, "Dot", 4, "S05"], [2, "Moss", 4, "S05"], [3, "Bean", 9, "S10"], [4, "Fig", 9, "S10"]], "no mibi hidden or dropped");
+  let q; assert.doesNotThrow(() => { q = X1.page({ ...p.store }); });
+  assert.equal(q.S.mibis.length, 4);
+});
+
+test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Play together and the skills run; no line reads undefined or null", () => {
+  const { p, st } = X1.docked(); p.run("save()");
+  // every labelled plate drawn, recorded as id@x,y×k
+  p.run("var __plates = []; (() => { const real = placeholderPlate; placeholderPlate = (id, x, y, k) => { __plates.push([id, x, y, k || 1]); return real(id, x, y, k); }; })()");
+  const drawn = () => p.run("__plates.splice(0).map(a => a[0] + '@' + a[1] + ',' + a[2] + 'x' + a[3])");
+  assert.ok(p.run("takeMibi(mibiById(1)).ok && takeMibi(mibiById(3)).ok"), "taken while docked");
+  assert.equal(p.run("setLead(mibiById(1))"), true, "an S05 mibi can lead (game designer, 2026-10-11)");
+  assert.equal(p.run("partnerMibi().id"), 1, "Dot is the partner");
+  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digger()"), null, "no gate opens");
+  assert.equal(p.run("partnerRow()"), "Partner: Dot · " + p.run("CARE_TEXT.abOther"), "the partner line reads abOther");
+  const render = phase => { p.run(`S.phase = ${JSON.stringify(phase)}; render(0)`); return drawn(); };
+  let d;   // Riding draws her own cut, never a plate: every page renders for a kind the Companion has no entry for
+  for (let i = 0; i < 4; i++) { p.run(`S.ui.aId = null; S.ui.aIdx = ${i};`); assert.doesNotThrow(() => render("riding"), "Riding, page " + i); }
+  render("menu");
+  d = render("setup"); assert.ok(d.includes("c-sprite-other-32@8,453x3"), "the partner at 3× at (8, 453): " + d);
+  assert.doesNotThrow(() => p.run("playRefused()"));   // docked: the refusal line, never a throw
+  assert.equal(p.run("mibiSpName(mibiById(1))"), "Tepor"); assert.equal(p.run("mibiSpName(mibiById(3))"), "Igara");
+  // lift, Walk with Dot alone, then an expedition
+  assert.ok(ST.dockKey(st, p.sv()).lifted); p.putSt(st); p.run("save()");
+  p.run("S.carried = [1]; S.walkTurn = -1;");
+  assert.doesNotThrow(() => p.run("walk(mibiById(1))"));
+  assert.match(p.run("FX.notes.map(n => n.text).join('\\n') + S.log.join('\\n')"), /Dot plays · it hasn’t been out yet/, "the play's line takes playedOther");
+  p.run("S.carried = [1, 3]; S.phase = 'setup';");
+  p.key("confirm"); p.key("confirm"); assert.ok(p.S.exp, "an expedition started with Dot leading");
+  assert.equal(p.run("S.exp.pt && S.exp.pt.sp"), 4);
+  assert.equal(p.run("canDig()"), false);
+  d = render("map"); assert.ok(d.some(x => x.startsWith("c-mini-other-12@")), "the HUD mini is its plate: " + d);
+  p.key("confirm"); assert.equal(p.S.phase, "patch", "into a place");
+  d = render("patch"); assert.ok(d.some(x => x.startsWith("c-sprite-other-32@") && x.endsWith("x1")), "the field partner: the plate at 1×: " + d);
+  assert.ok(d.some(x => x.startsWith("c-mini-other-12@")), "the HUD mini in a place");
+  assert.doesNotThrow(() => p.run("ptCtx()")); assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), 4, "never matches a wild species (the page is cut to three here)");
+  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digger()"), null);
+  assert.doesNotThrow(() => p.run("onStateChanged(); playNoteState();"));
+  const lines = p.run("FX.notes.map(n => n.text).concat(S.log).join('\\n')");
+  assert.ok(!/undefined|null/.test(lines), "no line reads undefined or null:\n" + lines);
+  assert.ok(!/undefined|null/.test(p.run("JSON.stringify(playNoteState())") || ""), "the note's details");
+});
+
+test("X1 3: the dock changes only the Companion's mibis, dockSeen and log; the Station's part is byte-identical", () => {
+  const { p, before } = X1.docked(); p.run("save()");
+  const a = JSON.parse(before), b = p.sv();
+  const moved = (x, y) => Object.keys({ ...x, ...y }).filter(k => JSON.stringify(x[k]) !== JSON.stringify(y[k])).sort();
+  // the dock's own fields, with no mibi at all (the Probe's mend: probeSeen, shield), move as before; the four mibis add only `mibis`, `dockSeen` and `log`
+  const c = X1.docked({ seed: false }); c.p.run("save()"); const own = moved(JSON.parse(c.before), c.p.sv());
+  assert.deepEqual(own, ["dockSeen", "probeSeen", "shield"], "the dock without mibis");
+  const keys = [...new Set(COMPANION_NEW.concat(own, ["known"]))];   // S05 and S10 are species 4 and 9 of the twenty now: the dock also moves the Companion's `known` list
+  assert.deepEqual(moved(a, b), keys.slice().sort(), "the four mibis add only mibis and log to what the dock moves");
+  assert.equal(without(b, keys), without(a, keys), "nothing else in the save moved");
+  assert.equal(JSON.stringify(b.st), JSON.stringify(a.st), "st is what the Station wrote");
+  assert.deepEqual(a.mibis, []); assert.equal(b.mibis.length, 4); assert.equal(b.dockSeen, 1);
+  for (const m of b.mibis) for (const k of ["id", "name", "sp", "born", "from", "species", "spName"]) assert.ok(k in m, m.name + " has " + k);
+  assert.deepEqual(plain(b.mibis.map(m => [m.sp, m.species, m.spName])), [[4, "S05", "Tepor"], [4, "S05", "Tepor"], [9, "S10", "Igara"], [9, "S10", "Igara"]], "sp copied as given");
+  assert.ok(b.log.some(l => /Dot \(Tepor\) is home at the Station/.test(l)));
+});
+
+test("X1 4: the round trip: a fresh page saves the same string; the Station still resolves S05 and S10", () => {
+  const { p } = X1.docked(); p.run("save()");
+  const once = p.store[p.KEY], q = X1.page({ [p.KEY]: once, "mb-companion-A": p.store["mb-companion-A"] }); q.run("save()");   // the same Companion: its id and its save
+  assert.equal(q.store[q.KEY], once, "byte-identical");
+  const st2 = ST.normalize(ST.migrate(q.sv().st));
+  assert.deepEqual(st2.mibis.map(m => ST.speciesOf(m)), ["S05", "S05", "S10", "S10"]);
+  assert.deepEqual(plain(q.run("S.mibis.map(mibiSpName)")), ["Tepor", "Tepor", "Igara", "Igara"]);
+});
+
+test("X1 5: with no spName in the save (a Station save from before it), the name is CARE_TEXT.spOther", () => {
+  const { p } = X1.docked({ oldSave: true }); p.run("save()");
+  assert.equal(p.run("CARE_TEXT.spOther"), "a Station species");
+  // the copywriter's signed strings (2026-10-11 14:42)
+  assert.equal(p.run("CARE_TEXT.abOther"), "no field ability yet"); assert.equal(p.run("CARE_TEXT.playedOther('Dot', 'meadow')"), "Dot plays · it remembers the meadow"); assert.equal(p.run("CARE_TEXT.playedOther('Dot', null)"), "Dot plays · it hasn’t been out yet");
+  assert.deepEqual(plain(p.run("S.mibis.map(mibiSpName)")), Array(4).fill("a Station species"));
+  assert.ok(p.S.log.some(l => /Dot \(a Station species\) is home at the Station/.test(l)));
+});
+
+test("X1 6: every SPECIES lookup goes through spOf; the two plates are in the register and the plate table", () => {
+  const script = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+  assert.deepEqual(script.split("\n").filter(l => /SPECIES\[/.test(l)), [], "the page never indexes SPECIES itself");
+  SPECIES.forEach((row, sp) => assert.equal(spOf(sp), row, "a known kind: " + sp));
+  for (const sp of [-1, SPECIES.length, 1.5, "0", null, undefined]) assert.equal(spOf(sp), SP_OTHER, "any other value is SP_OTHER: " + sp);
+  const reg = vm.runInContext(PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m)[0] + "\n;CARE_ASSETS", vm.createContext({ PLAYTEST_ON: false }));
+  const plate = vm.runInContext(PAGE.match(/^const PLATE = \{[^]*?\};/m)[0] + "\n;PLATE", vm.createContext({ PLAYTEST_ON: false }));
+  for (const [id, w] of [["c-sprite-other-32", 32], ["c-mini-other-12", 12]]) {
+    const e = reg.find(x => x.id === id); assert.ok(e, id); assert.equal(e.status, "placeholder"); assert.equal(e.w, w); assert.equal(e.h, w);
+    assert.ok(plate[id], id + " has a plate entry"); assert.equal(plate[id][0], "stone"); }
+  assert.match(source("mibiSprite"), /spOf\(sp\)\.other \? placeholderPlate\('c-sprite-other-32'|if \(spOf\(sp\)\.other\) placeholderPlate\('c-sprite-other-32', x, y, k\)/);
+  assert.match(source("miniOf"), /if \(spOf\(sp\)\.other\) placeholderPlate\('c-mini-other-12', x, y\)/);
+});
+
+test("X1 7: a returned S05 pod keeps its species and genome seed through every rebuild: the field, take, swap, a break's drop and the crate; it lands unidentified and unread", async () => {
+  const { podGenome, frameOf } = await import("../../station/src/genome.mjs");
+  const p = X1.page(); p.run("newWorld(1); save();");
+  const st = ST.normalize(ST.freshSt(p.S.wid, p.S.turn)), cell = p.run("G.land.findIndex((l, i) => i > 0 && passable(i))");
+  // the Station's returned records: one with species and gs (the Station lead's fix), one from before it (neither)
+  st.returned = [{ id: "dev-1-9:p0", sp: -1, species: "S05", g: "meadow", gs: 12345, k: String(cell) }, { id: "old", sp: 0, g: "meadow", k: String(cell) }];
+  assert.ok(ST.dockKey(st, p.sv()).docked); p.putSt(st); p.run("save()");
+  const back = () => p.run("S.pods.filter(q => q.id[0] === 'r').map(q => ({ sp: q.sp, species: q.species, gs: q.gs }))");
+  assert.deepEqual(plain(back()), [{ sp: -1, species: "S05", gs: 12345 }, { sp: 0 }], "the field pod is the same individual; an older record keeps today's bytes (no species, no gs)");
+  assert.ok(ST.dockKey(st, p.sv()).lifted); p.putSt(st); p.run("save()");
+  p.run("S.phase = 'setup'"); p.key("confirm"); p.key("confirm"); assert.ok(p.S.exp); p.key("confirm"); assert.equal(p.S.phase, "patch");
+  p.run("TEST.exploreHere()"); p.pass(2000);   // the heart is found: the place counts as explored, so the expedition seals a crate
+  const pod = "S.pods.find(q => q.species === 'S05')", held = () => p.run("S.exp.cargo.pods.map(q => ({ id: q.id, species: q.species, gs: q.gs }))");
+  // take
+  p.run(`takePod(${pod})`); assert.deepEqual(plain(held()).map(q => [q.species, q.gs]), [["S05", 12345]], "take");
+  // swap: the hold full, a field pod taken in its place: it goes back to the field with its species
+  p.run("while (S.exp.cargo.pods.length < S.exp.hold) S.exp.cargo.pods.push({ id: 'f' + S.exp.cargo.pods.length, sp: 0, g: 'meadow', how: 'ground', bur: 0, gs: 1, k: S.exp.patch.key });");
+  p.run("S.pods.push({ id: 'z', k: S.exp.patch.key, x: 3, y: 3, sp: 0, h: 0, g: 'meadow', how: 'ground' }); takePod(S.pods.find(q => q.id === 'z'), 0);");
+  assert.deepEqual(plain(p.run(`(${pod})`)).species, "S05", "swapped back to the field"); assert.equal(p.run(`(${pod}).gs`), 12345);
+  // take it again, then a break drops the hold
+  p.run(`S.exp.cargo.pods = []; takePod(${pod});`);
+  p.run("dropPods(S.exp, {})");
+  const dropped = p.run("S.pods.filter(q => q.id[0] === 'b').map(q => [q.species, q.gs])");
+  assert.deepEqual(plain(dropped), [["S05", 12345]], "a break's drop");
+  // take the dropped pod and end the expedition: the crate carries it
+  p.run("S.exp.cargo.pods = []; takePod(S.pods.find(q => q.id[0] === 'b')); endExpedition('sent');");
+  const crate = p.S.bay.at(-1); assert.ok(crate, "sealed: " + JSON.stringify(p.run("[S.report, S.bay.length, S.hold]"))); assert.deepEqual(plain(crate.pods.map(q => [q.sp, q.species, q.gs])), [[-1, "S05", 12345]], "the crate");
+  // the Station opens it: the same genome, species S05, unidentified and unread
+  p.run("save()"); assert.ok(ST.dockKey(st, p.sv()).docked); const o = ST.openBay(st, p.sv());
+  assert.equal(o.plays[0].ids.length, 1, "the pod lands");
+  const landed = st.tray.concat(st.waiting).find(t => t.id === o.plays[0].ids[0]);
+  assert.equal(landed.species, "S05"); assert.equal(landed.gs, 12345); assert.equal(landed.idd, 0); assert.deepEqual(plain(landed.read), []);
+  assert.deepEqual(plain(landed.genome), plain(podGenome(frameOf("S05"), 12345)), "the same individual");
+});
+
+// ---- X26: the juvenile rides in the Companion (option A: no field token, no partner role; ex.rider beside an unchanged ex.pt) ----
+// The whole page in the sandbox, undocked, with the given mibis carried; draw calls recorded by wrapping the page's own
+// functions (text, panel, miniOf, mibiSprite, placeholderPlate, and art for the rings: RING is 'ptring2', RING_S 'ptrings2').
+const X26 = (() => {
+  const mib = (id, name, sp, o = {}) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null, mem: null }, o);
+  function world(mibis, carried, { motion = false } = {}) {
+    const p = X1.page(); p.run("newWorld(1); save();");
+    p.run(`S.mibis = ${JSON.stringify(mibis)}; S.carried = ${JSON.stringify(carried)}; S.phase = 'setup'; S.ui.sel = 0; RM.matches = ${!motion};`);
+    p.run(`var __d = []; (() => {
+      const w = (name, f) => { const real = globalThis[name]; globalThis[name] = (...a) => { __d.push(f(...a)); return real(...a); }; };
+      w('text', (s, x, y, col, k) => ['text', String(s), x, y, col, k || 2]);
+      w('panel', (x, y, ww, h, fill, border) => ['panel', x, y, ww, h, fill, border]);
+      w('miniOf', (sp, x, y, juv) => ['mini', sp, x, y, !!juv]);
+      w('mibiSprite', (sp, pose, fr, x, y, k, flip, juv) => ['sprite', sp, pose, fr, x, y, k || 1, !!flip, !!juv]);
+      w('openCreature', (sp, pose, fr, k, x, y, juv) => ['open', sp, pose, fr, x, y, k, !!juv]);
+      w('placeholderPlate', (id, x, y, k, sp, fr, juv) => ['plate', id, x, y, k || 1, sp, fr || 0, !!juv]);
+      w('art', key => ['art', key]);
+    })();`);
+    return Object.assign(p, {
+      draw(phase, t = 0) { p.run(`__d.length = 0; S.phase = ${JSON.stringify(phase)}; NOW = ${t}; render(${t / 1000});`); return plain(p.run("__d")); },
+      setOut() { p.run("S.phase = 'setup'; S.ui.sel = 0;"); p.key("confirm"); p.key("confirm"); assert.ok(p.S.exp, "set out"); },
+    });
+  }
+  return { mib, world };
+})();
+const dot = (o = {}) => X26.mib(1, "Dot", 1, o), pip = (o = {}) => X26.mib(2, "Pip", 0, Object.assign({ grownTurn: 0 }, o));
+
+test("X26 §5.1: with only juvenile Dot carried, ex.pt is null and ex.rider is Dot's { id, name, sp }; with grown Pip too, Pip is the partner and there is no rider", () => {
+  let p = X26.world([dot()], [1]); p.setOut();
+  assert.equal(p.S.exp.pt, null); assert.deepEqual(plain(p.S.exp.rider), { id: 1, name: "Dot", sp: 1 });
+  p = X26.world([pip(), dot()], [1, 2]); p.setOut();
+  assert.equal(p.S.exp.pt.id, 2); assert.equal(p.S.exp.rider, null);
+  p = X26.world([dot()], []); p.setOut(); assert.equal(p.S.exp.pt, null); assert.equal(p.S.exp.rider, null, "nobody carried: no rider");
+  p = X26.world([dot(), X26.mib(3, "Moss", 2)], [3, 1]); p.setOut(); assert.equal(p.S.exp.rider.id, 3, "the first in carried order");
+});
+
+test("X26 §5.2: with a rider no field token, no dig, no calm, no glow and no flinch", () => {
+  // a juvenile Tuikis: no token in any place, no dig, the fog sight and the fog Call reach as with no partner
+  let p = X26.world([dot()], [1]); p.setOut(); p.key("confirm"); assert.equal(p.S.phase, "patch");
+  assert.ok(Object.keys(p.S.exp.live).length > 0); for (const k in p.S.exp.live) assert.equal(p.S.exp.live[k].pt, null, "live.pt in " + k);
+  assert.equal(p.run("canDig()"), false); assert.equal(p.run("digger()"), null);
+  assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), -1);
+  p.run("inFog = () => true;");
+  assert.equal(p.run("sightR(curLay())"), p.run("SIGHT_FOG"), "the fog sight");
+  p.run("callPlace()"); assert.ok(p.run("FX.notes.some(n => n.once === 'muffled')"), "the Call muffled: its reach is CALL_R_FOG = " + p.run("CALL_R_FOG"));
+  p.run("S.exp.pt = { id: 1, name: 'Dot', sp: 1, elder: false };"); assert.equal(p.run("sightR(curLay())"), p.run("SIGHT_GLOW"), "control: a Tuikis partner glows");
+  // a juvenile Loika beside a wary wild Loika: not calmed
+  p = X26.world([X26.mib(1, "Dot", 0)], [1]); p.setOut(); p.key("confirm");
+  const wild = "({ sp: 0, x: S.exp.patch.x + 1, y: S.exp.patch.y })";
+  assert.equal(p.run(`calmedBy(${wild}, ptCtx())`), false, "the rider calms no one");
+  p.run("curLive().pt = { x: S.exp.patch.x, y: S.exp.patch.y }; S.exp.pt = { id: 1, name: 'Dot', sp: 0, elder: false };");
+  assert.equal(p.run(`calmedBy(${wild}, ptCtx())`), true, "control: a Loika partner beside it calms it");
+  // a juvenile Untuva in a strong storm with a stray strike rolled: no flinch line
+  p = X26.world([X26.mib(1, "Dot", 2)], [1]); p.setOut();
+  const storm = "stormLevel = () => 2; stormRain = () => true; S.exp.storm = null; sheltered = () => false; inFog = () => false; depotShelter = () => false; rnd = () => 0; S.exp.passWarned = 1; S.exp.hitAt = -99; S.exp.stray = null; S.exp.shield = 9; FX.notes = [];";
+  p.run(storm + " advance('map');"); assert.ok(p.run("!!S.exp.stray"), "the stray strike was rolled");
+  assert.ok(!p.run("FX.notes.some(n => /flinches/.test(n.text))"), "no flinch line");
+  p.run(storm + " S.exp.pt = { id: 1, name: 'Dot', sp: 2, elder: false }; advance('map');");
+  assert.ok(p.run("FX.notes.some(n => /flinches/.test(n.text))"), "control: an Untuva partner flinches");
+});
+
+test("X26 §5.3: the HUD draws the rider's mini in a slate window at the partner's rect, no RING_S, its name in fog clipped to the room; nobody carried, the slot is empty", () => {
+  let p = X26.world([dot()], [1]); p.setOut();
+  let d = p.draw("map");
+  const mini = d.find(c => c[0] === "mini"); assert.ok(mini, "the rider's mini"); const [, sp, x, y] = mini;
+  assert.equal(sp, 1); assert.equal(y, 10);
+  assert.ok(d.some(c => c[0] === "panel" && c[1] === x - 2 && c[2] === 8 && c[3] === 16 && c[4] === 16 && c[5] === p.run("C.night") && c[6] === p.run("C.slate")), "the window (x − 2, 8, 16, 16), night in slate");
+  assert.ok(!d.some(c => c[0] === "art" && c[1] === "ptrings2"), "no RING_S");
+  const nm = d.find(c => c[0] === "text" && c[1] === "Dot"); assert.ok(nm, "the name"); assert.equal(nm[2], x + 17); assert.equal(nm[3], 9);
+  assert.equal(nm[4], p.run("C.fog")); assert.notEqual(nm[4], p.run("C.amber"), "never amber");
+  // a long name is clipped to rx − 4, never dropped
+  p.run("S.exp.rider.name = 'Abcdefghijklmnopqrstuvwxyz'"); d = p.draw("map");
+  const lng = d.find(c => c[0] === "text" && /^Abc/.test(c[1])); assert.ok(lng && lng[1].endsWith("…"), "clipped: " + (lng && lng[1]));
+  // a save from before ex.rider: the slot is empty and nothing throws
+  p.run("delete S.exp.rider"); assert.doesNotThrow(() => { d = p.draw("map"); }); assert.ok(!d.some(c => c[0] === "mini"), "no rider record: empty");
+  p = X26.world([dot()], []); p.setOut(); d = p.draw("map"); assert.ok(!d.some(c => c[0] === "mini" || (c[0] === "text" && c[1] === "Dot")), "nobody carried: empty");
+  p = X26.world([pip(), dot()], [2, 1]); p.setOut(); d = p.draw("map");
+  assert.ok(d.some(c => c[0] === "art" && c[1] === "ptrings2") && d.some(c => c[0] === "text" && c[1] === "Pip" && c[4] === p.run("C.amber")), "a grown partner: as built");
+});
+
+test("X26 §5.4: the partner strip with only Dot: its picture at 3× without a ring, its name, the juvenile chip and one 2× line, no 'No partner'; two juveniles show the first carried", () => {
+  const T = X1.page().run("CARE_TEXT");
+  let p = X26.world([dot()], [1]); let d = p.draw("setup");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[2] === "idle" && c[4] === 8 && c[5] === 453 && c[6] === 3 && c[7] === true), "Dot's juvenile picture at 3× at (8, 453)");
+  assert.ok(!d.some(c => c[0] === "art" && (c[1] === "opring84" || c[1] === "dcirc64")), "no ring and no dashed circle");
+  assert.ok(d.some(c => c[0] === "text" && c[1] === "Dot" && c[2] === 116 && c[3] === 452 && c[5] === 3), "its name at (116, 452), 3×");
+  assert.ok(d.some(c => c[0] === "text" && c[1] === "young" && c[2] === 124 && c[3] === 491), "the young chip at (116, 488)");
+  const lines = d.filter(c => c[0] === "text" && c[3] === 520 && c[2] === 116); assert.deepEqual(lines.map(c => c[1]), [T.riderTime], "one 2× line");
+  assert.equal(lines[0][4], p.run("C.mist"));
+  for (const no of ["No partner", "young · grows up in time"]) assert.ok(!d.some(c => c[0] === "text" && c[1] === no), "no " + no);
+  p = X26.world([dot({ bonded: true })], [1]); d = p.draw("setup");
+  assert.ok(d.some(c => c[0] === "text" && c[1] === T.riderTime && c[3] === 520), "bonded: the same riderTime line");
+  p = X26.world([dot(), X26.mib(3, "Moss", 2)], [3, 1]); d = p.draw("setup");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === 2 && c[4] === 8 && c[6] === 3) && d.some(c => c[0] === "text" && c[1] === "Moss" && c[3] === 452), "the first in S.carried");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[4] === 398 && c[6] === 1), "the other at 1× at the top right");
+  // unchanged: none carried, a grown partner
+  p = X26.world([dot()], []); d = p.draw("setup"); assert.ok(d.some(c => c[0] === "text" && c[1] === "No one with you"));
+  p = X26.world([pip()], [2]); d = p.draw("setup"); assert.ok(!d.some(c => c[0] === "art" && (c[1] === "opring84" || c[1] === "opring32")), "a partner stands on its own sprite: no ring (owner 11-08)");
+});
+
+test("X26 §5.5: one set-out message names the rider, once per expedition; no Dig or ability prompt at the burrow with a juvenile Tuikis", () => {
+  const T = X1.page().run("CARE_TEXT"), say = T.riderSetOut("Dot");
+  const p = X26.world([dot()], [1]); p.setOut();
+  const shown = () => p.run("FX.msg").includes(say);
+  let seen = 0; for (let i = 0; i < 6; i++) { if (shown()) seen++; p.key(["right", "left", "down", "up"][i % 4]); }
+  assert.equal(seen, 1, "shown once in the expedition (on expedition 1, on the first move after mapintro)");
+  assert.equal(p.run("S.exp.once.rider"), 1);
+  assert.ok(p.S.log.some(l => /Set out · .* · Dot rides along · tier 1$/.test(l)), "the set-out log line names it as riding: " + p.S.log.join(" | "));
+  p.run("S.ui.from = 'map'; S.phase = 'menu'"); p.key("back"); p.key("confirm");
+  // the burrow: the gate and the narrow hole in front of the player
+  p.key("confirm"); assert.equal(p.S.phase, "patch");
+  for (const kind of ["g", "n"]) { p.run(`occupant = () => ({ type: 'feat', f: { kind: '${kind}', id: 0, x: 0, y: 0 } }); S.opened[G.gate] = 0;`);
+    const a = p.run("patchAction()"); assert.ok(!/dig|Dig|Ask/.test(a.label || ""), kind + ": " + a.label); }
+  // a second expedition: the message again, once
+  p.run("endExpedition('sent'); S.phase = 'setup';"); p.setOut();
+  seen = 0; for (let i = 0; i < 6; i++) { if (shown()) seen++; p.key(["right", "left", "down", "up"][i % 4]); }
+  assert.equal(seen, 1, "once in the next expedition too");
+});
+
+test("X26 §5.6: endExpedition gives the rider +1 outing and its mem, no notch; the trip's partner is null and carried holds Dot", () => {
+  const p = X26.world([dot({ bonded: true })], [1]); p.setOut(); p.key("confirm"); p.run("TEST.exploreHere()"); p.pass(2000);
+  p.run("S.exp.abUsed = 1; endExpedition('sent');");
+  const m = p.S.mibis[0]; assert.equal(m.outings, 1); assert.ok(m.mem, "its memory: " + m.mem); assert.equal(m.notches, 0, "no notch");
+  const tr = p.S.trips.at(-1); assert.equal(tr.partner, null); assert.deepEqual(plain(tr.carried), [1]);
+  assert.equal(p.run("tripRecord({ n: 9, pt: null, rider: { id: 1, name: 'Dot', sp: 1 } }, [1]).partner"), null);
+});
+
+test("X26 §5.7: the Walk adds no Data at any stage: nothing in the save moves but the mibis, walkTurn and the log", () => {
+  for (const [label, m] of [["juvenile", dot()], ["bonded juvenile", dot({ bonded: true })], ["adult", dot({ grownTurn: 0 })], ["elder", dot({ grownTurn: 0 })]]) {
+    const p = X26.world([m], [1]); if (label === "elder") p.run("S.turn = 6");
+    p.run("S.hold = { e: 1, d: 2, s: 3, pods: [] }; save();"); const before = p.sv();
+    p.run("walk(mibiById(1)); save();"); const after = p.sv();
+    assert.equal(after.mibis[0].outings, 1, label + ": walked");
+    assert.equal(without(after, ["mibis", "walkTurn", "log"]), without(before, ["mibis", "walkTurn", "log"]), label + ": no Data, nothing else");
+  }
+  const T = X1.page().run("CARE_TEXT");
+  assert.equal(T.playedYoung("Dot", "meadow"), "Dot plays · it remembers the meadow"); assert.equal(T.playedYoung("Dot", null), "Dot plays · it hasn’t been out yet");
+  const p = X26.world([X26.mib(1, "Dot", 0, { mem: "meadow" })], [1]); p.run("walk(mibiById(1))");
+  const said = p.run("FX.notes.map(n => n.text).join('\\n')");
+  assert.match(said, /^Dot plays · it remembers the meadow$/m, "a juvenile Loika's line names no field result"); assert.ok(!/calms a wary Loika/.test(said));
+  const q = X26.world([X26.mib(1, "Dot", 0, { grownTurn: 0, mem: "meadow" })], [1]); q.run("walk(mibiById(1))");
+  assert.match(q.run("FX.notes.map(n => n.text).join('\\n')"), /calms a wary Loika/, "a grown Loika's line as built");
+});
+
+test("X26 §5.9: a save made before this change loads and plays; an expedition in progress without ex.rider shows the empty slot and does not throw", () => {
+  const p = X26.world([dot()], [1]); p.setOut(); p.run("delete S.exp.rider; save();");
+  const q = X1.page({ ...p.store }); assert.equal(q.S.exp.rider, undefined);
+  for (const ph of ["map", "menu", "riding", "cargo"]) assert.doesNotThrow(() => q.run(`S.phase = '${ph}'; S.ui.from = 'map'; render(0); lineFor();`), ph);
+  q.run("S.phase = 'map'"); assert.doesNotThrow(() => { q.key("right"); q.key("confirm"); q.key("call"); });
+});
+
+test("X26 bottom line: mid-expedition with a rider the menu's Riding row reads riderMenu; with a partner as built", () => {
+  const p = X26.world([dot()], [1]); p.setOut();
+  p.run("S.ui.from = 'map'; S.phase = 'menu'; S.ui.menuSel = menuItems().findIndex(it => it.id === 'riding');");
+  assert.equal(p.run("lineFor().ctx"), "Dot rides along"); assert.equal(p.run("lineFor().ok"), "Open Riding");
+  const q = X26.world([pip(), dot()], [2, 1]); q.setOut();
+  q.run("S.ui.from = 'map'; S.phase = 'menu'; S.ui.menuSel = menuItems().findIndex(it => it.id === 'riding');"); assert.equal(q.run("lineFor().ctx"), "");
+});
+
+test("X26 copy: the copywriter's signed strings, within their widths", () => {
+  const p = X1.page(), T = p.run("CARE_TEXT"), N = "Abcdefghij";
+  assert.equal(T.riderTime, "grows up in time, riding along"); assert.equal(T.riderCare, undefined);
+  assert.equal(T.riderSetOut("Dot"), "Dot rides along until it’s grown"); assert.equal(T.riderMenu("Dot"), "Dot rides along");
+  assert.equal(T.playedYoung("Dot", "pond"), T.playedOther("Dot", "pond"), "playedYoung shares playedOther's string");
+  const w = (s, f = "textW") => p.run(`${f}(${JSON.stringify(s)}, 2)`), wide = "W".repeat(10), nm = w(wide) <= 118 ? wide : N;
+  assert.ok(w(T.riderTime) <= 306, "the card line fits 306");
+  assert.ok(w(T.riderSetOut(nm)) <= 400, "the set-out note fits one line"); assert.ok(w(T.riderMenu(nm), "textWT") <= 249, "the menu context fits 249");
+  // the stage species line for a juvenile: '‹Species› · ‹abText› once grown'; an unknown-species juvenile keeps abOther; an adult as built
+  const q = X26.world([dot(), X26.mib(3, "Bean", -1), pip()], [1, 3, 2]);
+  const line = id => { q.run(`S.phase = 'riding'; S.ui.aId = ${id}`); return q.draw("riding").find(c => c[0] === "text" && c[3] === 370)[1]; };   // Riding's second line, centred
+  assert.equal(line(1), "digs out burrows once grown");   // abCard (the kind and stage are the line above)
+  assert.equal(line(3), "no field ability yet");
+  assert.equal(line(2), "calms wary creatures");
+});
+
+test("X26 placeholder plates: no label unless the observer panel is open; a mibi's face and token plates carry its own mini and sprite", () => {
+  const p = X26.world([dot(), X26.mib(3, "Bean", -1)], [1, 3]);
+  p.run("var __obs = { hidden: true }; (() => { const d = document; globalThis.document = new Proxy({}, { get: (t, k) => k === 'getElementById' ? (id => id === 'obs' ? __obs : d.getElementById(id)) : d[k] }); })();");
+  const labels = ["face", "f", "token", "t", "heart", "h", "mibi", "m"], lettered = d => d.filter(c => c[0] === "text" && c[5] === 1 && labels.includes(c[1]));
+  let d = p.draw("setup");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[4] === 8 && c[5] === 453 && c[6] === 3), "Dot's picture at 3× on the strip");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === -1 && c[4] === 398 && c[6] === 1), "Bean (no art): its plate stands at 1× at the top right (openCreature draws it)");
+  assert.deepEqual(lettered(d), [], "the observer closed: no label");
+  p.run("__obs.hidden = false"); d = p.draw("setup");
+  assert.ok(lettered(d).some(c => c[1] === "mibi" || c[1] === "m"), "the observer open: X1's plates carry their label");
+});
+
+// ---- Species art: the signed tokens and minis of the twenty kinds (release 21c), used as they are ----
+// SPECIES_ART and JUVENILE_ART hold, in page species order (S01, S03, S02, S04 to S20), per kind an adult and a juvenile idle token (32 px) and a mini (12 px), from the art desk's field-tokens round 2.
+// A pose a kind has no picture for shows its idle (creatureArt); a juvenile never shows the adult's. The kinds are twenty; nothing is a stand-in.
+const KINDS20 = ["S01", "S03", "S02", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20"];
+const RUN48 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy";   // the 51 colours (the name stays): the first 48, then the sage three w, x, y
+const heightOf = px => { let top = -1, low = -1; const w = Math.sqrt(px.length); px.forEach((v, i) => { if (v >= 0) { if (top < 0) top = i / w | 0; low = i / w | 0; } }); return { top, low, h: low - top + 1 }; };
+const tokenPx = (p, s, w) => Array.from(p.run(`Array.from(tokenPB(${JSON.stringify(s)}, ${w}).p)`));
+const px = (p, expr) => { const a = p.run(expr); return a && Array.from(a.p).join(); };
+
+test("species art: twenty adult and twenty juvenile entries, each an idle of 1024 pixels and a mini of 144 on the 48 colours, standing on the last row, the juvenile lower than its adult and not its picture", () => {
+  const p = X1.page(), A = plain(p.run("SPECIES_ART")), J = plain(p.run("JUVENILE_ART"));
+  assert.equal(A.length, 20); assert.equal(J.length, 20);
+  A.forEach((a, sp) => {
+    const tag = KINDS20[sp];
+    assert.deepEqual([Object.keys(a).sort(), Object.keys(J[sp]).sort()], [["idle", "mini"], ["idle", "mini"]], tag + ": an idle and a mini each");
+    for (const [who, e] of [["adult", a], ["juvenile", J[sp]]]) for (const n of ["idle", "mini"]) {
+      const w = n === "mini" ? 12 : 32, s = e[n];
+      assert.ok(/^(?:[.A-Za-z]\d*)+$/.test(s), `${tag} ${who} ${n}: a picture string`);
+      let total = 0; for (const [, ch, r] of s.matchAll(/([.A-Za-z])(\d*)/g)) { total += r ? +r : 1; assert.ok(ch === "." || RUN48.includes(ch), `${tag} ${who} ${n}: a colour outside the 48`); }
+      assert.equal(total, w * w, `${tag} ${who} ${n}: ${w * w} pixels`);
+      assert.equal(heightOf(tokenPx(p, s, w)).low, w - 1, `${tag} ${who} ${n}: stands on the last row`);
+    }
+    const ha = heightOf(tokenPx(p, a.idle, 32)).h, hj = heightOf(tokenPx(p, J[sp].idle, 32)).h;
+    assert.ok(hj < ha && hj / ha > 0.65 && hj / ha < 0.9, `${tag}: the juvenile idle is ${hj} px against the adult's ${ha}`);
+    assert.notEqual(a.idle, J[sp].idle, tag + ": the juvenile is its own picture"); assert.notEqual(a.mini, J[sp].mini, tag + ": and its own mini");
+  });
+});
+
+test("species art: every pose draws a kind's idle, the cards show it at whole pixels, glow and nest are the idle, and the silhouette is derived", () => {
+  const p = X1.page(), tok = (sp, pose, fr = 0, juv = false) => px(p, `creatureArt(${sp}, '${pose}', ${fr}, 1, ${juv})`);
+  for (const sp of [0, 1, 2, 5, 11, 19]) for (const juv of [false, true]) {
+    const idle = tok(sp, "idle", 0, juv); assert.ok(idle, sp + " idle");
+    for (const pose of ["alert", "flee", "huddle", "approach", "glow", "nest", "curl", "settle", "shake", "eat"]) for (const fr of [0, 1]) assert.equal(tok(sp, pose, fr, juv), idle, `${sp} ${pose}: a kind with one picture shows it`);
+  }
+  assert.notEqual(tok(0, "idle", 0, true), tok(0, "idle", 0, false), "a juvenile never shows the adult's picture");
+  for (const sp of [0, 1, 2, 19]) {
+    assert.equal(p.run(`(() => { const a = tokenOf(${sp}, 'idle', 0), s = silhouette(${sp}); return a.p.every((v, i) => s.p[i] === (v >= 0 ? C.slate : -1)); })()`), true, "the silhouette is the idle's alpha in slate");
+    assert.equal(p.run(`(() => { const a = tokenOf(${sp}, 'idle', 0), b = creatureArt(${sp}, 'idle', 0, 2); if (b.w !== 64) return false; for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) if (b.p[y * 64 + x] !== a.p[(y >> 1) * 32 + (x >> 1)]) return false; return true; })()`), true, sp + " at 2x");
+    assert.deepEqual(plain(p.run(`[ICON.mini(${sp}).w, ICON.mini(${sp}).h, ICON.mini(${sp}, true).w]`)), [12, 12, 12]);
+  }
+  assert.ok(!/function buildCreature|haloArt/.test(PAGE), "no creature or halo drawn in code");
+  assert.ok(!/ell\(|poly\(/.test(source("tokenPB") + source("tokenOf")), "the token path draws no shape");
+  assert.equal(p.run("miniOf.toString().includes('c-mini-other-12') && mibiSprite.toString().includes('c-sprite-other-32')"), true, "the unknown species' labelled placeholders are intact");
+  assert.equal(p.run("tokenOf(25, 'idle', 0, true)"), null, "an unknown species is still null (its labelled plate)");
+});
+
+test("juvenile pictures: with no juvenile entry a juvenile shows exactly the adult's picture, at every size", () => {
+  const p = X1.page(), signed = [0, 7].map(sp => [sp, plain(p.run(`JUVENILE_ART[${sp}]`))]);
+  for (const [sp, e] of signed) for (const k of Object.keys(e)) p.run(`delete JUVENILE_ART[${sp}].${k}`);   // as if unsigned
+  try { for (const sp of [0, 7]) {
+    for (const pose of ["idle", "alert", "flee", "huddle", "shake", "eat", "approach", "glow", "nest"]) for (const fr of [0, 1]) assert.equal(px(p, `tokenOf(${sp}, '${pose}', ${fr}, true)`), px(p, `tokenOf(${sp}, '${pose}', ${fr})`), sp + " " + pose + " " + fr);
+    assert.equal(px(p, `ICON.mini(${sp}, true)`), px(p, `ICON.mini(${sp})`));
+    assert.equal(px(p, `creatureArt(${sp}, 'idle', 0, 2, true)`), px(p, `creatureArt(${sp}, 'idle', 0, 2)`), "2x");
+    assert.equal(px(p, `bigArt(${sp}, 'idle', 0, true)`), px(p, `bigArt(${sp}, 'idle', 0)`), "8x");
+  } } finally { for (const [sp, e] of signed) p.run(`Object.assign(JUVENILE_ART[${sp}], ${JSON.stringify(e)})`); }   // the table is one module (src/data/tokens.mjs) for every page of the run: the signed entries go back
+  const q = X1.page();   // the real table: every kind's juvenile differs from its adult, in the idle and the mini
+  for (let sp = 0; sp < 20; sp++) { assert.notEqual(px(q, `tokenOf(${sp}, 'idle', 0, true)`), px(q, `tokenOf(${sp}, 'idle', 0)`), sp + " idle"); assert.notEqual(px(q, `ICON.mini(${sp}, true)`), px(q, `ICON.mini(${sp})`), sp + " mini"); }
+});
+
+test("juvenile pictures: a juvenile asks for its own entry, a pose it has no picture for shows its own idle, the adult's pictures do not move", () => {
+  const p = X1.page();
+  for (const sp of [0, 1, 2, 9, 19]) {
+    const own = p.run(`Array.from(tokenPB(JUVENILE_ART[${sp}].idle, 32).p).join()`), adult = p.run(`Array.from(tokenPB(SPECIES_ART[${sp}].idle, 32).p).join()`);
+    for (const pose of ["idle", "alert", "huddle", "eat", "flee", "shake", "curl", "settle", "approach", "glow", "nest"]) for (const fr of [0, 1]) assert.equal(px(p, `creatureArt(${sp}, '${pose}', ${fr}, 1, true)`), own, `${sp} ${pose}: the juvenile's own idle`);
+    assert.equal(px(p, `creatureArt(${sp}, 'idle', 0)`), adult, "the adult's idle is untouched");
+    assert.equal(px(p, `ICON.mini(${sp}, true)`), p.run(`Array.from(tokenPB(JUVENILE_ART[${sp}].mini, 12).p).join()`));
+    assert.equal(px(p, `ICON.mini(${sp})`), p.run(`Array.from(tokenPB(SPECIES_ART[${sp}].mini, 12).p).join()`));
+  }
+  assert.equal(p.run("(() => { const a = creatureArt(0, 'idle', 0, 2, true), t = tokenOf(0, 'idle', 0, true); if (a.w !== 64) return false; for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) if (a.p[y * 64 + x] !== t.p[(y >> 1) * 32 + (x >> 1)]) return false; return true; })()"), true);
+  assert.equal(p.run("(() => { const a = bigArt(0, 'idle', 0, true), t = tokenOf(0, 'idle', 0, true); if (a.w !== 256) return false; for (let y = 0; y < 256; y++) for (let x = 0; x < 256; x++) if (a.p[y * 256 + x] !== t.p[(y >> 3) * 32 + (x >> 3)]) return false; return true; })()"), true);
+  assert.notEqual(px(p, "bigArt(0, 'idle', 0)"), px(p, "bigArt(0, 'idle', 0, true)"));
+});
+
+test("juvenile pictures: only the places that draw a mibi ask for the juvenile (no wild creature, no partner in the field, no species list)", () => {
+  const lines = PAGE.split("\n").filter(l => /JUVENILE_ART/.test(l) && !/^\s*\/\//.test(l));
+  assert.equal(lines.length, 3, "the table, tokenOf and miniArt read it: " + lines.map(l => l.trim().slice(0, 40)).join(" | "));
+  for (const fn of ["drawCreature", "drawPartner", "silhouette"]) assert.ok(!/juv|JUVENILE/i.test(source(fn)), fn + " never asks for a juvenile");
+  assert.ok(!/creatureArt\([^)]*true\)|bigArt\([^)]*true\)/.test(PAGE), "no species list or portrait asks for a juvenile");
+  assert.match(source("drawRiding"), /ownCut\(m, 'big', st === 'juvenile' \? 'juvenile' : 'adult'\)/, "Riding's picture follows its stage word (st), not the stage the clock has reached");
+});
+
+test("juvenile pictures: no site draws a juvenile in huddle or eat (Play together, the Call, 20 s of look-out, every card, face, mini, row)", () => {
+  const bad = new Set(["huddle", "eat", "eat0", "eat1"]), seen = [];
+  const scan = (p, pages, ts, tag) => { for (const pg of pages) for (const t of ts) for (const c of p.draw(pg, t)) { seen.push(1); if (c[c.length - 1] === true && c.some(v => bad.has(v))) assert.fail(tag + " " + pg + " t " + t + ": " + JSON.stringify(c)); } };
+  for (const sp of [0, 1, 2]) {
+    const m = () => X26.mib(1, "Kit", sp), pal = () => X26.mib(2, "Pal", (sp + 1) % 3);
+    let p = X26.world([m(), pal()], [1, 2]); p.run("S.ui.aId = 1");
+    scan(p, ["setup", "mibis", "active"], [0, 400], "rest sp " + sp);
+    p.run("FX.moment = { id: 1, at: 0 }"); scan(p, ["active", "mibis"], [0, 300, 900, 1500, 2400], "Play sp " + sp);                       // Play together
+    p.run("FX.moment = { id: 1, at: 0 }; FX.walk = { id: 1, at: 0, others: [2] }"); scan(p, ["active", "mibis"], [0, 300, 900, 1500, 2400], "Walk sp " + sp);   // the Walk
+    p.run("FX.moment = null; FX.walk = null; FX.callMibi = { id: 1, at: 0, wrong: false }"); scan(p, ["active", "mibis"], [0, 300, 700, 1200], "Call sp " + sp);   // the Call
+    p = X26.world([m()], [1], { motion: true }); p.setOut(); p.run("S.ui.aId = 1"); scan(p, ["active", "map"], Array.from({ length: 1000 }, (_, i) => 1000 + i * 20), "look-out sp " + sp);   // 20 s of look-out
+    p = X26.world([m()], [1]); scan(p, ["setup"], [0], "rider sp " + sp);
+    p.setOut(); scan(p, ["map", "place"], [0], "field sp " + sp);
+  }
+  assert.ok(seen.length > 1000, "the recorder saw the draw calls");
+});
+
+test("the Tend moment draws no code-drawn blush paws on the Loika and no ring of fog squares round the Untuva; the Tuikis' four sparks stay, none on the face; a young one shows its own stand", () => {
+  assert.ok(!/ICON\.paw\('blush'\)/.test(source("drawRiding")), "no code-drawn paws on Riding");
+  assert.equal(p0().run("typeof stagePawY"), "undefined", "the paw helper is gone");
+  assert.ok(!/, 8, 8, C\.fog\)/.test(source("drawRiding")), "no fog squares on Riding");
+  assert.match(source("drawRiding"), /\[\[130, 110\], \[318, 120\], \[150, 250\], \[300, 240\]\]/, "the Tuikis' sparks, kept off her figure's face");
+  assert.equal(p0().run("Object.keys(MOMENT_ART.young).sort().join()"), "0,1,2", "a young stand for every kind");
+});
+function p0() { return X1.page(); }
+
+test("juvenile pictures at the sites: setup card and faces, header mini, roster, stage, look-out and the Walk's side tokens ask for the juvenile exactly when the mibi is one", () => {
+  // setup: Dot (Tuikis, juvenile) alone rides: its card at 2×, no ring; its face plate; with Pip (Loika, grown) the partner card is Pip's, an adult picture
+  let p = X26.world([dot()], [1]); let d = p.draw("setup");
+  assert.deepEqual(d.find(c => c[0] === "open" && c[6] === 3).slice(1, 8), [1, "idle", 0, 8, 453, 3, true], "the rider: Dot's idle at 3×, a juvenile");
+  p = X26.world([pip(), dot()], [1, 2]); d = p.draw("setup");
+  assert.equal(d.find(c => c[0] === "open" && c[6] === 3)[7], false, "the strip shows Pip, an adult");
+  assert.deepEqual(d.filter(c => c[0] === "open" && c[6] === 1).map(c => [c[1], c[7]]), [[1, true]], "the others at 1×: Dot a juvenile");
+  // header: the rider's mini asks for the juvenile; a partner's does not
+  p = X26.world([dot()], [1]); p.setOut(); d = p.draw("map"); assert.deepEqual(d.filter(c => c[0] === "mini").map(c => [c[1], c[4]]), [[1, true]], "the rider's mini");
+  p = X26.world([pip(), dot()], [1, 2]); p.setOut(); d = p.draw("map"); assert.deepEqual(d.filter(c => c[0] === "mini").map(c => [c[1], c[4]]), [[0, false]], "the partner's mini");
+  d = p.draw("place"); assert.ok(d.filter(c => c[0] === "mini").every(c => c[4] === false), "in a place too");
+  // Riding: the cut asked for is the stage word's (a young one its young cut, a grown one the adult's), and a grown mibi keeps the young cut until its own grow cut
+  p = X26.world([pip(), dot()], [1, 2]); p.run("S.phase = 'riding'");
+  p.run("S.ui.aId = 1"); assert.equal(p.run("ownCutName(shownMibi(), 'big', mibiStage(shownMibi()) === 'juvenile' ? 'juvenile' : 'adult')"), null, "no cuts are loaded in the sandbox: no stock picture stands in");
+  assert.match(source("drawRiding"), /growing = cuts\.some\(c => c\.kind === 'grow' && c\.id === m\.id && NOW < c\.at\), st = growing \? 'juvenile' : mibiStage\(m\)/);
+});
+
+test("R2: on Riding the play together that will make the bond says 'a bond is for good' first; the others show the pages", () => {
+  const p = X26.world([dot()], [1]);
+  const ctx = (plays, bonded = false) => p.run(`{ const m = mibiById(1); m.plays = ${plays}; m.bonded = ${bonded}; S.walkTurn = -1; S.phase = 'riding'; S.ui.aId = 1; const c = lineFor().ctx; Array.isArray(c) ? c[0] : c; }`);
+  assert.equal(ctx(0), "◀ ▶ pages"); assert.equal(ctx(1), "◀ ▶ pages");
+  assert.equal(ctx(2), "a bond is for good", "the third play bonds");
+  assert.equal(ctx(2, true), "◀ ▶ pages", "already bonded: nothing to warn of");
+  p.run("{ const m = mibiById(1); m.bonded = false; m.plays = 2; S.walkTurn = -1; walk(m); }");
+  assert.equal(p.run("mibiById(1).bonded"), true, "the press the line warns of is the one that bonds");
+  assert.equal(p.run("(S.walkTurn = S.turn, lineFor().dim)"), true, "played this turn: dimmed");
+  assert.equal(p.run("lineFor().ok"), "Play with Dot", "one with you: Play with ‹name›");
+});
+
+test("bond-walks-fix-1: each Play together press shows its own lines in order; no stale line after a later press or the bond", () => {
+  const p = X26.world([pip(), dot()], [1, 2]);   // two adults... Pip grown, Dot young: both carried
+  p.run("S.phase = 'active'; S.ui.aId = 1;");
+  const press = () => p.run("{ S.walkTurn = -1; FX.notes = []; FX.held = []; walk(mibiById(2)); FX.msg; }");
+  assert.equal(press(), "Dot and Pip play together", "press 1: its own line first");
+  p.pass(2400); assert.equal(p.run("FX.msg"), "Dot and Pip · play twice more to bond", "press 1: then plays left");
+  assert.equal(press(), "Dot and Pip play together", "press 2: first line, not press 1's leftover");
+  p.pass(2400); assert.equal(p.run("FX.msg"), "Dot and Pip · play once more to bond", "press 2: once more");
+  assert.equal(press(), "Dot and Pip play together", "press 3: the play line first, never 'once more'");
+  p.pass(2400); assert.match(p.run("FX.msg"), /is bonded with you$/, "press 3: then the bond line");
+  assert.equal(press(), "Dot and Pip play together", "press 4: a bonded mibi gets no plays-left line");
+  p.pass(2400); assert.equal(p.run("FX.msg"), "Dot and Pip play together", "press 4: no stale or plays-left line after the bond");
+  assert.ok(!/bonded|once more|twice more/.test(p.run("FX.msg")));
+});
+
+// ---- Ageing in turns: the stage words (the age words and the Yours line are the Station's, station/src/age-words.mjs and its tests) ----
+test("stage words: young on the chips (the Mibis list, the Partner card, the mibi page, the Home card); adult and elder as they were", () => {
+  assert.match(PAGE, /const STAGE_WORD = \{ juvenile: 'young', adult: 'adult', elder: 'elder' \}/);
+  assert.ok(!/chip\([^)]*, st, stageFill/.test(PAGE), "no chip draws the raw stage");
+  assert.equal((PAGE.match(/chip\([^;]*STAGE_WORD\[st\], stageFill\(st\)/g) || []).length, 1);   // the Partner card; Riding names the stage in its line (STAGE_WORD[st])
+});
+test("stage boundaries on the Companion: young below 2, adult through 17, an elder at 18 (2 + 16); an elder from grownTurn + 16", () => {
+  const S = save({ turn: 0 }), t = world(S), m = { born: 0 };
+  for (const [turn, want] of [[0, "juvenile"], [1, "juvenile"], [2, "adult"], [17, "adult"], [18, "elder"], [19, "elder"], [200, "elder"]]) { S.turn = turn; assert.equal(t.mibiStage(m), want, "turn " + turn); }
+  assert.match(PAGE, /const JUVENILE_TURNS = PLAYTEST_ON \? PLAYTEST\.settings\.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON \? PLAYTEST\.settings\.elderTurns : 16;/);   // the game's own 2 and 16; the preset's numbers only under ?playtest
+  const g = { born: 0, grownTurn: 5, bonded: true }; for (const [turn, want] of [[20, "adult"], [21, "elder"]]) { S.turn = turn; assert.equal(t.mibiStage(g), want, "grown at 5, turn " + turn); }
+  S.turn = 21; assert.equal(t.agedNow(g), true); S.turn = 22; assert.equal(t.agedNow(g), false); S.turn = 18; assert.equal(t.agedNow(m), true);
+});
+test("the dock copies since and sinceFloor: a mibi already known, a new one, and one with no clock", () => {
+  const S = save({ carried: [1], bay: [], known: [], retSeen: [], pods: [], dockSeen: 0 });
+  const st = { accepted: [], known: [], dock: { docked: true }, dockN: 1, returned: [], mibis: [
+    { id: 1, name: "Dot", sp: 0, born: 0, bonded: false, since: 1790000000000 }, { id: 2, name: "Moss", sp: 1, born: 0, bonded: false, since: 1790000000001, sinceFloor: true },
+    { id: 3, name: "Fig", sp: 2, born: 0, bonded: false }, { id: 5, name: "Kit", sp: 2, born: 3, bonded: false, since: 1790000000005 }] };
+  dock(S, st, true);
+  const by = id => S.mibis.find(m => m.id === id);
+  assert.deepEqual([by(1).since, by(1).sinceFloor], [1790000000000, false]); assert.deepEqual([by(2).since, by(2).sinceFloor], [1790000000001, true]);
+  assert.deepEqual([by(3).since, by(3).sinceFloor], [null, false], "no clock yet: null, shown as nothing"); assert.deepEqual([by(5).since, by(5).sinceFloor], [1790000000005, false], "a new mibi starts with it");
+  const once = JSON.stringify(S); dock(S, st, true); assert.equal(JSON.stringify(S), once, "a repeated dock changes nothing");
+});

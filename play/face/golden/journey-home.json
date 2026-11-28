@@ -1,0 +1,273 @@
+{
+ "_note": "Home's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "home-dock-arrival": [
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "cargo",
+    "focus": "room",
+    "ok": "Open the crate",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "right",
+    "said": [],
+    "screen": "cargo",
+    "focus": "room",
+    "ok": "Open the crate",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "back"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "bay",
+    "ok": null,
+    "subject": "Open the Bay",
+    "idle": false
+   },
+   {
+    "arrival": true,
+    "companion": {
+     "docked": true,
+     "withMibi": "loika"
+    },
+    "line": {
+     "ok": null,
+     "subject": "Open the Bay",
+     "back": "Home",
+     "need": "Two crates wait in the Bay"
+    },
+    "plate": ""
+   }
+  ],
+  "home-bay": [
+   {
+    "key": "home",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "room.0",
+      "verb": "room:home"
+     }
+    ],
+    "screen": "cargo",
+    "focus": "bay",
+    "ok": "Put away",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "cargo",
+    "focus": "bay",
+    "ok": "Open the crate",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "cargo",
+    "focus": "bay",
+    "ok": "Put away",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "cargo",
+    "focus": "bay",
+    "ok": "To the Nursery",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "end": true,
+    "end_words": "2 crates unloaded · 2 pods home",
+    "ok": "To the Nursery"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "pods",
+    "focus": "bay",
+    "ok": null,
+    "subject": null,
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "rail.0",
+      "verb": "back"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "bay",
+    "ok": null,
+    "subject": "Identify the Loika pod",
+    "idle": false
+   }
+  ],
+  "home-room": [
+   {
+    "room": "roots",
+    "card": "mibi",
+    "look": "Look",
+    "line": {
+     "ok": null,
+     "subject": "Identify the Loika pod",
+     "back": "Home",
+     "need": "Three new pods"
+    }
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "plate.0",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "pods",
+    "focus": "bay",
+    "ok": null,
+    "subject": null,
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "rail.0",
+      "verb": "back"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "bay",
+    "ok": null,
+    "subject": "Identify the Loika pod",
+    "idle": false
+   }
+  ],
+  "home-key": [
+   {
+    "key": "home",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "room.0",
+      "verb": "room:home"
+     }
+    ],
+    "screen": "bench",
+    "focus": "bay",
+    "ok": "Switch off",
+    "subject": "Two free, the rest ⚡ 1 each",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "switch",
+      "verb": "back"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "companion",
+    "ok": null,
+    "subject": "Identify the Loika pod",
+    "idle": false
+   }
+  ],
+  "idle-vivarium": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "idle",
+      "verb": "wake"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "room",
+    "ok": null,
+    "subject": "Identify the Loika pod",
+    "idle": false
+   },
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "pods",
+    "focus": "pods",
+    "ok": "Read",
+    "subject": "▼ Choose a pod",
+    "idle": false
+   },
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "vivarium",
+    "focus": "room",
+    "ok": null,
+    "subject": "Identify the Loika pod",
+    "idle": false
+   }
+  ]
+ }
+}

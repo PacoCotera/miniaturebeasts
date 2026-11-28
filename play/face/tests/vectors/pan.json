@@ -1,0 +1,13 @@
+{
+ "_note": "The pan (anim kind pan, Library Level 3's camera, library.json l3.close.pan): a camera from `from` to `to` in whole-pixel steps, step i at from + trunc((to - from) frac[i] / 100) on each axis, step 0 from the pan's first frame and step i no sooner than steps[i] - steps[i - 1] ms after the frame that showed step i - 1, over at its last step (null: no pan plays, the screen draws its own camera). `at` counts from the first frame the pan is drawn in, one frame at each. Run by face_test (anim.c) and by tests/lineage.test.mjs (lineage.mjs panSteps, the host's slots). Written by hand.",
+ "cases": [
+  { "name": "Lark to Bean: 115 px up", "from": [12, 105], "to": [12, -10], "steps": [0, 67, 133], "frac": [50, 85, 100], "at": [[0, [12, 48]], [40, [12, 48]], [66, [12, 48]], [67, [12, 8]], [120, [12, 8]], [132, [12, 8]], [133, null], [400, null]] },
+  { "name": "Dot to Reed: both axes, toward zero", "from": [12, 105], "to": [-177, -10], "steps": [0, 67, 133], "frac": [50, 85, 100], "at": [[0, [-82, 48]], [67, [-148, 8]], [133, null]] },
+  { "name": "three pixels: the half and the 85 % truncated toward zero on both signs", "from": [0, 0], "to": [3, -3], "steps": [0, 67, 133], "frac": [50, 85, 100], "at": [[0, [1, -1]], [70, [2, -2]], [200, null]] },
+  { "name": "one step at the full offset: over at once", "from": [0, 0], "to": [40, 0], "steps": [0], "frac": [100], "at": [[0, null]] },
+  { "name": "refused: the first step is not at 0", "from": [0, 0], "to": [9, 9], "steps": [10, 67], "frac": [50, 100], "refused": true },
+  { "name": "refused: frac falls", "from": [0, 0], "to": [9, 9], "steps": [0, 67, 133], "frac": [50, 40, 100], "refused": true },
+  { "name": "refused: the last frac is not 100", "from": [0, 0], "to": [9, 9], "steps": [0, 67], "frac": [50, 85], "refused": true },
+  { "name": "refused: steps that do not rise", "from": [0, 0], "to": [9, 9], "steps": [0, 67, 67], "frac": [50, 85, 100], "refused": true }
+ ]
+}

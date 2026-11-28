@@ -1,0 +1,52 @@
+set,size,measure,item,value,limit,result
+s05-pass,304x312,input,stand sha256,67fdfd3197604bb88040cc0f354a5d336b62834ba575de06789a7076ea2f39b5,,info
+s05-pass,304x312,prep,"cut key: body alpha>=200 -> 255, shadow alpha 60..199 from row 290 down kept at <=110 and not warped, rest 0","7303 body, 749 shadow, 466 dropped px",,provisional
+s05-pass,304x312,head,mask source,polygon,,info
+s05-pass,304x312,points,picture block stand-304x312,placed,,info
+s05-pass,304x312,head,mask png sha256,a3be3fb8f1b61324415a8cf90c146101908383442b91053eec7f88d64900ab14,,info
+s05-pass,304x312,field,down map sha256,f1cc33f411cb5e9e4f19f83266ba4563e61d491c688b99d314948ebf1bd8a98a,,info
+s05-pass,304x312,field,up map sha256,11041fe1cd6161dff8f7c591e36c018a33641518c4d6a7567caece0bba7462f1,,info
+s05-pass,304x312,M3,stand strict counts,"1 comp, 0 holes, 0 orphans",info,
+s05-pass,304x312,M4,stand irregular,349,,info
+s05-pass,304x312,M2,warped-down,0,0,pass
+s05-pass,304x312,M3,warped-down strict counts (head drawn),"1 comp, 0 holes, 0 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s05-pass,304x312,M3,warped-down not worse than its own unwarped picture (alpha>110 gates),alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s05-pass,304x312,M3,"warped-down body layer alone, not worse than the unwarped body layer (alpha>110 gates)",alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s05-pass,304x312,M3,warped-down alpha>0 counts,alpha>0 1/2/0 (components/holes/orphans),the unwarped 1/2/0,report
+s05-pass,304x312,M3,warped-down body layer alpha>0 counts,alpha>0 1/2/0 (components/holes/orphans),the unwarped 1/2/0,report
+s05-pass,304x312,M4,warped-down irregular,347,366,pass
+s05-pass,304x312,clamp,"misses (down, final)",0,0,pass
+s05-pass,304x312,legs,leg strain (max |db| / (z0 - yb)) (down),0,0,pass
+s05-pass,304x312,field,down max |d| px / stretch / shear,4.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
+s05-pass,304x312,M5a,down,"no toplineProfile, head mask or --base-stand mapping",,n/a
+s05-pass,304x312,M5,warped-down vs painted,no painted end given,,n/a
+s05-pass,304x312,M2,warped-up,0,0,pass
+s05-pass,304x312,M3,warped-up strict counts (head drawn),"1 comp, 0 holes, 0 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s05-pass,304x312,M3,warped-up not worse than its own unwarped picture (alpha>110 gates),alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s05-pass,304x312,M3,"warped-up body layer alone, not worse than the unwarped body layer (alpha>110 gates)",alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s05-pass,304x312,M3,warped-up alpha>0 counts,alpha>0 1/2/0 (components/holes/orphans),the unwarped 1/2/0,report
+s05-pass,304x312,M3,warped-up body layer alpha>0 counts,alpha>0 1/2/0 (components/holes/orphans),the unwarped 1/2/0,report
+s05-pass,304x312,M4,warped-up irregular,352,366,pass
+s05-pass,304x312,clamp,"misses (up, final)",0,0,pass
+s05-pass,304x312,legs,leg strain (max |db| / (z0 - yb)) (up),0,0,pass
+s05-pass,304x312,field,up max |d| px / stretch / shear,5.00 / 0.250 / 0.500,12 / 0.25 / 0.5,pass
+s05-pass,304x312,M5a,up,"no toplineProfile, head mask or --base-stand mapping",,n/a
+s05-pass,304x312,M5,warped-up vs painted,no painted end given,,n/a
+s05-pass,304x312,M6,only at 104x112,,,n/a
+s05-pass,304x312,M7,warp ms per picture (down; a clock reading),6.1910,,info
+s05-pass,304x312,M7,warp ms per picture (up; a clock reading),5.9159,,info
+s05-pass,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s05-pass,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s05-pass,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s05-pass,304x312,M8,"stand-b2 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s05-pass,304x312,M8,S05-pass-stepA a / b sha256,67fdfd319760 / d9ddb5c1c99d,,info
+s05-pass,304x312,M8,S05-pass-stepA absolute §0 test (unwarped): changed outside the band (only legs and tail change),7581,0,unlocked: no verdict
+s05-pass,304x312,M8,"S05-pass-stepA down: changed outside the band, no warp / warp",7581 / 7477,7581,unlocked: no verdict
+s05-pass,304x312,M8,"S05-pass-stepA up: changed outside the band, no warp / warp",7581 / 7707,7581,unlocked: no verdict
+s05-pass,304x312,M8,S05-pass-stepB a / b sha256,67fdfd319760 / b49e155a7136,,info
+s05-pass,304x312,M8,S05-pass-stepB absolute §0 test (unwarped): changed outside the band (only legs and tail change),7617,0,unlocked: no verdict
+s05-pass,304x312,M8,"S05-pass-stepB down: changed outside the band, no warp / warp",7617 / 7513,7617,unlocked: no verdict
+s05-pass,304x312,M8,"S05-pass-stepB up: changed outside the band, no warp / warp",7617 / 7741,7617,unlocked: no verdict
+s05-pass,304x312,pair,breathPair,not in the landmarks: no APNG,,n/a
+s05-pass,304x312,run,status,provisional input prep; unlocked pair: no verdict (no verdict),,no verdict
+s05-pass,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",02857419c982,equal,pass

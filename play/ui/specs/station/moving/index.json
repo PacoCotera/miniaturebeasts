@@ -1,0 +1,1 @@
+{ "sets": [], "note": "the moving sets the host loads (Station M1 §2.2): one file a species, merged into the one spec `moving` (spec.c holds 24 specs); a species is added here with its file, no code change. None now (release 21a): the hop of S01 (a trotter does not hop) and the set made for the earlier S05 are retired, so every kind is slid as its plain stand" }

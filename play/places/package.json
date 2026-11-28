@@ -1,0 +1,22 @@
+{
+  "name": "mb-places",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Miniature Beasts places: dual-grid tile sets, the LDtk bake, the baked FlatBuffers format and the indexed renderer",
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "bake": "node tools/bake.mjs",
+    "bake:check": "node tools/bake.mjs --check",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "flatbuffers": "25.9.23"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "esbuild": "0.28.2",
+    "pngjs": "7.0.0"
+  }
+}

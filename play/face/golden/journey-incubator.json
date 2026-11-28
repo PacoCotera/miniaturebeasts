@@ -1,0 +1,84 @@
+{
+ "_note": "The Incubator's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "incubator-states": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "rail.0",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "hatch",
+    "ok": "Meet Moss",
+    "price": null,
+    "subject": "Moss lives in the Vivarium now, and grows up on expeditions."
+   },
+   {
+    "held": [
+     "up",
+     "left",
+     "back"
+    ],
+    "said": [],
+    "screen": "incubator"
+   },
+   {
+    "screen": "habitat",
+    "hab": "resident",
+    "habId": 2
+   }
+  ],
+  "incubator-empty": [
+   {
+    "state": "empty",
+    "ok": "Choose a pod",
+    "subject": "Ready for a pod"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "pods",
+    "state": "page",
+    "ok": null,
+    "price": null,
+    "subject": null
+   },
+   {
+    "screen": "pods",
+    "view": "nursery",
+    "ring": null
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "rail.0",
+      "verb": "back"
+     }
+    ],
+    "screen": "vivarium",
+    "state": "rest",
+    "ok": "Look closer",
+    "price": null,
+    "subject": "Fit the Probe upgrade"
+   },
+   {
+    "back": "vivarium"
+   }
+  ]
+ }
+}

@@ -1,0 +1,36 @@
+{
+  "about": "The Companion's layers (STRUCTURE.md). tools/import-check.mjs reads this file: a module's layer is its folder under src/, and it may import only the layers listed for it.",
+  "may": {
+    "data": ["data"],
+    "logic": ["data", "logic"],
+    "store": ["data", "logic", "store"],
+    "sound": ["data", "sound"],
+    "render": ["data", "logic", "render"],
+    "ui": ["data", "logic", "render", "ui"],
+    "input": ["data", "logic", "ui", "input"],
+    "main": ["data", "logic", "store", "sound", "render", "ui", "input", "main"]
+  },
+  "notMoved": {
+    "about": "Modules written before the folders, by their path under src/. Each moves to src/<layer>/ in the one move step (STRUCTURE.md, How the page gets there).",
+    "gen7/": "logic"
+  },
+  "outside": {
+    "about": "Code the Companion shares with other pages, by path under prototypes/ (longest match wins), and the packages.",
+    "core/base/": "logic",
+    "species/framework/": "data",
+    "ui/tokens/out/": "data",
+    "places/src/bake/": "logic",
+    "places/src/format/": "logic",
+    "places/src/dualgrid.mjs": "logic",
+    "places/src/": "render",
+    "play/src/realm/reset.mjs": "logic",
+    "play/src/realm/b64.mjs": "logic",
+    "play/src/realm/": "store",
+    "play/src/options.mjs": "store",
+    "play/src/playtest.mjs": "data",
+    "play/src/breakline.mjs": "ui",
+    "fastnoise-lite": "logic",
+    "flatqueue": "logic",
+    "idb-keyval": "store"
+  }
+}

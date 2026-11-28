@@ -1,0 +1,1 @@
+This creature, in the frame's shorthand. Read it this way: "between" is a middle value and adds nothing to draw; "flaps" are wings; "regions" are body segments; codes in brackets are not drawn; the covering word (skin, feathers) is described by the species notes above; "markings plain" or "flap markings plain" means no markings at all. {description}
