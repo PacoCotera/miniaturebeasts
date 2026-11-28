@@ -36,6 +36,8 @@ export const FONT = {};
 for (const ch in GLYPHS) { const rows = GLYPHS[ch].split('|'); FONT[ch] = { w: rows[0].length, rows }; }
 export function glyphOf(ch) { return FONT[ch] || FONT[GLYPH_ALIAS[ch]] || FONT['?']; }
 export function textW(str, s) { s = s || 2; let w = 0; for (const ch of str) w += (glyphOf(ch).w + 1) * s; return Math.max(0, w - s); }
+// The width of the tight setting: glyphs keep their pixels but sit 1 px apart, so the bottom line holds its three parts.
+export function textWT(str, s) { s = s || 2; let w = 0; for (const ch of str) w += glyphOf(ch).w * s + 1; return Math.max(0, w - 1); }
 export function wrapText(str, maxW, s) {
   const words = str.split(' '), lines = []; let cur = '';
   for (const w of words) { const t = cur ? cur + ' ' + w : w; if (textW(t, s) <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } }
