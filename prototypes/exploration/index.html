@@ -6048,7 +6048,7 @@ function drawWalkNeighbours(v, lay, ox, oy, W, H, Tp) {
   drawWindow(g, cells, { clockMs: motion() ? NOW : 0, mk: PL.mk });
   for (const q of later) {   // not here yet, or nothing to draw: land and owed sea stay under the map's fog; cliff and a wade the map's own land, under the veil
     const r = q.rect, c = q.c; if (!S.seen.rev[c] || q.land || q.sea) continue;
-    const shaped = G.gen === 7 && G.land[c] === L.WATER; g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); g.drawImage(landPatchPB(c, Math.max(r.w, r.h), 0).canvas(0), r.x, r.y); if (shaped) peekShore(r, q.X, q.Y, Tp, lay, bkc); g.restore();
+    g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); g.drawImage(landPatchPB(c, Math.max(r.w, r.h), 0).canvas(0), r.x, r.y); g.restore();   // water here is always land or sea (skipped above): no shore branch (rule 16d)
     g.save(); g.globalAlpha = .55; R(r.x, r.y, r.w, r.h, C.night); g.restore(); }
 }
 // owner #141 / #178 ("water is so blocky, very long straight shores"): a wide-water cell seen beside the place is drawn tile by tile from shoreValue (src/shore7.mjs), the same line the places lay: where it says land
