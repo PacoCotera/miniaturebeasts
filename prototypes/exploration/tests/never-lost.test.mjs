@@ -50,6 +50,12 @@ const where = (page) => page.evaluate(() => { const m = window.__mb, RT = m.RT, 
   const drawn = pl ? window.__spr.some(([x, y, fr]) => fr === f && Math.abs(x - (pl.x - 16)) <= 2 && Math.abs(y - (pl.y - 8)) <= 2) : false;
   window.__spr.length = 0; return { pl: pl && { x: pl.x, y: pl.y }, drawn, view: !!RT.view || !!RT.spot, phase: m.S.phase }; });
 const inView = (s) => s.pl && s.pl.x >= 24 && s.pl.x <= 450 - 24 && s.pl.y >= 32 + 24 && s.pl.y <= 564 - 24;
+// The place's walking view is showing. On a busy machine the page boots late and enter()'s presses fall short of the place: Confirm is pressed again, each time only after the view has not come for 1.5 s.
+async function reachPlace(page) {
+  const there = () => { const m = window.__mb; return m.S.phase === "patch" && !!(m.S.exp && m.S.exp.patch) && !m.RT.view && !!m.RT.plScr; };
+  for (let i = 0; i < 8; i++) { try { await page.waitForFunction(there, null, { timeout: 1500 }); return; } catch { await page.evaluate(() => window.__mb.act("confirm")); } }
+  assert.fail("the place was not reached");
+}
 // The whole pictures a few frames put with their top-left corner inside the cell dx tiles beside the explorer, as "x,y,w,h".
 const picsBeside = async (page, dx) => { await page.evaluate(() => { window.__pics = new Set(); }); await page.waitForTimeout(200);
   return page.evaluate((dx) => { const RT = window.__mb.RT, ts = RT.ts, x0 = RT.plScr.x - (ts >> 1) + dx * ts, y0 = RT.plScr.y - (ts >> 1), all = [...window.__pics]; window.__pics = null;
@@ -84,6 +90,7 @@ test("a sprite that throws, or the place view throwing after its sprites, never 
   const { server, url } = await serve();
   try {
     const { page, ctx, errors, logged } = await enter(browser, url, 6, false);
+    await reachPlace(page);
     // a fruit put down beside the explorer is one of the view's sprites: its picture throws on every frame
     const b0 = await picsBeside(page, 1);
     await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; m.S.exp.live[P.key].fr.push({ x: P.x + 1, y: P.y, put: 1 }); });
