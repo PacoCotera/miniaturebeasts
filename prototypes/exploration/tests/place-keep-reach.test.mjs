@@ -2,7 +2,7 @@
 //   node --test prototypes/exploration/tests/place-keep-reach.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { keptIndex } from "../src/place-store.mjs";
+import { keptIndex } from "../src/store/place-store.mjs";
 
 test("with more cells than the cap, the reach stays in the index after the background list is kept", () => {
   const cap = 240, reach = new Set(["r1", "r2", "r3"]);

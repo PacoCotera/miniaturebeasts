@@ -1,7 +1,7 @@
 // The cached places' key carries a hash of the tile set files: a cache written before a tile-set change is never read after it (owner bugs #127-#129).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { placesTag, placesTagSet, storeKey } from '../src/place-store.mjs';
+import { placesTag, placesTagSet, storeKey } from '../src/store/place-store.mjs';
 
 const ts = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), ter = new Uint8Array([9, 9, 9]), lay = new Uint8Array([7, 7]);
 const args = [12345, [2, 3], 4, 17];

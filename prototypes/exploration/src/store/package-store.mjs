@@ -1,26 +1,21 @@
 // The baked package: one region's baked places kept as ONE unit in the browser's IndexedDB, in its own database
-// (never the place store's LRU, PLACE_KEEP never touches it). The Station makes it (station/src/package-baker.mjs); a later step has the Companion read it.
+// (never the place store's LRU, PLACE_KEEP never touches it). The Station makes it (station/src/package-baker.mjs); the Companion plays from it (place-store.mjs packageUse).
 //   header   { format, id, seed, slot, v, realmRev, placeRev, tag, order: [cells in bake order], floor: n, done, whole, sha: { cell: sha256 hex }, ms: { floor, whole } }
-//   a cell   the .mbplace bytes DEFLATED (baked-package-9, a zlib stream; deflateCell / inflateCell below; the header's sha is of the inflated bytes) (a Uint8Array, place format 2: the place and the bake's hold outputs, places/src/format/baked.mjs). The Station writes them; the Companion reads them through readBaked into the
+//   a cell   the .mbplace bytes DEFLATED (a zlib stream; deflateCell / inflateCell below; the header's sha is of the inflated bytes) (a Uint8Array, place format 2: the place and the bake's hold outputs, places/src/format/baked.mjs). The Station writes them; the Companion reads them through readBaked into the
 //            { ir, place } object that layout() (adapt7.mjs) reads (place-store.mjs packageRead), the one read path. The header's sha256 of a cell is the bytes' own.
 //   region   { sites, banks }: the Hollow Tree sites and earth banks the worker sends with its cells
 // The unit is the REGION: the cells are written in bake order as they land (a package is usable while it grows: `done` of `order`), and a package of another rev or tile set is another id, removed once the new one is whole.
-import { REALM_REV } from './gen7/region.mjs';
+import { REALM_REV } from '../gen7/region.mjs';
 import { PLACE_REV } from './place-store.mjs';
-import { MW, MH, DIRS, cxy, cheb, passableIn, canStepIn } from './world.mjs';
-import { reachCellsIn, tierOf } from './map-rules.mjs';
-import { writeBaked, readBaked } from '../../places/src/format/baked.mjs';
+import { MW, MH, cxy, cheb, passableIn } from '../world.mjs';
+import { reachCellsIn, tierOf } from '../map-rules.mjs';
+import { writeBaked, readBaked } from '../../../places/src/format/baked.mjs';
+import { PACKAGE_FORMAT, PKG, heldOf } from './package-dock.mjs';
+export { PACKAGE_FORMAT, heldOf, idbKv, shaOfBytes } from './package-dock.mjs';   // the dock record's page side, the browser's store and the sha (no imports there, so the play shell can read it)
 export const cellOfBytes = readBaked;   // the one read path: the bytes to the { ir, place } layout() reads
-
-import { PACKAGE_FORMAT, PKG, heldOf, packageSummary, offerOf, takePackage } from './package-dock.mjs';
-export { PACKAGE_FORMAT };
 export const packageId = ({ seed, slot, v, tag = '' }) => `${PKG}f${PACKAGE_FORMAT}.${REALM_REV}.${PLACE_REV}${tag ? '.' + tag : ''}:${seed}:${slot[0]},${slot[1]}:${v}`;   // the format is in the id: a package of another format is another package
 const headKey = id => id + '#head', regionKey = id => id + '#region', cellKey = (id, c) => id + '#c' + c;
 const regionPrefix = ({ seed, slot }) => `:${seed}:${slot[0]},${slot[1]}:`;   // the part of an id that names the region, whatever its revs
-
-// The reach of a cell on foot (the page's reachCells, index.html: within `range` rings of the start, never past a shut edge or onto an island). opts as canStepIn's.
-// Kept under its old name for its callers; the rule itself lives in map-rules.mjs, one copy.
-export const reachOf = reachCellsIn;
 
 // The order the cells are baked in: the start place (the Companion's current place when it is out), its reach, the ring of cells next to the reach, then the rest of the region's passable cells nearest first.
 // G: the region's world (world7.mjs genWorld7). from: { pos, reach } of an expedition, or { start, tier } of a world at rest (its first start, the reach counted at its tier's range).
@@ -28,7 +23,7 @@ export const reachOf = reachCellsIn;
 export function bakeOrder(G, from) {
   const pass = c => passableIn(G, c), head = from.pos != null ? from.pos : from.start;
   const dist = c => cheb(cxy(c), cxy(head)), byNear = (a, b) => dist(a) - dist(b) || a - b;
-  const reachList = (from.pos != null && Array.isArray(from.reach) ? from.reach : reachOf(G, head, tierOf(from.tier).range)).filter(c => c !== head && pass(c));
+  const reachList = (from.pos != null && Array.isArray(from.reach) ? from.reach : reachCellsIn(G, head, tierOf(from.tier).range)).filter(c => c !== head && pass(c));
   const reach = [...new Set(reachList)].sort(byNear), inFloor = new Set([head, ...reach]), ring = new Set();
   for (const c of inFloor) { const p = cxy(c); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const d = y * MW + x; if (!inFloor.has(d) && pass(d)) ring.add(d); } }
   const ringL = [...ring].sort(byNear), taken = new Set([...inFloor, ...ring]), rest = [];
@@ -37,24 +32,16 @@ export function bakeOrder(G, from) {
   return { cells: [head, ...reach, ...ringL, ...rest], floor: 1 + reach.length + ringL.length, head, reach, ring: ringL, rest };
 }
 
-// A cell the worker made ({ seed, cell, ir, place }) as the bytes the package keeps, and their sha256 (hex): the bytes' own
+// A cell the worker made ({ seed, cell, ir, place }) as the bytes the package keeps (their sha256, shaOfBytes, is the bytes' own)
 export const bytesOfCell = (seed, cell, ir, place) => writeBaked(ir, place, { seed, cell });
-export async function shaOfBytes(bytes) {
-  const h = new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', bytes));
-  return Array.from(h, x => x.toString(16).padStart(2, '0')).join('');
-}
 
-// baked-package-9: each cell is KEPT deflated (a zlib stream, RFC 1950: zlib on the Station, miniz's tinfl on the Companion). The sha is of the INFLATED .mbplace bytes, so it does not depend on the deflater.
+// Each cell is KEPT deflated (a zlib stream, RFC 1950: zlib on the Station, miniz's tinfl on the Companion). The sha is of the INFLATED .mbplace bytes, so it does not depend on the deflater.
 // deflateCell(bytes) -> the record the package stores; inflateCell(record) -> the .mbplace bytes cellOfBytes reads.
 const pipe = async (bytes, stream) => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer());
 export const deflateCell = (bytes) => pipe(bytes, new CompressionStream('deflate'));
 export const inflateCell = (record) => pipe(record, new DecompressionStream('deflate'));
 
-// The browser's store: its own IndexedDB database, so nothing of the place store's list can evict it. kv: { get, set, del, keys }; tests give a Map-backed one.
-export async function idbKv() {
-  const { createStore, get, set, del, keys } = await import('idb-keyval'), st = createStore('mb-packages', 'kv');
-  return { get: k => get(k, st), set: (k, v) => set(k, v, st), del: k => del(k, st), keys: () => keys(st) };
-}
+// A Map-backed store with idbKv's face, for the tests
 export function memKv(map = new Map()) { return { get: async k => map.get(k), set: async (k, v) => { map.set(k, v); }, del: async k => { map.delete(k); }, keys: async () => [...map.keys()], map }; }
 
 export async function readHeader(kv, id) { return (await kv.get(headKey(id))) || null; }
@@ -71,7 +58,7 @@ export async function openPackage(kv, meta, order, now = () => performance.now()
   const header = keep ? { ...had, order: order.cells, floor: order.floor, done: order.cells.filter(c => c in had.sha).length, whole: false }
     : { format: PACKAGE_FORMAT, id, seed: meta.seed, slot: meta.slot, v: meta.v, realmRev: REALM_REV, placeRev: PLACE_REV, tag: meta.tag || '', order: order.cells, floor: order.floor, done: 0, whole: false, sha: {}, ms: {}, at: Date.now() };
   if (!keep) for (const k of await kv.keys()) if (typeof k === 'string' && k.startsWith(id + '#c')) await kv.del(k);
-  if (header.ms) delete header.ms.whole;
+  delete header.ms.whole;
   await kv.set(headKey(id), header);
   return { kv, id, header, t0: now(), now, todo: order.cells.filter(c => !(c in header.sha)) };
 }
@@ -99,9 +86,7 @@ export async function finishPackage(h) {
   if (h.header.whole) await dropOthers(h.kv, h.id, h.header);
   return h.header.whole;
 }
-export async function dropOthers(kv, keepId, region) {
+async function dropOthers(kv, keepId, region) {
   const mid = regionPrefix(region), held = await heldOf(kv, region);   // the package the Companion holds stays until it takes the new one at a seat
   for (const k of await kv.keys()) { if (typeof k !== 'string' || !k.startsWith(PKG) || k.startsWith(keepId + '#')) continue; const id = k.slice(0, k.indexOf('#')); if (id !== keepId && id.includes(mid) && !(held && held.id === id)) await kv.del(k); }
 }
-
-export { heldOf, packageSummary, offerOf, takePackage };   // the dock record's page side lives in package-dock.mjs (no imports, so the play shell can read it)
