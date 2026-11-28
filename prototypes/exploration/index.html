@@ -250,6 +250,7 @@ import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
 import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, packageUse, packageState, packageOwes, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
+import { fogEdgeRead, fogEdges, FOG_EDGE_FILES } from "./src/fogedge.mjs";
 import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from "./src/shore7.mjs";
 import { makeMapPaint } from "./src/map-paint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
@@ -650,10 +651,14 @@ const PROP_SIZE = { 'night-pod-loika-24x14': [24, 14], 'NIGHT_POD_LOIKA-tile-32x
   ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-' + s, [12, 14]])), 'pod-walk-bone': [15, 16],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['walk-depot-' + s, [43, 47]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['walk-beacon-' + s, [20, 44]])) };
 const propPiece = name => STONE_PIECES.get(name) || walkPB(name, ...(PROP_SIZE[name] || [32, 32]));   // a named empty slot until the art is in: nothing is drawn
+// The unexplored dark's soft edge (owner #178 / #141; the art desk's signed pieces, art/props/fog-edge-*, src/fogedge.mjs): read as masks; until they are in, the dark keeps its straight cell edge.
+let FOGEDGE = null;
+const fogEdgeIn = files => { FOGEDGE = fogEdgeRead(files); landReset(); };
 async function loadPropArt() {
   try {
-    if (window.__propArt) { for (const [n, f] of Object.entries(window.__propArt)) stonePut(n, f, true, PROP_DY[n]); return; }   // the tests give them at once, decoded
+    if (window.__propArt) { for (const [n, f] of Object.entries(window.__propArt)) stonePut(n, f, true, PROP_DY[n]); fogEdgeIn(window.__propArt); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
+    { const fe = {}; Promise.all(FOG_EDGE_FILES.map(n => pixelsOf(vurl(new URL('./art/props/', location.href).href + n + '.png')).then(im => { fe[n] = im; }))).then(() => fogEdgeIn(fe)).catch(e => { console.warn('the fog edge did not load', e); }); }
     await Promise.all(PROP_FILES.map(n => pixelsOf(vurl(new URL('./art/props/', location.href).href + n + '.png')).then(im => {
       stonePut(n, im, true, PROP_DY[n]); })));
   } catch (e) { console.warn('the props did not load', e); artWhy('props', e); }
@@ -6420,7 +6425,7 @@ function landState(spec) {
   for (let j = -1; j <= ny; j++) for (let i = -1; i <= nx; i++) { const X = X0 + i, Y = Y0 + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) { st += 'x'; continue; } const c = Y * MW + X; st += !seen(c) ? 'n' : (fogOf(c) + (ex && ex.storm && stormCovers(X) ? 4 : 0)); }
   const mist = spec.mist != null && OPEN_ART.ready ? OPEN_ART.night : null;   // the opening's night mist: unseen pixels take the desk's tiles (frame 0, 1 or 2 = still), a variant per 96 px block of world pixels
   let sec = sectorHere(); if (sec && sec.have) for (let c = 0; c < MW * MH; c++) if (seen(c) && !sec.have[c]) { sec = null; break; }   // the glimpse's cells too
-  const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : '', mist ? 'm' + spec.mist : '', sec ? 's' : ''].join('|');
+  const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : '', mist ? 'm' + spec.mist : '', sec ? 's' : '', FOGEDGE ? 'f' : ''].join('|');
   return { key, spec, seen, fogOf, mist, sec };
 }
 function landInputs(L0) {   // plain data for paintLand
@@ -6429,7 +6434,7 @@ function landInputs(L0) {   // plain data for paintLand
   for (let x = 0; x < MW; x++) stormCol[x] = ex && ex.storm && stormCovers(x) ? 1 : 0;
   const tcs = WALK_CS.reduce((a, b) => Math.abs(b - cs) < Math.abs(a - cs) ? b : a);   // the desk's terrain set nearest the cell size (72, 48 or 26)
   for (const n of WALK_TEX) tiles[n] = WART.pb.get(`map-tex-${n}-${tcs}`) || null;
-  return { X0, Y0, N, NH, cs, sec: L0.sec ? { cls: L0.sec.cls, lv: L0.sec.lv } : null, land: Uint8Array.from(G.land), seen, fog, stormCol, stormOn: !!(ex && ex.storm), mist: L0.mist ? L0.mist[0][L0.spec.mist] : null, mistTile: OPEN_TILE,
+  return { X0, Y0, N, NH, cs, fogEdge: FOGEDGE, sec: L0.sec ? { cls: L0.sec.cls, lv: L0.sec.lv } : null, land: Uint8Array.from(G.land), seen, fog, stormCol, stormOn: !!(ex && ex.storm), mist: L0.mist ? L0.mist[0][L0.spec.mist] : null, mistTile: OPEN_TILE,
     tiles: Object.fromEntries(Object.entries(tiles).map(([n, t]) => [n, t ? { p: t.p, w: t.w, h: t.h } : null])), tcs, pal: Uint32Array.from(RGB, q => (255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]),
     DARK, LIGHT, WOOD_DARK, K: { ink: C.ink, night: C.night, void: C.void, deep: C.deep, stone: C.stone, slate: C.slate }, FOGV: { n: FOGV.n, b: FOGV.b }, BAYER,
     shore: L0.sec && hereRegion() && hereRegion().slot ? { seed: S.regions[0].seed, slot: hereRegion().slot, ford: Uint8Array.from(G.ford) } : null };
@@ -6868,10 +6873,11 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
   ensureMap(); const nb = v.nb || (v.nb = new Map()), cx = lay.cell % MW, cy = (lay.cell / MW) | 0, end = performance.now() + PEEK_NB_MS; let asked = 0, owed = false;
   // (call-zoom-wide-4) the backdrop is the map's fog all the way to the view's sides, past the realm's edge too: no empty band, no black, no flat block anywhere. What the cells draw lies over it.
   peekFog(0, VIEW_Y, SCR_W, VIEW_H);
+  const darkSlots = v.dark = new Set();   // the slots drawn as the dark this frame (owner #178 / #141: their edge is the signed soft one, peekFogEdges)
   for (const [dx, dy] of PEEK_DIRS) {
     const X = cx + dx, Y = cy + dy; let w = cw, h = ch;
     const rect = (nw, nh) => ({ x: dx < 0 ? cx0 - nw : dx > 0 ? cx0 + cw : cx0 + ((cw - nw) >> 1), y: dy < 0 ? cy0 - nh : dy > 0 ? cy0 + ch : cy0 + ((ch - nh) >> 1), w: nw, h: nh });
-    if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;   // past the realm's edge: the fog stands
+    if (X < 0 || Y < 0 || X >= MW || Y >= MH) { darkSlots.add(dx + ',' + dy); continue; }   // past the realm's edge: the fog stands
     const c = Y * MW + X, key = String(c); let nl = null, e = nb.get(key);
     if (S.revealed[c] && passable(c) && G.gen === 7 && !placeHave(key) && ((S.veilPre && S.veilPre[key]) || (S.veil[key] && S.visited[c]))) {   // a Call lifted land there and its place is not here: ask for it now, once for this view, and say so (owner #136); never layout()
       owed = true; if (!v.owedAsked) v.owedAsked = new Set(); if (!v.owedAsked.has(key)) { v.owedAsked.add(key); readyPlaces(S.regions[0].seed, hereRegion().slot, biomeVersion(S), [c], { ctx: PL.ctx, first: true }); } }
@@ -6885,7 +6891,10 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     if (nbk) {
       const own = S.visited[c] && !!S.veil[key];   // a place with its own veil record; a visited place with none (an old save, or the Call lifted it first) is still unwalked here (owner #136)
       const pre = !own && S.veilPre && S.veilPre[key];   // the strip a Call from next door lifted there (owner #85; #377 kept it apart in S.veilPre)
-      const veil = placeVeil(nl); if (!own) unwalkedVeil(veil, nl, pre, dx, dy);   // a place never walked is wholly veiled, save the strip a Call lifted there, its unreachable border band too (that band is lit in a place's own view and would draw a grid of green strips between the cells)
+      const veil = placeVeil(nl); if (!own) unwalkedVeil(veil, nl, pre, dx, dy);
+      { let lit = 0; const pw = nl.baked.place.w; for (let i = 0; i < veil.length; i++) { if (veil[i]) continue; const px = i % pw + nl.baked.ox, py = ((i / pw) | 0) + nl.baked.oy; if (px >= 0 && py >= 0 && px < nl.w && py < nl.h) lit++; }
+        if (lit <= 0.15 * nl.w * nl.h) darkSlots.add(dx + ',' + dy); }   // a place (nearly) wholly veiled is the dark here: its edge is the soft one too
+      // a place never walked is wholly veiled, save the strip a Call lifted there, its unreachable border band too (that band is lit in a place's own view and would draw a grid of green strips between the cells)
       const wk = wholeKeyOf(nl, veil); let cvn = WHOLE.get(wk) || (e && e.wk === wk ? e.cv : null);
       if (!cvn) {
         if (!e || e.wk !== wk) { e = { wk, it: nbk.overviewSteps(veil, 0, nl.cut), cv: null }; nb.set(key, e); }
@@ -6896,7 +6905,7 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     }
     // (call-zoom-wide-4) land not seen, or a place not made yet (or made without a picture to show): the map's fog, as the map draws unseen land; never a flat block of the map's colour.
     // Wide water and cliff that is seen has no place to borrow from: the map's own land for it (landPatchPB, a pixel texture, not the 26 px cell blown up), under the veil of a place not walked.
-    if (!S.revealed[c] || passable(c)) { peekFog(r.x, r.y, r.w, r.h); continue; }
+    if (!S.revealed[c] || passable(c)) { peekFog(r.x, r.y, r.w, r.h); darkSlots.add(dx + ',' + dy); continue; }
     const cs = Math.max(r.w, r.h), shaped = G.gen === 7 && G.land[c] === L.WATER; g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); g.drawImage(landPatchPB(c, cs, 0).canvas(0), r.x, r.y); if (shaped) peekShore(r, X, Y, Tp, lay, bkc); g.restore();   // owner #141, #178: a sea cell's coast is the one line the places lay (shore7.mjs), not the cell's edge
     g.save(); g.globalAlpha = .55; R(r.x, r.y, r.w, r.h, C.night); g.restore();
     if (!shaped && G.land[c] === L.WATER && !dx !== !dy) { const ap = dx > 0 ? bkc.place.w + bkc.ox - lay.w : dx < 0 ? -bkc.ox : dy > 0 ? bkc.place.h + bkc.oy - lay.h : -bkc.oy; g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); peekWaterFront(r, dx, dy, Tp, key, Math.max(0, ap), lay, bkc, ox, oy); g.restore(); }   // water-edge-5: the seeded front with the signed pieces as its lip; water-edge-6: its shallows are the place's own
@@ -7073,6 +7082,28 @@ function peekWaterFront(r, dx, dy, Tp, key, ap, lay, bk, pox, poy) {
 }
 // The map's unseen land (src/landpaint.mjs): ink under sparse night dots, the Bayer matrix on the screen's pixels, so cells of unlike sizes join with no seam.
 function peekFog(x, y, w, h) { R(x, y, w, h, C.ink); ditherFill(x, y, w, h, 'night', 3); }
+// owner #178 / #141: the dark of the look-around (the slots peekFog fills: land not seen, a place not here yet, past the realm's edge, and all beyond the nine cells) meets the seen land on the signed soft edge, not the slot's
+// straight line: the look-around's runs along the sides, the map's rounded corners at the corners (src/fogedge.mjs), laid on the seen side, over the picture and under the marks. The slots are the place's cell size; (0,0) is the place.
+const FE_PB = new WeakMap(); let feId = 0;
+function fogPiece(it) {
+  let e = FE_PB.get(it.m); if (!e) { e = { id: feId++ }; FE_PB.set(it.m, e); }
+  return art('fe3|' + e.id + ':' + it.cw + 'x' + it.ch, () => { const pb = new PB(it.cw, it.ch); for (let y = 0; y < it.ch; y++) for (let x = 0; x < it.cw; x++) { const q = it.m[y * it.w + x]; if (q) pb.set(x, y, C.night); } return pb; });   // the look-around's dark is flat night: the map corners' ink dots take it too
+}
+// pr701-fix-1 (the AD's floating scraps): where the dark lies beside the place, the place picture's apron past its cell is not drawn (the dark's edge sits on the cell's side and eats the rim), so no bits of it hang in the dark.
+function peekApronCut(v, ox, oy, W, H, cx0, cy0, cw, ch) {
+  if (!FOGEDGE || !v.dark) return;
+  const d = k => v.dark.has(k);
+  if (d('0,-1') && cy0 > oy) R(ox, oy, W, cy0 - oy, C.night);
+  if (d('0,1') && cy0 + ch < oy + H) R(ox, cy0 + ch, W, oy + H - cy0 - ch, C.night);
+  if (d('-1,0') && cx0 > ox) R(ox, oy, cx0 - ox, H, C.night);
+  if (d('1,0') && cx0 + cw < ox + W) R(cx0 + cw, oy, ox + W - cx0 - cw, H, C.night);
+}
+function peekFogEdges(v, cx0, cy0, cw, ch) {
+  if (!FOGEDGE || !v.dark) return;
+  for (const it of fogEdges({ dark: (i, j) => i < -1 || i > 1 || j < -1 || j > 1 || v.dark.has(i + ',' + j), I0: -1, I1: 1, J0: -1, J1: 1, csx: cw, csy: ch, runs: FOGEDGE.peek.runs, outer: FOGEDGE.map.outer, inner: FOGEDGE.map.inner })) {
+    blit(fogPiece(it), cx0 + it.x, cy0 + it.y);
+  }
+}
 // The whole place at 24 px (RT.view: 'look' as seen so far, 'peek' while Call is held). A find draws no whole view: its spot and card stand over the walking view (drawPatch).
 function drawWhole(t) {
   const v = RT.view, P = S.exp && S.exp.patch;
@@ -7089,7 +7120,7 @@ function drawWhole(t) {
   const tp = (x, y) => ({ x: ox + (x - bk.ox) * Tp + Tp / 2, y: oy + (y - bk.oy) * Tp + Tp / 2 });
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   v.cv = v.cv || wholeFor(lay, bk); const cv = v.cv;
-  if (wide) { clipView(); try { const owed = drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); if (owed) text(landLine(), SCR_W / 2, VIEW_Y + (VIEW_H >> 1) - 7, C.bone, 2, 'center'); } finally { g.restore(); } }
+  if (wide) { clipView(); try { const owed = drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); peekApronCut(v, ox, oy, W, H, ox - bk.ox * Tp, oy - bk.oy * Tp, lay.w * Tp, lay.h * Tp); peekFogEdges(v, ox - bk.ox * Tp, oy - bk.oy * Tp, lay.w * Tp, lay.h * Tp); if (owed) text(landLine(), SCR_W / 2, VIEW_Y + (VIEW_H >> 1) - 7, C.bone, 2, 'center'); } finally { g.restore(); } }
   else g.drawImage(cv, ox, oy);
   const found = walkedCell(lay.cell);
   // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
@@ -9951,7 +9982,7 @@ requestAnimationFrame(frame);
 window.__mb = { onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
-  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
+  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, fogEdgeReady: () => !!FOGEDGE, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
