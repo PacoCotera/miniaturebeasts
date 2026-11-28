@@ -5,7 +5,7 @@
 import { T, T_BLOCK, L, hash } from '../logic/world.mjs';
 import { RIM_BIT } from '../logic/rim.mjs';
 
-const DRAWN_PIECES = new Set();   // the set pieces the page draws with a signed picture (index.html propPiece): none yet; 'heart-slab' is a named empty slot (art/props has no picture for it)
+export const DRAWN_PIECES = new Set();   // the set pieces the page draws with a signed picture (index.html propPiece): none yet; 'heart-slab' is a named empty slot (art/props has no picture for it)
 export const INNER ={ w: 24, h: 28 };
 export const BANK_EI = 1 << 20, BANK_ROWS = 4;   // a tile bank's id base (the page reads it: a dug id at or above it is a bank's) and its rows: the lip and the three face rows
 const PRESS_PROPS = ['boulder-a', 'boulder-a-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
