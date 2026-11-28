@@ -1,5 +1,5 @@
 // The start pick's cursor on a first expedition: it hops between the start places. Geometry only, no page state.
-import { DIRS, cxy } from "../world.mjs";
+import { DIRS, cxy } from "../logic/world.mjs";
 
 // The cell of `cells` nearest ahead of `from` in direction `dir`; a cell off to the side counts its sideways distance twice. Null when none lies that way.
 export function hopToward(from, dir, cells) {

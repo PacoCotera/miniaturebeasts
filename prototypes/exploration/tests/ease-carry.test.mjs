@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { CARRY, carryOf, wariness1, WIND_VEC } from "../src/walk-data.mjs";
+import { CARRY, carryOf, wariness1, WIND_VEC } from "../src/data/walk-data.mjs";
 import { heardAt, carryAt, stayAt, stayLeft, stayTick, easeTick, windOf, windAt, los, holdRun, HOLD_MAX } from "../src/logic/ease.mjs";
 import { doingsOf } from "../src/gen7/haunts.mjs";
 import { DAY, WORDS } from "../src/data/words.mjs";

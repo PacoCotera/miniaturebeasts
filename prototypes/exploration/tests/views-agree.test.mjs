@@ -1,12 +1,12 @@
 // The map, the reach view and the cell show the same land (owner, 2026-11-08: "i entered this cell, once inside, there's no stair to go to the terrace north. the map generation has serious
-// problems. it's not consistent across its different zoom levels"). The world has one truth for each edge of a cell (open, stair, cliff, scree or bank, water, the map's end; src/world.mjs
+// problems. it's not consistent across its different zoom levels"). The world has one truth for each edge of a cell (open, stair, cliff, scree or bank, water, the map's end; src/logic/world.mjs
 // sideKind). Generator 7: the cell's terrain is the land itself, and a side the map calls open or a stair holds a way in while a cliff, water or the map's end holds none (tools/views-audit.mjs
 // auditGen7, on the IR). The full sweep of seeds 1-200 is `node prototypes/exploration/tools/views-audit-run.mjs 1 200` (200 realms: an hour, in shards); the test runs seeds 1-3.
 //   node --test prototypes/exploration/tests/views-agree.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { genWorld, softGround, bankEdges, genPlace, ALL_BIOMES } from "../src/world.mjs";
+import { genWorld, softGround, bankEdges, genPlace, ALL_BIOMES } from "../src/logic/world.mjs";
 import { newTally, auditGenerated, setGenPlace, report } from "../tools/views-audit.mjs";
 
 // The generator 7 audit of seeds 1-3 is views-agree-seed1, -seed2 and -seed3 (one file a seed, so the CI shards share the 9 minutes it took in one file).

@@ -1,30 +1,14 @@
 // IR -> the Place object that format/write.mjs serialises (place design A1.4 steps 5 and 6), and the golden picture of a baked place.
-import { terrainLayers, packDepth, DualGridError, EMPTY, FILL_CODE, splitCode, hash32 } from '../dualgrid.mjs';
+import { terrainLayers, packDepth, DualGridError, hash32 } from '../dualgrid.mjs';
 import { reedClumps } from '../../../exploration/src/gen7/reeds.mjs';
 import { indexedToRgba } from '../indexed.mjs';
 import { renderView } from '../ground.mjs';
-const FORMAT_VERSION = 1;   // a hand-set place has no bake hold outputs: format 1, its bytes unchanged (a place of format 2 is a baked package's cell, places/src/format/baked.mjs)
-import { BakeError, FIND_KINDS } from './ldtk.mjs';
-import { footprintCells, spriteFor } from './rules.mjs';
-import { ALT_CODE, applyOpenEdges, cliffInfo } from './openedges.mjs';
+import { BakeError } from './ldtk.mjs';
+import { FIND_KINDS, footprintCells, spriteFor, layersToTileIds } from './steps.mjs';
+import { applyOpenEdges, cliffInfo } from './openedges.mjs';
 import { cliffDecals } from './southruns.mjs';
 
-// dg: terrainLayers' output after applyOpenEdges; tileset: the baked tile set; desc: setload.layerDescriptors' { layers, tone }. Returns [{ tiles: Uint16Array of tile ids }] in draw order (0xFFFF draws nothing).
-export function layersToTileIds(dg, tileset, desc) {
-  return dg.layers.map((l) => {
-    const d = l.tone ? null : desc.layers.get(l.terrain);
-    return {
-      tiles: Uint16Array.from(l.tiles, (c) => {
-        if (c === EMPTY) return 0xFFFF;
-        if (l.tone) return c >= ALT_CODE ? tileset.pairs[(c - ALT_CODE) >> 4].tiles[(c - ALT_CODE) & 15] : tileset.pairs[desc.tone.row].tiles[c];   // the tone layer: the code is the corner mask (the raised tone is its own row)
-        if (c >= FILL_CODE) return tileset.pairs[d.fillRow].fullVariants[c - FILL_CODE];             // the terrain's fill
-        if (c >= ALT_CODE) return tileset.pairs[(c - ALT_CODE) >> 4].tiles[(c - ALT_CODE) & 15];   // the cliff's tall tiles, the way up or a variant
-        const s = splitCode(c), row = tileset.pairs[d.kinds[s.kind].rows.over];
-        return s.full !== undefined ? row.fullVariants[s.full] : row.tiles[s.slot];
-      }),
-    };
-  });
-}
+const FORMAT_VERSION = 1;   // a hand-set place has no bake hold outputs: format 1, its bytes unchanged (a place of format 2 is a baked package's cell, places/src/format/baked.mjs)
 
 // The reed beds of a hand-set place's ReedBank areas: the desk's scatter rule (exploration/src/gen7/reeds.mjs, the one the generator uses on world tiles), seeded by the place id and tile. A generated place
 // (an IR with `origin`) carries its reed props already, laid on world tiles by decor.mjs. Props with no footprint: they sort with the walkers and block nothing.
@@ -81,7 +65,7 @@ export function buildPlace(ir, ctx) {
   const place = {
     id: ir.id, formatVersion: FORMAT_VERSION, set: ir.tileset, w: ir.w, h: ir.h, type: ir.type, names: ir.names, mirrorOf: ir.mirrorOf || '',
     terrain: ir.terrain, ground,
-    decals: cliffDecals(ir, cliffInfo(ir, ctx.terrains)).map((d) => ({ kind: index('decal', d.kind), x: d.x, y: d.y, sortY: d.y })).concat(ir.decals.map(placed('decal'))), props: ir.props.concat(reedProps(ir)).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0)).map(placed('prop')), canopy: ir.canopy.map(placed('canopy')),
+    decals: cliffDecals(ir, cl).map((d) => ({ kind: index('decal', d.kind), x: d.x, y: d.y, sortY: d.y })).concat(ir.decals.map(placed('decal'))), props: ir.props.concat(reedProps(ir)).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0)).map(placed('prop')), canopy: ir.canopy.map(placed('canopy')),
     heart: { x: heart.x, y: heart.y, kinds: heart.kinds, species: heart.species, revealLine: heart.revealLine, reachBy: heart.reachBy },
     clues: ir.clues, finds: ir.finds.map((f) => ({ x: f.x, y: f.y, kinds: f.kinds.map((k) => FIND_KINDS.indexOf(k)), chance: f.chance })),
     landmarks: ir.landmarks.filter((l) => l.prop && spriteFor(tileset, 'prop', l.prop)).map((l) => ({ prop: index('prop', l.prop), x: l.x, y: l.y, label: l.label })),   // a generated cell's landmark whose prop has no signed art yet is an empty slot (its IR entry names it), not a baked record

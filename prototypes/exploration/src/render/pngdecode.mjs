@@ -1,7 +1,7 @@
 // Exact PNG pixels from the file's own bytes, never through a canvas. A browser may colour-manage a PNG (gAMA / iCCP / sRGB) or farble canvas read-back
 // (Brave, Firefox resistFingerprinting, Samsung Internet, DuckDuckGo); reading the bytes ourselves cannot be altered. Ancillary chunks are ignored on purpose.
 // Supports non-interlaced 8-bit grey (0), RGB (2), indexed with PLTE/tRNS (3), grey+alpha (4), RGBA (6). Anything else throws a named error (err.code === 'png-unsupported').
-import { fetchOk, loadImg } from './render/fetchretry.mjs';
+import { fetchOk, loadImg } from './fetchretry.mjs';
 
 const SIG = [137, 80, 78, 71, 13, 10, 26, 10];
 const unsupported = why => { const e = new Error('png: ' + why); e.code = 'png-unsupported'; return e; };

@@ -5,7 +5,7 @@
 //   - an open edge the template has no opening on gets one (the tree wall's gap); an opening on a side the world closes is plugged with the wall's own trees;
 //   - the trees the bands cover are not drawn (`cut`: the props and canopy this cell shows).
 // Pure: the world, the seed, the cell and the template in; plain data out. Tiles are in the template's own cells (the layout of a generator 6 place is the template's size).
-import { T, TERR, hash, stairPos, edgeLayer, sideKind, BANK_IN } from '../../exploration/src/world.mjs';
+import { T, TERR, hash, stairPos, edgeLayer, sideKind, BANK_IN } from '../../exploration/src/logic/world.mjs';
 
 export const SIDE_OF = { up: 'N', down: 'S', left: 'W', right: 'E' };
 export const DIR_OF = { N: 'up', S: 'down', W: 'left', E: 'right' };

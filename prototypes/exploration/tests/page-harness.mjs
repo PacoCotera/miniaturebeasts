@@ -22,7 +22,7 @@ const { readTileSet } = await import("../../places/src/format/read.mjs");
 const fileBytes = (name) => new Uint8Array(readFileSync(new URL(name, BAKED_DIR)));
 export const PLACES = (() => {
   const ts = readTileSet(fileBytes("ninja-test.mbtiles")), terrains = JSON.parse(readFileSync(new URL("terrain.json", BAKED_DIR), "utf8")).terrains;
-  const desc = MODS.world7.reviveLayers(JSON.parse(readFileSync(new URL("../art/gen7/layers.json", import.meta.url), "utf8")));
+  const desc = MODS["gen7/world7"].reviveLayers(JSON.parse(readFileSync(new URL("../art/gen7/layers.json", import.meta.url), "utf8")));
   return { ts, terrains, desc, ctx: { ts, terrains, desc } };
 })();
 
@@ -57,7 +57,7 @@ export function loadPage(ctx, script = SCRIPT) {
   for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from];
   // The page plays generator 7 only (GENS = [7]). The suites written for generator 5's generated places run on generator 5, which stays frozen in world.mjs: a page opened with
   // `gen: 7` (makePage) or `__gen7: true` (a ctx given to loadPage) is the page as played; any other is that page with generator 5 played too and new worlds of generator 5.
-  if (!ctx.__gen7) { ctx.NEW_GEN = 5; ctx.GENS = [...new Set([...MODS.world.GENS, 5])]; }
+  if (!ctx.__gen7) { ctx.NEW_GEN = 5; ctx.GENS = [...new Set([...MODS["logic/world"].GENS, 5])]; }
   vm.createContext(ctx); const run = src => vm.runInContext(src, ctx); ctx.__run = run; vm.runInContext(script, ctx);
   return run;
 }

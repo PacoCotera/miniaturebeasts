@@ -1,9 +1,9 @@
 // The Companion's kinds (logic), by the game's species index (regions.mjs SP_ORDER): how each lives in the field, what a partner of it can do, its words and its colours.
 //   notice [creep, walk]: tiles at which the kind notices you; how: the shed trigger; ab: what a partner of this kind can do.
 // The walking fields (drinks, settle, shed, wander, and a newer kind's notice, flee, eats, shedP, how) are src/walk-data.mjs's rows.
-import { ROSTER } from "../world.mjs";
+import { ROSTER } from "./world.mjs";
 import { KIND_INFO } from "./regions.mjs";
-import { BUILT, walkRow } from "../walk-data.mjs";
+import { BUILT, walkRow } from "../data/walk-data.mjs";
 
 // What a partner of a newer kind can do, for the kinds that have an ability yet: Rupar digs earth banks, Tuliko crosses mud and scree and walks farther.
 // The other newer kinds' abilities wait for the game designer, so no line about one is shown (ab, abText null).

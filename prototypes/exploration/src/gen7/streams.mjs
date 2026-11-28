@@ -5,7 +5,7 @@
 //   drawStream     the route in the cell (open ground first, then nearer the walls, then a straight run), painted as water with a square brush that widens along the run; R16: the A* wanders
 //   fords          a ford is 2-3 tiles of shallow, walkable ground across the stream: where the trail crosses it (paint in place.mjs), and one more in the middle of every stretch that runs through a place
 //   bridges        the realm's bridges: the water tiles of the bank-to-bank rows (the bank's port row and the one below) become walkable bridge tiles, the water under it blocking elsewhere
-import { hash } from '../world.mjs';
+import { hash } from '../logic/world.mjs';
 import { RW, CW, CH } from './world.mjs';
 import { portAt, route } from './region.mjs';
 

@@ -3,9 +3,9 @@
 //   2. with a Tuliko (mud and scree open) the mud joins the west way in to the east way in, and a scree crossing's inner tile is walked to from a way in of the cell.
 // node tools/gen7-soft-check.mjs [seed ...]   (default 7 13 42)
 import { PLACES } from '../tests/page-harness.mjs';
-import { MW, MH, T_BLOCK, T, softGround } from '../src/world.mjs';
+import { MW, MH, T_BLOCK, T, softGround } from '../src/logic/world.mjs';
 import { genRegion7 } from '../src/gen7/region.mjs';
-import { bakedCell, layout7 } from '../src/world7.mjs';
+import { bakedCell, layout7 } from '../src/gen7/world7.mjs';
 
 const seeds = process.argv.slice(2).map(Number); if (!seeds.length) seeds.push(7, 13, 42);
 const ctx = PLACES.ctx;

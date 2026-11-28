@@ -4,7 +4,7 @@
 import { mkdirSync, cpSync, readFileSync, writeFileSync } from 'node:fs';
 const [src, out, lv] = process.argv.slice(2);
 cpSync(src, out, { recursive: true });
-let t = readFileSync(lv || `${src}/gen7/levels.mjs`, 'utf8').replaceAll("'../../../core/base/", "'../core/base/").replace("from './world.mjs'", "from './worldstub.mjs'").replace("from '../world.mjs'", "from './worldstub.mjs'");
+let t = readFileSync(lv || `${src}/gen7/levels.mjs`, 'utf8').replaceAll("'../../../core/base/", "'../core/base/").replace("from './world.mjs'", "from './worldstub.mjs'").replace("from '../logic/world.mjs'", "from './worldstub.mjs'");
 const names = ['cleanup', 'recleanNear', 'fixGaps', 'fixLeft', 'walkParts', 'components', 'violBox', 'blobOf', 'siteOf', 'qCell', 'wetCell', 'landPipeline', 'openClose', 'openCloseNear', 'fixPatterns', 'dropSmall', 'violAt', 'blockedAt', 'rectPair', 'close', 'open'];
 const miss = [];
 for (const n of names) {

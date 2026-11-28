@@ -10,7 +10,7 @@ import path from "node:path";
 import vm from "node:vm";
 import { makePage } from "./page-harness.mjs";
 import { decodePNG } from "../tools/atlas-check.mjs";
-import { decodeExact } from "../src/atlas.mjs";
+import { decodeExact } from "../src/render/atlas.mjs";
 import { SPECIES, SP_OTHER, spOf } from "../src/logic/species.mjs";
 import { numWord } from "../src/data/text.mjs";
 import { holdEmpty, exploredAny, tripRecord, tripsWith } from "../src/logic/expedition.mjs";

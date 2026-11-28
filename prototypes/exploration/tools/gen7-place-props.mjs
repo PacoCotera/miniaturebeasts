@@ -5,7 +5,7 @@
 import { cellTerrain, cellIR, TV, blockOk, lonePlainAt, levelAt, stairsInfo, CW, CH, RW, RH } from '../src/gen7/place.mjs';
 import { genRegion7, realm7 } from '../src/gen7/region.mjs';
 import { levelsOf, windowLevels, landRule } from '../src/gen7/levels.mjs';
-import { MW, MH, L } from '../src/world.mjs';
+import { MW, MH, L } from '../src/logic/world.mjs';
 import { bakeIR } from './gen7-render.mjs';
 
 const NB4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];

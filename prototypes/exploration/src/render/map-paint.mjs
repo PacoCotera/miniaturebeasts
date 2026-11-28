@@ -1,7 +1,7 @@
 // The map's painting: landPaint (the opening's painting as a generator), cellMark (a place's mark on the land), cellSignAt (a sign's spot in its cell), openFrame (the land the opening frame holds).
 // The page's state (S, G, the layout and the walk pictures) is not owned here: the page hands it in once as `env`, an object of getters
 // (env.S reads the page's S every time, so a new world or a loaded save is seen at once).
-import { MW, MH, L, clamp, cxy } from "../world.mjs";
+import { MW, MH, L, clamp, cxy } from "../logic/world.mjs";
 
 // the map mark of each landmark kind
 const LM_MARK = { windstep: 'windstep', 'hollow-tree': 'hollowtree', 'split-stone': 'splitstone', reedpool: 'reedpool' };

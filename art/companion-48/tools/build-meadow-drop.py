@@ -6,7 +6,7 @@ indexed colour in per-biome sets, design/proposals/technical-architecture.md). m
 48 exactly as the page's tables, the meadow entries one step along their own material's ramp (DARK, LIGHT) and by the page's mixLUT
 rule (FOG toward bone at .62, FADE toward stone at .5, the 3/4/2 weighted nearest colour over all 96).
 
-Pieces, by the loader's catalogue keys (prototypes/exploration/src/atlas.mjs):
+Pieces, by the loader's catalogue keys (prototypes/exploration/src/render/atlas.mjs):
   lawn            6 tiles on b1's lawn ramp at the middle level's tone: b1's own flecks (its lawn less its bands, one 48 px window
                   each), clustered tufts and clover kept 6 px inside the tile, so any tile meets any other
   sand, deep      the pond's bank sand and its body one step down, flat with sparse flecks

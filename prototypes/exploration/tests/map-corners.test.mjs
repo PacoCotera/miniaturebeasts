@@ -2,7 +2,7 @@
 // across it, with the 2 px foam along the arc. Drawing only: the pixels differ from the uncut bake inside those corners and nowhere else.
 import test from "node:test";
 import assert from "node:assert/strict";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 import { makePage, PAGE } from "./page-harness.mjs";
 
 const { MW, MH, L } = W, CELL = 26;

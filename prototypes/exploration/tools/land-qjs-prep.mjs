@@ -9,7 +9,7 @@ const [out, seedS, XS, YS] = process.argv.slice(2), seed = +seedS, X = +XS, Y = 
 for (const d of ['core/base', 'gen7']) mkdirSync(`${out}/${d}`, { recursive: true });
 for (const f of ['noise.mjs', 'whole.mjs']) copyFileSync(`${here}../core/base/${f}`, `${out}/core/base/${f}`);
 copyFileSync(`${here}src/gen7/land-rule.json`, `${out}/gen7/land-rule.json`);
-writeFileSync(`${out}/gen7/levels.mjs`, readFileSync(`${here}src/gen7/levels.mjs`, 'utf8').replaceAll("'../../../core/base/", "'../core/base/").replace("from './world.mjs'", "from './worldstub.mjs'").replace("from '../world.mjs'", "from './worldstub.mjs'"));
+writeFileSync(`${out}/gen7/levels.mjs`, readFileSync(`${here}src/gen7/levels.mjs`, 'utf8').replaceAll("'../../../core/base/", "'../core/base/").replace("from './world.mjs'", "from './worldstub.mjs'").replace("from '../logic/world.mjs'", "from './worldstub.mjs'"));
 writeFileSync(`${out}/gen7/worldstub.mjs`, "export const RW = 80, RH = 100, CW = 24, CH = 28, L = { MEADOW: 0, POND: 1, ROCK: 2, WOOD: 3, WATER: 4, CLIFF: 5 };\nexport const fieldsAt = () => { throw new Error('no world'); }, noiseField = () => { throw new Error('no world'); };\n");
 const R = realm7(seed).realm, L = levelsOf(R), q = {}, wet = {};
 for (const s of L.stairs.values()) findWayup(L, s.X, s.Y, s.port);   // fixes every site (lip, first column) before the dump

@@ -1,5 +1,5 @@
 // Rules of a place that read only what they are handed: its tiles, a position, a direction. No game state, no clock.
-import { MW, MH, DIRS, T, cxy } from "../world.mjs";
+import { MW, MH, DIRS, T, cxy } from "./world.mjs";
 
 // Tiles nothing but the pawn and the partner stands on: stepping stones, stairs and their aprons (pods, creatures, slabs and tufts never).
 export const NOSTAND = t => t === T.STEP || t === T.STAIR || t === T.APRON || t === T.WADE || t === T.SCREE || t === T.BANK;

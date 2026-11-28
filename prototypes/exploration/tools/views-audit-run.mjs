@@ -1,7 +1,7 @@
 // Runs the views audit (tools/views-audit.mjs) over a range of seeds.
 //   node prototypes/exploration/tools/views-audit-run.mjs [seedFrom seedTo] [--gens 7,2,5] [--every]   (--every: every biome on every seed for the frozen generated generators; default one biome per seed, in turn)
 // Generator 7 builds one realm a seed (about 10 s) and reads every land cell's IR (35 ms each): a sweep of seeds 1-200 takes an hour on one core, so run it in shards (1 50, 51 100, ...).
-import { genWorld, genPlace, softGround, bankEdges, ALL_BIOMES } from "../src/world.mjs";
+import { genWorld, genPlace, softGround, bankEdges, ALL_BIOMES } from "../src/logic/world.mjs";
 import { realm7 } from "../src/gen7/region.mjs";
 import { cellIR } from "../src/gen7/place.mjs";
 import { ATLAS } from "../src/logic/regions.mjs";

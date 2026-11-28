@@ -3,7 +3,7 @@
 // trails first), Reedpool (a pond-edge cell by open water). Each region holds at least one of each kind it has a cell for; the rest follow in a hashed order while the spacing allows.
 // SPACING: no two landmarks within two cells of each other (Chebyshev distance 3 or more), and none of one kind within five places (6 or more; R3, below). Each region holds one landmark kind of its own
 // (several, spaced) and one of each other kind it has a cell for. The names are editorial's lists (landmark-names.mjs, parsed from their file), none twice in a region.
-import { hash, L, MW, MH } from '../world.mjs';
+import { hash, L, MW, MH } from '../logic/world.mjs';
 import { ATLAS } from '../logic/regions.mjs';
 import { realm7, NC } from './region.mjs';
 import { ringDist } from './roads.mjs';

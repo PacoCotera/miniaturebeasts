@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 const [root, seedArg, nArg] = process.argv.slice(2), seed = +seedArg, SAMPLES = +(nArg || 40000);
 const M = n => import(pathToFileURL(root + '/prototypes/exploration/src/gen7/' + n).href);
 const { decorOf, biomeAtTile, CW, CH, RW, RH } = await M('place.mjs'), { TABLE, FAMS, expectedPer100 } = await M('decor.mjs');
-const { MW, MH } = await import(pathToFileURL(root + '/prototypes/exploration/src/world.mjs').href);
+const { MW, MH } = await import(pathToFileURL(root + '/prototypes/exploration/src/logic/world.mjs').href);
 const U32 = (seed, n, k) => { let h = Math.imul(seed ^ 0x9e3779b9, 2654435761) ^ Math.imul(n + 1, 40503) ^ Math.imul(k, 2246822519); h ^= h >>> 15; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; return h >>> 0; };
 const D = decorOf(seed), cnt = {};
 for (let ay = 0; ay < RH / MH; ay++) for (let ax = 0; ax < RW / MW; ax++) {

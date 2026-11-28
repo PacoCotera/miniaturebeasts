@@ -5,7 +5,7 @@
 import { cellTerrain, decorOf, cellIR, biomeAtTile, TV, CW, CH, RW, RH } from '../src/gen7/place.mjs';
 import { TABLE, FAMS, BIOME_IDS, expectedPer100, HOLLOW, TREE_KINDS, ROCK_KINDS, isScatterPlant } from '../src/gen7/decor.mjs';
 import { groveStats, GROVE } from '../../places/src/bake/rules.mjs';
-import { MW, MH } from '../src/world.mjs';
+import { MW, MH } from '../src/logic/world.mjs';
 
 const NB4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 const SAMPLES = 40000;   // random tiles per region slot for the per-biome density

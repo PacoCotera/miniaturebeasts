@@ -1,7 +1,7 @@
 // The seeded world of the Companion: the map, the places and the RNG. Pure: it never reads the page's state, the DOM,
 // storage, the clock or Math.random, and never draws. Generator 1 is frozen; a new generator is added beside it, never in its place.
 
-import { mulberry32 } from "../../core/base/random.mjs";
+import { mulberry32 } from "../../../core/base/random.mjs";
 
 export const NEW_GEN = 7;         // the generator newWorld gives a new world (src/gen7; generators 1 to 5 stay below, frozen: the generated stand-in place, the cave and the soft ground still read them)
 export const GENS = [7];  // the generators the page can play: since the generator 7 reset every save is generator 7 (a generator 6 save is copied to <key>.gen6 and a new world starts)

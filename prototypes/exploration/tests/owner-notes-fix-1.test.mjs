@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage, PLACES } from "./page-harness.mjs";
 import { genRegion7 } from "../src/gen7/region.mjs";
-import { bakedCell, layout7 } from "../src/world7.mjs";
+import { bakedCell, layout7 } from "../src/gen7/world7.mjs";
 import { cellIR, TV } from "../src/gen7/place.mjs";
 
 // #34: no wall stone or stump (a set piece's prop) on a road tile or the tile beside it; the Split Stone (a landmark) is no wall

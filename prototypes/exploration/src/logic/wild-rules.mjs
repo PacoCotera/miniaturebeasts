@@ -1,5 +1,5 @@
 // Rules of the wild ones that read only what they are handed: a creature, her routine, a place's tiles. No game state, no clock.
-import { cheb, T_BLOCK } from "../world.mjs";
+import { cheb, T_BLOCK } from "./world.mjs";
 import { DAY } from "../data/words.mjs";
 import { haunt as hauntAt, isWary as waryDoings } from "../gen7/haunts.mjs";
 import { NOSTAND } from "./place-rules.mjs";

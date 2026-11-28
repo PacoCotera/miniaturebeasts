@@ -3,8 +3,8 @@
 // One continuous painting: each pixel takes the ground and tone of the block under it (the region's sector, world-topdown-spec-1 2.4: 4 x 4 blocks a place, each a ground class and a level bit, made from the realm
 // before any place is built); until the sector is here, the land of the cell under it after a soft displacement of value noise (±11 px at 72 px cells and ±2.5 px fine), so cell borders become coastlines, wood edges
 // and field edges and no grid lines are drawn. Fog keeps its three states on the same borders. Pure: no page state.
-import { hash, L, MW, MH } from '../world.mjs';
-import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from '../shore7.mjs';
+import { hash, L, MW, MH } from '../logic/world.mjs';
+import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from '../gen7/shore7.mjs';
 import { fogEdges } from './fogedge.mjs';
 import { CW as CWT, CH as CHT } from '../gen7/world.mjs';   // the tiles of a cell
 

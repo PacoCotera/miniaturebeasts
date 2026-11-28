@@ -17,17 +17,8 @@
 //
 // The map (26 px cells): mapTuft(kind, { asleep, crop, seed }, C) returns a small sprite with its anchor (ax, ay): blit it at
 // (tx - ax, ty - ay) where buildMapPB today draws a wood tuft at (tx, ty).
-//
-// Palette entries each kind uses (all core names; asleep they go through the fog table, the Shade through SHADE_WASH):
-import { mulberry32 } from "../../core/base/random.mjs";
+import { mulberry32 } from "../../../core/base/random.mjs";
 
-export const PALETTE_USED = {
-  fruit: ['ink', 'soil', 'bark', 'forest', 'leaf', 'grass', 'sprout', 'lime', 'cream', 'blush', 'pink', 'peach', 'coral', 'red', 'wine', 'pine', 'ink'],
-  hollow: ['ink', 'soil', 'bark', 'clay', 'pine', 'forest', 'leaf', 'grass', 'sprout'],
-  round: ['ink', 'soil', 'bark', 'pine', 'forest', 'leaf', 'grass', 'sprout'],
-  broad: ['ink', 'soil', 'bark', 'pine', 'forest', 'leaf', 'grass'],
-  shade: ['void', 'ink', 'night', 'soil', 'bark', 'pine', 'tealD', 'teal', 'bone', 'fog', 'mist'],
-};
 export const KINDS = ['fruit', 'hollow', 'shade', 'round', 'broad'];
 export const CANOPY = { w: 88, h: 76, dx: -20, dy: -26 }, TRUNK = { w: 32, h: 32, dx: 8, dy: 16 };
 

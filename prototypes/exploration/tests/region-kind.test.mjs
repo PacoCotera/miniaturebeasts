@@ -3,7 +3,7 @@
 //   node --test prototypes/exploration/tests/region-kind.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { genWorld7 } from "../src/world7.mjs";
+import { genWorld7 } from "../src/gen7/world7.mjs";
 import * as R from "../src/logic/regions.mjs";
 import { makePage } from "./page-harness.mjs";
 

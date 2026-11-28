@@ -2,7 +2,7 @@
 // PW_* env switches (see decor.mjs) turn single place-walk-2 changes off for the halving.
 import { decorOf, biomeAtTile, CW, CH, RW, RH } from '../src/gen7/place.mjs';
 import { TABLE, FAMS, expectedPer100 } from '../src/gen7/decor.mjs';
-import { MW, MH } from '../src/world.mjs';
+import { MW, MH } from '../src/logic/world.mjs';
 
 const seed = +process.argv[2], only = process.argv[3] || 'trees';
 const SAMPLES = 40000;

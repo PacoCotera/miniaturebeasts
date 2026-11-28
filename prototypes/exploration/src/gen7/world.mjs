@@ -6,7 +6,7 @@
 // The region layer (region.mjs) reads this and adds stairs, trails, set pieces and the checks. Nothing here re-seeds per cell.
 import FastNoiseLite from 'fastnoise-lite';
 import FlatQueue from 'flatqueue';
-import { hash, clamp, MW, MH, L, G2, BIOME_GROUND } from '../world.mjs';
+import { hash, clamp, MW, MH, L, G2, BIOME_GROUND } from '../logic/world.mjs';
 import { slotBiome, ATLAS } from '../logic/regions.mjs';
 import { windGrid, gridAt, WIND, erodeHeight, spineRanges } from './shape.mjs';
 import { planCuts } from './features.mjs';

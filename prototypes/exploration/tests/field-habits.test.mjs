@@ -6,7 +6,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fixture, plain } from "./walk-fixture.mjs";
 import { makePage } from "./page-harness.mjs";
-import { FIELD } from "../src/walk-data.mjs";
+import { FIELD } from "../src/data/walk-data.mjs";
 
 const done = f => plain(f.run("S.mibis[0].habitsDone"));
 

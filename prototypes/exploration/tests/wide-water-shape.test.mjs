@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cellTerrain, contextOf, worldTiles, TV, CW, CH, RW } from '../src/gen7/place.mjs';
-import { isSea } from '../src/shore7.mjs';
+import { isSea } from '../src/gen7/shore7.mjs';
 
 const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
 const BAND = 9;   // tiles each side of the seam that are read

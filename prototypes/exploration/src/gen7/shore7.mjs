@@ -5,8 +5,8 @@
 // The line: along every seam (the line between a wide-water cell and a land cell) the shore stands an integer number of tiles off the seam, o(along) in -SHORE_A..SHORE_A (positive: the water reaches into the land).
 // o is laid in stretches of exactly 3 tiles (the ground passes keep nothing narrower: no bay, notch or strip under 3 wide) and differs from the stretch before it by 1 to 3, so no bank runs straight for more than 3 tiles by construction. Round a corner the line follows the tile's distance
 // to the wide cell, so the corners are round and never square.
-import { hash } from './world.mjs';
-import { CW, CH, RW, RH } from './gen7/world.mjs';
+import { hash } from '../logic/world.mjs';
+import { CW, CH, RW, RH } from './world.mjs';
 
 export const SHORE_A = 8;          // tiles the line may stand off the cell seam, each way
 export const SHORE_SAND = 3;       // the widest strip of sand beside the water, in tiles (2 or 3 by the seed's noise)

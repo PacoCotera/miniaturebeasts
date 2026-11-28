@@ -11,7 +11,7 @@ const seed = Number(seedS);
 const imp = p => import(pathToFileURL(path.join(SRC, p)).href);
 const { realm7 } = await imp('src/gen7/region.mjs');
 const { rawRealm, RW, RH } = await imp('src/gen7/world.mjs');
-const { MW, MH } = await imp('src/world.mjs');
+const { MW, MH } = await imp('src/logic/world.mjs');
 
 const t0 = Date.now();
 const R = realm7(seed);

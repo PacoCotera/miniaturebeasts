@@ -9,8 +9,8 @@
 //   tile    one bit per world tile, rows[y] bit x: level 1 "seen" (walked or Call-lifted, from this place or from next door). A tile with no bit is
 //           level 0 "unseen". A plain tile (veilable() is 0: a cliff face, ground no Call could reach) is level 2: the walking view shows it plainly, a picture of the place does not light it.
 // One write path (lift*), one read (levelAt / unveiled / veilMask). A Call next door writes the same rows the walk writes.
-import { DIRS, T_BLOCK } from "../world.mjs";
-import { CALL_R_PLACE } from "../walk-data.mjs";
+import { DIRS, T_BLOCK } from "./world.mjs";
+import { CALL_R_PLACE } from "../data/walk-data.mjs";
 
 export const SEEN_F = 1;
 export const newSeen = n => ({ f: SEEN_F, rev: new Array(n).fill(0), been: new Array(n).fill(0), into: new Array(n).fill(0), walked: {}, tile: {} });

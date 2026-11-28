@@ -5,7 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 import { regionKinds } from "../src/logic/regions.mjs";
 
 const SEEDS = Array.from({ length: 1000 }, (_, i) => i);
@@ -35,7 +35,7 @@ test("1. the floor: 1,000 seeds × each generator, every species has at least 2 
 });
 
 test("2. generators 1 and 2 keep their life exactly; only generator 3 holds when the roster grows", () => {
-  // Pinned from the page's own genLife on origin/station-gate, seeds 0 to 999 (2,000 worlds compared field by field before the move into src/world.mjs).
+  // Pinned from the page's own genLife on origin/station-gate, seeds 0 to 999 (2,000 worlds compared field by field before the move into src/logic/world.mjs).
   const PIN = { 1: "fab8ffbe", 2: "81740752" };
   for (const gen of [1, 2]) {
     let h = ""; for (const seed of SEEDS) h += fnv(JSON.stringify(life(gen, seed)));

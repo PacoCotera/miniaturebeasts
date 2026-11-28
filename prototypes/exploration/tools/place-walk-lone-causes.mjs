@@ -1,7 +1,7 @@
 // place-walk-3: the lone tiles the gap carving leaves before they are widened, by cause, over a hashed sample of windows.
 //   node place-walk-lone-causes.mjs <windows a seed> [seed ...]
 import { windowGaps, loneCauses, RW, RH } from '../src/gen7/place.mjs';
-import { hash } from '../src/world.mjs';
+import { hash } from '../src/logic/world.mjs';
 const [per, ...seedArgs] = process.argv.slice(2), seeds = seedArgs.length ? seedArgs.map(Number) : [7, 13, 42];
 for (const seed of seeds) {
   for (const k of Object.keys(loneCauses)) loneCauses[k] = 0;

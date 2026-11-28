@@ -12,16 +12,7 @@
   },
   "notMoved": {
     "about": "Modules written before the folders, by their path under src/. Each moves to src/<layer>/ in the one move step (STRUCTURE.md, How the page gets there).",
-    "gen7/": "logic",
-    "world.mjs": "logic",
-    "world7.mjs": "logic",
-    "adapt7.mjs": "logic",
-    "bake7.mjs": "logic",
-    "shore7.mjs": "logic",
-    "walk-data.mjs": "data",
-    "atlas.mjs": "render",
-    "trees48.mjs": "render",
-    "pngdecode.mjs": "render"
+    "gen7/": "logic"
   },
   "outside": {
     "about": "Code the Companion shares with other pages, by path under prototypes/ (longest match wins), and the packages.",

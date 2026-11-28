@@ -7,7 +7,7 @@
 // Only the newest few worlds are kept (KEEP): a realm is about 0.3 MB.
 import { get, set, del } from 'idb-keyval';
 import { REALM_REV, REALM_STEPS, hasRealm7, setRealm7 } from '../gen7/region.mjs';
-import { presetSector, hasSector } from '../world7.mjs';
+import { presetSector, hasSector } from '../gen7/world7.mjs';
 
 const KEEP = 3, INDEX = 'realm7:index', keyOf = seed => `realm7:${REALM_REV}:${seed}`;
 

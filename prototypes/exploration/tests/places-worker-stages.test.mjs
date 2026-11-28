@@ -4,8 +4,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { Worker as NodeWorker } from "node:worker_threads";
 import { PLACES } from "./page-harness.mjs";
-import { MW, MH } from "../src/world.mjs";
-import { realm7 } from "../src/world7.mjs";
+import { MW, MH } from "../src/logic/world.mjs";
+import { realm7 } from "../src/gen7/world7.mjs";
 import { BAKE_STAGES } from "../src/logic/waitpips.mjs";
 
 const SHIM = new URL("./places-worker-shim.mjs", import.meta.url), threads = [], seen = [];

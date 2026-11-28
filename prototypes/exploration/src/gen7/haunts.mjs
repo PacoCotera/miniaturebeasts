@@ -4,7 +4,7 @@
 //   a view of a place (what the page builds from its layout): { w, h, props: [{ fam, kind, x, y }] (tiles of the layout), reeds: [{ x, y, w, h }], water(x, y), land(x, y) }
 //   a site: { k: 'reed' | 'shore' | 'sweep' | 'grove' | 'outcrop', x, y, hollow? }   the tile the thing stands on (the Loika stands beside it)
 //   a Loika's doings: { wary (0..1: from Attitude), drive (cycle rate, .6 steady .. 1.4 bursts), late (0..1: from the Stamina chapter's efficiency, low is late) }
-import { hash, rnd } from '../world.mjs';
+import { hash, rnd } from '../logic/world.mjs';
 
 export const HAUNT_KINDS = ['reed', 'shore', 'sweep', 'grove', 'outcrop'];
 export const HOLLOW_KIND = 'tree-hollow';

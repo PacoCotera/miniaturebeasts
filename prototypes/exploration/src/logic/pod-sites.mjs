@@ -1,5 +1,5 @@
 // Where a pod may lie in a region, and the shed pod of a returned mibi's line. The world G and the saved game S are handed in; nothing here changes them.
-import { L, cxy, cheb, groundName, passableIn } from "../world.mjs";
+import { L, cxy, cheb, groundName, passableIn } from "./world.mjs";
 import { reachCellsIn } from "./map-rules.mjs";
 
 // A cell a pod may be buried in: passable land of the main component, no island, never a start, the gate, the deep or the swim cell, and holding no buried pod yet.

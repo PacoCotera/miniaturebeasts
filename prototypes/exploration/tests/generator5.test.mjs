@@ -2,7 +2,7 @@
 //   node --test prototypes/exploration/tests/generator5.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { genWorld, genWorld5, genLife, genLife5, HERD, MW, MH, L } from "../src/world.mjs";
+import { genWorld, genWorld5, genLife, genLife5, HERD, MW, MH, L } from "../src/logic/world.mjs";
 import { regionKinds, SP_ORDER, STARTERS, BIOMES, BIOME_KINDS } from "../src/logic/regions.mjs";
 
 const SEEDS = Array.from({ length: 50 }, (_, i) => 1000 + i * 7919);

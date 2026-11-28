@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { realm7 } from '../src/gen7/region.mjs';
 import { cellIR } from '../src/gen7/place.mjs';
 import { planOf } from '../src/gen7/places.mjs';
-import { hash, L, MW, MH } from '../src/world.mjs';
+import { hash, L, MW, MH } from '../src/logic/world.mjs';
 import { ATLAS } from '../src/logic/regions.mjs';
 
 const [baseRoot, per, outFile, ...seedArgs] = process.argv.slice(2), seeds = seedArgs.length ? seedArgs.map(Number) : [7, 13, 42], N = Number(per || 64);

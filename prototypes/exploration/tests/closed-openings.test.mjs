@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { sideKind } from "../src/world.mjs";
+import { sideKind } from "../src/logic/world.mjs";
 
 const DIR = { N: "up", S: "down", W: "left", E: "right" };
 

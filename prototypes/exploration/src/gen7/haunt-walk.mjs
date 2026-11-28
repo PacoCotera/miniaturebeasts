@@ -5,7 +5,7 @@
 //   env.PL (the page's picture state: PL.ctx.ts.sprites), env.featAt (skips faded strike marks), env.openingKind (depends on the expedition and the world turn),
 //   env.rimRefuses, env.bankTile, env.NOSTAND, env.SMALL_FEAT (plain data that also lives in index.html for its other users).
 // T, T_BLOCK and DIRS are plain data of world.mjs and are imported.
-import { T, T_BLOCK, DIRS } from '../world.mjs';
+import { T, T_BLOCK, DIRS } from '../logic/world.mjs';
 import { sitesOf as hauntSites, spotsFor as hauntSpots } from './haunts.mjs';
 
 export function makeHauntWalk(env) {

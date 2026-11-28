@@ -3,7 +3,7 @@
 // and its cache (PB, art), the dither pictures, the effects' record (FX; read for hitAt, when the shield was last hit), and two readers
 // of the moment: now() (the frame's time, ms) and motion() (false when the player asked for reduced motion).
 import { BAYER4 } from "./view.mjs";
-import { clamp } from "../world.mjs";
+import { clamp } from "../logic/world.mjs";
 import { SCR_W, SCR_H, VIEW_Y, VIEW_H } from "../data/screen.mjs";
 
 const GLINT_DIM = .4;   // a standing glint between its pulses

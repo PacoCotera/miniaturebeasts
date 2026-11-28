@@ -14,7 +14,7 @@ import { cliffInfo, gullies, ALT_CODE } from '../src/bake/openedges.mjs';
 import { readPlace, readTileSet } from '../src/format/read.mjs';
 import { layerRows } from '../src/setload.mjs';
 import { adaptPlace } from '../src/adapter.mjs';
-import { T_BLOCK, T } from '../../exploration/src/world.mjs';
+import { T_BLOCK, T } from '../../exploration/src/logic/world.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url)), placesDir = path.join(here, '..'), P = paths(placesDir);
 const terrains = JSON.parse(readFileSync(P.terrain, 'utf8')).terrains, V = Object.fromEntries(terrains.map((t) => [t.id, t.value]));

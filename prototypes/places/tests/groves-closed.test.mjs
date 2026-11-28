@@ -11,7 +11,7 @@ import { loadProject, levelToIR } from '../src/bake/ldtk.mjs';
 import { checkRules, groveStats, GROVE } from '../src/bake/rules.mjs';
 import { readPlace, readTileSet } from '../src/format/read.mjs';
 import { adaptPlace, closedLooks, CLOSED_DEPTH } from '../src/adapter.mjs';
-import { T_BLOCK } from '../../exploration/src/world.mjs';
+import { T_BLOCK } from '../../exploration/src/logic/world.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url)), placesDir = path.join(here, '..'), P = paths(placesDir);
 const terrains = JSON.parse(readFileSync(P.terrain, 'utf8')).terrains, V = Object.fromEntries(terrains.map((t) => [t.id, t.value]));

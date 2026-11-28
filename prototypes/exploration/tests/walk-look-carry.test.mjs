@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { fixture } from "./walk-fixture.mjs";
-import { decodePng } from "../src/pngdecode.mjs";
+import { decodePng } from "../src/render/pngdecode.mjs";
 import { setFrames, wildGenome, wildGs, podGenome } from "../../station/src/genome.mjs";
 import { marksShown, saddleShown, drawnLooks } from "../../station/src/looks.mjs";
 
