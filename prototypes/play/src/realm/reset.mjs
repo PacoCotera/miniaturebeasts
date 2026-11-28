@@ -1,9 +1,9 @@
 // The release's save reset (release 21b): what a page does with what it finds under the save key. One module for both pages (the Companion and the Station), pure: nothing here reads a page or writes a save.
-// Save v10 is the first of the twenty kinds and generator 5. A save of v8 or v9 holds mibis and pods of the earlier art and species: it is copied once, byte for byte, to <key>.pre10
+// Save v10 is the first of the twenty kinds and generator 5. A save of v7, v8 or v9 holds mibis and pods of the earlier art and species: it is copied once, byte for byte, to <key>.pre10
 // (never read by play) and a new realm starts. A save above the page's own version, and bytes it cannot read, stay read-only as they were. Whichever page opens first does the reset;
-// the other finds v10 and plays. `RESET_V` is the version a page writes after a reset.
-export const RESET_V = 10, RESET_FROM = [8, 9];
-// 'none' (an empty slot: a new realm, today's path), 'play' (a v10 save), 'reset' (a v8 or v9 save; `from` says which), 'newer' (above v10) or 'broken' (unreadable).
+// the other finds v10 and plays. `RESET_V` is the version a page writes after a reset. (A v7 save lies under its own key, which only the Companion reads.)
+export const RESET_V = 10, RESET_FROM = [7, 8, 9];
+// 'none' (an empty slot: a new realm, today's path), 'play' (a v10 save), 'reset' (a v7, v8 or v9 save; `from` says which), 'newer' (above v10) or 'broken' (unreadable).
 // A page that plays only newer generators passes `oldGens` (the Companion at generator 6 passes [5]): a save of the page's own version whose every region is of one of those is the same kind of
 // reset ({ action: "reset", from: <its version>, gen: true }; its copy is <key>.gen<N>, see keepGen), so a world of a frozen generator never opens. The Station passes none and plays the save.
 export function resetPlan(raw, playV = RESET_V, oldGens = null) {
