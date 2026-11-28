@@ -2190,5 +2190,26 @@ it(`s41 facing Dunnock at ease 3 the bar's middle reads her word, ears up (#174,
       assert.ok(c.frac < 0.03, `the ground west of the place is as its crop (${c.frac.toFixed(3)} differ)`);
     } finally { await g.ctx.close(); }
   });
+  // render-seen-2: a built place next door with nothing of it seen takes the soft dark edge (the one seen record: no seen tile of it). His 178.save, hold Call, the look-around: where the seen ground meets the unseen cell west of it
+  // (the strip at device x 250-390, wide enough to hold the cut at about 333) the first pixel that is not dark, per row, takes several positions, not one column.
+  const softEdge = (im, b, dark) => {   // per row of the box the first column, scanning right, where three pixels in a row are not dark
+    const e = []; for (let i = 0; i < b.h; i++) { let c = -1; for (let s = 0; s < b.w - 3; s++) if (!dark(px(im, b.x + s, b.y + i)) && !dark(px(im, b.x + s + 1, b.y + i)) && !dark(px(im, b.x + s + 2, b.y + i))) { c = s; break; } e.push(c); }
+    let best = 1, run = 1; for (let i = 1; i < e.length; i++) { if (e[i] >= 0 && e[i - 1] >= 0 && Math.abs(e[i] - e[i - 1]) <= 2) { run++; if (run > best) best = run; } else run = 1; }
+    return { rows: e.length, found: e.filter((c) => c >= 0).length, distinct: new Set(e.filter((c) => c >= 0)).size, longest: best };
+  };
+  it("s43 the seen ground meets the unseen neighbour west on the soft edge, no straight cut (#178, his save: cell 186) [412x915]", async () => {
+    const g = await open(size, "178");
+    try {
+      assert.deepEqual(await g.where(), { phase: "patch", x: 18, y: 18, key: "186" }, "the case is reached: his save stands in the coastal place");
+      const r = await g.region();
+      const [a, b2] = await lookAround(g, "s43-look");
+      const box = { x: r.x + 250, y: r.y + 340, w: 140, h: 420 }, e = softEdge(a, box, DARKISH);
+      console.log(`# s43 178 west: ${e.found}/${e.rows} rows have ground, ${e.distinct} different edge positions, longest straight run ${e.longest} rows`);
+      assert.ok(e.found > e.rows * 0.3, `the case is reached: seen ground is in the strip (${e.found}/${e.rows})`);
+      assert.ok(e.distinct >= 6, `the seen ground's west edge wanders (${e.distinct} different positions)`);
+      assert.ok(e.longest < 60, `no straight cut: the west edge keeps one position for ${e.longest} rows (60 allowed; the cut was 140)`);
+      assert.ok(changed(a, b2, box).frac < 0.02, "two shots of the strip alike, so a crop can judge it");
+    } finally { await g.ctx.close(); }
+  });
 }
 });

@@ -69,6 +69,8 @@ export function levelAt(sn, lay, x, y) {
   if (bitAt(sn.tile[lay.key], x, y)) return 1;
   return !veilable(lay)[y * lay.w + x] ? 2 : 0;
 }
+// Whether any tile of the place is seen (level 1) in the record: false for a place with nothing of it seen. The look-around's dark reads this.
+export const anySeen = (sn, key) => { const v = sn.tile[key]; return !!v && v.some(r => r !== 0); };
 // The same on a bare rows array (the arrival picture's guess).
 export const unveiledRows = (lay, rows, x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h || bitAt(rows, x, y) || !veilable(lay)[y * lay.w + x];
 
