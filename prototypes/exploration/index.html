@@ -280,6 +280,8 @@ import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBoo
 import { readOptions } from "./src/options.mjs";
 import { SOUNDS, tallyTick, playNotes, soundOff } from "./src/sound/blips.mjs";
 import { PALETTE, DARK_OF, LIGHT_OF } from "./src/data/palette.mjs";
+import { RIM_BIT, rimRefuses } from "./src/logic/rim.mjs";
+import { nearestHole, seekPace, whereWord } from "./src/logic/creatures.mjs";
 const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot
 soundOff(OPT.mute);
 /* =====================================================================
@@ -3172,7 +3174,6 @@ function blockWords(lay, x, y, o) {
   if (o.t === T.ROCK && lay.press && lay.press[i] === 1 && !(lay.steep && lay.steep[i])) return B.stone;   // a cliff tile is steep rock, not a stone (bug #45: "what stone?")
   return B.rock;
 }
-const RIM_BIT = { up: 1, down: 2, left: 4, right: 8 };   // the steps a ring cell's rim line refuses (lay.rim, adapt7.mjs)
 // The pawn's last 20 steps for a play note (playNoteState): direction, tile before and after, whether it moved, and the check that let it pass or stopped it (STEP_WHY, set where each check decides).
 const STEP_KEEP = 20; let STEP_WHY = '';
 function patchStep(dir, mode) {
@@ -4269,29 +4270,25 @@ function pickStrike(X) {
 }
 
 // ===================== 8. Creatures and the partner =====================
-function rimRefuses(lay, fx, fy, tx, ty) {   // the one rim check: the orthogonal step from (fx,fy) to (tx,ty) crosses a drawn rim line (as the explorer's step does; bug #107). A mibi already on the far side keeps its level: only the step across is refused.
-  if (!lay.rimSteps || fx < 0 || fy < 0 || fx >= lay.w || fy >= lay.h) return false;
-  const dx = tx - fx, dy = ty - fy; if (Math.abs(dx) + Math.abs(dy) !== 1) return false;
-  return !!(lay.rimSteps[fy * lay.w + fx] & RIM_BIT[dy < 0 ? 'up' : dy > 0 ? 'down' : dx < 0 ? 'left' : 'right']);
-}
 function canStand(X, x, y, who) {
   if (who && who.x != null && rimRefuses(X.lay, who.x, who.y, x, y)) return false;
   if (who && who === X.live.pt && x >= 0 && y >= 0 && x < X.lay.w && y < X.lay.h) { const t = bankTile(X.lay, x, y) ? T.BANK : X.lay.tiles[y * X.lay.w + x];   // the partner follows across what it can cross: Tuliko on mud and scree, Rupar on its dug bank
     if ((t === T.WADE || t === T.SCREE || t === T.BANK) && softTileOpen(X.lay, t, x, y)) return !X.live.cr.some(c => !c.hide && c.x === x && c.y === y) && !(X.P.x === x && X.P.y === y); }
   return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * X.lay.w + x]); }
+// The step taken: the tile it leaves is kept (px, py), which the sidestep in stepToward reads.
+function takeStep(who, to) { who.held = 0; who.px = who.x; who.py = who.y; who.x = to.x; who.y = to.y; if (to.dx) who.face = to.dx; }
 function stepToward(X, who, tgt, n) {
-  for (let k = 0; k < (n || 1); k++) {
+  for (let k = 0; k < n; k++) {
     if (tgt.tree && man(who, tgt) <= 1) return;   // a hollow trunk is entered from beside it: stop there, the next tick goes in
     let best = null, bd = man(who, tgt);
-    const ds = Object.values(DIRS).slice(); const r = hash(S.seed, 'st', who.id || 0, S.exp.actions, k) % 4;
+    const ds = Object.values(DIRS), r = hash(S.seed, 'st', who.id || 0, S.exp.actions, k) % 4;
     for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy;
       const d = man({ x, y }, tgt); if (d < bd && canStand(X, x, y, who)) { bd = d; best = { x, y, dx }; } }
-    if (!best) { // sidestep around a blocker
-      for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy; if (man({ x, y }, tgt) <= man(who, tgt) + 1 && canStand(X, x, y, who) && (!(who.px === x && who.py === y) || who.held >= 3)) { best = { x, y, dx }; break; } }   // bug #121: after 3 turns with no step she may turn round, the back-step refused above
-    }
+    // No nearer tile: a sidestep round the blocker, never back onto the tile just left until three turns have passed with no step.
+    for (let i = 0; i < 4 && !best; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy;
+      if (man({ x, y }, tgt) <= man(who, tgt) + 1 && canStand(X, x, y, who) && (!(who.px === x && who.py === y) || who.held >= 3)) best = { x, y, dx }; }
     if (!best) { who.held = (who.held || 0) + 1; return; }
-    who.held = 0;
-    who.px = who.x; who.py = who.y; who.x = best.x; who.y = best.y; if (best.dx) who.face = best.dx;
+    takeStep(who, best);
   }
 }
 function pathNext(X, who, d) {   // the neighbour nearer the target by field d that she can stand on
@@ -4308,21 +4305,21 @@ function standers(X) {   // the tiles something that moves or lies on the ground
   for (const p of S.pods) if (p.k === X.key && !p.h && p.x >= 0) s.add(p.y * w + p.x);
   for (const q of L.fr) s.add(q.y * w + q.x);
   for (const q of L.tf) s.add(q.y * w + q.x);
-  const P = S.exp && S.exp.patch; if (P && P.key === X.key) s.add(P.y * w + P.x);
+  s.add(X.P.y * w + X.P.x);
   return s;
 }
 function pathStepToward(X, who, tgt, n) {
-  for (let k = 0; k < (n || 1); k++) {
+  for (let k = 0; k < n; k++) {
     if (who.x === tgt.x && who.y === tgt.y) return;
     if (tgt.tree) { stepToward(X, who, tgt, 1); continue; }
     const w = X.lay.w, d = pathField(X.lay, tgt, null, X.key), here = d[who.y * w + who.x];
-    if (here < 0) { stepToward(X, who, tgt, 1); continue; }   // no route inside the place: the greedy step, as before
-    // every step goes by the same field (bug #121: step one by the open field and step two by the creature-shut one turned her back): the creature-shut field when its way round is short (<= +4), else the open one, and she waits for what stands in it
+    if (here < 0) { stepToward(X, who, tgt, 1); continue; }   // no route inside the place: the greedy step
+    // Every step goes by the same field, or two fields in turn walk her back and forth: the creature-shut field when its way round is short (<= +4), else the open one, and she waits for what stands in it.
     const occ = standers(X); occ.delete(who.y * w + who.x); occ.delete(tgt.y * w + tgt.x);
     let f = d; if (occ.size) { const d2 = pathField(X.lay, tgt, (x, y) => occ.has(y * w + x), X.key); if (d2[who.y * w + who.x] >= 0 && d2[who.y * w + who.x] <= here + 4) f = d2; }
     const best = pathNext(X, who, f);
     if (!best) { who.held = (who.held || 0) + 1; if (who.held >= 3) stepToward(X, who, tgt, 1); return; }   // a creature in the only way: she waits
-    who.held = 0; who.px = who.x; who.py = who.y; who.x = best.x; who.y = best.y; if (best.dx) who.face = best.dx;
+    takeStep(who, best);
   }
 }
 // Flight is short and never leaves the screen: it stays within the view around you.
@@ -4330,7 +4327,7 @@ function stepAway(X, c, from, n) {
   for (let k = 0; k < n; k++) {
     let best = null, bd = cheb(c, from) * 10 + man(c, from);
     for (const [dx, dy] of Object.values(DIRS)) { const x = c.x + dx, y = c.y + dy, d = cheb({ x, y }, from) * 10 + man({ x, y }, from);
-      if (Math.abs(x - X.P.x) > 6 || Math.abs(y - X.P.y) > 7) continue;
+      if (awayFrom({ x, y }, X.P)) continue;
       if (d > bd && canStand(X, x, y, c)) { bd = d; best = { x, y, dx }; } }
     if (!best) return; c.x = best.x; c.y = best.y; if (best.dx) c.face = best.dx;
   }
@@ -4346,15 +4343,10 @@ function stepRandom(X, c) {
   for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(r + i) % 4], x = c.x + dx, y = c.y + dy;
     if (x >= 1 && y >= 1 && x < X.lay.w - 1 && y < X.lay.h - 1 && canStand(X, x, y, c)) { c.x = x; c.y = y; if (dx) c.face = dx; return; } }
 }
-function nearestHole(X, c, maxD) {
-  let best = null, bd = maxD + 1;
-  for (const f of X.lay.feats) if (f.kind === 'n' && !X.live.cr.some(o => o.hide && o.x === f.x && o.y === f.y)) { const d = man(c, f); if (d < bd) { bd = d; best = f; } }
-  return best;
-}
-// Flight: a Tuikis dives into a hole near by; others run 3 tiles (over two actions), stop and watch.
+// Flight: a Tuikis dives into a hole near by; any other runs its kind's own distance, two tiles an action, then stops and watches.
 function hideOrFlee(X, c) {
   if (c.sp === 1 && !X.lay.cave) { const h = nearestHole(X, c, 7); if (h) { c.st = 'dive'; c.tgt = h.tree ? { x: h.x, y: h.y, tree: 1 } : { x: h.x, y: h.y }; return; } }
-  const run = fleeTiles(spOf(c.sp)); c.st = 'flee'; c.fl = run; c.t = Math.ceil(run / 2);   // the kind's own run, two tiles an action
+  const run = fleeTiles(spOf(c.sp)); c.st = 'flee'; c.fl = run; c.t = Math.ceil(run / 2);
 }
 // Shed limits: one Loika and one Tuikis rain-curl per place per storm (lulls do not reset it), one Tuikis per place per expedition, each creature once,
 // at most SHED_MAX moment pods an expedition. A creature not ready but fed or settled this expedition may still shed, on its own seeded roll.
@@ -4369,16 +4361,6 @@ function shedAllowed(c, X) {
 }
 // A settle moment spent in this place: the Tuikis's once per place per expedition (calmShed), the Tepor's by a warm stone once per place per walk (moShed). Peplos and Wickle have no per-place limit.
 function momentTaken(c, X) { const m = spOf(c.sp).shed; return m === 'calm' ? !!X.live.calmShed : m === 'warm' ? !!(X.live.moShed && X.live.moShed[c.sp]) : false; }
-// Where something happened, in words: a landmark if one is close, else a direction from you.
-function whereWord(X, x, y) {
-  const { lay, P } = X, near = (fx, fy, r) => Math.abs(fx - x) <= r && Math.abs(fy - y) <= r;
-  for (const f of lay.feats) if (f.kind === 'o' && y >= f.y + 1 && y <= f.y + 3 && x >= f.x - 1 && x <= f.x + 3) return 'near the overhang';
-  for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.TRUNK && near(i % lay.w, (i / lay.w) | 0, 1)) return 'under a tree';
-  for (const f of lay.feats) { if (f.kind === 'b' && near(f.x, f.y, 2)) return 'by a bush'; if (f.kind === 'n' && near(f.x, f.y, 2)) return 'by a hole'; if (f.kind === 'e' && near(f.x, f.y, 2)) return 'by a nest'; }
-  for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const t = lay.tiles[(y + dy) * lay.w + x + dx]; if (y + dy >= 0 && y + dy < lay.h && x + dx >= 0 && x + dx < lay.w && (t === T.WATER || t === T.DEEP)) return 'by the water'; }
-  const dx = x - P.x, dy = y - P.y, ns = dy < -2 ? 'north' : dy > 2 ? 'south' : '', ew = dx > 2 ? 'east' : dx < -2 ? 'west' : '';
-  return 'to the ' + (ns && ew ? ns + '-' + ew : ns || ew || 'side');
-}
 function shedPod(c, X) {
   const how = c.st === 'curl' ? 'curl' : spOf(c.sp).shed || 'meal';   // the kind's own moment (a Tuikis curling out of the rain is its curl)
   if (c.st === 'shake' || c.st === 'curl') X.live.stormShed[c.sp] = 1;
@@ -4388,7 +4370,7 @@ function shedPod(c, X) {
   const id = 'p' + (S.nextId++);
   const why = !S.known.includes(c.sp) ? 'new' : bonded(c) ? 'bond' : null;
   if (ANON_PODS) S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how, ...(why ? { why } : {}) });
-  else if (!X.live.tf.some(q => q.x === p.x && q.y === p.y)) X.live.tf.push({ id: X.live.fid++, x: p.x, y: p.y });   // W5: the moment leaves a tuft, not an anonymous pod; bug #144: one tuft per tile at most
+  else if (!X.live.tf.some(q => q.x === p.x && q.y === p.y)) X.live.tf.push({ id: X.live.fid++, x: p.x, y: p.y });   // the moment leaves a tuft, not an anonymous pod: one tuft per tile at most
   if (how === 'dig') (X.live.holes = X.live.holes || []).push({ x: p.x, y: p.y, g: groundName(X.lay.land, X.lay.cave), at: NOW });   // the Rupar's fresh hole stays for the expedition
   const w = crById.get(c.id) || c.stub; if (w) w.s = S.exp.n;
   S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');
@@ -4398,10 +4380,9 @@ function shedPod(c, X) {
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
   else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why && !(how === 'grab' && why === 'bond') ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
 }
-// An eater closes in on fruit quickly from across the view, then slows near it: about 4 quiet actions.
-function seekPace(c, f) { const d = man(c, f); return d > 6 ? 3 : d > 3 ? 2 : 1; }
 // The four bubbles: ! startled · ? curious · fruit (it eats what you carry) · … settling. One at a time, in that order.
-const BUBBLE_SIGN = { '!': 'bubbleNotice', '?': 'bubbleCurious', f: 'bubbleFruit', fs: 'bubbleSeek', '…': 'bubbleSettle' };   // 'fs' is the fruit bubble of a creature going for fruit (drawn as 'f')   // each bubble's sign, the first time it shows in view
+// Each bubble's sign, the first time it shows in view; 'fs' is the fruit bubble of a creature going for fruit (drawn as 'f').
+const BUBBLE_SIGN = { '!': 'bubbleNotice', '?': 'bubbleCurious', f: 'bubbleFruit', fs: 'bubbleSeek', '…': 'bubbleSettle' };
 function bubbleOf(c, carry) {
   if (c.st === 'alert') return '!';
   if (c.st === 'approach') return '?';
@@ -4436,22 +4417,21 @@ function creatureTick(c, X) {
   // Walking is noticed within the species' range; creeping only right beside it, and never inside a fog bank.
   let notice = noticeRange(sp, { curious: c.b > .6, fog: X.fog });
   const walking = X.moved && X.noise === 'walk';
-  if (calm && walking && d <= notice && d > notice - 2 && ['idle', 'seek'].includes(c.st) && !X.live.noted['c' + c.id]) {
+  c.cue = calm && walking && d <= notice && d > notice - 2;   // would have noticed you without the partner: drives the cue
+  if (c.cue && ['idle', 'seek'].includes(c.st) && !X.live.noted['c' + c.id]) {
     X.live.noted['c' + c.id] = 1; fieldHabit('calm');
-    const short = X.ptName + ' keeps the ' + spName(c.sp) + ' calm';
     // the sign is spent only once it is actually on the screen
     if (!S.found.includes('calmkeep')) fxSign('calmkeep', S.exp.pt && S.exp.pt.sp);
-    else fxMsg(short, 0); }
-  c.cue = calm && walking && d <= notice && d > notice - 2;   // would have noticed you without the partner: drives the cue
+    else fxMsg(X.ptName + ' keeps the ' + spName(c.sp) + ' calm', 0); }
   if (calm) notice -= 2;
-  if (c.ind) easeLoika(c, X);   // walk W3: a named Loika hears by the carry table, never by its kind's notice
-  if (c.ind && habitTick(c, X)) return;   // walk W4: her habit plays (the tell, then four beats), or is lost to a heard step
+  if (c.ind) easeLoika(c, X);   // a named Loika hears by the carry table, never by its kind's notice
+  if (c.ind && habitTick(c, X)) return;   // her habit plays (the tell, then four beats), or is lost to a heard step
   const threat = !c.ind && X.moved && c.st !== 'eat' && (walking ? d <= notice : (!X.fog && d <= creepRange(sp) && !calm && !curious));
   const sheltered = !!X.lay.shelter[c.y * X.lay.w + c.x];
   if (c.st === 'shake' || c.st === 'full' || c.st === 'glow') {
     if (c.st === 'glow' && sp.settle) awardMoment(c, 'settle', X);
     if (shedAllowed(c, X)) shedPod(c, X); c.st = 'idle'; c.wet = 0; c.calm = 0; c.warm = 0; c.grab = 0; return; }
-  if (c.st === 'curl' && !X.raining && !X.lay.shelter[c.y * X.lay.w + c.x]) { c.st = 'idle'; c.curl = 0; }
+  if (c.st === 'curl' && !X.raining && !sheltered) { c.st = 'idle'; c.curl = 0; }
   // Sudden things: a strike, a loud act nearby, your Call.
   const startled = (X.strike && cheb(c, X.strike) <= 3) || (X.ring && cheb(c, X.ring) <= X.ring.r && c.b < .75 && !calm && !X.fog);
   if (startled && c.st !== 'eat') hideOrFlee(X, c);
@@ -4460,7 +4440,7 @@ function creatureTick(c, X) {
     else if (curious || calm) { c.st = 'approach'; c.t = 3; }
     else { c.st = 'alert'; c.t = 2; c.go = 1; } }   // wary: "!" for one action, then it hides
   // Weather.
-  if (c.ind) { if (X.raining) c.wet = 1; }   // a named Loika is wet in rain wherever she keeps; she shakes dry as a habit (W4), never runs for shelter
+  if (c.ind) { if (X.raining) c.wet = 1; }   // a named Loika is wet in rain wherever she keeps; she shakes dry as a habit, never runs for shelter
   else if (X.raining) {
     if (!sheltered) { c.wet = 1; if (!['flee', 'dive', 'eat'].includes(c.st)) c.st = 'shelter'; }
     else if (c.wet && c.sp === 0 && c.st !== 'flee') { c.st = 'shake'; return; }
@@ -4474,18 +4454,19 @@ function creatureTick(c, X) {
   }
   if (!X.raining && c.st === 'curl') { c.st = 'idle'; c.curl = 0; }
   if (!X.raining && (c.st === 'shelter' || c.st === 'huddle')) c.st = 'idle';
-  if (c.visit && !threat && ['idle', 'seek', 'watch'].includes(c.st) && habitVisit(c, X)) return;   // W4: a wary one drawn to her haunt for the calm window
+  if (c.visit && !threat && ['idle', 'seek', 'watch'].includes(c.st) && habitVisit(c, X)) return;   // a wary one drawn to her haunt for the calm window
   // The player: a creature shows "!" for one action before it flees, so you can stop.
   if (threat && ['idle', 'seek', 'watch', 'alert', 'approach'].includes(c.st)) {
     if (c.st === 'alert') { if (curious && X.carry && sp.eats) { c.st = 'approach'; c.t = 2; } else { c.go = 0; hideOrFlee(X, c); } }
     else if (!(c.st === 'approach' && curious)) { c.st = 'alert'; c.t = 2; }
   }
-  // #145: at a part-of-day turn a named Loika who is alert or watching is let go to her routine (as the gone is at the turn): hauntStep sets the new part's haunt; the hearing model takes her again on the way, the ease is kept
+  // At a part-of-day turn a named Loika who is alert or watching is let go to her routine (as the gone is at the turn): hauntStep sets the new part's haunt; the hearing model takes her again on the way, the ease is kept
   if (c.ind && !c.gone && (c.st === 'alert' || c.st === 'watch') && c.ind.go && c.ind.go.part !== hpart()) { c.st = 'idle'; c.t = 0; c.go = 0; }
+  const keep = (curious || calm || X.fog) ? 1 : 3;   // how far you stand from fruit on the ground before an eater goes for it
   // Act on the current state.
   switch (c.st) {
     case 'flee': { const n = Math.min(2, c.fl == null ? (c.t >= 2 ? 2 : 1) : c.fl); stepAway(X, c, P, n); if (c.fl != null) c.fl -= n; } if (--c.t <= 0) { c.st = 'watch'; c.t = 3; } break;
-    case 'watch': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (c.ind && c.ease === 2) break; if (!threat && --c.t <= 0) c.st = 'idle'; break;   // a named Loika's watching ends by its ease (W3)   // back to routine after 3 quiet actions
+    case 'watch': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (c.ind && c.ease === 2) break; if (!threat && --c.t <= 0) c.st = 'idle'; break;   // a named Loika's watching ends by its ease; any other is back to its routine after 3 quiet actions
     case 'dive': {
       const h = c.tgt; if (!h) { c.st = 'flee'; c.t = 2; c.fl = null; break; }
       if (man(c, h) <= 1 && !rimRefuses(X.lay, c.x, c.y, h.x, h.y)) { c.x = h.x; c.y = h.y; c.hide = X.raining ? 6 : 4; c.st = 'hidden'; }
@@ -4498,7 +4479,7 @@ function creatureTick(c, X) {
     case 'alert': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (c.ind && c.ease === 1 && !c.go) break; if (--c.t <= 0) { if (c.go) { c.go = 0; hideOrFlee(X, c); } else c.st = 'idle'; } break;
     case 'eat': if (--c.eat <= 0) { const sh = sp.shed; c.st = ((sh === 'meal' || sh === 'dig' || (sh === 'grab' && c.grab)) && shedAllowed(c, X)) ? 'full' : 'idle'; if (c.st === 'idle') c.grab = 0; } break;   // a full Untuva, Rupar (after a meal) or a Hiljan that grabbed
     case 'seek': {
-      const f = X.live.fr.find(q => q.id === c.fid), keep = (curious || calm || X.fog) ? 1 : 3;
+      const f = X.live.fr.find(q => q.id === c.fid);
       if (!f || (!c.grab && cheb(P, f) < keep - 1)) { c.st = 'idle'; c.grab = 0; break; }   // you came too close: it gives up for now (a Hiljan going for a shaken fruit ignores the back-off)
       if (cheb(c, f) <= 1) { X.live.fr = X.live.fr.filter(q => q !== f); c.st = 'eat'; c.eat = 2; if (f.x !== c.x) c.face = Math.sign(f.x - c.x);
         S.exp.stats.putFeeds++;
@@ -4512,31 +4493,29 @@ function creatureTick(c, X) {
       // A settler (the Tuikis by its burrow, the Wickle anywhere, the Peplos in a fog bank) sheds only after a long quiet spell. A kin or calming
       // partner lets you wait one tile closer; it never makes the wait shorter.
       if (canSettle(c, X)) {
-        const loud = walking, near = !(d >= 3 || (calm && d >= 2)), pulsed = X.pulse && d <= X.reach;
-        if (!loud && !near && !pulsed) c.calm++;
-        else { if (c.calm >= 2) fxMsg(pulsed ? 'Your call startled the ' + spName(c.sp) + ' · it stopped settling' : 'The ' + spName(c.sp) + ' looks up · ' + (loud ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
+        if (!walking && d >= (calm ? 2 : 3)) c.calm++;
+        else { if (c.calm >= 2) fxMsg('The ' + spName(c.sp) + ' looks up · ' + (walking ? 'walking is loud' : 'too close'), 2); c.calm = 0; }
         if (c.calm === 2 && S.found.includes('mark…') && X.away(c) && !FX.msg.includes('settling')) fxMsg('A ' + spName(c.sp) + ' is settling ' + whereWord(X, c.x, c.y), 0);
         if (c.calm >= 8 && !momentTaken(c, X)) { c.st = 'glow'; break; }
       } else if (sp.settle === 'fog' && c.calm) c.calm = 0;   // the fog drifted off: the Peplos's settle stops with it
-      // A Tepor within a tile of a warm stone, for three quiet actions in a row (you not walking within 3 tiles, no Call reaching it), settles there; once a place a walk.
+      // A Tepor within a tile of a warm stone, for three quiet actions in a row (you not walking within 3 tiles), settles there; once a place a walk.
       if (sp.shed === 'warm' && !momentTaken(c, X)) {
-        const quiet = warmStoneNear(X, c) && !(walking && d <= 3) && !(X.pulse && d <= X.reach);
+        const quiet = warmStoneNear(X, c) && !(walking && d <= 3);
         c.warm = quiet ? (c.warm || 0) + 1 : 0;
         if (c.warm >= 3) { c.st = 'glow'; break; }
       }
       // Put it down and back off: an eater comes for fruit on the ground once you are 3 tiles from it.
-      if (sp.eats && X.live.fr.length && !(c.ease >= 3)) {   // bug179-hand-fruit-5: a bolted one (ease 3) does not come for fruit; it came back inside 4 tiles and the bolt-end count never ran on his save
-        const keep = (curious || calm || X.fog) ? 1 : 3;
+      if (sp.eats && X.live.fr.length && !(c.ease >= 3)) {   // a bolted one (ease 3) does not come for fruit: coming back inside 4 tiles, its bolt-end count would never run
         let best = null, bd = 1e9, wanted = null;
         for (const f of X.live.fr) { if (cheb(c, f) > 10) continue; const dd = man(c, f); if (dd >= bd) continue; if (cheb(P, f) >= keep) { bd = dd; best = f; } else wanted = f; }
         if (best) { c.st = 'seek'; c.fid = best.id; c.grab = 0; if (cheb(c, best) > 1) stepToward(X, c, best, seekPace(c, best)); break; }
-        if (wanted && man(c, wanted) <= 8 && !X.away(c) ) fxSign('bubbleFruit');
+        if (wanted && man(c, wanted) <= 8 && !X.away(c)) fxSign('bubbleFruit');
       }
       if (sp.settle && c.calm >= 2) break;   // settling: stays put
       if (sp.shed === 'warm' && c.warm >= 1) break;   // a Tepor settling by a warm stone stays on it
       if (c.home) { if (c.x !== c.home.x || c.y !== c.home.y) stepToward(X, c, c.home, 1); }   // a moment heart's creature stays at its spot
-      else if (c.ind && hauntStep(X, c)) { /* its routine: it goes to the haunt it keeps at this part of day and stays there (walk W2) */ }
-      else if (rnd(S.seed, c.id, S.exp.actions, 'w') < sp.wander) stepRandom(X, c);
+      // a named one's routine comes first: it goes to the haunt it keeps at this part of day and stays there
+      else if (!(c.ind && hauntStep(X, c)) && rnd(S.seed, c.id, S.exp.actions, 'w') < sp.wander) stepRandom(X, c);
     }
   }
 }
@@ -4560,14 +4539,14 @@ function partnerTick(X) {
     const r = (elder ? 10 : 5) + n, pod = S.pods.find(p => p.k === X.key && p.h && p.x >= 0 && cheb(p, pt) <= r && cheb(p, P) <= r + 1);
     if (pod) {
       if (cheb(pt, pod) <= 1) { pt.st = 'sniff'; pt.face = Math.sign(pod.x - pt.x) || pt.face; pt.sn = (pt.sn || 0) + 1;
-        if (pt.sn >= 2) { pod.h = 0; pod.out = 1; pt.sn = 0; if (S.exp) S.exp.abUsed = 1; fxGlint(pod.x, pod.y); fxMsg(X.ptName + ' found a buried pod'); logEv(X.ptName + ' sniffed out a pod'); } }
+        if (pt.sn >= 2) { pod.h = 0; pod.out = 1; pt.sn = 0; S.exp.abUsed = 1; fxGlint(pod.x, pod.y); fxMsg(X.ptName + ' found a buried pod'); logEv(X.ptName + ' sniffed out a pod'); } }
       else { pt.st = 'follow'; stepToward(X, pt, pod, speed); }
       return;
     }
   }
   // A notched Rupar or Tuliko shows you its way through: it goes to the nearest earth bank not yet dug (Rupar) or mud / scree (Tuliko) within 4 + 2n of you and waits beside it sniffing.
   // It stops once the bank is dug or the soft ground crossed; a Call (above) always comes first, and out of reach it follows again.
-  if (n >= 1 && (ab === 'bank' || ab === 'sure') && !(ab === 'sure' && S.exp && S.exp.softSaid)) {
+  if (n >= 1 && (ab === 'bank' || ab === 'sure') && !(ab === 'sure' && S.exp.softSaid)) {
     const lay = X.lay, rr = 4 + 2 * n; let tgt = null, bd = 1e9;
     for (let i = 0; i < lay.w * lay.h; i++) { const t = lay.tiles[i]; if (ab === 'bank' ? t !== T.BANK : (t !== T.WADE && t !== T.SCREE)) continue;
       const x = i % lay.w, y = (i / lay.w) | 0;
