@@ -274,7 +274,9 @@ import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
 // the rules the Station's map room shares (map-room build): reach, where a start may go, the marks
 import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBook } from "./src/map-rules.mjs";
 import { readOptions } from "./src/options.mjs";
+import { SOUNDS, tallyTick, playNotes, soundOff } from "./src/sound/blips.mjs";
 const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot
+soundOff(OPT.mute);
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -1382,37 +1384,28 @@ const aAn = w => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
 function fxFloat(x, y, text, icon) { FX.floats.push({ x, y, text, icon, at: NOW }); }
 function fxGlint(x, y, delay) { FX.rings.push({ x, y, at: NOW + (delay || 0), glint: 1 }); }
 // ===== JUICE (juice-build-1): every act that takes or gives something answers at once, from this one table, through fxJuice. =====
-// A row says: snd, the sound (WebAudio blips: [Hz, ms] notes, no files); line, what it moved him toward (the canon strings, core-loop-canon-1; null = the act's own line
-// stays); the burst at the thing (about 4 frames of 80 ms, palette only, off under reduced motion). The +N rising over the thing and the HUD counter's bracket belong to
-// a counter changing, so addMat does them (a counter changes the same way whatever act changed it).
+// A row says: line, what it moved him toward (the canon strings, core-loop-canon-1; null = the act's own line stays). The act's sound is the row of the same name in
+// src/sound/blips.mjs; the burst at the thing is about 4 frames of 80 ms, palette only, off under reduced motion. The +N rising over the thing and the HUD counter's
+// bracket belong to a counter changing, so addMat does them (a counter changes the same way whatever act changed it).
 const JUICE = {
-  stone:   { snd: [[330, 60], [660, 90]],  line: n => '+' + n + ' Energy · it goes home in the crate' },   // a stone's charge
-  cup:     { snd: [[520, 60], [660, 70]],  line: n => '+' + n + ' Essence · it feeds the Station' },       // a cup of dew
-  tuft:    { snd: [[440, 60], [550, 70]],  line: n => '+' + n + ' Essence · it feeds the Station' },       // a tuft on the ground
-  press:   { snd: [[392, 60], [588, 90]],  line: n => '+' + n + ' Essence · it feeds the Station' },       // fruit pressed at a stone
-  fruit:   { snd: [[500, 70]],             line: () => '+1 fruit · in your hand for her' },               // fruit picked up
-  pod:     { snd: [[262, 80], [392, 80], [523, 110]], line: () => 'A pod · it goes home in the crate' },
-  slab:    { snd: [[130, 110], [98, 90]],  line: null },    // the push's own lines say what lay under it
-  prints:  { snd: [[600, 50], [450, 70]],  line: null },    // her prints line stays
-  note:    { snd: [[600, 60], [800, 90]],  line: null },    // the note's own line stays
-  feed:    { snd: [[500, 70], [700, 70]],  line: null },    // the feeding's own line stays
-  strike:  { snd: [[700, 50], [900, 80]],  line: null }     // a strike mark's own line stays
+  stone:   { line: n => '+' + n + ' Energy · it goes home in the crate' },   // a stone's charge
+  cup:     { line: n => '+' + n + ' Essence · it feeds the Station' },       // a cup of dew
+  tuft:    { line: n => '+' + n + ' Essence · it feeds the Station' },       // a tuft on the ground
+  press:   { line: n => '+' + n + ' Essence · it feeds the Station' },       // fruit pressed at a stone
+  fruit:   { line: () => '+1 fruit · in your hand for her' },               // fruit picked up
+  pod:     { line: () => 'A pod · it goes home in the crate' },
+  slab:    { line: null },    // the push's own lines say what lay under it
+  prints:  { line: null },    // her prints line stays
+  note:    { line: null },    // the note's own line stays
+  feed:    { line: null },    // the feeding's own line stays
+  strike:  { line: null }     // a strike mark's own line stays
 };
 const JUICE_BURST_MS = 320;   // 4 frames of 80 ms
-let AC = null;
-function juiceSound(notes) {
-  if (OPT.mute || typeof AudioContext === 'undefined') return;
-  try {
-    AC = AC || new AudioContext(); if (AC.state === 'suspended') AC.resume();
-    let t = AC.currentTime;
-    for (const [hz, ms] of notes) { const o = AC.createOscillator(), g = AC.createGain(); o.type = 'square'; o.frequency.value = hz; g.gain.setValueAtTime(0.04, t); g.gain.linearRampToValueAtTime(0, t + ms / 1000); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + ms / 1000); t += ms / 1000 * 0.8; }
-  } catch (e) { /* no audio here: the act still answers on the screen */ }
-}
 // x, y: the tile of the thing (patch coordinates); n: how much it moved, for the line.
 function fxJuice(act, x, y, n) {
   const row = JUICE[act]; if (!row) return;
   if (x != null && motion()) FX.bursts.push({ x, y, at: NOW });
-  juiceSound(row.snd);
+  playNotes(SOUNDS[act]);
   if (row.line && n !== 0) fxMsg(row.line(n), 2);
 }
 const LOCK_MAX = 2500;   // no hold on the keys lasts longer than this, whatever asked for it: input never locks for good
@@ -8740,8 +8733,8 @@ function tallyElapsed() { const T = S.ui.tally; if (!T) return TALLY_MS; return 
 function tallyDone() { return tallyElapsed() >= TALLY_MS; }
 function tallySounds(shown, e) {   // a tick as each count rises (the pod's with a knock), the settle at the end; once each
   const T = S.ui.tally; if (!T || !motion()) return;
-  shown.forEach((v, i) => { if (v > T.seen[i]) { T.seen[i] = v; juiceSound(i === 0 ? [[110, 70], [82, 90]] : [[520 + i * 120 + v * 40, 40]]); } });
-  if (e >= TALLY_MS && !T.settled) { T.settled = 1; juiceSound([[392, 90], [523, 90], [659, 150]]); }
+  shown.forEach((v, i) => { if (v > T.seen[i]) { T.seen[i] = v; playNotes(i === 0 ? SOUNDS.tallyPod : tallyTick(i, v)); } });
+  if (e >= TALLY_MS && !T.settled) { T.settled = 1; playNotes(SOUNDS.tallySettle); }
 }
 function openCase(end) { S.ui.tally = end ? { at: NOW, seen: [0, 0, 0], settled: 0 } : null; S.ui.caseEnd = end ? 1 : 0; S.ui.caseSel = null; S.phase = 'cargo'; transition(); }
 function caseHold() { return S.exp ? S.exp.cargo : (S.hold || { e: 0, d: 0, s: 0, pods: [], samples: [] }); }
