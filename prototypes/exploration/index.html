@@ -280,6 +280,9 @@ import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBoo
 import { readOptions } from "./src/options.mjs";
 import { SOUNDS, tallyTick, playNotes, soundOff } from "./src/sound/blips.mjs";
 import { PALETTE, DARK_OF, LIGHT_OF } from "./src/data/palette.mjs";
+import { SHELTER_ROWS, OPEN_TEXT, HUD_NAMES, DIR_ABBR, OPEN_COLOURS, OPEN_FRAMES, OPEN_VARIANTS, OPEN_TILE, OPEN_FILES, MOMENT_KINDS } from "./src/data/screens.mjs";
+import { canvasOf, addColours, footSpan } from "./src/render/pictures.mjs";
+import { makePieces } from "./src/ui/pieces.mjs";
 import { NUM_WORD, numWord, cap } from "./src/data/text.mjs";
 import { rimRefuses } from "./src/logic/rim.mjs";
 import { nearestHole, seekPace, whereWord } from "./src/logic/creatures.mjs";
@@ -959,6 +962,8 @@ function warmTick() {   // each frame: if where the walk stands changed, the lis
     const t0 = performance.now(); try { while (WARM.queue.length && performance.now() - t0 < WARM_EAGER_MS) if (!warmStep(WARM.queue[0].key, WARM.queue[0].dir)) WARM.queue.shift(); } catch (e) { WARM.queue.shift(); console.warn('warming a cell failed', e); } }
   if (WARM.queue.length && !WARM.cb && !document.hidden) WARM.cb = warmIdle(warmRun);
 }
+// The Probe is reading the next places: cells wait in the queue and the page is in view (a landing has its own sign). Under a held test clock a frame is a still picture, so it never shows there.
+const probeReading = () => WARM.queue.length > 0 && !WARM.cold && !document.hidden && TEST.clock == null && TEST.at == null;
 // Entered cold: the rest is built a step a frame (about 8 ms of work a frame) while the walk stays live; the arrival look starts when the land is ready.
 function warmLanding() {
   const c = WARM.cold, P = S.exp && S.exp.patch;
@@ -7109,6 +7114,8 @@ function drawTag(s) { if (!s) return; const p = s.ptr, q = s.panel, edge = s.wil
   R(p.x, p.y, p.w, p.h, edge); panel(q.x, q.y, q.w, q.h, C.ink, edge); text(s.name, q.x + 5, q.y + 3, s.wild ? C.bone : C.mint); }
 
 // ===================== 14. HUD, bottom line, mode screens =====================
+// The screens' small composed pieces (src/ui/pieces.mjs): they draw through the page's pixel core.
+const { dashedRect, caseBrass, caseHalf, caseHollow, caseCradle, caseString, shadowAt, mockShadow } = makePieces({ R: (...a) => R(...a), panel: (...a) => panel(...a), ditherFill: (...a) => ditherFill(...a), C });
 function shieldBars(x, y, n, max, w, h) {
   for (let i = 0; i < max; i++) { const bx = x + i * (w + 3); if (i < n) { R(bx, y, w, h, C.bone); R(bx, y + h - 2, w, 2, C.fog); } else { R(bx, y, w, h, C.stone); R(bx + 1, y + 1, w - 2, h - 2, C.ink); } }
 }
@@ -7126,7 +7133,7 @@ async function loadLogSketch() {
     if (typeof Image === 'undefined') return;
     fileOwe(1); const px = await pixelsOf(vurl(new URL('./art/ui/', location.href).href + 'log-sketch-loika-48.png'));
     if (px.width !== 48 || px.height !== 48) throw new Error('log sketch');
-    const c = document.createElement('canvas'); c.width = 48; c.height = 48; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, 48, 48), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0); LOG_SKETCH = c; fileGot();
+    LOG_SKETCH = await canvasOf(px); fileGot();
   } catch (e) { LOG_SKETCH = null; console.warn('the Log sketch did not load; the slot stays empty', e); }
 }
 async function loadDayArt() {
@@ -7135,31 +7142,23 @@ async function loadDayArt() {
     fileOwe(DAY_PARTS.length);
     await Promise.all(DAY_PARTS.map(n => pixelsOf(vurl(new URL('../../art/day-dial/frames/', location.href).href + 'day-' + n + '.png')).then(async px => {
       if (px.width !== 14 || px.height !== 14) throw new Error('day art ' + n);
-      const c = document.createElement('canvas'); c.width = 14; c.height = 14; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, 14, 14), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
-      const dd = new Uint8ClampedArray(px.data);   // the same picture through the place's night table (PR 513's), colour by colour: dimmer, still palette
+      const c = await canvasOf(px), dd = new Uint8ClampedArray(px.data);   // the pictures that are not the current part: the same picture through the place's night table, colour by colour (dimmer, still palette)
       for (let i = 0; i < dd.length; i += 4) if (dd[i + 3]) { const k = nearestPal(dd[i], dd[i + 1], dd[i + 2]), q = RGB[NIGHT[k] != null ? NIGHT[k] : k]; dd[i] = q[0]; dd[i + 1] = q[1]; dd[i + 2] = q[2]; }
-      const dc = document.createElement('canvas'); dc.width = 14; dc.height = 14; dc.getContext('2d').drawImage(await createImageBitmap(new ImageData(dd, 14, 14), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
-      DAY_DIM[n] = dc; DAY_ART[n] = c; fileGot(); })));
+      DAY_DIM[n] = await canvasOf({ width: 14, height: 14, data: dd }); DAY_ART[n] = c; fileGot(); })));
   } catch (e) { for (const n of DAY_PARTS) { delete DAY_ART[n]; delete DAY_DIM[n]; } console.warn('the part-of-day pictures did not load; the sun stands', e); }
 }
-// W6a (Release B): the art director's signed HUD frames (art/hud/), drawn whole with drawImage at 1x as the files came: never redrawn or recoloured. Until they load nothing of W6a shows.
-//   ring-<tiles>-<26|48>-<f0|f1|f2|heard> (the carry ring), target-dir-<n|ne|e|se|s|sw|w|nw|here>-<seen|last> (the target line's arrow). The HUD light strip was cut (owner 11-22: one clock only; the day bar is the clock).
-const HUD_DIRS = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw', 'here'];
-const HUD_NAMES = [
-  ...[1, 2, 3, 4, 5, 6, 7, 8].flatMap(t => [26, 48].flatMap(z => ['f0', 'f1', 'f2', 'heard'].map(f => 'ring-' + t + '-' + z + '-' + f))),
-  ...['seen', 'last'].flatMap(k => HUD_DIRS.map(d => 'target-dir-' + d + '-' + k))];
+// The art director's signed HUD frames (art/hud/, their names in src/data/screens.mjs), drawn whole with drawImage at 1x as the files came: never redrawn or recoloured. Until they load the ring and the target line stay out.
 const HUD_ART = {}, HUD = { ok: false };
 async function loadHudArt() {
   try {
     if (typeof Image === 'undefined') return;
     fileOwe(HUD_NAMES.length);
     await Promise.all(HUD_NAMES.map(n => pixelsOf(vurl(new URL('./art/hud/', location.href).href + n + '.png')).then(async px => {
-      const c = document.createElement('canvas'); c.width = px.width; c.height = px.height; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, px.width, px.height), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
-      HUD_ART[n] = c; fileGot(); })));
+      HUD_ART[n] = await canvasOf(px); fileGot(); })));
     HUD.ok = true;
-  } catch (e) { for (const n of HUD_NAMES) delete HUD_ART[n]; HUD.ok = false; console.warn('the W6a HUD frames did not load; the ring and the target line stay out', e); }
+  } catch (e) { for (const n of HUD_NAMES) delete HUD_ART[n]; HUD.ok = false; console.warn('the HUD frames did not load; the ring and the target line stay out', e); }
 }
-// The day bar (owner 11-23): a window on a looping strip of the six signed pictures. 1 px per 3 light (K = 200 / DAY.light: the loop stays 200 px), so the picture under the fixed marker is dayPart() and the next one enters the right end ~75 light before the change.
+// The day bar: a window on a looping strip of the six signed pictures. 1 px per 3 light (K = 200 / DAY.light: the loop stays 200 px), so the picture under the fixed marker is dayPart() and the next one enters the right end ~75 light before the change.
 // Each action glides the strip its true spent distance (ease-out cubic, 260 ms; n actions min(600, 260+16(n-1)); Wait 450 ms; forward only, mod the loop); reduced motion is instant; nothing moves when idle.
 const DB = { W: 64, K: 200 / DAY.light, pos: null, from: 0, tgt: 0, t0: 0, dur: 0, last: 0, wait: 0, ease: t => 1 - Math.pow(1 - t, 3) };   // W: glass width, K: px per light
 function dayBarPos() {
@@ -7173,31 +7172,27 @@ function dayBarPos() {
   DB.wait = 0;
   const t = DB.dur ? Math.min(1, (NOW - DB.t0) / DB.dur) : 1;
   DB.shown = t < 0.5 && DB.prev != null ? DB.prev : sp;   // the current part changes at the glide's midpoint (no crossfade); instant with reduced motion (dur 0 gives t 1)
-  DB.pos =DB.from + (DB.tgt - DB.from) * DB.ease(t);
+  DB.pos = DB.from + (DB.tgt - DB.from) * DB.ease(t);
   if (t >= 1) { DB.pos = DB.from = DB.tgt = DB.tgt % L; }   // at rest: keep the number small
   return DB.pos;
 }
-// The pictures that are not the current part go through the place's night table (PR 513's): clearly dimmer, still palette. Made once per picture and per night table.
-const dayDim = name => DAY_DIM[name] || null;   // (made in loadDayArt)
 function drawDayBar(x0, y0) {
   const W = DB.W, L = DAY.light, pos = ((dayBarPos() % L) + L) % L, ix = x0 + 1, cx = ix + W / 2, cur = partOfDay(DB.shown);
   R(x0, y0, W + 2, 17, C.stone); R(ix, y0 + 1, W, 16 - 1, C.ink);   // frame and glass
   R(cx - 1, y0 - 2, 3, 1, C.cream); R(cx, y0 - 1, 1, 1, C.cream); R(cx, y0 + 17, 1, 1, C.cream); R(cx - 1, y0 + 18, 3, 1, C.cream);   // the marker's notch outside the frame, top and bottom, pointing in: a 3 px row then a 1 px row (the window reads 66x21)
-  R(ix, y0 + 1, W, 1, C.mist);   // the light along the top inside edge
-  let at = 0;
   g.save(); g.beginPath(); g.rect(ix, y0 + 1, W, 15); g.clip();   // nothing of the strip leaves the glass
   const px = a => Math.round(cx + ((a - pos) * DB.K));
-  for (let lap = -1; lap <= 1; lap++) { at = 0; for (const [name, len] of DAY.parts) {
+  for (let lap = -1; lap <= 1; lap++) { let at = 0; for (const [name, len] of DAY.parts) {
     const a0 = at + lap * L, a1 = a0 + len, c = px((a0 + a1) / 2), bx = px(a0);
     if (name === cur) R(bx + 1, y0 + 2, px(a1) - bx - 1, 14, C.night);   // the current part's plate: the glass one step lighter between its two border ticks
     if (bx > ix && bx < ix + W) { R(bx, y0 + 2, 1, 2, C.slate); R(bx, y0 + 14, 1, 2, C.slate); }   // a part border: two small ticks, top and bottom
-    const pic = name === cur ? DAY_ART[name] : dayDim(name); if (pic && c + 7 > ix && c - 7 < ix + W) g.drawImage(pic, c - 7, y0 + 2);
+    const pic = name === cur ? DAY_ART[name] : DAY_DIM[name]; if (pic && c + 7 > ix && c - 7 < ix + W) g.drawImage(pic, c - 7, y0 + 2);
     at += len; } }
   g.restore();
   for (let r = 1; r < 16; r++) { R(ix, y0 + r, 1, 1, C.ink); R(ix + W - 1, y0 + r, 1, 1, C.ink);   // the glass ends fade into the ink: 3 px, solid then two dither steps
     if ((r + 1) % 2 === 0) { R(ix + 1, y0 + r, 1, 1, C.ink); R(ix + W - 2, y0 + r, 1, 1, C.ink); }
     if (r % 4 === 0) { R(ix + 2, y0 + r, 1, 1, C.ink); R(ix + W - 3, y0 + r, 1, 1, C.ink); } }
-  R(ix, y0 + 1, W, 1, C.mist); R(ix, y0 + 1, 1, 1, C.ink); R(ix + W - 1, y0 + 1, 1, 1, C.ink);
+  R(ix, y0 + 1, W, 1, C.mist); R(ix, y0 + 1, 1, 1, C.ink); R(ix + W - 1, y0 + 1, 1, 1, C.ink);   // the light along the top inside edge
   R(cx, y0, 1, 2, C.cream); R(cx, y0 + 16, 1, 1, C.cream);   // the fixed centre tick: notch top and bottom, never over a picture
 }
 // The world-turn clock, left of battery and radio: a small sun and "T7"; it flashes when the world turns.
@@ -7275,7 +7270,7 @@ function drawHUD() {
   // right of the partner's token: the three counters, battery and radio (the storm and the fog bank are on the bottom line)
   let rx = drawStatus(SCR_W - 6) - 2;
   rx -= countersW(ex.cargo); drawCounters(rx, ex.cargo, 'x'); rx -= 6;
-  if (S.phase === 'patch' && WARM.queue.length && !WARM.cold && !document.hidden && TEST.clock == null && TEST.at == null) { drawProbePulse(rx - 8, 16); rx -= 18; }   // the Probe is reading the next places (note 19; words: PROBE_READING_TEXT, placed by the copywriter)
+  if (S.phase === 'patch' && probeReading()) { drawProbePulse(rx - 8, 16); rx -= 18; }
   // docked mid-expedition: the chip after the pods and crate count (the crate count gives way when it would not fit); the partner moves after it
   const chipW = fieldFrozen() ? textW(DOCK_TEXT.chip, 2) + 16 : 0, crateW = S.bay.length ? 19 + textW(String(S.bay.length), 2) + 6 : 0;
   if (S.bay.length && !(chipW && x + crateW + chipW > rx - 4)) x = drawCrateCount(x);
@@ -7291,15 +7286,14 @@ function drawTop(title, right) {
   if (right) { const room = rx - 30 - textW(title), r = Array.isArray(right) ? right.find(s => textW(s, 2) <= room) || right[right.length - 1] : right; text(clipText(r, room, 2), rx, 9, C.mist, 2, 'right'); }
   return rx;
 }
-// The goal line (first-ten B4): the Companion's top band, on the walk screens F1-F3 before the first pod is home, then the Station's goal. On the opening and the ended-card it
+// The goal line: the Companion's top band, on the walk screens before the first pod is home, then the Station's goal. On the opening and the ended-card it
 // takes the top bar's right side (the long form, then the part before the first " · "); on the map and in a place it is a band under the top bar.
 const GOAL_BAND_H = 24;
 const goalForms = () => { const g = goalLine(); return g ? [g, g.split(' · ')[0]] : ''; };
 const goalBandOn = () => !!S && (S.phase === 'map' || (S.phase === 'patch' && !S.ui.swap && !RT.view)) && !!S.exp && !S.exp.beaconView && !S.ui.mapFull && !!goalLine();
-// The target line (W6a): when the walk's goal names a wild one the player has met (the first walk's "her ways" goal, metBest), the row shows her mini on its slate chip, the words, and an arrow
+// The target line: when the walk's goal names a wild one the player has met (the first walk's "her ways" goal, metBest), the row shows her mini on its slate chip, the words, and an arrow
 // to where the player last saw her: 8-way from the explorer's cell, cream when that sight was today, mist when it was on an earlier day, "here" when that cell is the explorer's. Never her live place.
 // Until the goal names one the player has seen, the row keeps the goal's words and draws no mini and no arrow. null then.
-const DIR_ABBR = { 'north': 'n', 'north-east': 'ne', 'east': 'e', 'south-east': 'se', 'south': 's', 'south-west': 'sw', 'west': 'w', 'north-west': 'nw' };   // still read: the arrow art keys (target-dir-w-seen)
 const TARGET_TEXT_W = SCR_W - 28 - 8 - 9 - 4;   // the goal band's text width: words at x 28, the arrow's 9 px and its margins at the right; drawGoalBand clips to it and targetLine's fits() reads it
 function targetLine() {
   if (!HUD.ok || !S || !S.exp || RT.readOnly || !firstWalk()) return null;
@@ -7328,12 +7322,11 @@ function drawGoalBand() {
 // The bottom line: [✓ what Confirm does · ← where Back goes] | where you are | conditions.
 // Confirm and Back are never dropped; the middle shrinks, trying shorter forms, then dropping tail words.
 // The conditions cluster for the bottom line's middle: storm bolts (1–3) with its heading, the fog bank with its drift.
-// The wind mark (walk W3, rule 18; art note from the art director): a 16 x 16 arrow with two short streaks, pointing the way the wind blows, one file a way (art/ui/wind-N|E|S|W.png: the east one drawn as a UI
-// component, the other three its exact 90-degree turns). It stands in the conditions slot beside the storm's bolt ONLY once the art director has signed the four files: until then `signed` is false and the slot says the wind in words.
-const WIND_MARK = { signed: true, img: {} };
+// The wind mark: a 16 x 16 arrow with two short streaks, pointing the way the wind blows, one signed file a way (art/ui/wind-N|E|S|W.png: the east one drawn as a UI
+// component, the other three its exact 90-degree turns). It stands in the conditions slot beside the storm's bolt; until a file is in (or if it fails) the slot says the wind in words.
+const WIND_MARK = { img: {} };
 function windMarkImg(dir) {
-  if (!WIND_MARK.signed) return null;
-  if (!(dir in WIND_MARK.img)) { WIND_MARK.img[dir] = null; loadImg(vurl('./art/ui/wind-' + dir + '.png')).then(im => { WIND_MARK.img[dir] = im; }).catch(() => { WIND_MARK.img[dir] = false; }); }
+  if (!(dir in WIND_MARK.img)) { WIND_MARK.img[dir] = null; loadImg(vurl('./art/ui/wind-' + dir + '.png')).then(im => { WIND_MARK.img[dir] = im; }).catch(e => { WIND_MARK.img[dir] = false; console.warn('the wind mark did not load; the slot says the wind in words', dir, e); }); }
   return WIND_MARK.img[dir] || null;
 }
 const windNowWord = () => { const ex = S && S.exp; if (!ex || S.phase !== 'patch' || !ex.patch) return null; const lay = layout(ex.patch.key); return lay.cave ? null : windAt(S.seed, lay.cell, S.day.spent); };
@@ -7346,14 +7339,14 @@ function drawWx(w, x, y, word) {
   const fr = motion() ? Math.floor(NOW / 400) % 2 : 0;
   if (w.lvl) { for (let i = 0; i < w.lvl; i++) blit(ICON.bolt(w.lvl === 3 && fr ? 'cream' : 'yellow'), x + i * 13, y + 1); x += w.lvl * 13; text(w.dir > 0 ? '▶' : '◀', x, y + 2, C.yellow); x += 20; }
   if (w.fog) { blit(ditherArt(12, 12, 'fog', 8), x, y + 3); text(w.fdir > 0 ? '▶' : '◀', x + 14, y + 2, C.fog); x += 14 + textW('◀', 2) + 8; }
-  if (w.wind) { const im = windMarkImg(w.wind); if (im) { g.drawImage(im, x + 6, y + 1); if (word) text(WORDS.windShort[w.wind], x + 26, y + 2, C.fog); } else text(WORDS.windShort[w.wind], x, y + 2, C.fog); }   // the signed mark when there is one (rule 18), then the words so it says what it is (#173)
+  if (w.wind) { const im = windMarkImg(w.wind); if (im) { g.drawImage(im, x + 6, y + 1); if (word) text(WORDS.windShort[w.wind], x + 26, y + 2, C.fog); } else text(WORDS.windShort[w.wind], x, y + 2, C.fog); }   // the signed mark when there is one, then the words so it says what it is
 }
 // Where the bottom line's parts fall: the end of the actions, the conditions section, and the middle text that fits.
 function lineCtx(o) {
   const PAD = 8; let x = PAD;
   if (o.ok) x += textW('✓', 2) + 5 + textWT(o.ok, 2);
   if (o.back) { if (o.ok) x += 7 + textW('·', 2) + 7; x += textW('←', 2) + 2 + textWT(o.back, 2); }
-  const wx = lineWx(), aw = textW('◀', 2), mark = wx && wx.wind && windMarkImg(wx.wind), wword = mark ? 4 + textW(WORDS.windShort[wx.wind], 2) : 0;   // the word after the signed mark is the first part of the line to yield (#173)
+  const wx = lineWx(), aw = textW('◀', 2), mark = wx && wx.wind && windMarkImg(wx.wind), wword = mark ? 4 + textW(WORDS.windShort[wx.wind], 2) : 0;   // the word after the signed mark is the first part of the line to yield
   const wwOf = extra => wx ? (wx.lvl ? wx.lvl * 13 + (wx.fog ? 20 : aw) : 0) + (wx.fog ? 14 + aw : 0) + (wx.wind ? (wx.lvl || wx.fog ? 8 : 0) + (mark ? 22 + extra : textW(WORDS.windShort[wx.wind], 2)) : 0) : 0;
   const fit = ww => {   // the conditions section and its divider, and the middle text that fits beside them
     const wsx = wx ? SCR_W - PAD - ww - PAD : SCR_W, mx = x + PAD + 1 + PAD, avail = wsx - PAD - mx, cands0 = Array.isArray(o.ctx) ? o.ctx : [o.ctx || ''], cands = isDark() && S.phase !== 'cargo' ? cands0.map(c => DARK_TEXT.line + (c ? ' · ' + c : '')).concat(DARK_TEXT.line) : cands0, tw = c => textWT(c.replace('\x01', ''), 2);
@@ -7383,7 +7376,7 @@ function drawLine(o) {
 // the one to leave framed; Ground: the pod you face.
 function drawSwap() {
   const sw = swapState(); if (!sw) return;
-  if (sw.night) {   // pod-sleep-build-1: the confirm on the chooser's frame (wild-pod-route-ui-1 p-3): her head, her signed night pod picture and one sentence
+  if (sw.night) {   // a night pod: the confirm on the chooser's frame, with her head, her signed night pod picture and one sentence
     const ls = wrapText(WORDS.pod.c1, 398, 2).slice(0, 4), h = 66 + ls.length * 22, y0 = VIEW_Y + 64;
     panel(6, y0, SCR_W - 12, h, C.ink, C.amber); text(WORDS.pod.head(sw.p.nm), 22, y0 + 14, C.bone, 2);
     blitScaled(podPic(sw.p, 1, 'small'), SCR_W - 6 - 16 - 48, y0 + 10, 2);
@@ -7435,48 +7428,12 @@ function drawMessage() {
 const cen = (pb, x, y) => blit(pb, x + ((32 - pb.w) >> 1), y + ((32 - pb.h) >> 1));
 const cen2 = (key, pb, x, y) => cen(upArt('sg' + key, pb, 2), x, y);
 const onGrass = (x, y, f) => { R(x, y, 32, 32, C.grass); f(); };
-// The shelter sign's picture: art/companion-48/signs/sign-shelter-32.png (32×32 on the core colours, sha256 bf8c1827f8d042aae7778c4a2212f958bb8ab8f1de8b8dcd8c6c7add710b4edf), copied one character per pixel: '.' clear, else the palette index + 48.
-// Regenerate these rows from the file if it is ever re-signed; never edit them by hand (a test compares them with the file).
-const SHELTER_ROWS = [
-  'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-  'BBBBBBBBBBBBBBAAAAAAAAAAAAAAAAAA',
-  'AA@@@@@@@AAABAAAAAAAAAAAAAAAAAAA',
-  'AAAABAAAAAAAABBBAAABBABBB@BB@@B@',
-  '@@ABAAABA@ABBBBAAABBB@@@B>@@>>@>',
-  '@@ABBABB@@@BBBAAAAB@B>>>B>>>=@>=',
-  '@@ABBBBBB@@@@AAAAAB>@=>>@>4@=@@=',
-  '@@B@BBB@BA@@>AAAAA@^>>>>>==@4444',
-  'B@@>@A@>BB@>=AAAAA>^@44>>==>=444',
-  '@>>=>@>@@A@4^AABBA@>4>44444>=444',
-  '>====>>@>BA44ABBBB@=>444444==4=>',
-  '@=3===4>@@A44BBBBB>>>444444=444=',
-  '==3===>>4>A44BB@@B>4=>44444=4444',
-  '========44B44B@>>@44==4444434444',
-  '=====44444B4^@><=>^44===44==4444',
-  '====44444^B44><=44444^======4444',
-  '===4444444@4<=4<=4444^=====24444',
-  '===4444444>4<=44<=4^44=====34444',
-  '===44444444<=4444<==44=====44444',
-  '===44444444<=4==<==444=====44444',
-  '===33333333<=3==<===33=33==33334',
-  '================================',
-  '.==============================.',
-  '...==========================...',
-  '.......=.......==.......=.......',
-  '.......<.......<<.......<.......',
-  '.......<.......<........<.......',
-  '...............<................',
-  '................................',
-  '................................',
-  '................................',
-  '................................'
-];
 const SHELTER = () => art('sg-shelter', () => { const pb = new PB(32, 32); SHELTER_ROWS.forEach((r, y) => { for (let x = 0; x < 32; x++) if (r[x] !== '.') pb.set(x, y, r.charCodeAt(x) - 48); }); return pb; });
 const PAWS = () => art('sg-paws', () => { const pb = new PB(16, 15); pb.blit(ICON.paw('bone'), 0, 6); pb.blit(ICON.paw('bone'), 7, 0); return pb; });
-// night step 4: the same signed sign turned the way she left (the dew's prints; a new drawing of a signed picture, on the art director's list): its own pixels turned in quarter turns, toes toward where she went (0 north: as built, 1 east, 2 south, 3 west)
+// The same signed sign turned the way she left (the dew's prints; a new drawing of a signed picture, on the art director's list): its own pixels turned in quarter turns, toes toward where she went (0 north: as built, 1 east, 2 south, 3 west)
 const rotPB = (pb, k) => { let o = pb; for (let i = 0; i < k; i++) { const n = new PB(o.h, o.w); for (let y = 0; y < o.h; y++) for (let x = 0; x < o.w; x++) n.p[x * n.w + (o.h - 1 - y)] = o.p[y * o.w + x]; o = n; } return o; };
 const PAWS_TURNED = h => h ? art('sg-paws-t' + h, () => rotPB(PAWS(), h)) : PAWS();
-// owner note 162: prints fade as they age. The same pixels, dithered out by the palette's own transparency: 1 = older (every fourth pixel gone), 2 = faint (every other pixel gone); 0 = fresh, as built.
+// Prints fade as they age. The same pixels, dithered out by the palette's own transparency: 1 = older (every fourth pixel gone), 2 = faint (every other pixel gone); 0 = fresh, as built.
 const PAWS_AGED = (pb, lvl, key) => !lvl ? pb : art(key + '-a' + lvl, () => { const n = new PB(pb.w, pb.h); n.p.set(pb.p); for (let y = 0; y < n.h; y++) for (let x = 0; x < n.w; x++) if (lvl === 2 ? (x + y) % 2 === 0 : (x % 2 === 0 && y % 2 === 0)) n.p[y * n.w + x] = -1; return n; });
 // How old a print is, from the parts of day since she left it (PARTS, as the built expiry counts them): 0 fresh (she left at the start of this part), 1 older, 2 faint (the last part before they go). Gone is never drawn: printsHere already drops it.
 function printAge(p) {
@@ -7556,7 +7513,7 @@ const PIC = {
   fruit: (x, y) => cen(FRUIT2(), x, y),
   'bub!': (x, y) => cen2('bub!', bubbleArt('!'), x, y), 'bub?': (x, y) => cen2('bub?', bubbleArt('?'), x, y),
   bubf: (x, y) => cen2('bubf', bubbleArt('f'), x, y), 'bub…': (x, y) => cen2('bub…', bubbleArt('…'), x, y),
-  tuft: (x, y) => { const t = ICON.tuft(); if (t.p) cen2('tuft', t, x, y); else g.drawImage(t.canvas(), x + 16 - t.w, y + 16 - t.h, t.w * 2, t.h * 2); },   // the signed tuft is a loaded picture (no pixel list): drawn at 2× straight (bug #98: upArt threw and stopped the Probe's grid)
+  tuft: (x, y) => { const t = ICON.tuft(); if (t.p) cen2('tuft', t, x, y); else g.drawImage(t.canvas(), x + 16 - t.w, y + 16 - t.h, t.w * 2, t.h * 2); },   // the signed tuft is a loaded picture (no pixel list): drawn at 2× straight (upArt would throw on it)
   drop: (x, y) => cen2('drop', DROP(), x, y),
   untuva: (x, y, known) => cen(known ? creatureArt(2, 'idle', 0) : silhouette(2), x, y),
   partner: (x, y, sp) => cen(creatureArt(sgSp(sp), 'idle', 0), x, y),
@@ -7578,27 +7535,18 @@ function disc(x, y, r, fill, ring) { blit(art('disc' + r + fill + ring, () => { 
 const STAGE_WORD = { juvenile: 'young', adult: 'adult', elder: 'elder' };   // the stage's word, the same on both devices
 function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }
 function card(x, y, w, h, sel, enabled) {
-  // One focus style on these screens (note 12b): the focused thing is paper with a 2 px orange frame and amber brackets 6 px outside; everything else is ink with a 1 px slate edge, never paper, never orange.
+  // One focus style on these screens: the focused thing is paper with a 2 px orange frame and amber brackets 6 px outside; everything else is ink with a 1 px slate edge, never paper, never orange.
   panel(x, y + 3, w, h, C.void);
   if (!sel) { panel(x, y, w, h, C.ink, C.slate); return; }
   panel(x, y, w, h, enabled ? C.paper : C.slate, C.orange); panel(x + 1, y + 1, w - 2, h - 2, enabled ? C.paper : C.slate, C.orange); brackets(x - 6, y - 6, w + 12, h + 12, C.amber);
 }
 const silhouette = sp => art('sil' + sp, () => { const a = tokenOf(sp, 'idle', 0), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) pb.p[i] = C.slate;   // the signed idle's own alpha, filled slate
   return pb; });
-// [copy] The opening screen's words: placeholders for the copywriter, all in this one table (a change of wording never touches code).
-const OPEN_TEXT = {
-  stormFromEast: 'Storm in the east · moving west ◀', stormFromWest: 'Storm in the west · moving east ▶', stormFromEastShort: 'From the east ◀', stormFromWestShort: 'From the west ▶', chargeStones: 'storms charge stones',   // the Weather tab's line: where the storm is, then which way it moves (the short forms beside Deep ground)
-  digs: n => n + ' digs', needsTuikis: 'needs a Tuikis',   // the Deep ground tab's line
-  flat: 'Flat world · New world has stairs', docked: 'Docked · ready to go out',   // a generator 1 world's line; the docked band
-  setOut: 'Set out', needsLabel: 'Needs a Tuikis', deepLeads: n => 'Deep ground · ' + n + ' leads',   // the ✓ labels and the bottom line's middle on the opening
-};
-// The art desk's two opening pieces (art/open/, signed in mibi-art a23ee74f6; manifest.json there): the night mist under the first-time frame (three seamless 96 px variants a, b, c, picked per 96 px block of world pixels by a hash,
+// The art desk's two opening pieces (art/open/, manifest.json there; their names and the mist's colours in src/data/screens.mjs): the night mist under the first-time frame (one seamless 192 px tile,
 // two 900 ms frames and a still for reduced motion) and the pod where the partner would stand (96 px, anchor (48, 92), two 1200 ms glow frames and a still). The mist's four colours are not on the core palette:
 // its pixels go to the painting as they are, and the colours join the screen's allowed set. Until the files are in (or if they fail) the built night dots and the built field pod at 3× play.
 const OPEN_ART = { ready: false, night: [], pod: [] };   // night[variant][0, 1, 2 = still]: Uint32 pixels; pod[0, 1, 2 = still]: a PB
-const OPEN_COLOURS = [[0x0d, 0x13, 0x22], [0x13, 0x20, 0x36], [0x1a, 0x2d, 0x46], [0x24, 0x46, 0x5a]], OPEN_POD_COLOURS = [];
-const OPEN_FRAMES = ['1', '2', 'still'], OPEN_VARIANTS = ['a'], OPEN_TILE = 192;   // the mist is one painted 192 px tile (a only)
-const OPEN_FILES = [...OPEN_VARIANTS.flatMap(v => OPEN_FRAMES.map(f => `c-open-night-${v}-${f}`)), ...OPEN_FRAMES.map(f => `c-open-pod-96-${f}`)];
+const OPEN_POD_COLOURS = [];
 function openRead(files) {
   const at = new Map(), mist = new Set(OPEN_COLOURS.map(c => c.join())); RGB.slice(0, CORE_N).forEach((c, i) => { const k = c[0] << 16 | c[1] << 8 | c[2]; if (!at.has(k)) at.set(k, i); });
   const night = OPEN_VARIANTS.map(v => OPEN_FRAMES.map(f => { const im = files[`c-open-night-${v}-${f}`], u = new Uint32Array(OPEN_TILE * OPEN_TILE);
@@ -7607,7 +7555,7 @@ function openRead(files) {
     return u; }));
   const seen = new Set(), pod = OPEN_FRAMES.map(f => { const im = files[`c-open-pod-96-${f}`]; if (!im || im.width !== 96 || im.height !== 96) throw new Error('opening pod ' + f);   // the pod's shell ramp is not all on the core palette either: its own canvas, its colours join the screen's allowed set
     let c = null; const build = () => { c = document.createElement('canvas'); c.width = 96; c.height = 96; const cg = c.getContext('2d'), id = cg.createImageData(96, 96); id.data.set(im.data); cg.putImageData(id, 0, 0); return c; };
-    for (let i = 0; i < 96 * 96; i++) { const o = i * 4; if (im.data[o + 3] && !seen.has(im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2])) { seen.add(im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2]); OPEN_POD_COLOURS.push([im.data[o], im.data[o + 1], im.data[o + 2]]); } }
+    addColours(im.data, seen, OPEN_POD_COLOURS);
     return { w: 96, h: 96, canvas: () => c || build() }; });
   OPEN_ART.night = night; OPEN_ART.pod = pod; OPEN_ART.ready = true; landReset();
 }
@@ -7625,12 +7573,13 @@ async function loadOpenArt(after) {
 // The care moments' signed stands (art/moment/, from the art desk's painted adult stands, scaled once to 280×300 by tools/build-moment-stands.py): on the stage during Play together
 // moment the kind's painted stand takes the token's place, its lowest row on the token's foot row; a young one takes the kind's young stand (stand-S0Nj: the Loika's and Tuikis' signed young stands; the Untuva has none, so its adult stand at the young scale, listed for the art director).
 // Until the files are in (or if they fail) the token plays.
-const MOMENT_ART = { stand: {}, young: {} }, MOMENT_COLOURS = [], MOMENT_KINDS = ['S01', 'S02', 'S03', 'S01j', 'S02j', 'S03j'];   // stand[sp] / young[sp]: { w, h, foot, canvas() }; the young are the signed young stands (S02: the adult stand at the young scale, listed for the art director)
+const MOMENT_ART = { stand: {}, young: {} }, MOMENT_COLOURS = [];   // stand[sp] / young[sp]: { w, h, foot, canvas() }
 function momentRead(files) {
   const seen = new Set();
   for (const sid of MOMENT_KINDS) { const im = files[`stand-${sid}-280x300`]; if (!im || im.width !== 280 || im.height !== 300) throw new Error('moment stand ' + sid);
     let c = null, foot = -1; const build = () => { c = document.createElement('canvas'); c.width = 280; c.height = 300; const cg = c.getContext('2d'), id = cg.createImageData(280, 300); id.data.set(im.data); cg.putImageData(id, 0, 0); return c; };
-    for (let i = 0; i < 280 * 300; i++) { const o = i * 4; if (im.data[o + 3]) { foot = Math.max(foot, (i / 280) | 0); const k = im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2]; if (!seen.has(k)) { seen.add(k); MOMENT_COLOURS.push([im.data[o], im.data[o + 1], im.data[o + 2]]); } } }
+    for (let i = 0; i < 280 * 300; i++) if (im.data[i * 4 + 3]) foot = (i / 280) | 0;   // her lowest row with a pixel
+    addColours(im.data, seen, MOMENT_COLOURS);
     MOMENT_ART[sid.endsWith('j') ? 'young' : 'stand'][PARTNER_FILE.indexOf(sid.slice(0, 3))] = { w: 280, h: 300, foot, canvas: () => c || build() }; }
 }
 async function loadMomentArt() {
@@ -7648,19 +7597,19 @@ const CARE_ART = {}, CARE_COLOURS = [], CARE_FILES = { 'c-heart-24': 24, 'c-hear
 function careRead(files) {
   const seen = new Set();
   for (const [id, n] of Object.entries(CARE_FILES)) { const im = files[id]; if (!im || im.width !== n || im.height !== n) throw new Error('care art ' + id);
-    for (let i = 0; i < n * n; i++) { const o = i * 4; if (im.data[o + 3]) { const k = im.data[o] << 16 | im.data[o + 1] << 8 | im.data[o + 2]; if (!seen.has(k)) { seen.add(k); CARE_COLOURS.push([im.data[o], im.data[o + 1], im.data[o + 2]]); } } }
+    addColours(im.data, seen, CARE_COLOURS);
     CARE_ART[id] = { w: n, h: n, canvas: () => im.canvas }; }   // the file as loaded, never redrawn
 }
 async function loadCareArt() {
   try {
     if (typeof Image === 'undefined') return;
     const files = {}; fileOwe(Object.keys(CARE_FILES).length);
-    await Promise.all(Object.keys(CARE_FILES).map(n => pixelsOf(vurl(new URL('../../art/companion-48/care/', location.href).href + n + '.png')).then(async px => { const c = document.createElement('canvas'); c.width = px.width; c.height = px.height; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, px.width, px.height), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);   // the canvas is made from the decoded bytes, never read back
-      files[n] = { width: px.width, height: px.height, data: px.data, canvas: c }; fileGot(); })));
+    await Promise.all(Object.keys(CARE_FILES).map(n => pixelsOf(vurl(new URL('../../art/companion-48/care/', location.href).href + n + '.png')).then(async px => {
+      files[n] = { width: px.width, height: px.height, data: px.data, canvas: await canvasOf(px) }; fileGot(); })));
     careRead(files);
   } catch (e) { console.warn('the hearts did not load; their plates stand', e); }
 }
-// ---- Riding's cuts (companion-riding-build-2): a home mibi is drawn from the cut of her own signed master (tools/companion-cut.py), her coat and marking from her genome (the Station's ownLooks: a home mibi is known to her owner).
+// ---- Riding's cuts: a home mibi is drawn from the cut of her own signed master (tools/companion-cut.py), her coat and marking from her genome (the Station's ownLooks: a home mibi is known to her owner).
 // Chosen by riding-cut.mjs (the one picker), fetched when Riding first needs them, one at a time as asked; until a cut is in (or if it fails) the place shows nothing, never a stock picture, never a grey one.
 const RIDE = { have: null, img: new Map(), asked: false, coatOf: null, ownLooks: null, frameOf: null };
 async function loadRidingIndex() {
@@ -7689,8 +7638,7 @@ function cutByName(n) {
   const e = RIDE.img.get(n); if (e) return e.c || null;
   RIDE.img.set(n, { c: null });
   if (typeof Image === 'undefined') return null;
-  pixelsOf(vurl(new URL(CUT_DIR + n, location.href).href)).then(async px => { const c = document.createElement('canvas'); c.width = px.width; c.height = px.height;
-    c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, px.width, px.height), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0); RIDE.img.get(n).c = c; })
+  pixelsOf(vurl(new URL(CUT_DIR + n, location.href).href)).then(async px => { const c = await canvasOf(px); RIDE.img.get(n).c = c; })
     .catch(e => { RIDE.img.delete(n); console.warn('a Riding cut did not load', n, e); });
   return null;
 }
@@ -7699,7 +7647,7 @@ const deepShown = () => !!digger() || S.known.some(sp => spOf(sp).ab === 'dig') 
 // A mibi's picture at k× at (x, y); a kind the Companion has no art for is its labelled plate.
 function openCreature(sp, pose, fr, k, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(creatureArt(sp, pose, fr, k, juv), x, y); }
 // The Companion's front door: the land you know (the frame), one line of what changed, the way out as two tabs, and who comes along.
-// The partner card (card(8, OPEN_PY + 1, 434, OPEN_PH - 8)) ends at OPEN_PY + OPEN_PH - 7; a mibi picture h tall in it (portrait or silhouette, its art ends on its last row) has its top at openCardTop(h): its feet stand 4 px above that edge, never past it (bug #33). One line: the tests lift it whole.
+// The partner card (card(8, OPEN_PY + 1, 434, OPEN_PH - 8)) ends at OPEN_PY + OPEN_PH - 7; a mibi picture h tall in it (portrait or silhouette, its art ends on its last row) has its top at openCardTop(h): its feet stand 4 px above that edge, never past it. One line: the tests lift it whole.
 const OPEN_FRAME_BASE = { x: 8, y: 38, w: 434, h: 320 }, OPEN_PY = 450, OPEN_PH = 110, openCardTop = h => OPEN_PY + OPEN_PH - 7 - 4 - h;
 // With no mibi at all there is no partner row, and the land takes its room (434 x 430); from the first mibi on the row is back.
 const openAlone = () => !liveMibis().length && !carriedMibis().length;
@@ -7844,7 +7792,7 @@ function menuIcon(id, x, y) {
     pb.rect(14, 10, 7, 1, C.sand); pb.rect(14, 16, 7, 1, C.sand); pb.outline(() => C.stone); return pb; }), x, y);
   else blit(art('m-world', () => { const pb = new PB(28, 28); pb.ell(14, 14, 13, 13, C.grass, { sh: [C.sprout, C.leaf] }); pb.ell(18, 18, 7, 6, C.river, { clip: (x2, y2) => Math.hypot(x2 + .5 - 14, y2 + .5 - 14) < 13 }); pb.outline(); return pb; }), x, y);
 }
-// menu-side-hero-5: the field menu's box and the view beside it. The box takes the side away from the hero; when no spot of the four (side, other side, each at the top and the bottom of the view)
+// The field menu's box and the view beside it. The box takes the side away from the hero; when no spot of the four (side, other side, each at the top and the bottom of the view)
 // clears him, the view shifts sideways while the menu is open so he stands in the free part beside the box, MENU_CLEAR px clear of it, and shifts back on close (the pan's own ease; a snap with motion off).
 const MENU_CLEAR = 8;
 const MENUSHIFT = { cur: 0, from: 0, to: 0, at: 0, side: null };   // cur: px the camera is shifted now; side: true = box on the left, false = right, null = today's rule
@@ -7883,10 +7831,10 @@ function drawMenu(t) {
   if (S.ui.waiting && overField) return;   // waiting: the whole place stays in view; the bottom line is the strip
   // in the field the list is small and sits on the side away from the player, so the player stays visible (dimmed on the map)
   const pl = RT.plScr;
-  // menu-side-hero-3: in the field the box is as wide as its widest row (the line's own measure + the icon column and right margin), never more than 250
+  // in the field the box is as wide as its widest row (the line's own measure + the icon column and right margin), never more than 250
   const rowH = overField ? 44 : 62, sc = overField ? 2 : 3, w = overField ? menuFieldW(items) : 330;
   let x = overField ? SCR_W - w - 8 : 60, top = overField ? VIEW_Y + 8 : 116;
-  if (overField && S.ui.from === 'patch' && S.exp && S.exp.patch && pl) {   // menu-side-hero-1: the first place whose rect clears the pawn's drawn rect; menu-side-hero-5: or, when the view shifted for it, the side it shifted for
+  if (overField && S.ui.from === 'patch' && S.exp && S.exp.patch && pl) {   // the first place whose rect clears the pawn's drawn rect, or, when the view shifted for it, the side it shifted for
     const f = menuFieldSpots(items, pl, MENUSHIFT.side);
     x = f.x; top = f.top;
   } else if (overField && pl && pl.x > SCR_W / 2) x = 8;
@@ -7901,7 +7849,7 @@ function drawMenu(t) {
     if (ls.length < 2) text(it.label, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8), col, sc);
     else ls.forEach((l, k) => text(l, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8) - 8 + k * 16, col, sc)); });
 }
-// ---- The Log face (companion-device-build-1), built to the accepted companion-device-2 mock (shots-1x/03-log.png). On the Companion's grid: type at 2x (3x for the day), pictures at 1x or 2x of their own pixels. ----
+// ---- The Log face, built to the accepted device mock (shots-1x/03-log.png). On the Companion's grid: type at 2x (3x for the day), pictures at 1x or 2x of their own pixels. ----
 // Reading it spends no light and moves nothing: it only reads S.book. Paper, rules, the tab and the panel are UI by code (rule 18); her sketch (48 x 48, on a met entry) is a named empty slot: [art] one painted piece per kind, nothing drawn.
 const LOG_Y0 = 114, LOG_Y1 = 520;
 function logDays() {
@@ -7924,7 +7872,7 @@ function logLay(r) {
 function logFitTop(day) { let y = 0, i = day.rows.length; while (i > 0) { const h = logLay(day.rows[i - 1]).h; if (y + h > LOG_Y1 - LOG_Y0) break; y += h; i--; } return i; }
 function logCanMove() { const days = logDays(); return days.length > 1 || (days.length === 1 && days[0].rows.length > 1); }   // the bottom line names ▲▼ only when they do something
 function openLog() { const days = logDays(); S.ui.logDay = Math.max(0, days.length - 1); S.ui.logTop = days.length ? logFitTop(days[S.ui.logDay]) : 0; S.ui.logMark = null; S.phase = 'log'; }
-// The mark is its own entry (S.ui.logMark, the first one drawn until ▲▼ move it); the page's top follows it so it is always in view (#156 QA: the mark was the page's top, so ▼ at the foot never moved it)
+// The mark is its own entry (S.ui.logMark, the first one drawn until ▲▼ move it); the page's top follows it so it is always in view
 const logMarkAt = day => day && day.rows.length ? clamp(S.ui.logMark == null ? S.ui.logTop | 0 : S.ui.logMark, 0, day.rows.length - 1) : 0;
 const logFits = (day, t, m) => { let y = 0; for (let i = t; i <= m; i++) y += logLay(day.rows[i]).h; return y <= LOG_Y1 - LOG_Y0; };
 function logKey(k) {
@@ -7975,11 +7923,10 @@ function drawLog() {
   }
   if (di > 0) text('▲ ' + W.earlier, 430, 526, faint, 2, 'right');
 }
-// ---- Her page (her-page-ui-1), built to her-page-design-1 sections 2 and 3. One page of the Log's own frame for each wild one met; it only reads the save and writes nothing: light, clock, wild ones and S.log stay as they are. ----
+// ---- Her page. One page of the Log's own frame for each wild one met; it only reads the save and writes nothing: light, clock, wild ones and S.log stay as they are. ----
 // Only what he has been shown is on it: a way appears with its first note, her marking with her coat read, her pod once she has left it, a haunt line for a part noted after she was met.
 // NAMED SLOT HER-PICTURE: the art director names the cut for her page (rule 17). Until then the page shows the walk's own signed token of her at 2x (plain until her coat is read, then her marking), never a stand-in.
 const metOrder = () => { const nm = S.named || {}, o = (S.metIds || []).map(String).filter(id => nm[id]); for (const id of Object.keys(nm)) if (!o.includes(id)) o.push(id); return o; };   // the order met; a save from before the met order: by id
-// The wild one the bottom line names now: the one faced, else the nearest in sight (the line's own pick); null when none
 // The one source for "the Loika the screen names": the met one in sight (faced, else the nearest, whatever her kind or ease), else the one the walk follows (metBest).
 // { id, c, view }: c is her creature and view true when she is in sight; null when none is met. The top line, her page, the menu's first row and the not-faced bottom line read only this.
 function screenLoika() {
@@ -8018,7 +7965,7 @@ function drawHer() {
   text(clipText(name, o.length > 1 ? 300 : 400, 3), 22, 74, ink, 3); if (o.length > 1) text(W.count(o.indexOf(id) + 1, o.length), 430, 80, soft, 2, 'right');
   R(16, 104, 418, 2, C.clay);
   const sa = S.seenAt && S.seenAt[id], sad = coatRead(id) && wildMarked({ id });
-  // her picture: the signed Companion 96 x 88 cut at 1x (AD, PR 597): the plain cut until her coat is read, then the cut with her marking; an unloaded cut leaves the slot empty
+  // her picture: the signed Companion 96 x 88 cut at 1x: the plain cut until her coat is read, then the cut with her marking; an unloaded cut leaves the slot empty
   if (!RIDE.have) loadRidingIndex();
   const hk = kindId({ sp: sa && sa.sp != null ? sa.sp : 0 }, KIND_INFO), pic = RIDE.have ? cutByName(cutName(hk, 'adult', sad ? 'between-between+saddle' : null, 'row', RIDE.have)) : null;
   panel(22, 114, 96, 88, C.bone, C.clay); g.imageSmoothingEnabled = false; if (pic) g.drawImage(pic, 22, 114);
@@ -8027,9 +7974,9 @@ function drawHer() {
   if (kx + textW(W.kind, 2) > (o.length > 1 ? 340 : 430)) y += 24;
   const met = (S.pages && S.pages[id] && S.pages[id].met) || (S.book || []).find(r => r.kind === 'met' && String(r.id) === id);
   if (met) { put(W.met(met.d, met.part, met.t)); put(WORDS.book.place(met.place) + ' · ' + met.from); }
-  { const st = herState(id);   // pod-sleep-build-1: her state takes the when-line of the "last seen" pair: fed today, asleep in her pod, in the Case, gone home
+  { const st = herState(id);   // her state takes the when-line of the "last seen" pair: fed today, asleep in her pod, in the Case, gone home
     if (sa || st) { const lay = sa && layoutCache.get(String(sa.k)), ws = W.seen(sa && sa.t === S.turn, sa ? sa.t + 1 : 0, lay && !lay.cave ? placeName(lay) : ''); put(st || ws[0]); if (sa && ws[1]) put(ws[1]); } }
-  // what he has been shown of her: one block for each habit noted (habits-out-build-1: no count of ways, none named as unseen)
+  // what he has been shown of her: one block for each habit noted (no count of ways, none named as unseen)
   y = Math.max(214, y + 2); const H = (S.habits && S.habits[id]) || {};
   for (const k of HABITS) { const rec = H[k]; if (!rec || !Object.keys(rec.ranges).length) continue;
     text(WORDS.habit.name[k], 22, y, ink);
@@ -8047,15 +7994,14 @@ function drawHer() {
     for (const r of rows) { if (y > 542) break; if (r.parts.length && DAY_ART[r.parts[0]]) g.drawImage(DAY_ART[r.parts[0]], 22, y - 4, 28, 28);
       text(clipText(r.parts.length ? r.parts.join(', ') + ' · ' + r.word : r.word, 330, 2), 58, y, ink); if (r.parts.length) blitScaled(ICON.paw('bark'), 408, y - 2, 2); y += 24; } }
 }
-// ---- The watch view and the field card (w6b-build-1), built to walk-pictures-2 04 and 05. On the Companion's grid: type at 2x, her picture at 1x of its own 228 x 234 pixels (tools/loika-pose-cuts.py, cut from the signed masters). ----
+// ---- The watch view and the field card. On the Companion's grid: type at 2x, her picture at 1x of its own 228 x 234 pixels (tools/loika-pose-cuts.py, cut from the signed masters). ----
 // ✓ facing a named wild one in sight while her habit plays opens the view (no other way in). It closes by itself when the play ends, she is gone or out of sight, and on ←.
 // Her picture follows the beat's pose; until her coat is read she is drawn in the plain coat (wildSaddled). An unsigned or unloaded cut is a named empty slot: nothing is drawn in its place.
 const POSE_CUT = new Map();
 function poseCut(coat, pose) {
   const n = 'loika-' + coat + '-' + pose + '-228x234.png', e = POSE_CUT.get(n); if (e) return e.c;
   POSE_CUT.set(n, { c: null }); if (typeof Image === 'undefined') return null;
-  pixelsOf(vurl(new URL(CUT_DIR + 'pose/' + n, location.href).href)).then(async px => { const c = document.createElement('canvas'); c.width = px.width; c.height = px.height;
-    c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, px.width, px.height), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0); POSE_CUT.get(n).c = c; POSE_CUT.get(n).px = px; })
+  pixelsOf(vurl(new URL(CUT_DIR + 'pose/' + n, location.href).href)).then(async px => { const c = await canvasOf(px), e = POSE_CUT.get(n); e.c = c; e.px = px; })
     .catch(e => { console.warn('a Loika pose cut did not load', n, e); });   // stays an empty slot, not asked again
   return null;
 }
@@ -8095,12 +8041,12 @@ function cardKey(k) {
   else if (k === 'back') { S.ui.card = null; if (watchHer()) { S.phase = 'watch'; transition(); } else watchClose(); }   // back to the view (the play may be over)
 }
 // cut: mid or near in clear air draws the signed cut; far, or rain or fog, draws only her shape (the cut's own mask at 1x in one palette colour: no face, no coat)
-function drawPoseAt(coat, pose, x, y, cut = true) { poseCut(coat, pose); const cv = cut ? poseCut(coat, pose) : poseMask(coat, pose, C.stone, 0); if (cv) { g.imageSmoothingEnabled = false; g.drawImage(cv, x, y); } }
+function drawPoseAt(coat, pose, x, y, cut = true) { const cv = cut ? poseCut(coat, pose) : poseMask(coat, pose, C.stone, 0); if (cv) { g.imageSmoothingEnabled = false; g.drawImage(cv, x, y); } }
 const airClear = () => { const lay = curLay(); return habClear({ raining: !lay.cave && stormRain(lay.cell % MW), fog: !lay.cave && inFog(lay.cell), part: dayPart() }); };
 function drawWatch() {
   const c = watchHer(); if (!c) return;
-  const ex = S.exp, P = ex.patch, h = c.hb, W = WORDS.watch, name = habName(c), range = habRange(cheb(c, P)), lay = curLay(), b = beatOf(h), coat = wildSaddled(c) ? 'saddle' : 'plain';
-  const gv = givesNow(range, habClear({ raining: !lay.cave && stormRain(lay.cell % MW), fog: !lay.cave && inFog(lay.cell), part: dayPart() }), byDay()), hl = hearLineOf(c);
+  const ex = S.exp, P = ex.patch, h = c.hb, W = WORDS.watch, name = habName(c), range = habRange(cheb(c, P)), b = beatOf(h), coat = wildSaddled(c) ? 'saddle' : 'plain';
+  const gv = givesNow(range, airClear(), byDay()), hl = hearLineOf(c);
   const chip = chipOf({ range, tiles: cheb(c, P), gives: gv, left: hl ? hl.left : null });
   R(0, 0, SCR_W, SCR_H, C.night);
   R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night); text(clipText(W.head(name), 380, 2), 10, 9, C.bone); blit(battArt(), SCR_W - 6 - 27, 11);
@@ -8148,7 +8094,7 @@ function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex
 // The Probe screen, in three groups with one heading colour: the Probe (shield, reach, Energy, the tier 2 price
 // as its last row), the map's signs and cells as an icon | name | meaning grid, and the field guide as tokens.
 // The reach grid at 2× (dot 6, pitch 8): filled is explored, your cell framed, a notch where a gate is. Between expeditions it is the Probe's range, all hollow.
-// How many of the reach grid's places are filled, and how many the grid has on the map (the words under the Probe's Reach: plan 3.17 B3). Between expeditions none are filled.
+// How many of the reach grid's places are filled, and how many the grid has on the map (the words under the Probe's Reach). Between expeditions none are filled.
 function reachCount(range) {
   const ex = S.exp, n = range * 2 + 1, s0 = ex ? cxy(ex.start) : null, reach = ex ? new Set(ex.reach) : null; let filled = 0, total = 0;
   for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
@@ -8221,7 +8167,7 @@ function probeMove(k) {
 // A crate in the bay (read-only): its expedition number and its contents as icons.
 function crateIcon(x, y, c, w) {
   w = w || 130; if (!c) { dashedRect(x, y, w, 66, C.slate); return; }   // an empty crate place is a dashed outline
-  panel(x, y + 3, w, 66, C.void); panel(x, y, w, 66, c ? C.clay : C.night, c ? C.bark : C.slate);
+  panel(x, y + 3, w, 66, C.void); panel(x, y, w, 66, C.clay, C.bark);
   for (let i = 8; i < 62; i += 10) R(x + 3, y + i, w - 6, 1, C.bark);
   text('E' + c.n, x + 6, y + 6, C.paper);
   if (c.none) { text('empty', x + 6, y + 36, C.sand); return; }   // an empty trip's crate: nothing sealed in it
@@ -8229,18 +8175,17 @@ function crateIcon(x, y, c, w) {
   let px = x + 34; for (const q of (c.pods || []).slice(0, 3)) { podSlot(px, y + 2, q); px += 18; }
   let mx = x + 6; for (const [k, v] of [['energy', c.e], ['data', c.d], ['essence', c.s]]) { blit(ICON[k](), mx, y + 32); text(String(v | 0), mx + 16, y + 32, C.paper); mx += 16 + textW(String(v | 0), 2) + 6; }
 }
-// ---- The Case face (companion-case-build-1), built to the accepted companion-device-2 mock (shots-1x/05-case.png). Phase 'cargo' keeps its name; the menu row, the title and the face are the Case. ----
+// ---- The Case face, built to the accepted device mock (shots-1x/05-case.png). Phase 'cargo' keeps its name; the menu row, the title and the face are the Case. ----
 // A field case lying open: in the lid the crates sealed for home, in the tray the pod cradles, the three supplies and the satchel's 8 places; a corner bracket over one thing and its label under the tray.
 // It reads the hold and the bay and writes nothing: opening it spends no light and the world does not move. Wood rim, brass, cradles, dotted places and the label are UI by code (rule 18);
 // every picture is a signed file (the pod and the tuft; a whisker and a claw have none yet: their places stay empty, named [art]).
-// ---- The end tally (end-tally-build-1): "Brought home" counts pods, finds and pages up from 0 in about 2 s. Only what the walk records: the hold's pods and samples, and the page entries written since the walk began (S.pages, counted at set-out as ex.pg0). ----
+// ---- The end tally: "Brought home" counts pods, finds and pages up from 0 in about 2 s. Only what the walk records: the hold's pods and samples, and the page entries written since the walk began (S.pages, counted at set-out as ex.pg0). ----
 function pageCount() { let n = 0; for (const id in (S.pages || {})) n += Object.keys(S.pages[id] || {}).length; return n; }
 const TALLY_SEG = [[0, 600], [600, 1200], [1200, 1700]], TALLY_MS = 2000;   // pods, finds, pages count in their own stretch; the settle lands at 2 s
 function tallyTotals() { const ex = S.exp, h = caseHold(); return [(h.pods || []).length, (h.samples || []).length, Math.max(0, pageCount() - (ex && ex.pg0 != null ? ex.pg0 : pageCount()))]; }
 // what each count shows at e ms into the tally (a stretch counts 0..N evenly)
 function tallyShown(tot, e) { return tot.map((n, i) => { const [a, b] = TALLY_SEG[i]; return e >= b ? n : e <= a ? 0 : Math.min(n, Math.floor((e - a) / (b - a) * (n + 1))); }); }
 function tallyElapsed() { const T = S.ui.tally; if (!T) return TALLY_MS; return motion() ? NOW - T.at : TALLY_MS; }
-function tallyDone() { return tallyElapsed() >= TALLY_MS; }
 function tallySounds(shown, e) {   // a tick as each count rises (the pod's with a knock), the settle at the end; once each
   const T = S.ui.tally; if (!T || !motion()) return;
   shown.forEach((v, i) => { if (v > T.seen[i]) { T.seen[i] = v; playNotes(i === 0 ? SOUNDS.tallyPod : tallyTick(i, v)); } });
@@ -8296,28 +8241,16 @@ function caseKey(k) {
   if (k === 'back') { if (end || !S.ui.from) S.phase = end ? 'menu' : 'setup'; else S.phase = S.ui.from; transition(); }
   else if (k === 'up' || k === 'down' || k === 'left' || k === 'right') caseMove(k);
   else if (k === 'confirm') {
-    if (end && canSend() && sealsCrate(S.exp) && !tallyDone()) { S.ui.tally.at = NOW - TALLY_MS; S.ui.tally.seen = tallyTotals(); }   // the settle chord sounds on the next frame   // ✓ while it counts: skip to the end of the tally; the next ✓ ends the expedition
+    if (end && canSend() && sealsCrate(S.exp) && tallyElapsed() < TALLY_MS) { S.ui.tally.at = NOW - TALLY_MS; S.ui.tally.seen = tallyTotals(); }   // ✓ while it counts: skip to the end of the tally (the settle chord sounds on the next frame); the next ✓ ends the expedition
     else if (end) { if (canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); } else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
     else { const t = caseThing(caseSel(caseCells())), en = caseEntry(t.thing); if (en) { S.ui.logDay = en.di; S.ui.logTop = en.ri; S.ui.logMark = null; S.phase = 'log'; transition(); } }   // its page in the Log, opened on that entry
   }
 }
 function caseLine() {   // the bottom line: only what works here
   const W = WORDS.case;
-  if (S.exp && S.ui.caseEnd) return canSend() ? { ok: W.end, ctx: W.pages, back: W.field, dim: false } : { ok: '', ctx: W.pages, back: W.field, dim: false };   // the end-of-walk Case names the Log too: his named ones' pages are found there (owner 11-25 "couldnt see their details")
+  if (S.exp && S.ui.caseEnd) return canSend() ? { ok: W.end, ctx: W.pages, back: W.field, dim: false } : { ok: '', ctx: W.pages, back: W.field, dim: false };   // the end-of-walk Case names the Log too: his named ones' pages are found there
   return { ok: caseEntry(caseThing(caseSel(caseCells())).thing) ? W.page : '', ctx: W.pages, back: W.field, dim: false };
 }
-const caseBrass = (x, y, w, h) => { R(x, y, w, h, C.gold); R(x, y, w, 1, C.yellow); R(x, y, 1, h, C.yellow); R(x, y + h - 1, w, 1, C.rust); R(x + w - 1, y, 1, h, C.rust); };
-function caseHalf(x, y, w, h) {   // one half of the case: its shadow on the page, a wooden rim lit from the top left, the lining
-  ditherFill(x + 4, y + h, w - 2, 4, 'clay', 8); ditherFill(x + w, y + 4, 4, h, 'clay', 8);
-  panel(x, y, w, h, C.soil); panel(x + 2, y + 2, w - 4, h - 4, C.bark);
-  R(x + 4, y + 2, w - 8, 1, C.clay); R(x + 2, y + 4, 1, h - 8, C.clay);
-  R(x + 8, y + 8, w - 16, h - 16, C.soil); R(x + 10, y + 10, w - 18, h - 18, C.sand); ditherFill(x + 10, y + 10, w - 18, h - 18, 'paper', 3);
-}
-function caseHollow(x, y, w, h) { panel(x, y, w, h, C.clay); panel(x + 2, y + 2, w - 2, h - 2, C.bone); panel(x + 2, y + 2, w - 4, h - 4, C.paper); }
-function caseCradle(cx, cy, r) {
-  for (let yy = -r; yy <= r; yy++) for (let xx = -r; xx <= r; xx++) { const d = Math.hypot(xx + .5, yy + .5); if (d <= r) R(cx + xx, cy + yy, 1, 1, d > r - 3 ? (xx + yy < 0 ? C.clay : C.bone) : C.paper); }
-}
-function caseString(ax, ay, bx, by, col) { const d = Math.hypot(bx - ax, by - ay); for (let t = 0; t < d; t += 4) R(Math.round(ax + (bx - ax) * t / d), Math.round(ay + (by - ay) * t / d), 2, 2, col); }
 function drawCargo(t) {
   const W = WORDS.case, h = caseHold(), cells = caseCells(), cur = caseSel(cells), end = !!(S.exp && S.ui.caseEnd);
   faceFrame(1);
@@ -8368,11 +8301,6 @@ function drawCrateCount(x) {
 function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return null; const a = NOW - h.at; return a >= 0 && a < 1500 ? Object.assign({ a }, h) : null; }   // a < 0: a hop set to start later (Lift's)
 // ---- The care screens' composed pieces: dashed outlines, rings, chips, and the placeholders of missing assets ----
 const stageFill = st => st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone';
-// A free place: a 1 px dashed outline, dash 2 and 2.
-function dashedRect(x, y, w, h, c) {
-  for (let i = 0; i < w; i += 4) { R(x + i, y, Math.min(2, w - i), 1, c); R(x + i, y + h - 1, Math.min(2, w - i), 1, c); }
-  for (let j = 0; j < h; j += 4) { R(x, y + j, 1, Math.min(2, h - j), c); R(x + w - 1, y + j, 1, Math.min(2, h - j), c); }
-}
 // The 24 px HUD ring face: the face is the missing asset c-face-24, drawn as its labelled placeholder; the ring at its foot is
 // the partner's marker (`teal` for the partner, `stone` for the others), a plain outline.
 function ringFace(x, y, sp, partner, juv) {
@@ -8418,7 +8346,7 @@ function syncShown() { const list = rosterList(); let i = list.findIndex(m => m.
   if (i < 0 && list.length) { i = Math.min(S.ui.aIdx | 0, list.length - 1); S.ui.aId = list[i].id; }
   if (i >= 0) S.ui.aIdx = i; }
 const MOMENT_MS = 1800, WALK_MS = 2400, BOND_MS = 2400;   // the action's moment; the bond after it: the moment again (900), the heart's rise (600) and hold (900)
-// ---- The dock frames (specs/companion-dock-frames-spec.md, T-20261016-93): "home" when the Companion is seated and "Off we go" when it is lifted. A show: no press is asked for.
+// ---- The dock frames (specs/companion-dock-frames-spec.md): "home" when the Companion is seated and "Off we go" when it is lifted. A show: no press is asked for.
 // Read from the shared save's dock flag (isDocked), once per change, so it plays from whatever moves the Dock (the play page's control, the Station's own key).
 const SEAT = { start: 500, on: 120, beat: 333 };            // the crate flashes: from 0.5 s, 120 ms on, one a Station beat (333 ms)
 const OFF = { at: 200, ms: 1500 };                            // "Off we go": from 0.2 s, for 1500 ms; the hop starts with it
@@ -8430,12 +8358,12 @@ function dockSeated() {
   if (S.exp) { if (!FX.dockSaid) { fxMsg(DOCK_TEXT.first, 3); FX.dockSaid = 1; } return; }   // mid-expedition: the existing "Docked mid-expedition" rules; the walk's haul goes home only with End expedition (the designed rule), so the dock itself says so, once, in the existing words
   FX.seated = { at: NOW, crates: S.bay.length }; FX.lifted = null;
   const lead = partnerMibi() || carriedMibis()[0];
-  if (S.phase === 'sealed') { S.phase = 'riding'; S.ui.from = 'setup'; }   // the ended expedition's screen is spent once its haul is home: home, with or without a mibi (owner 11-17, bug #50); ← goes to the next expedition's page
+  if (S.phase === 'sealed') { S.phase = 'riding'; S.ui.from = 'setup'; }   // the ended expedition's screen is spent once its haul is home: home, with or without a mibi; ← goes to the next expedition's page
   if (lead && S.phase !== 'newworld') { S.phase = 'riding'; S.ui.from = 'setup'; S.ui.aId = lead.id; }   // a mibi with you: Riding, as a cut
 }
 function dockLifted() {
   FX.seated = null;
-  if (S.phase === 'sealed' && !S.exp) { S.phase = 'riding'; S.ui.from = 'setup'; }   // a page opened while seated: lifting from the ended expedition's screen goes home too (bug #50)
+  if (S.phase === 'sealed' && !S.exp) { S.phase = 'riding'; S.ui.from = 'setup'; }   // a page opened while seated: lifting from the ended expedition's screen goes home too
   if (S.phase !== 'riding') return;   // on any other screen only the Shield flash plays, as built
   const m = shownMibi(); FX.lifted = { at: NOW };
   if (m && isCarried(m)) FX.callMibi = { id: m.id, at: NOW + OFF.at, wrong: false, quiet: true };   // the existing hop, no chirp
@@ -8446,7 +8374,7 @@ function crateFlashOn(n, a) {
   if (!motion()) return a < SEAT.start + (n - 1) * SEAT.beat + SEAT.on;
   const k = Math.floor((a - SEAT.start) / SEAT.beat); return k < n && (a - SEAT.start) - k * SEAT.beat < SEAT.on;
 }
-// The docked state in words (bay-design-1 2.6, bay-words-1): unloading while the crates cross; crates still aboard because the Bay is full; else the hold is empty. It never tells the walk ("lift to explore" is gone).
+// The docked state in words: unloading while the crates cross; crates still aboard because the Bay is full; else the hold is empty. It never tells the walk.
 function dockState() {
   const sd = FX.seated, n = S.bay.length;
   if (n) return 'Docked · ' + n + ' crate' + (n === 1 ? ' waits' : 's wait') + ' at the Bay';
@@ -8459,25 +8387,9 @@ function dockCue() {
   const lf = FX.lifted, a = lf ? NOW - lf.at : -1;
   if (lf && a >= OFF.at && a < OFF.at + OFF.ms) text('Off we go', 78, 9, C.bone);
 }
-// ---- The Riding face (companion-riding-build-2), built to the accepted companion-device-2 mock (shots-1x/06-riding.png): the Companion's third face, who is with you. It replaces the Mibis list and the mibi screen.
+// ---- The Riding face, built to the accepted device mock (shots-1x/06-riding.png): the Companion's third face, who is with you. It replaces the Mibis list and the mibi screen.
 // Her picture is always her own coat and marking (her cut, ownCut), at 1x of its pixels; her looks win over her pose. It reads the game and adds no rule: carry, lead, Call, Take along, the bond and Play together are as built,
 // and opening it spends no light. The cut, the paper, the rule, the dotted places and the dithered shadow are UI by code (rule 18); every picture is a signed file. Words: WORDS.riding (working words) and the game's own.
-const RIDE_BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-function shadowAt(cx, cy, w, h) {   // a contact shadow: an ellipse set pixel by pixel through a 4 x 4 ordered pattern (the screen's only blend)
-  for (let j = 0; j < h; j++) { const ry = (j + .5) / (h / 2) - 1, half = Math.round(w / 2 * Math.sqrt(Math.max(0, 1 - ry * ry)));
-    for (let i = -half; i < half; i++) { const x = cx + i, y = cy + j; if (RIDE_BAYER[(y & 3) * 4 + (x & 3)] < 7) R(x, y, 1, 1, C.sand); } }
-}
-// The mock's contact shadow (06-riding.html, lib/device.js shadow()): whole pixels, an ellipse of rx x ry, the middle clay on every other pixel, the rim sand on every other pixel. It is as wide as the cut's feet:
-// footSpan() is the width of the lowest rows of her cut (not the cut's width); the mock's 96 x 8 stands for a foot span of 192, so rx is half the span and ry is rx / 12.
-function footSpan(c) {
-  if (c.footSpan != null) return c.footSpan;
-  const h = c.height, band = Math.min(h, 12), d = c.getContext('2d').getImageData(0, h - band, c.width, band).data; let lo = c.width, hi = -1;
-  for (let y = 0; y < band; y++) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 0) { if (x < lo) lo = x; if (x > hi) hi = x; }
-  return (c.footSpan = hi < lo ? c.width : hi - lo + 1);
-}
-function mockShadow(cx, cy, rx, ry) {
-  for (let y = -ry; y <= ry; y++) for (let x = -rx; x <= rx; x++) { const q = (x / rx) ** 2 + (y / ry) ** 2; if (q <= 1 && (q < .6 || ((x + y) & 1) === 0)) R(cx + x, cy + y, 1, 1, q < .35 && ((x + y) & 1) === 0 ? C.clay : C.sand); }
-}
 const ridingLead = () => S.exp ? (S.exp.pt ? mibiById(S.exp.pt.id) : null) : partnerMibi();
 // The one ✓ that applies to the rider shown (every act of the old Mibis screens, on ✓): docked, a rider leaves home and one at home is taken along; between expeditions undocked, Play together
 // (it plays everyone with you), and a grown rider who does not lead is let lead; mid-expedition nothing. With no one shown: Next expedition, as the old page had it.
@@ -8574,9 +8486,8 @@ function playRefused() {
 // Take and Leave as pressed (docked, between expeditions). Take at three: the shake and why.
 function takePress(m) {
   const r = takeMibi(m); if (r.ok) fxMsg(CARE_TEXT.took(m.name)); else if (r.why === 'full') { fxMsg(CARE_TEXT.fullRefused(m.name), 3); FX.bumpAt = NOW; } else FX.bumpAt = NOW;   // released: the shake only (no words in the copy yet)
-  return r.ok;
 }
-function leavePress(m) { const r = leaveMibi(m); if (r.ok) fxMsg(CARE_TEXT.left(m.name)); else FX.bumpAt = NOW; return r.ok; }
+function leavePress(m) { const r = leaveMibi(m); if (r.ok) fxMsg(CARE_TEXT.left(m.name)); else FX.bumpAt = NOW; }
 function drawNewWorld() {
   viewBg(); drawTop('New world');
   text('Start a new world?', SCR_W / 2, 136, C.bone, 3, 'center');

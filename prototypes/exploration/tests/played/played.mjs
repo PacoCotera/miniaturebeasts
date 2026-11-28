@@ -2103,4 +2103,46 @@ it(`s41 facing Dunnock at ease 3 the bar's middle reads her word, ears up (#174,
     assert.ok(bad < ref.width * ref.height * 0.02, `the bar's middle reads her word, ears up (${bad} pixels differ from its crop)`);
   } finally { await g.ctx.close(); }
 });
+// BUILD 2026-11-28 (ruling 8 on the code review: "drawing never reads a test flag"): the top bar draws the Probe's pulse from what the warming says, not from a test flag or the document.
+// Seed 13, a fresh game (the page's ?seed=), 412x915. Played: ✓ to set out, ✓ at "Start here", ✓ into the first place; nothing is pressed after that.
+// State only asserts the case is reached (in the place, the landing done). The verdict is the pixels: in the last shot the top bar is whole (the reach grid and plates, the three counters) and the frame
+// went on to the bottom line; and in every frame painted over 8 s the strip beside the counters is the bar's own dark, but for the pulse's small ring (a square in the map's sand) on the frames that draw it.
+// The pulse cannot be asked for by a press: the frames that carry it are counted in the log, not required.
+it(`s42 in a place the top bar is drawn whole and the frame goes on to the bottom line; the Probe's pulse is the only thing that comes and goes beside the counters (seed 13) [${SIZES[0].w}x${SIZES[0].h}]`, async () => {
+  const size = SIZES[0];
+  const near = (c) => ([r, gg, b]) => Math.abs(r - c[0]) < 8 && Math.abs(gg - c[1]) < 8 && Math.abs(b - c[2]) < 8;
+  const SAND = near([230, 201, 140]), INK = ([r, gg, b]) => r < 60 && gg < 60 && b < 80;   // the pulse's ring (#e6c98c); the bar's own dark
+  const g = await open(size, { seed: 13 });
+  const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S; return { phase: S.phase, key: S.exp && S.exp.patch && S.exp.patch.key, queued: m.WARM.queue.length, cold: !!m.WARM.cold }; });
+  try {
+    let s = await st();
+    for (let i = 0; i < 12 && !s.key; i++) { await g.press("confirm", 100, 900); s = await st(); }   // ✓ to set out, ✓ at "Start here", ✓ into the place
+    for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }                    // the place is built by a worker: wait until he is in it
+    for (let t = 0; t < 300 && s.cold; t++) { await wait(100); s = await st(); }                    // and until the landing is done
+    assert.ok(s.phase === "patch" && !s.cold, `the case is reached: he is in the first place and the landing is done (${JSON.stringify(s)})`);
+    // every frame the browser paints for 8 s while the places next door are read (a screenshot cannot say which frame it caught); kept as they came and read one at a time below
+    const cdp = await g.ctx.newCDPSession(g.page), raw = [];
+    cdp.on("Page.screencastFrame", (f) => { if (raw.length < 300) raw.push(f.data); cdp.send("Page.screencastFrameAck", { sessionId: f.sessionId }).catch(() => {}); });
+    await cdp.send("Page.startScreencast", { format: "png", maxWidth: Math.round(size.w * size.dpr), maxHeight: Math.round(size.h * size.dpr), everyNthFrame: 1 });
+    let polls = 0;
+    for (let t = 0; t < 80; t++) { s = await st(); if (s.queued > 0 && !s.cold) polls++; await wait(100); }
+    await cdp.send("Page.stopScreencast"); await cdp.detach();
+    const last = await g.shot("s42-top-bar");
+    assert.equal((await st()).phase, "patch", "the case is reached: he is still in the place");
+    const r = await g.region(), k = r.w / 450, box = (x, y, w, h) => ({ x: r.x + Math.round(x * k), y: r.y + Math.round(y * k), w: Math.round(w * k), h: Math.round(h * k) });
+    const strip = box(120, 3, 98, 25), counters = box(222, 6, 88, 20), plates = box(6, 6, 60, 20), line = box(0, 568, 450, 30);   // beside the counters; the three counters; the reach grid and the plates; the bottom line
+    let pulses = 0, other = 0, kept = false;
+    for (const d of raw) {
+      const buf = Buffer.from(d, "base64"), im = decodePNG(buf); if (im.width !== last.width || im.height !== last.height) continue;
+      const ring = colour(im, r, SAND, strip), lit = colour(im, r, (p) => !INK(p), strip);
+      if (ring.n >= 30 && ring.box.w < 15 * k && ring.box.h < 15 * k) { pulses++; if (!kept && process.env.PLAYED_SHOTS) { writeFileSync(path.join(process.env.PLAYED_SHOTS, "s42-pulse.png"), buf); kept = true; } }
+      else if (lit.n > 0) other++;
+    }
+    const lit = { counters: colour(last, r, (p) => !INK(p), counters).n, plates: colour(last, r, (p) => !INK(p), plates).n, line: colour(last, r, (p) => !INK(p), line).n };
+    console.log(`# s42: ${raw.length} frames painted in 8 s (${polls} of 80 polls found places queued): the pulse's ring is beside the counters in ${pulses}, anything else there in ${other}; in the last shot the counters hold ${lit.counters} lit pixels, the plates ${lit.plates}, the bottom line ${lit.line}`);
+    assert.ok(lit.plates > 200 && lit.counters > 200, `the top bar is drawn whole: the reach grid and plates, and the three counters (${JSON.stringify(lit)})`);
+    assert.ok(lit.line > 200, `the frame went on past the top bar: the bottom line is drawn (${lit.line} lit pixels)`);
+    assert.equal(other, 0, "beside the counters the bar is its own dark in every frame, but for the pulse's ring");
+  } finally { await g.ctx.close(); }
+});
 });
