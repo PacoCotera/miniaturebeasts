@@ -1,8 +1,7 @@
 // The frame (rendering): the one 450×600 picture every screen draws on, 1:1 device pixels, and what the screens draw on it with.
 // The pixel core is still the page's: it hands in once, as `env`, the document that makes the canvases, the palette (HEX, C), the picture class
-// and its cache (PB, art), the glyph and dither pictures, the effects' record (FX; read for hitAt, when the shield was last hit), and two readers
+// and its cache (PB, art), the dither pictures, the effects' record (FX; read for hitAt, when the shield was last hit), and two readers
 // of the moment: now() (the frame's time, ms) and motion() (false when the player asked for reduced motion).
-import { glyphOf, textW, textWT } from "../font.mjs";
 import { BAYER4 } from "../view.mjs";
 import { clamp } from "../world.mjs";
 import { SCR_W, SCR_H, VIEW_Y, VIEW_H } from "../data/screen.mjs";
@@ -11,7 +10,7 @@ const GLINT_DIM = .4;   // a standing glint between its pulses
 const SHAKE = [[3, 0], [-3, 1], [2, -1], [-2, 0], [1, 1], [-1, 0]];   // the view's offset after a shield hit, 45 ms each
 
 export function makeFrame(env) {
-  const { document, HEX, C, PB, art, glyphCanvas, ditherArt, FX, now, motion } = env;
+  const { document, HEX, C, PB, art, ditherArt, FX, now, motion } = env;
   const scr = document.createElement('canvas'); scr.width = SCR_W; scr.height = SCR_H;
   const g = scr.getContext('2d'); g.imageSmoothingEnabled = false;
 
@@ -26,23 +25,6 @@ export function makeFrame(env) {
   const blit = (pb, x, y, rm, flip, chk) => g.drawImage(pb.canvas(rm, flip, chk), Math.round(x) + (pb.dx || 0), Math.round(y) + (pb.dy || 0));
   // A standing glint is always drawn: full for its pulse, the same picture dimmer between pulses.
   const glintBlit = (pb, x, y, bright) => { if (bright || !motion()) { blit(pb, x, y); return; } g.save(); g.globalAlpha = GLINT_DIM; blit(pb, x, y); g.restore(); };
-  // tight: glyphs keep their pixels but sit 1 px apart (font.mjs, textWT)
-  function text(str, x, y, col, s, align, tight) {
-    s = s || 2; x = Math.round(x); y = Math.round(y);
-    if (align === 'center' || align === 'right') { const w = tight ? textWT(str, s) : textW(str, s); x -= align === 'center' ? Math.round(w / 2) : w; }
-    for (const ch of str) { const gl = glyphOf(ch); if (ch !== ' ') g.drawImage(glyphCanvas(ch, col, s), x, y); x += tight ? gl.w * s + 1 : (gl.w + 1) * s; }
-  }
-  const cutRect = (x, y, w, h, c) => { R(x + 2, y, w - 4, h, c); R(x + 1, y + 1, w - 2, h - 2, c); R(x, y + 2, w, h - 4, c); };
-  // A pixel panel with cut corners.
-  function panel(x, y, w, h, fill, border) {
-    if (border != null) { cutRect(x, y, w, h, border); x++; y++; w -= 2; h -= 2; }
-    cutRect(x, y, w, h, fill);
-  }
-  function brackets(x, y, w, h, c) {
-    const l = Math.min(8, Math.floor(w / 3));
-    R(x, y, l, 2, c); R(x, y, 2, l, c); R(x + w - l, y, l, 2, c); R(x + w - 2, y, 2, l, c);
-    R(x, y + h - 2, l, 2, c); R(x, y + h - l, 2, l, c); R(x + w - l, y + h - 2, l, 2, c); R(x + w - 2, y + h - l, 2, l, c);
-  }
   function circ(cx, cy, r, c, dotted) { // midpoint circle, 2 px thick
     cx = Math.round(cx); cy = Math.round(cy); r = Math.round(r); g.fillStyle = HEX[c];
     for (const rr of [r, r - 1]) { let x = rr, y = 0, e = 1 - rr, i = 0;
@@ -107,5 +89,5 @@ export function makeFrame(env) {
     const cv = art('bg', () => { const pb = new PB(64, 64); pb.rect(0, 0, 64, 64, C.night); for (let i = 0; i < 64; i += 8) for (let j = 0; j < 64; j += 8) if (((i + j) / 8) % 2 === 0) pb.set(i + 3, j + 3, C.slate); return pb; }).canvas();
     for (let y = VIEW_Y; y < VIEW_Y + VIEW_H; y += 64) for (let x = 0; x < SCR_W; x += 64) g.drawImage(cv, x, y);
   }
-  return { scr, g, resetCanvas, R, blit, glintBlit, text, panel, brackets, circ, pline, ditherFill, lampCircle, clipView, shakeOff, hitFrame, tween, viewBg };
+  return { scr, g, resetCanvas, R, blit, glintBlit, circ, pline, ditherFill, lampCircle, clipView, shakeOff, hitFrame, tween, viewBg };
 }

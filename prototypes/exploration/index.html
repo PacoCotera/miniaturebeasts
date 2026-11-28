@@ -5733,8 +5733,25 @@ import { makeFrame } from "./src/render/frame.mjs";
 const RM = matchMedia('(prefers-reduced-motion: reduce)');
 const motion = () => !RM.matches;
 // The frame's canvas and what every screen draws on it with (src/render/frame.mjs), given the pixel core above, the effects' record and the frame's time.
-const { scr, g, resetCanvas, R, blit, glintBlit, text, panel, brackets, circ, pline, ditherFill, lampCircle, clipView, shakeOff, hitFrame, tween, viewBg } = makeFrame({ document, HEX, C, PB, art, glyphCanvas, ditherArt, FX, now: () => NOW, motion });
+const { scr, g, resetCanvas, R, blit, glintBlit, circ, pline, ditherFill, lampCircle, clipView, shakeOff, hitFrame, tween, viewBg } = makeFrame({ document, HEX, C, PB, art, ditherArt, FX, now: () => NOW, motion });
 const vis = document.getElementById('screen'), vctx = vis.getContext('2d'); vctx.imageSmoothingEnabled = false;
+// Text, panels and brackets are still the page's: the tests replace these three by name to read what a screen says.
+function text(str, x, y, col, s, align, tight) {   // tight: the glyphs sit 1 px apart (textWT)
+  s = s || 2; x = Math.round(x); y = Math.round(y);
+  if (align === 'center' || align === 'right') { const w = tight ? textWT(str, s) : textW(str, s); x -= align === 'center' ? Math.round(w / 2) : w; }
+  for (const ch of str) { const gl = glyphOf(ch); if (ch !== ' ') g.drawImage(glyphCanvas(ch, col, s), x, y); x += tight ? gl.w * s + 1 : (gl.w + 1) * s; }
+}
+// A pixel panel with cut corners.
+function panel(x, y, w, h, fill, border) {
+  const cut = c => { R(x + 2, y, w - 4, h, c); R(x + 1, y + 1, w - 2, h - 2, c); R(x, y + 2, w, h - 4, c); };
+  if (border != null) { cut(border); x++; y++; w -= 2; h -= 2; }
+  cut(fill);
+}
+function brackets(x, y, w, h, c) {
+  const l = Math.min(8, Math.floor(w / 3));
+  R(x, y, l, 2, c); R(x, y, 2, l, c); R(x + w - l, y, l, 2, c); R(x + w - 2, y, 2, l, c);
+  R(x, y + h - 2, l, 2, c); R(x, y + h - l, 2, l, c); R(x + w - l, y + h - 2, l, 2, c); R(x + w - 2, y + h - l, 2, l, c);
+}
 const RT = { sleepLock: false, key: null, ts: 32, remap: REMAP, pl: null, cr: new Map(), pt: null, mp: null, mpKey: null, err: 0 };   // ts: the place tile drawn (32 until the 48 px places)
 
 // ===================== 12. World map =====================
