@@ -328,6 +328,7 @@ export function screenProps(plate) {
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (screen === "pods" && (UI.pods.page != null || UI.pods.view === "nursery" || UI.pods.view === "pod" || UI.pods.view === "holds")) pl.page = [0, 530];   // a page screen (the 530 x 600 window): the plate is drawn inside the page's width, centred on it, wrapped to fit (frame.c word_messagePlate), so the window never pans for it
+  if (screen === "pods" && UI.pods.page == null && UI.pods.view === "nursery") { const Nz = SPECS.pods.regions.page.nursery; pl.bottom = Nz.foot.y + 38; pl.focal = [Nz.shelf.x, Nz.capsules.y, Nz.shelf.w, Nz.shelf.top + Nz.shelf.pitch * Nz.shelf.visible - Nz.capsules.y]; }   // the Nursery: the plate sits on the foot line, under the last shelf row, so it covers no row (the shelf runs to y 556)
   if (screen === "pods" && UI.pods.page != null) { const pm = mibiById(UI.pods.page); if (pm) top.title = S.cap(pm.name) + "'s page"; }   // her page: the header names her page, not the pods
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: withHold({ top, line: notBuiltLine(screen), plate: pl }) }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
   const fam = screen === "library.family" ? familyBody() : null;
