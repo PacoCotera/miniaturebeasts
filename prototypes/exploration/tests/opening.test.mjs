@@ -27,8 +27,8 @@ function returning(seed = 14) {
   const p = opening(seed, { carried: THREE, known: [0, 1, 2] });
   p.run(`S.turn = 5; S.expN = 5; S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; S.report = { lines: ['A storm charged stones in the wood.'], n: 4 };
     const s0 = G.spawns[0]; S.ui.lastPos = s0; const q = cxy(s0); let k = 0;
-    for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const x = q.x + dx, y = q.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const c = y * MW + x; S.revealed[c] = 1; if (Math.abs(dx) > 2 || Math.abs(dy) > 2) continue; S.visited[c] = 1;
-      if (passable(c) && G.land[c] !== L.WATER) { if (k < 4) S.called[c] = 1; else if (k < 7) S.veil[String(c)] = [1]; k++; } }`);
+    for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const x = q.x + dx, y = q.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const c = y * MW + x; S.seen.rev[c] = 1; if (Math.abs(dx) > 2 || Math.abs(dy) > 2) continue; S.seen.been[c] = 1;
+      if (passable(c) && G.land[c] !== L.WATER) { if (k < 4) S.seen.walked[c] = 1; else if (k < 7) { S.seen.tile[String(c)] = [1]; S.seen.into[c] = 1; } k++; } }`);
   return p;
 }
 const said = p => { p.run("globalThis.__t = []; if (!globalThis.__wrapped) { globalThis.__wrapped = 1; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text); } FX.msg = ''; drawSetup(0);"); return plain(p.run("__t")); };
@@ -49,7 +49,7 @@ test("B1: a world that knows a Tuikis draws two tabs; Deep ground appears once a
   assert.deepEqual(plain(said(opening(14, { known: [1] })).filter(s => s === "Weather" || s === "Deep ground")), ["Weather", "Deep ground"]);
   assert.ok(said(opening(14, { known: [1] })).includes("needs a Tuikis"), "known, none with you: dimmed");
   assert.ok(said(opening(14, { known: [0] })).every(s => s !== "Deep ground"), "a Loika is no digger");
-  const burrow = opening(); burrow.run("S.revealed[G.gate] = 1;"); assert.ok(said(burrow).includes("Deep ground"), "the burrow seen");
+  const burrow = opening(); burrow.run("S.seen.rev[G.gate] = 1;"); assert.ok(said(burrow).includes("Deep ground"), "the burrow seen");
   const along = opening(14, { carried: [THREE[1]] }); assert.ok(said(along).includes("Moss digs"), "a grown Tuikis along: the line names it");
 });
 
@@ -153,7 +153,7 @@ test("B3: Weather draws the storm on the land (the edge chip when outside the fr
   p.run("S.ui.sel = 0; stormFor = __sf;"); draw(p);
   const inb = plain(p.run("(() => { const q = openFrame(), st = stormFor(S.ui.lastPos), bx0 = q.ox + (st.x - q.X0) * q.cs, l = Math.max(q.WX, Math.round(bx0)), r = Math.min(q.WX + q.WW, Math.round(bx0 + st.w * q.cs)); return { l, r, WY: q.WY }; })()"));
   assert.ok(inb.r > inb.l, "the real band reaches into the frame"); assert.equal(stands(p, bolt, Math.round((inb.l + inb.r) / 2) - 6, inb.WY + 4).bad, 0, "the bolt at the band's top");
-  const g = opening(14, { carried: [THREE[1]] }); g.run("S.tier = 1; S.ui.lastPos = G.gate; S.revealed[G.gate] = 1; S.ui.sel = 1;"); draw(g);
+  const g = opening(14, { carried: [THREE[1]] }); g.run("S.tier = 1; S.ui.lastPos = G.gate; S.seen.rev[G.gate] = 1; S.ui.sel = 1;"); draw(g);
   const ring = plain(g.run("(() => { const q = openFrame(), p = q.at(G.gate); return { x: p.x, y: p.y, cs: q.cs, a: C.amber, y2: C.yellow }; })()")), px = g.run("scr").px(), W = g.run("SCR_W");
   let n = 0; for (let i = 4; i < ring.cs - 4; i++) { const v = px[ring.y * W + ring.x + i]; if (v === ring.a) n++; } assert.ok(n > ring.cs - 12, "the amber ring on the burrow's cell: " + n);
 });
@@ -168,15 +168,15 @@ test("the two signed art pieces are registered; the desk's pod stands on the par
 // ---- B2: the land in the frame ----
 test("B2: a fresh world: the frame is night, each light's own cell is land in the dark table, and drawing reveals nothing", () => {
   const p = opening(); p.run("ensureMap();");
-  const before = JSON.stringify(p.run("[S.revealed, S.visited, S.veil, S.called]"));
+  const before = JSON.stringify(p.run("[S.seen.rev, S.seen.been, S.seen.tile, S.seen.walked]"));
   draw(p); const night = p.run("C.night"), ink = p.run("C.ink");
   const q = plain(p.run("(() => { const o = openFrame(); return { cs: o.cs, first: o.first, spawns: G.spawns.map(c => o.at(c)), g: o.glimpse }; })()"));
   assert.equal(q.first, true); assert.equal(q.g.length, 5, "the five lights"); assert.equal(q.cs, 28, "28 px cells on seed 14 (the first save's land takes the partner row's room: 434 x 430)");
   const cv = p.run("landImage({ X0: openFrame().X0, Y0: openFrame().Y0, w: 430 + 28, h: 426 + 28, cs: 28, glimpse: G.spawns })").px(), ox = p.run("openFrame().ox"), oy = p.run("openFrame().oy"), CW = 430 + 28;
   for (const s of q.spawns) { let land = 0; for (let y = 7; y < 15; y++) for (let x = 7; x < 15; x++) { const v = cv[(s.y - oy + y) * CW + (s.x - ox + x)]; if (v !== night && v !== ink) land++; } assert.ok(land >= 25, "a land colour at the light's cell: " + land + " of 64"); }
   const edge = p.run("C.void"); let all = 0; for (let i = 0; i < cv.length; i++) if (cv[i] !== night && cv[i] !== ink && cv[i] !== edge) all++; assert.ok(all < 5 * 28 * 28 * 3, "land only round the five lights (" + all + " pixels)");
-  assert.equal(JSON.stringify(p.run("[S.revealed, S.visited, S.veil, S.called]")), before, "S.revealed and the rest are unchanged by drawing");
-  assert.ok(p.run("S.revealed.every(v => !v)"), "still a first placement");
+  assert.equal(JSON.stringify(p.run("[S.seen.rev, S.seen.been, S.seen.tile, S.seen.walked]")), before, "S.seen.rev and the rest are unchanged by drawing");
+  assert.ok(p.run("S.seen.rev.every(v => !v)"), "still a first placement");
 });
 
 test("B2: the reach fits the frame: cell 52 at tier 1, 31 at tier 2; the start flag is on the land", () => {
@@ -189,7 +189,7 @@ test("B2: the reach fits the frame: cell 52 at tier 1, 31 at tier 2; the start f
 
 test("B2: the painting is cached: two frames, one paint", () => {
   const p = returning(); p.run("drawSetup(0);"); const a = p.run("LAND_CACHE.cv"); p.run("drawSetup(0.5);"); assert.equal(p.run("LAND_CACHE.cv"), a, "the same canvas");
-  p.run("S.revealed[S.ui.lastPos] = 0;"); p.run("drawSetup(0.5);"); assert.notEqual(p.run("LAND_CACHE.cv"), a, "a changed cell paints again");
+  p.run("S.seen.rev[S.ui.lastPos] = 0;"); p.run("drawSetup(0.5);"); assert.notEqual(p.run("LAND_CACHE.cv"), a, "a changed cell paints again");
 });
 
 test("B2: the lost-plates chip only when a plate is lost; the docked band when docked", () => {
@@ -228,26 +228,26 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
     const cap = async () => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
     const shot = async (settle = 700) => { await page.waitForTimeout(settle); let prev = await cap(); for (let i = 0; i < 16; i++) { await page.waitForTimeout(250); const cur = await cap(); if (Buffer.compare(Buffer.from(prev.data), Buffer.from(cur.data)) === 0) return cur; prev = cur; } return prev; };
     assert.equal(await page.evaluate(() => window.__mb.S.phase), "setup");
-    await page.evaluate(() => { const m = window.__mb; m.S.revealed.fill(0); m.S.visited.fill(0); m.S.mibis = []; m.S.carried = []; m.S.report = null; m.S.known = []; m.S.bay = []; m.S.ui.lastPos = null; m.S.ui.sel = 0; m.FX.msg = ""; });
+    await page.evaluate(() => { const m = window.__mb; m.S.seen.rev.fill(0); m.S.seen.been.fill(0); m.S.mibis = []; m.S.carried = []; m.S.report = null; m.S.known = []; m.S.bay = []; m.S.ui.lastPos = null; m.S.ui.sel = 0; m.FX.msg = ""; });
     const first = await shot(); golden("opening-first.png", first);
     // the desk's mist fills the unseen frame (its four colours); a first save has no partner row, so no pod stands at the foot (note 12a)
     { const four = new Set(["13,19,34", "19,32,54", "26,45,70", "36,70,90"]); let mist = 0, tot = 0; for (let y = 60; y < 340; y++) for (let x = 60; x < 400; x++) { const o = (y * first.w + x) * 4; tot++; if (four.has([first.data[o], first.data[o + 1], first.data[o + 2]].join())) mist++; }
       assert.ok(mist > tot * 0.8, "the mist fills the frame: " + mist + " of " + tot); }
-    const rev = await page.evaluate(() => window.__mb.S.revealed.some(v => v)); assert.equal(rev, false, "the glimpse revealed nothing");
+    const rev = await page.evaluate(() => window.__mb.S.seen.rev.some(v => v)); assert.equal(rev, false, "the glimpse revealed nothing");
     // the returning player: Pip (Loika), Moss (Tuikis), Dot (a young Untuva); expedition 5; four places found and three been into; one crate; last turn's line
     await page.evaluate(() => { const m = window.__mb, S = m.S, mk = (id, name, sp, o) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: 0, mem: null, habitsDone: [] }, o);
       S.turn = 5; S.expN = 5; S.known = [0, 1, 2]; S.mibis = [mk(1, "Pip", 0), mk(2, "Moss", 1), mk(3, "Dot", 2, { grownTurn: null, born: 4 })]; S.carried = [1, 2, 3]; S.lead = 1;
       S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; S.report = { lines: ["A storm charged stones in the wood."], n: 4 };
       const s0 = m.G.spawns[0]; S.ui.lastPos = s0; const qx = s0 % m.MW, qy = Math.floor(s0 / m.MW), land = [];
-      for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const x = qx + dx, y = qy + dy; if (x < 0 || y < 0 || x >= m.MW || y >= m.MH) continue; const c = y * m.MW + x; S.revealed[c] = 1; if (Math.abs(dx) > 2 || Math.abs(dy) > 2) continue; S.visited[c] = 1;
+      for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const x = qx + dx, y = qy + dy; if (x < 0 || y < 0 || x >= m.MW || y >= m.MH) continue; const c = y * m.MW + x; S.seen.rev[c] = 1; if (Math.abs(dx) > 2 || Math.abs(dy) > 2) continue; S.seen.been[c] = 1;
         if (m.passable(c) && m.G.land[c] !== m.L.WATER) land.push(c); }
       // a mark stands only at a landmark (the land holds few): the first found place and the first been-into one are cells that have one
       const lm = land.filter(c => m.layout(String(c)).landmark), rest = land.filter(c => !lm.includes(c)), order = lm.length > 1 ? [lm[0], ...rest.slice(0, 3), lm[1], ...rest.slice(3), ...lm.slice(2)] : land;
-      order.forEach((c, k) => { if (k < 4) S.called[c] = 1; else if (k < 7) S.veil[String(c)] = [1]; }); });
+      order.forEach((c, k) => { if (k < 4) S.seen.walked[c] = 1; else if (k < 7) S.seen.tile[String(c)] = [1]; }); });
     const ret = await shot(1500); golden("opening-returning.png", ret);
     const cs = await page.evaluate(() => window.__mb.openFrame().cs); assert.equal(cs, 52, "tier 1: the reach fits at 52");
     // B3: Deep ground focused (the ringed burrow, Moss in front), and the partner focused
-    await page.evaluate(() => { window.__mb.S.ui.sel = 1; window.__mb.S.ui.way = 1; window.__mb.S.ui.lastPos = window.__mb.G.gate; window.__mb.S.revealed[window.__mb.G.gate] = 1; });
+    await page.evaluate(() => { window.__mb.S.ui.sel = 1; window.__mb.S.ui.way = 1; window.__mb.S.ui.lastPos = window.__mb.G.gate; window.__mb.S.seen.rev[window.__mb.G.gate] = 1; });
     golden("opening-deep.png", await shot(700));
     await page.evaluate(() => { window.__mb.S.ui.sel = 2; });
     golden("opening-partner.png", await shot(700));
@@ -258,8 +258,8 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
     await page.evaluate(() => { window.__mb.S.report.news = null; });
     // the marks: the mark's own pixels stand on the land (a sign or a charged stone's bolt may cover a few; the stones lie where the land puts them, so the share is a quarter); found in colour, been the slate silhouette
     const marks = await page.evaluate(() => { const m = window.__mb, o = m.openFrame(), out = {};
-      for (let c = 0; c < m.MW * m.MH; c++) { if (!m.S.revealed[c]) continue; const a = o.at(c), mk = m.cellMark(c, a.x, a.y, o.cs, 18, true); if (!mk) continue;
-        const kind = m.S.called[c] ? "found" : m.S.veil[String(c)] ? "been" : null; if (!kind || out[kind]) continue;
+      for (let c = 0; c < m.MW * m.MH; c++) { if (!m.S.seen.rev[c]) continue; const a = o.at(c), mk = m.cellMark(c, a.x, a.y, o.cs, 18, true); if (!mk) continue;
+        const kind = m.S.seen.walked[c] ? "found" : m.S.seen.tile[String(c)] ? "been" : null; if (!kind || out[kind]) continue;
         const px = []; for (let j = 0; j < mk.mk.h; j++) for (let i = 0; i < mk.mk.w; i++) { const v = mk.mk.p[j * mk.mk.w + i]; if (v >= 0) px.push([mk.x + i, mk.y + j, m.RGB[v]]); }
         out[kind] = { same: mk.mk === m.placeMark(m.G.land[c], kind, 18), px, slate: px.filter(([, , rgb]) => rgb.join() === m.RGB[m.C.slate].join()).length }; }
       return out; });

@@ -292,7 +292,7 @@ test("the Probe's marks say what they are (plan 3.17 B3): Reach has its count, a
   p.run("startExpedition('weather', G.spawns[0]); S.phase = 'probe';"); t = said();
   assert.match(t, /\d+ of \d+ explored/, "on an expedition the count is of the places in reach: " + t);
   assert.ok(t.includes("0 of " + p.run("S.exp.reach.length") + " explored"), "none explored yet; the total is the cells in reach: " + t);
-  p.run("const c = S.exp.reach.find(c => c !== S.exp.pos); S.visited[c] = 1; S.called = S.called || {}; S.called[c] = 1;");
+  p.run("const c = S.exp.reach.find(c => c !== S.exp.pos); S.seen.been[c] = 1; S.seen.walked = S.seen.walked || {}; S.seen.walked[c] = 1;");
   assert.ok(said().includes("1 of " + p.run("S.exp.reach.length") + " explored"), "an explored place counts: " + said());
 });
 
@@ -415,9 +415,9 @@ test("S5: the card shows the lit tile as the view draws it (a stone only where t
   const k = p.run("(() => { const P = S.exp.patch, lay = layout(P.key); let f = lay.feats.find(q => q.kind === 'k'); if (!f) { f = { kind: 'k', id: 'zz', x: P.x + 1, y: P.y, ch: 0 }; lay.feats.push(f); } return { key: P.key, x: f.x, y: f.y }; })()");
   assert.ok(k, "a stone in the place");
   const draw = a => p.run(`__s = 0; __tp = 0; PIC.warn(0, 0, ${JSON.stringify(a)}); [__s, __tp].join()`);
-  p.run("unveiled = () => true; inSight = () => true;"); assert.equal(draw(k), "1,1", "a stone in view: the tile, then the stone");
-  p.run("unveiled = () => false;"); assert.equal(draw(k), "0,1", "a stone under the veil: bare ground");
-  p.run("unveiled = () => true;"); assert.equal(draw({ key: k.key, x: 0, y: 0 }), "0,1", "plain ground: the tile only");
+  p.run("isSeen = () => true; inSight = () => true;"); assert.equal(draw(k), "1,1", "a stone in view: the tile, then the stone");
+  p.run("isSeen = () => false;"); assert.equal(draw(k), "0,1", "a stone under the veil: bare ground");
+  p.run("isSeen = () => true;"); assert.equal(draw({ key: k.key, x: 0, y: 0 }), "0,1", "plain ground: the tile only");
   assert.equal(draw(undefined).split(",")[0], "0", "the Probe's warned tile: flat grass and the outline, no stone");
   assert.equal(draw({ c: 5 }).split(",")[0], "0", "the map's lit cell: no stone");
   // never covered: a lit tile at view y >= 476 sends the card to the top
@@ -454,7 +454,7 @@ function litPlace(onGen5) {
   p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); enterPatch(); globalThis.__rm = []; globalThis.__n = { stone: 0, bush: 0, canopy: [] };"
     + "const c0 = PB.prototype.canvas; PB.prototype.canvas = function (rm) { __rm.push(rm); return c0.apply(this, arguments); };"
     + "const s0 = stoneArt; stoneArt = function () { __n.stone++; return s0.apply(this, arguments); }; const b0 = bushArt; bushArt = function () { __n.bush++; return b0.apply(this, arguments); };"
-    + "unveiled = () => true;");
+    + "isSeen = () => true;");
   return p;
 }
 const lit = (p, a) => { p.run(`__rm = []; __n.stone = 0; __n.bush = 0; __n.canopy = []; PIC.warn(0, 0, ${JSON.stringify(a)})`); return { rm: p.run("__rm[0]"), stone: p.run("__n.stone"), bush: p.run("__n.bush"), canopy: p.run("__n.canopy.join()") }; };
@@ -477,15 +477,15 @@ test("S5 shows what is still on the lit tile: a bush only when the view draws it
   const p = litPlace(true), P = p.run("({ key: S.exp.patch.key, x: S.exp.patch.x, y: S.exp.patch.y })");
   p.run(`layout('${P.key}').feats.push({ kind: 'b', id: 'zb', x: ${P.x + 2}, y: ${P.y} });`);
   assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 1, "seen: the bush");
-  p.run("unveiled = () => false;"); assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 0, "under the veil: no bush");
-  p.run("unveiled = () => true;");
+  p.run("isSeen = () => false;"); assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 0, "under the veil: no bush");
+  p.run("isSeen = () => true;");
 });
 test("the opening screen: no strip and no counts (no turn, tier, fog, 'of 320' or Seen), even with a plate lost and a sealed crate in the bay", () => {
   const p = makePage({ store: {}, gen: 6, canvas: true, anonPods: true }); p.run("RT.caddy = { podHome: true }");   // the opening paints its land onto a canvas of its own size: a real (fake) canvas, not the bare stub
   p.run("newWorld(3); S.phase = 'setup'; S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; S.shield = 1; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
   const said = () => { p.run("__t = []; drawSetup(0);"); return p.run("__t.join('|')"); };
   const t = said(); assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Shield \d|\d+\/\d+|crate|sealed/.test(t), t);
-  p.run("S.revealed.fill(1); S.visited.fill(1);"); const t2 = said(); assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Your world|last start/.test(t2), t2);
+  p.run("S.seen.rev.fill(1); S.seen.been.fill(1);"); const t2 = said(); assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Your world|last start/.test(t2), t2);
 });
 
 // ---- R2: the shed pod of a returned mibi's line ----

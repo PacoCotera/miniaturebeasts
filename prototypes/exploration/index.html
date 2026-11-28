@@ -241,6 +241,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, TERR, genWorld, genPlace, placeTrees, depotCells as depotCellsIn } from "./src/world.mjs";
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf, makeHauntWalk } from "./src/world7.mjs";
 import { nightTable } from "./src/night.mjs";
+import { newSeen, seenFromOld, reveal as seenReveal, markWalked, markBeen, walkedCell as seenWalked, fogState as seenFog, veilable, anySeen, tileBit, unveiled as seenUnveiled, unveiledRows, rowsCopy, liftRound, liftSquare, liftLine, liftFlood, walkLift as seenWalkLift, liftWhere, seenShare, liftAll, veilMask } from "./src/logic/seen.mjs";
 import { cardFrames, cardStep, rgbaOf } from "./src/card-motion.mjs";
 import { duskTable, duskLitRgb } from "./src/dusk.mjs";
 import { cutName, kindId, CUT_DIR } from "./src/riding-cut.mjs";
@@ -331,7 +332,7 @@ function keepCompanion() {
 const PLAYTEST_ON = playtestOn(OPT);   // the Playtest waits option: the playtest preset (play/src/playtest.mjs), the one place of the shortened waits
 const JUVENILE_TURNS = PLAYTEST_ON ? PLAYTEST.settings.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON ? PLAYTEST.settings.elderTurns : 16;     // young for 2 world turns; elder after 16 more as an adult (an elder at turn 18); the preset: 1 and 4
 // Call lifts the veil CALL_R tiles around you (CALL_R_FOG in a fog bank).
-const CALL_R = CALL_R_PLACE, CALL_R_FOG = CALL_R_FOG_PLACE,   // the Call's range in a place: a round 7 tiles (4 in a fog bank, 6 with a glowing partner); its ring IS the unveil
+const CALL_R = CALL_R_PLACE, CALL_R_FOG = CALL_R_FOG_PLACE,   // the Call's range in a place: a round 7 tiles (4 in a fog bank, 6 with a glowing partner); its ring IS what it lifts
       CALL_R_CAVE = 11;   // the cave behind the burrow keeps today's Call
 // Sight inside a fog bank, in tiles (a glowing partner widens it).
 const SIGHT_FOG = 4, SIGHT_GLOW = 6, SIGHT_NIGHT = 3;   // night sight is the lamp's three tiles, on any ground (night step 4, *greybox*)
@@ -350,7 +351,7 @@ import { podSite, shedCell, shedKnown, shedOf } from "./src/logic/pod-sites.mjs"
 const TEST = { calm: false, at: null, clock: null,
   paint: (x, y) => { resetCanvas(); g.fillStyle = '#ff00ff'; g.fillRect(x, y, 4, 4); },   // a magenta mark on a clean canvas, which the next whole frame must paint over
   // test hook only: the place is walked: its veil is lifted everywhere and it counts as explored (what walking most of it does)
-  exploreHere() { const P = S.exp.patch, lay = layout(P.key); S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); checkWalked(); return walkedCell(lay.cell); } };
+  exploreHere() { const P = S.exp.patch, lay = layout(P.key); liftAll(S.seen, lay); checkWalked(); return walkedCell(lay.cell); } };
 let G = null;     // static world generated from the seed (never saved)
 let S = null;     // everything that changes (saved)
 
@@ -661,7 +662,7 @@ function wantPlaces() {   // each frame: if the reach, the region or the walked 
     if (S.exp) readyPlaces(wseed, R.slot, biomeVersion(S), [S.exp.pos, ...S.exp.reach].filter(c => passable(c)), { ctx: PL.ctx, first: true }).catch(e => { console.warn('the reach was not asked for ahead of the decor', e); }).then(warm);   // a page loaded straight into an expedition: the place and its reach are baked ahead of the decor warm (the neighbours' strips need them)
     else warm();
   }
-  const seed = S.regions[0].seed, ex = S.exp, v = biomeVersion(S), visited = [...Object.keys(S.visited || {}), ...Object.keys(S.cells || {})].map(Number);   // (a cell with state of its own is asked too: the map's beacon signs read its place)
+  const seed = S.regions[0].seed, ex = S.exp, v = biomeVersion(S), visited = [...Object.keys(S.seen.been || {}), ...Object.keys(S.cells || {})].map(Number);   // (a cell with state of its own is asked too: the map's beacon signs read its place)
   const sig = seed + '|' + R.id + '|' + v + '|' + (ex ? ex.pos + ':' + ex.reach.length : '-') + '|' + visited.length;
   if (sig === PLACES.sig) return; PLACES.sig = sig;
   if (PLACES.seed !== seed) { if (PLACES.seed != null) { placesReset(); SIGNS_OWED.clear(); } PLACES.seed = seed; }
@@ -730,9 +731,9 @@ function wholeCanvas(lay, bk, buf, veil) {
   return cv;
 }
 function wholeFor(lay, bk) {
-  const veil = placeVeil(lay), key = wholeKeyOf(lay, veil); let cv = WHOLE.get(key);
+  const veil = veilMask(S.seen, lay, bk.place.w, bk.place.h, bk.ox, bk.oy), key = wholeKeyOf(lay, veil); let cv = WHOLE.get(key);
   if (cv) { WHOLE.delete(key); WHOLE.set(key, cv); WARM.hit++; return cv; }
-  WARM.miss++; cv = wholeCanvas(lay, bk, bk.overviewBuf(veil, 0, lay.cut), veil); wholePut(key, cv); return cv;
+  WARM.miss++; cv = wholeCanvas(lay, bk, bk.overviewBuf(veil, 0), veil); wholePut(key, cv); return cv;
 }
 const LIT = new Map();   // cell -> the veil its light state was last warmed for
 function warmLightLevel(lay) {   // the one clear-light level the whole place takes (1 under a storm cover, else 0), or null when the frame must work it out (fog bank, a storm's edge)
@@ -741,16 +742,15 @@ function warmLightLevel(lay) {   // the one clear-light level the whole place ta
   if (ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1); if (gap >= 0 && gap < 3) return null; }
   return overcast ? 1 : 0;
 }
-// The ground window of the walking view's first frame, drawn ahead (the window image with the light is the biggest piece of that frame): the camera the entry gives, the veil walkLift
+// The ground window of the walking view's first frame, drawn ahead (the window image with the light is the biggest piece of that frame): the camera the entry gives, the veil walkSeen
 // will leave there, the clear light, the same patches as drawPatchBody; the view keeps the picture (drawGround's `last`), so a first frame under the same key only blits it. A guess that misses costs only this step.
 function primeWindow(lay, bk, key, dir) {
   if (!lay.lines) applyLines(lay);   // the range lines (the veil and the blocks) as enterPatch will make them
   const lvl = warmLightLevel(lay); if (lvl == null) return false;
   const e = entryPoint(lay, key, dir, true); if (!e) return false;
-  const rows = (S.veil[key] || []).slice(); while (rows.length < lay.h) rows.push(0); const pre = S.veilPre && S.veilPre[key]; if (pre) for (let y = 0; y < rows.length; y++) rows[y] = (rows[y] | (pre[y] || 0)) >>> 0; liftFlood(lay, rows, e.x, e.y);
-  const vb = veilable(lay), un = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h || ((rows[y] >>> x) & 1) === 1 || !vb[y * lay.w + x];
+  const rows = rowsCopy(S.seen, key, lay.h); liftFlood(lay, rows, e.x, e.y, WALK_R);
+  const un = (x, y) => unveiledRows(lay, rows, x, y);
   const cam = bk.camera(newCamFor(bk, key), { w: SCR_W, h: VIEW_H }, e, NOW, motion(), null);
-  bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));
   const g = PL.mk(SCR_W, VIEW_H).getContext('2d'); warmOf(bk).fk = bk.cache.frameKey(motion() ? NOW : 0);
   bk.drawGround(g, 0, 0, { x: cam.x - bk.ox * 48, y: cam.y - bk.oy * 48, w: SCR_W, h: VIEW_H }, motion() ? NOW : 0, bk.lightFor({ veiled: (x, y) => !un(x, y), foggedFar: () => false, level: () => lvl }, key));
   return true;
@@ -779,9 +779,9 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
     if (!w.kinds) { const ks = new Set(); for (const p of bk.place.props) { ks.add(p.kind); const c = bk.ts.sprites[p.kind].canopy; if (c >= 0) ks.add(c); } for (const c of bk.place.canopy) ks.add(c.kind); w.kinds = [...ks]; }
     for (let n = 0; n < 4 && w.i < w.kinds.length; n++) bk.spriteCanvas(w.kinds[w.i++], 0, 0);
     if (w.i >= w.kinds.length) w.st = WARM_DONE; return true; }
-  const vs = S.veil[key] ? S.veil[key].join() : '';   // a place walked before: its light state and the grids it opens, as its first walking frame will ask for them (a fog bank or a storm's edge is left to the frame)
+  const vs = S.seen.into[lay.cell] && S.seen.tile[key] ? S.seen.tile[key].join() : '';   // a place walked before: its light state and the grids it opens, as its first walking frame will ask for them (a fog bank or a storm's edge is left to the frame)
   if (vs && LIT.get(key) !== vs) { LIT.delete(key); LIT.set(key, vs); while (LIT.size > 12) LIT.delete(LIT.keys().next().value);
-    const lvl = warmLightLevel(lay); if (lvl != null) { bk.prepareLight(bk.lightFor({ veiled: (x, y) => !unveiled(key, x, y), foggedFar: () => false, level: () => lvl }, key)); return true; } }
+    const lvl = warmLightLevel(lay); if (lvl != null) { bk.prepareLight(bk.lightFor({ veiled: (x, y) => !isSeen(key, x, y), foggedFar: () => false, level: () => lvl }, key)); return true; } }
   if (dir === undefined) return false;
   if (vs && WARM.first === key && w.win !== key + '|' + dir) { w.win = key + '|' + dir; if (primeWindow(lay, bk, key, dir)) return true; }   // a place walked before opens on its walking view (no arrival look): its ground window is drawn ahead
   return false;
@@ -975,7 +975,7 @@ function firstHome() {
 const firstWalk = () => !!S && !(RT && RT.readOnly) && !firstHome();
 // The one teaching line due now on the first walk, or '' (each line waits for its deed; the Station's goal takes over once the pod is home).
 // A pod this place shows now (a Call lifted it, or the veil does): the glint to go to.
-const podShown = (key, night) => S.pods.some(p => p.k === key && !p.h && p.x >= 0 && isNightPod(p) === !!night && unveiled(key, p.x, p.y));   // a pod in view: the built kind's, or (night) her night pod
+const podShown = (key, night) => S.pods.some(p => p.k === key && !p.h && p.x >= 0 && isNightPod(p) === !!night && isSeen(key, p.x, p.y));   // a pod in view: the built kind's, or (night) her night pod
 // The first walk's pod beat as a way from here: the nearest buried pod, in this place or next door; { dir: 'north-east', vx, vy } or null.
 const DIR_VEC = { 'north': [0, -1], 'south': [0, 1], 'east': [1, 0], 'west': [-1, 0], 'north-east': [1, -1], 'north-west': [-1, -1], 'south-east': [1, 1], 'south-west': [-1, 1] };
 function beatWay(P) {
@@ -999,12 +999,12 @@ function leadWay(P, lay) {
   if (way) way.kind = 'beat';
   else {
     let best = null;   // anything to take seen in a place already made in this reach
-    for (const c of ex.reach) { if (c === lay.cell || !S.visited[c] || !layoutCache.has(String(c)) || !leftItems(c).length) continue; const q = cxy(c), d = Math.max(Math.abs(q.x - here.x), Math.abs(q.y - here.y)); if (!best || d < best.d) best = { c, d, dx: q.x - here.x, dy: q.y - here.y }; }
+    for (const c of ex.reach) { if (c === lay.cell || !S.seen.been[c] || !layoutCache.has(String(c)) || !leftItems(c).length) continue; const q = cxy(c), d = Math.max(Math.abs(q.x - here.x), Math.abs(q.y - here.y)); if (!best || d < best.d) best = { c, d, dx: q.x - here.x, dy: q.y - here.y }; }
     if (best) { way = toWay(best.dx, best.dy, 'take'); if (way) { way.cell = best.c; (RT.pointed = RT.pointed || {})[best.c] = 1; } }   // owner-notes-fix-160: the tab promised a find there; that place glints it (and keeps its tab) until it is taken
     if (!way) {   // the nearest side of this place that leads on to a cell of the reach not walked yet
       let out = null;
       for (const o of lay.openings || []) { if (openingKind(lay, o).kind !== 'open') continue; const [dx, dy] = SIDE_VEC[o.side], c = (here.y + dy) * MW + here.x + dx;
-        if (here.x + dx < 0 || here.y + dy < 0 || here.x + dx >= MW || here.y + dy >= MH || !ex.reach.includes(c) || S.visited[c]) continue;
+        if (here.x + dx < 0 || here.y + dy < 0 || here.x + dx >= MW || here.y + dy >= MH || !ex.reach.includes(c) || S.seen.been[c]) continue;
         const mid = (o.from + o.to) / 2, d = o.side === 'N' || o.side === 'S' ? Math.abs(mid - P.x) + (o.side === 'N' ? P.y : lay.h - P.y) : Math.abs(mid - P.y) + (o.side === 'W' ? P.x : lay.w - P.x);
         if (!out || d < out.d) out = { d, dx, dy }; }
       if (out) way = toWay(out.dx, out.dy, 'out');
@@ -1019,7 +1019,7 @@ function teachStep() {
   if (S.phase === 'place') return T.place;
   if (S.phase === 'map') return ex.cargo.pods.length && ex.pos === ex.start ? T.endHere : T.go;
   const P = S.phase === 'patch' ? ex.patch : null; if (!P) return '';
-  { const np = S.pods.find(p => isNightPod(p) && p.k === P.key && !p.h && unveiled(P.key, p.x, p.y)); if (np && !ex.cargo.pods.some(isNightPod) && !S.found.includes('teach:nightpod')) return WORDS.pod.podTeach(np.nm); }   // pod-sleep-build-1: her pod in sight: the line names her, never the built line for a pod (once per save: spent when she is taken up)
+  { const np = S.pods.find(p => isNightPod(p) && p.k === P.key && !p.h && isSeen(P.key, p.x, p.y)); if (np && !ex.cargo.pods.some(isNightPod) && !S.found.includes('teach:nightpod')) return WORDS.pod.podTeach(np.nm); }   // pod-sleep-build-1: her pod in sight: the line names her, never the built line for a pod (once per save: spent when she is taken up)
   if (!ex.cargo.pods.length) { if (podShown(P.key)) return T.pod;   // her own pod, in sight
     let c0 = ex.carry === 'fruit' ? indInSight() : null; if (c0 && !onScreen(c0.x, c0.y)) c0 = null; if (c0 && S.named && S.named[c0.id] && !S.found.includes('teach:eats')) return WORDS.pod.eatsTeach(S.named[c0.id]);   // fruit in hand, a named Loika in sight: once per save (spent at the feed)
     const w = loikaTeach(); if (w) return w; }   // W5: the next deed with a named Loika, in the words W4 uses
@@ -1486,8 +1486,8 @@ function urlSeed() { try { const v = new URLSearchParams(location.search).get('s
 // A new world's fields, before its life is placed: newRealm starts from them, and load() fills from them what a save lacks.
 // They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk (v9) keeps each region's map in regions[].map.
 function worldFields(seed, gen, wid) {
-  return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], habits: {}, looks: {}, pages: {}, day: freshDay(), revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
-    veil: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
+  return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], habits: {}, looks: {}, pages: {}, day: freshDay(), seen: newSeen(MW * MH), signs: {}, pins: [], cells: {}, pods: [], cr: [],
+    known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
     bay: [], hold: null, wid: wid || 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, aId: null },
     exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
@@ -1545,7 +1545,7 @@ function wantSector(R) {
   const again = () => { if (hereRegion() === R) { landReset(); mapCv = null; } };
   // the places in view first (the Probe's reach and every cell already seen), then the rest of the region, both in the worker
   const view = new Set(S.exp && S.exp.reach ? S.exp.reach : []);
-  for (let c = 0; c < MW * MH; c++) if (S.revealed[c]) view.add(c);
+  for (let c = 0; c < MW * MH; c++) if (S.seen.rev[c]) view.add(c);
   readySector(seed, R.slot, realm7(seed), [...view], again).then(how => { if (how === 'page') sectorMake(seed, R.slot); again(); }, () => { });   // no worker (or it failed): made here, on the spot
 }
 // A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
@@ -1796,101 +1796,51 @@ function recordSigns(c, turn = S.turn) {
   const s = cellSigns(c);
   if (s.tr.length || s.b || s.k || s.d || s.g || s.pd) S.signs[c] = Object.assign({ t: turn }, s); else delete S.signs[c];
 }
-function revealCell(c) { if (!S.revealed[c]) { S.revealed[c] = 1; if (S.exp) S.exp.stats.rev++; } recordSigns(c); }
+function revealCell(c) { if (seenReveal(S.seen, c) && S.exp) S.exp.stats.rev++; recordSigns(c); }
 // ---------- The veil: every place starts under a veil that walking and Call lift (lightning too, 3×3 around a struck stone) ----------
-// The veil is one bit per tile (32 rows of 28 bits per place). Terrain and creatures show through it; features,
-// pods, drops and stones on a veiled tile are not shown and can't be acted on. Tiles no Call could ever
-// reach (more than CALL_R tiles from any walkable tile, like the far side of fast water) are never veiled and show plainly.
-function veilable(lay) {
-  if (lay.vbl) return lay.vbl;
-  const r = CALL_R, rr = (r + .5) ** 2, o = new Uint8Array(lay.w * lay.h);
-  for (let i = 0; i < lay.w * lay.h; i++) { if (!lay.reach[i]) continue; const x0 = i % lay.w, y0 = (i / lay.w) | 0;
-    for (let y = Math.max(0, y0 - r); y <= Math.min(lay.h - 1, y0 + r); y++) for (let x = Math.max(0, x0 - r); x <= Math.min(lay.w - 1, x0 + r); x++) if ((x - x0) ** 2 + (y - y0) ** 2 <= rr) o[y * lay.w + x] = 1; }
-  if (lay.steep) for (let i = 0; i < o.length; i++) if (lay.steep[i]) o[i] = 0;   // a steep tile is a cliff face: never veiled, so the veil's dither is not laid over the wall (cliff-height-1; owner #21 "dark smudge")
-  return (lay.vbl = o);
-}
-// A Call's round range: the tiles it lifts (and finds things on).
+// The seen record is src/logic/seen.mjs: one bit per tile of a place, "been here" and "explored" as flags of the cell; S.seen holds it. Terrain and creatures show through the veil; features,
+// pods, drops and stones on a veiled tile are not shown and can't be acted on. Tiles no Call could ever reach (veilable) and cliff faces are never veiled and show plainly. The cave has no veil (its own dark).
 const CALL_MS = 300;
 const inCall = (P, x, y, r) => (x - P.x) ** 2 + (y - P.y) ** 2 <= (r + .5) ** 2;
-function unveilRound(key, cx, cy, r) {
-  const lay = layout(key), lw = lay.w, lh = lay.h, v = S.veil[key] || (S.veil[key] = new Array(lh).fill(0)), lifted = new Set();
-  for (let y = Math.max(0, cy - r); y <= Math.min(lh - 1, cy + r); y++) for (let x = Math.max(0, cx - r); x <= Math.min(lw - 1, cx + r); x++)
-    if (inCall({ x: cx, y: cy }, x, y, r) && !((v[y] >>> x) & 1)) { v[y] = (v[y] | (1 << x)) >>> 0; lifted.add(y * lw + x); }
-  // smooth gaps: a veiled tile just outside the ring (up to 3 tiles) with unveiled land right behind it, outward, lifts too
-  const isU = (x, y) => x < 0 || y < 0 || x >= lw || y >= lh || ((v[y] >>> x) & 1);
-  for (let y = Math.max(0, cy - r - 3); y <= Math.min(lh - 1, cy + r + 3); y++) for (let x = Math.max(0, cx - r - 3); x <= Math.min(lw - 1, cx + r + 3); x++) {
-    const d = Math.hypot(x - cx, y - cy); if (d <= r + .5 || d > r + 3.5 || ((v[y] >>> x) & 1)) continue;
-    const ux = (x - cx) / d, uy = (y - cy) / d; let behind = false;
-    for (let k = 1; k <= 3 && !behind; k++) { const bx = Math.round(x + ux * k), by = Math.round(y + uy * k); if (bx >= 0 && by >= 0 && bx < lw && by < lh && isU(bx, by)) behind = true; }
-    if (behind) lifted.add(y * lw + x); }
-  for (const i of lifted) { const x = i % lw, y = (i / lw) | 0; v[y] = (v[y] | (1 << x)) >>> 0; }
-  return lifted;
-}
-// Unveiled: lifted by walking or a Call, or never veilable. The cave has no veil (it has its own dark).
-function unveiled(key, x, y) {
-  if (key[0] === 'c') return true;
-  const v = S.veil[key]; if (v && ((v[y] >>> x) & 1)) return true;
-  const lay = layout(key); return !veilable(lay)[y * lay.w + x];
-}
-function unveil(key, cx, cy, r) {
-  const lay = layout(key), lw = lay.w, lh = lay.h, v = S.veil[key] || (S.veil[key] = new Array(lh).fill(0)), x0 = Math.max(0, cx - r), x1 = Math.min(lw - 1, cx + r);
-  const bits = (x1 >= 30 ? -1 : (1 << (x1 + 1)) - 1) & ~((1 << x0) - 1);
-  for (let y = Math.max(0, cy - r); y <= Math.min(lh - 1, cy + r); y++) v[y] = (v[y] | bits) >>> 0;
-}
+function isSeen(key, x, y) { return key[0] === 'c' || tileBit(S.seen, key, x, y) || seenUnveiled(S.seen, layout(key), x, y); }   // the page's one read of "seen" (a tile of a place)
+const callLift = (key, cx, cy, r) => liftRound(S.seen, layout(key), cx, cy, r);
+const lightningLift = (key, cx, cy, r) => liftSquare(S.seen, layout(key), cx, cy, r);
 // A named Loika he has met starts her tell within ten tiles: the veil lifts on her tile and on the tiles in a line between them, as the Call lifts it (tell-seen-fix-1).
 // Nothing else changes: not the range, the wind, the stay, nor a free note. The gate is S.named alone (the top line only ever names a met Loika); never an unmet stranger.
-function unveilTellLine(key, c, P) {
+function tellSeen(key, c, P) {
   if (key[0] === 'c' || !c.ind || !(S.named && S.named[c.id]) ||Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y)) > 10) return false;
-  const lay = layout(key), v = S.veil[key] || (S.veil[key] = new Array(lay.h).fill(0)), n = Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y));
-  for (let i = 0; i <= n; i++) { const x = Math.round(P.x + (c.x - P.x) * i / (n || 1)), y = Math.round(P.y + (c.y - P.y) * i / (n || 1)); if (x >= 0 && y >= 0 && x < lay.w && y < lay.h) v[y] = (v[y] | (1 << x)) >>> 0; }
-  return true;
+  liftLine(S.seen, layout(key), P, c); return true;
 }
 // Walking lifts the veil in a short circle around the pawn (like the cave light); Call still sweeps much further.
 // Whatever is lifted stays lifted, and nothing puts it back.
-function walkLift() {
+function walkSeen() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
-  const lay = layout(P.key), v = S.veil[P.key] || (S.veil[P.key] = new Array(lay.h).fill(0));
-  liftFlood(lay, v, P.x, P.y, walkRadius(lay, P.x, P.y));
+  const lay = layout(P.key);
+  seenWalkLift(S.seen, lay, P.x, P.y, walkRadius(lay, P.x, P.y));
   checkWalked();
 }
 const walkRadius = (lay, x, y) => lay.raisedFn && lay.raisedFn(x, y) ? WALK_R_HIGH : WALK_R;   // height lets you see further: plain seeing, six tiles on raised land (the arrival picture warmed ahead lifts the same)
-// a small flood from the pawn through open ground: it lifts the first blocking tile it meets (a shore, a trunk)
-// but never what lies behind it, so it doesn't see across water or cliff
-function liftFlood(lay, v, px, py, r = WALK_R) {
-  const lw = lay.w, lh = lay.h, tiles = lay.tiles, seen = new Set([py * lw + px]), q = [[px, py]];
-  for (let h = 0; h < q.length; h++) { const [x, y] = q[h]; v[y] = (v[y] | (1 << x)) >>> 0; if (h && T_BLOCK[tiles[y * lw + x]]) continue;
-    for (const [dx, dy] of Object.values(DIRS)) { const X = x + dx, Y = y + dy, k = Y * lw + X;
-      if (X < 0 || Y < 0 || X >= lw || Y >= lh || seen.has(k) || (X - px) ** 2 + (Y - py) ** 2 > (r + .3) ** 2) continue; seen.add(k); q.push([X, Y]); } }
-}
-function stoneSeen(key, f) { return key[0] === 'c' ? !!fs(key, f.id).sn : unveiled(key, f.x, f.y); }
+function stoneSeen(key, f) { return key[0] === 'c' ? !!fs(key, f.id).sn : isSeen(key, f.x, f.y); }
 // A place is explored when you have walked most of it (checkWalked): the reach dot fills then.
-function explored(c) { return !!S.visited[c] && !!(S.called && S.called[c]); }
+function explored(c) { return !!S.seen.been[c] && walkedCell(c); }
 // ---------- Explored places (generator 7: nothing in a place is picked by the page; the land holds what it holds) ----------
-// A place is explored when you have walked most of it: its veil is lifted over EXPLORED_SHARE of its walkable ground (S.called keeps that mark). The reach dot fills quietly then:
-// no card, no sound, nothing paid. Checked after every lift (walkLift, the Call).
+// A place is explored when you have walked most of it: its veil is lifted over EXPLORED_SHARE of its walkable ground (S.seen.walked keeps that mark). The reach dot fills quietly then:
+// no card, no sound, nothing paid. Checked after every lift (walkSeen, the Call).
 const EXPLORED_SHARE = .6;   // [tune]
-const walkedCell = c => !!(S.called && S.called[c]);
+const walkedCell = c => seenWalked(S.seen, c);
 const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
 const placeLand = lay => cap1(placeName(lay));
 function checkWalked() {
   const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return;
   const lay = layout(P.key), c = lay.cell; if (walkedCell(c)) return;
-  const v = S.veil[P.key]; if (!v) return;
-  if (lay.walkN == null) { lay.walkN = 0; for (let i = 0; i < lay.reach.length; i++) if (lay.reach[i]) lay.walkN++; }
-  let seen = 0; for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) if (lay.reach[y * lay.w + x] && ((v[y] >>> x) & 1)) seen++;
-  if (!lay.walkN || seen < EXPLORED_SHARE * lay.walkN) return;
-  (S.called = S.called || {})[c] = 1; ex.stats.explored = (ex.stats.explored || 0) + 1; logEv('Explored a place');
+  if (!S.seen.tile[P.key]) return;
+  if (seenShare(S.seen, lay) < EXPLORED_SHARE) return;
+  markWalked(S.seen, c); ex.stats.explored = (ex.stats.explored || 0) + 1; logEv('Explored a place');
 }
 // ---------- Seeing the place (walk slice W§4): the arrival look and Look over the place ----------
 // Both draw the whole place at 24 px from the baked place's half-scale render (places/src/page.mjs). They are views over a place (RT.view, never saved);
 // a press is consumed by them and never reaches the walking view; they spend no action. Only a baked place has them (a generated place has no 24 px picture).
 const VIEW_TEXT = { look: 'Look around', close: 'Close' };   // [copy]
-function placeVeil(lay, rows) {   // rows: the veil as it would stand (the warmed arrival picture's guess); else the place's own
-  const bk = lay.baked, { w, h } = bk.place, o = new Uint8Array(w * h), vbl = rows ? veilable(lay) : null;
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const px = x + bk.ox, py = y + bk.oy;
-    if (px < 0 || py < 0 || px >= lay.w || py >= lay.h) continue;   // the apron lies off the cell: never veiled, as in the walking view (one fog record for both views)
-    if (rows ? !((rows[py] >>> px) & 1) && vbl[py * lay.w + px] : !unveiled(lay.key, px, py)) o[y * w + x] = 1; }
-  return o; }
 function startView(kind, lay, extra) {
   if (!lay || lay.cave || !bakedView(lay)) return false;
   stopRepeat();
@@ -1931,31 +1881,20 @@ function callReport(lay, P) {
   return left ? cap1(left) : '';   // nothing in sight: no line (the ✓ word, "Face the …", points on)
 }
 // The fog over a place on the map: 2 you have never been into it, 1 you have been in and not found it, 0 found, not a place, or not seen.
-function fogState(c) {
-  if (!S.revealed[c] || !passable(c) || G.land[c] === L.WATER || (G.gen && !G.comp[c])) return 0;
-  if (walkedCell(c)) return 0;
-  return S.veil[String(c)] ? 1 : 2;
-}
+const cellFog = c => seenFog(S.seen, c, passable(c) && G.land[c] !== L.WATER && !(G.gen && !G.comp[c]));
 // A reach-view cell's light table: a place never been into is one step darker (the dark table, solid: dots over the level tint's pale greens read grey on a phone, lead 2026-11-08);
 // been in is full colour under light dots; found is clear; unvisited ground with no place (open water, cliff) keeps the fade; the storm's dark table over all.
-const reachRm = c => (!S.visited[c] && !passable(c)) ? 4 : ((S.exp && S.exp.storm && stormCovers(c % MW)) || fogState(c) === 2) ? 1 : 0;
+const reachRm = c => (!S.seen.been[c] && !passable(c)) ? 4 : ((S.exp && S.exp.storm && stormCovers(c % MW)) || cellFog(c) === 2) ? 1 : 0;
 const FOGV = { n: FOG_NOT_BEEN, b: FOG_BEEN };   // the dot levels, a plain object so a still can try other values
-const fogLevel = c => { const s = fogState(c); return s === 2 ? FOGV.n : s === 1 ? FOGV.b : 0; };
-// The fog's night dots for one cell on screen at (x, y): the Bayer matrix on screen coordinates (neighbouring cells join without seams), `level` of 16, cached per size, level and phase.
-function fogDots(x, y, cs, level) {
-  if (level <= 0) return; x = Math.round(x); y = Math.round(y);
-  blit(art('fogd' + cs + ':' + level + ':' + (x & 3) + ':' + (y & 3), () => { const pb = new PB(cs, cs);
-    for (let j = 0; j < cs; j++) for (let i = 0; i < cs; i++) if (BAYER[(((y + j) & 3) << 2) + ((x + i) & 3)] < level) pb.set(i, j, C.night); return pb; }), x, y);
-}
 // The band under the reach view: the place you stand in ("Meadow · explored · 1 pod waits there", "Meadow · not explored yet"). The words are src/words.mjs's.
 function bandCell() {
   const ex = S.exp, c = ex.pos, B = WORDS.band, name = cap1(landWord(c));
-  if (gatedCell(c) || !S.visited[c] || !passable(c)) return name;
+  if (gatedCell(c) || !S.seen.been[c] || !passable(c)) return name;
   if (walkedCell(c)) { const n = leftTotal(c), pods = leftCounts(c).pod;
     return name + ' · ' + WORDS.explored + (pods ? ' · ' + B.podWaits(pods) : n ? ' · ' + WORDS.leftN(n) : ''); }
   return name + ' · ' + B.unexplored;
 }
-// What can still be taken in a place, counting only what you can see (unveiled): the pips on the map and
+// What can still be taken in a place, counting only what you can see (seen): the pips on the map and
 // the tail of a Call's report ("1 dew, 1 fruit left").
 // leftItemsAll is everything left (fruit and unlit beacons too), for the pacing bot only; leftItems is the finds: pod, charge, warm, dew, tuft.
 const FINDS = ['pod', 'charge', 'warm', 'dew', 'tuft', 'strike', 'slab'];
@@ -1967,7 +1906,7 @@ function reachableTile(lay, x, y) {
 }
 function leftItemsAll(c) {
   const out = []; if (!passable(c)) return out;
-  const key = String(c), lay0 = layout(key), live = S.exp && S.exp.live[key], see = (x, y) => unveiled(key, x, y) && (lay0.cave || reachableTile(lay0, x, y));
+  const key = String(c), lay0 = layout(key), live = S.exp && S.exp.live[key], see = (x, y) => isSeen(key, x, y) && (lay0.cave || reachableTile(lay0, x, y));
   for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
   for (const f of lay0.feats) { if (!see(f.x, f.y)) continue;
     if (f.kind === 'k') { if (stormCharge(key, f) > 0) out.push({ k: 'charge', x: f.x, y: f.y }); else if (stoneWarm(key, f)) out.push({ k: 'warm', x: f.x, y: f.y }); }
@@ -1999,12 +1938,12 @@ function leftPhrase(c, P, room, kinds) {
     if (out && t.length > (room || 60)) break; out = t; }
   return out;
 }
-// Energy the Probe has found: stones on unveiled tiles that still hold a storm charge or warmth, not drawn yet.
+// Energy the Probe has found: stones on seen tiles that still hold a storm charge or warmth, not drawn yet.
 // The map marks their cell with the bolt (solid for storm charge, hollow for warm); the Probe screen counts them.
 function foundEnergy(c) {
-  const o = { charge: 0, warm: 0, e: 0 }; if (!passable(c) || G.land[c] === L.WATER || !S.visited[c]) return o;
-  const key = String(c); if (!S.veil[key]) return o;
-  for (const f of layout(key).feats) if (f.kind === 'k' && unveiled(key, f.x, f.y)) { const ch = stormCharge(key, f);
+  const o = { charge: 0, warm: 0, e: 0 }; if (!passable(c) || G.land[c] === L.WATER || !S.seen.been[c]) return o;
+  const key = String(c); if (!S.seen.tile[key]) return o;
+  for (const f of layout(key).feats) if (f.kind === 'k' && isSeen(key, f.x, f.y)) { const ch = stormCharge(key, f);
     if (ch > 0) { o.charge++; o.e += ch; } else if (stoneWarm(key, f)) { o.warm++; o.e += 1; } }
   return o;
 }
@@ -2016,18 +1955,18 @@ function reachCells(start, range, opts = abOpts()) { return reachCellsIn(G, star
 function cellCounts(cells) {
   const o = { visited: 0, found: 0, seen: 0, fog: 0, total: 0 };
   for (const c of cells) { o.total++; if (explored(c)) o.found++;
-    if (S.visited[c]) o.visited++; else if (S.revealed[c]) o.seen++; else o.fog++; }
+    if (S.seen.been[c]) o.visited++; else if (S.seen.rev[c]) o.seen++; else o.fog++; }
   return o;
 }
 // A gated cell: what is left there lies behind a gate you can't open yet (the cave under the cliff, without a digger).
 // It is left out of "Found N of M" and said apart ("· 1 gated").
-function gatedCell(c) { return c === G.gate && !!S.revealed[c] && !burrowOpen() && !canDig() && S.pods.some(p => p.k === 'c' + c); }
+function gatedCell(c) { return c === G.gate && !!S.seen.rev[c] && !burrowOpen() && !canDig() && S.pods.some(p => p.k === 'c' + c); }
 // Ground behind mud or scree (a rambler crosses it) or an earth bank (a digger), inside the range square and revealed: counted apart when the partner cannot cross it, as the cave is.
 function reachBehind() {
   const ex = S.exp, none = { soft: 0, bank: 0 }; if (!ex) return none;
   const k = S.seed + ':' + ex.n + ':' + ex.range;
   if (!RT.behind || RT.behindKey !== k) { const have = new Set(ex.reach), s = reachCells(ex.start, ex.range, { sure: true }).filter(c => !have.has(c)), b = reachCells(ex.start, ex.range, { bank: 'all' }).filter(c => !have.has(c) && !s.includes(c)); RT.behind = { soft: s, bank: b }; RT.behindKey = k; }
-  const n = a => a.filter(c => S.revealed[c]).length;
+  const n = a => a.filter(c => S.seen.rev[c]).length;
   return { soft: canSure() ? 0 : n(RT.behind.soft), bank: canBank() ? 0 : n(RT.behind.bank) };
 }
 function reachCounts() { if (!S.exp) return Object.assign(cellCounts([]), { gated: 0, soft: 0, bank: 0 }); const cells = S.exp.reach.filter(c => !gatedCell(c)); return Object.assign(cellCounts(cells), { gated: S.exp.reach.length - cells.length }, reachBehind()); }
@@ -2095,7 +2034,7 @@ function sweep() {
   const fresh = [];
   for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {   // a step lifts the 5x5 ring (reveal-build-1)
     const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-    const c = y * MW + x, was = S.revealed[c]; revealCell(c);
+    const c = y * MW + x, was = S.seen.rev[c]; revealCell(c);
     if (!was && Math.max(Math.abs(dx), Math.abs(dy)) === 2) fresh.push(c);
   }
   const rg = reachGeom(), shown = !(S.exp.beaconView || S.ui.mapFull);   // the reach view is what shows the bracket
@@ -2148,7 +2087,7 @@ function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: 
     supAt: {}, hitAt: -99, met: [], newMet: [], moments: [], momented: {}, reach: [], pg0: pageCount() };
   const ex = S.exp; ex.hadStorm = !!storm; S.hold = null;   // unsealed finds ride along in the hold
   if (dry) return;   // only the carrier of the night's end (see the top)
-  revealAround(cell, 1); S.visited[cell] = 1;
+  revealAround(cell, 1); markBeen(S.seen, cell);
   ex.reach = reachCells(cell, ex.range);
   if (reachHere(ex)) { chooseWarm(ex); ensureCharge(ex); } else { ex.warm = []; ex.warmOwed = true; }   // the places of the far reach are still being made: the warm stones are chosen over all of them when they are here (warmPay), as they always were
   const p = cxy(cell);
@@ -2180,7 +2119,7 @@ function advance(scope, info) {
       if (cols.length && !stormLull()) { const x = cols[hash(S.seed, 'sm', ex.n, ex.actions) % cols.length], y = hash(S.seed, 'smy', ex.n, ex.actions) % MH, c = y * MW + x;
         FX.bolts.push({ c, at: NOW });
         if (hash(S.seed, 'chg', ex.n, ex.actions) % 4 === 0) stormMark(ex, c);   // one flash in four charges stones there for the world turn
-        if (hash(S.seed, 'lit', ex.n, ex.actions) % 7 === 0 && !S.revealed[c]) { revealCell(c); ex.stats.lit++; } }
+        if (hash(S.seed, 'lit', ex.n, ex.actions) % 7 === 0 && !S.seen.rev[c]) { revealCell(c); ex.stats.lit++; } }
     }
   }
   if (fogActive()) { ex.fog.x = clamp(ex.fog.x + ex.fog.dx, 1, MW - 1); ex.fog.y = clamp(ex.fog.y + ex.fog.dy, 1, MH - 1); }
@@ -2333,7 +2272,7 @@ function mapStrikeTick() {
   if (!ex.mstrike && stormRain(p.x) && rnd(S.seed, 'ms', ex.n, ex.actions) < .3) {
     const opts = []; for (const [dx, dy] of Object.values(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH) opts.push(y * MW + x); }
     ex.mstrike = { c: opts[Math.floor(rnd(S.seed, 'mo', ex.n, ex.actions) * opts.length)], at: ex.actions + 1 };
-    if (S.revealed[ex.mstrike.c] && ex.reach.includes(ex.mstrike.c)) fxSign('warn', { c: ex.mstrike.c });   // only once the lit cell is in the reach view
+    if (S.seen.rev[ex.mstrike.c] && ex.reach.includes(ex.mstrike.c)) fxSign('warn', { c: ex.mstrike.c });   // only once the lit cell is in the reach view
   }
 }
 function nextToIsland(c) { const p = cxy(c); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && G.island[y * MW + x]) return true; } return false; }
@@ -2351,7 +2290,7 @@ function mapStep(dir, viaTiles) {   // viaTiles: a step out of a place that cros
   noteSure(ex.pos, dir, c);
   if (canSure() && cheb(cxy(c), cxy(ex.start)) === ex.range) ex.abUsed = 1;   // Tuliko's first step into its one extra ring is its ability used
   if (G.level && G.level[c] < G.level[ex.pos] && (edgeKind(ex.pos, dir) === EDGE.RAMP || softKind(ex.pos, dir) === 'scree')) fieldHabit('hop-down');   // a step down across a stair or a scree edge
-  ex.pos = c; ex.lastDir = dir; S.visited[c] = 1; if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
+  ex.pos = c; ex.lastDir = dir; markBeen(S.seen, c); if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
   advance('map', { clock: DAY.mapStep });
 }
 // Call on the map: pin your cell for 1 Energy, or remove your own pin for free. Gate pins stay free and automatic.
@@ -2604,7 +2543,7 @@ function habitTick(c, X) {   // true when the habit has her action
   if (c.gone || (c.ease | 0) >= 2 || ['flee', 'alert', 'approach', 'watch'].includes(c.st)) return false;
   const due = habitDue(c, X); if (!due) return false;
   c.hb = { k: due.k, n: due.n, tell: tellOf(c.ind.doings), v: due.v, notes: {}, pose: 'alert' }; c.st = 'hab';
-  const told = !!S.exp.patch && !c.hide && unveilTellLine(S.exp.patch.key, c, S.exp.patch);   // within ten tiles: lifted, and her line outranks a find's (pri 4)
+  const told = !!S.exp.patch && !c.hide && tellSeen(S.exp.patch.key, c, S.exp.patch);   // within ten tiles: lifted, and her line outranks a find's (pri 4)
   if (told || hbVisible(c, X)) fxMsg(W.tell[due.k] + ' · ' + habCard(c.id, due.k), told ? 4 : 2);
   return true;
 }
@@ -2915,13 +2854,12 @@ function enterPatch() {
   const t0 = nowMs(); try { enterPatchBuilt(); } finally { const t1 = nowMs(); if (t1 - t0 >= STALL_MS) { STALL.from = t0; STALL.to = t1; FX.resume = true; FX.resumeAt = t1 + RESUME_GRACE_MS; } }
 }
 function enterPatchBuilt() {
-  const ex = S.exp, key = String(ex.pos), lay = freshLayout(key); applyLines(lay); ensureLive(key); S.visited[ex.pos] = 1;
-  takeCallVeil(key, lay);   // what a Call from the place next door already lifted here (owner #49)
+  const ex = S.exp, key = String(ex.pos), lay = freshLayout(key); applyLines(lay); ensureLive(key); markBeen(S.seen, ex.pos);
   ex.entered = ex.entered || []; const firstIn = !ex.entered.includes(ex.pos); if (firstIn) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   RT.view = null;
   const back = spotBack(lay, key), e = back || entryPoint(lay, key, ex.lastDir); LAND = null; ALONG = null; delete ex.spot;   // owner #176: back into the place he left for the map, he stands where he stood
-  ex.patch = { key, x: e.x, y: e.y, dir: back ? back.dir : ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
+  ex.patch = { key, x: e.x, y: e.y, dir: back ? back.dir : ex.lastDir || 'up', noise: 'creep' }; walkSeen(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
   S.phase = 'patch'; recordSigns(ex.pos); transition();
   WARM.cold = TEST.clock == null && TEST.at == null && !warmReady(key) ? { key, at: NOW, signed: false } : null;   // not warm yet: the rest is built a step a frame (warmLanding)
@@ -2973,7 +2911,7 @@ function leavePatch() {
     const g = layout(String(G.gate)).feats.find(f => f.kind === 'g'), key = String(G.gate);
     ensureLive(key); ex.patch = { key, x: g.x, y: g.y + 1, dir: 'down', noise: 'creep' };
     if (occupant(key, g.x, g.y + 1, 'player')) { const e = entryPoint(layout(key), key, null); ex.patch.x = e.x; ex.patch.y = e.y; }
-    walkLift(); placePartnerNear(key, ex.patch); transition(); save(); return;
+    walkSeen(); placePartnerNear(key, ex.patch); transition(); save(); return;
   }
   ex.spot = { key: P.key, x: P.x, y: P.y, dir: P.dir };
   ex.patch = null; S.phase = 'map'; recordSigns(ex.pos); transition(); save();
@@ -2981,7 +2919,7 @@ function leavePatch() {
 // Sight in a place: everything, except inside a fog bank (4 tiles, 6 with a glowing partner along).
 function sightR(lay) { if (lay.cave) return 99; const night = nightNow(); if (!inFog(lay.cell)) return night ? SIGHT_NIGHT : 99; const pt = S.exp.pt, f = pt && pt.sp === 1 ? SIGHT_GLOW : SIGHT_FOG; return night ? Math.min(f, SIGHT_NIGHT) : f; }
 function inSight(x, y) { const P = S.exp.patch, r = sightR(layout(P.key)); return r >= 99 || Math.hypot(x - P.x, y - P.y) <= r + .5; }
-function seenFromPlayer(key, x, y) { return unveiled(key, x, y) && inSight(x, y); }
+function seenFromPlayer(key, x, y) { return isSeen(key, x, y) && inSight(x, y); }
 function canDig() { const pt = S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab === 'dig'; }
 // The burrow is open for an old save's dug burrow (S.opened, for any partner) and for this walk once a Tuikis has dug it out (ex.burrowDug); a Tuikis is needed on every visit.
 function burrowOpen() { return !!(S && S.opened && S.opened[G.gate]) || !!(S && S.exp && S.exp.burrowDug); }
@@ -3042,11 +2980,11 @@ function patchStepRun(dir, mode) {
     else if (o.type === 'tile' && o.t === T.DEEP) swimBump();
     else if (o.type === 'tile' && (o.t === T.WADE || o.t === T.SCREE)) softBump(o.t);
     else if (o.type === 'tile' && o.t === T.BANK && !canBank()) softBump(o.t);
-    else if (o.type !== 'tile' && o.type !== 'cr' && !unveiled(key, x, y)) fxMsg('Something is there under the veil · ))) Call to see');
+    else if (o.type !== 'tile' && o.type !== 'cr' && !isSeen(key, x, y)) fxMsg('Something is there under the veil · ))) Call to see');
     else fxMsg(blockWords(layout(key), x, y, o));   // every other refusal says why too (bug #14: a slab with no art yet blocked with no word)
     return;
   }
-  const prevP = { x: P.x, y: P.y }; P.x = x; P.y = y; walkLift(); lineWords(layout(key), P);
+  const prevP = { x: P.x, y: P.y }; P.x = x; P.y = y; walkSeen(); lineWords(layout(key), P);
   advance('patch', { noise: mode, moved: true, prevP });
 }
 // The refusal at a steep edge (a cliff between two levels), on the map, in the reach view and at a place's border.
@@ -3058,7 +2996,7 @@ function stairsNear(a, dir) {
   for (let i = 0; i < queue.length; i++) {
     const cur = queue[i], d0 = dist.get(cur);
     for (const d of L2.DIRS) {
-      const n = stepCell(cur, d); if (n < 0 || !inRange(n) || !S.revealed[n]) continue;
+      const n = stepCell(cur, d); if (n < 0 || !inRange(n) || !S.seen.rev[n]) continue;
       const k = edgeKind(cur, d);
       if (k === EDGE.RAMP) { if (G.level[n] === lb && (!best || d0 < best.n)) best = { n: d0, cur, d, ei: edgeIndex(cur, d) }; continue; }
       if (k !== EDGE.OPEN || dist.has(n) || G.level[n] !== la || !passable(n) || G.island[n]) continue;
@@ -3144,12 +3082,11 @@ function blockLine(lay, cells, k) {
 function applyLines(lay) {
   if (!lay.baked || lay.cave) return;
   for (const [i, t] of lay.lineSaved || []) lay.tiles[i] = t;   // the last visit's blocks come off
-  lay.lineSaved = []; lay.lines = { cells: new Map(), ops: [], patches: [] };
+  lay.lineSaved = []; lay.lines = { cells: new Map(), ops: [] };
   for (const o of lay.openings || []) {
     const k = openingKind(lay, o); if (k.kind !== 'closed') continue;   // (reach-build-1) a range side blocks nothing: a place of the square is open to its own edges; the refusal is the step across
     lay.lines.ops.push({ ...o, ...k }); blockLine(lay, lineCells(lay, o, false), k);
   }
-  lay.lines.id = lay.lines.patches.map(p => p.x + ',' + p.y).join(';');
   // Nothing to take, strike or read lies in the wash or past a band (owner walk notes 14, 26-28): such a thing waits out of the place's list while its tile is under a line, and comes back when the line draws back.
   if (lay.lineFeats && lay.lineFeats.length) { lay.feats.push(...lay.lineFeats); lay.lineFeats = []; }
   const held = lay.feats.filter(f => LINE_FEATS.includes(f.kind) && lay.lines.cells.has(f.y * lay.w + f.x));
@@ -3260,7 +3197,7 @@ function crossRegion(dir, sw) {
   const back = away[sw.id]; delete away[sw.id];
   if (back) for (const k of RG_FIELDS) ex[k] = back[k];
   else { Object.assign(ex, { live: {}, dug: [], stormCells: {}, entered: [], trail: [sw.cell], start: sw.cell, warm: [], mstrike: null }); ex.reach = reachCells(ex.start, ex.range); }   // a region new to this expedition: the reach is counted from where you came in
-  ex.pos = sw.cell; ex.lastDir = dir; ex.face = dir; S.visited[sw.cell] = 1; revealAround(sw.cell, 1);
+  ex.pos = sw.cell; ex.lastDir = dir; ex.face = dir; markBeen(S.seen, sw.cell); revealAround(sw.cell, 1);
   if (ex.trail[ex.trail.length - 1] !== sw.cell) ex.trail.push(sw.cell);
   RT.behind = null; RT.behindKey = null;
   advance('map', { clock: DAY.mapStep });   // a step across the map moves the clock like any other
@@ -3374,7 +3311,7 @@ const NOTHING = { label: FIRST_TEXT.face.still, run: () => waitTick('patch') };
 function nextThing(P, lay) {
   const ex = S.exp, key = P.key, at = (x, y) => ({ x, y, d: Math.abs(x - P.x) + Math.abs(y - P.y) }), nearest = a => a.sort((p, q) => p.d - q.d)[0] || null;
   if (!ex.cargo.pods.length) {   // finding a pod: the one in view, else the beat (a buried pod, shown by the first walk or by the map's slow beat)
-    const pods = S.pods.filter(p => p.k === key && p.x >= 0), seen = nearest(pods.filter(p => !p.h && unveiled(key, p.x, p.y)).map(p => ({ kind: 'pod', ...at(p.x, p.y) })));
+    const pods = S.pods.filter(p => p.k === key && p.x >= 0), seen = nearest(pods.filter(p => !p.h && isSeen(key, p.x, p.y)).map(p => ({ kind: 'pod', ...at(p.x, p.y) })));
     if (seen) return seen;
     if (firstWalk()) { const w = beatWay(P); if (w) return { kind: 'beat', x: P.x + w.vx * 60, y: P.y + w.vy * 60, d: 60, virt: 1, dir: w.dir }; }
     else if (signsAt(lay.cell).includes('b')) { const b = nearest(pods.filter(p => p.h).map(p => ({ kind: 'beat', ...at(p.x, p.y) }))); if (b) return b; } }
@@ -3412,7 +3349,7 @@ function patchAction() {
   const nm = sp => S.known.includes(sp) ? ' · ' + spOf(sp).name : '';
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
-  if (o && o.type !== 'tile' && o.type !== 'pt' && o.type !== 'cr' && !(o.type === 'fruit' && o.fr.put) && !unveiled(key, f.x, f.y))
+  if (o && o.type !== 'tile' && o.type !== 'pt' && o.type !== 'cr' && !(o.type === 'fruit' && o.fr.put) && !isSeen(key, f.x, f.y))
     return { label: edgeStepCrosses() ? '' : 'Veiled · Call to see', run: null };   // edge-cost-line-fix-3: facing the edge, the front is the next place the edge line already names; this ✓ does nothing, so its label yields to the line (UI 04:28: 'Call to see' alone still left no room at 390)
   if (o && o.type === 'cr') {
     // before identification one neutral label, whatever it eats: no diet leaks, and nothing is offered
@@ -3528,7 +3465,7 @@ function endOfActionHabits(X, info) {
   const ex = S.exp, h = ex.pt && FIELD[ex.pt.sp]; if (!h) return;
   const { lay, key, P, live } = X;
   if (h === 'tiptoe') { if (info.moved && info.noise === 'creep' && live.pt && live.cr.some(c => !c.hide && c.st === 'idle' && cheb(c, P) <= 1 && cheb(c, live.pt) <= 2)) fieldHabit(h); }
-  else if (h === 'stone-sense') { if (lay.feats.some(f => f.kind === 'k' && cheb(f, P) <= 1 && stoneCharge(key, f) > 0 && (lay.cave ? stoneSeen(key, f) : unveiled(key, f.x, f.y)))) fieldHabit(h); }
+  else if (h === 'stone-sense') { if (lay.feats.some(f => f.kind === 'k' && cheb(f, P) <= 1 && stoneCharge(key, f) > 0 && (lay.cave ? stoneSeen(key, f) : isSeen(key, f.x, f.y)))) fieldHabit(h); }
   else if (h === 'beacon-sit') { if (lay.feats.some(f => f.kind === 'j' && fs(key, f.id).up && cheb(f, P) <= 2)) fieldHabit(h); }
 }
 // The Hiljan's grab: a fruit a shaken bush just dropped goes to the nearest wild Hiljan within 4 tiles of it that is not fleeing, hidden or eating, at once and with no back-off. A fruit you put down is no grab.
@@ -3622,12 +3559,12 @@ function depotShelter() { const ex = S.exp, P = ex && ex.patch; if (!P || P.key[
 function lightBeacon(f) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, cell = layout(key).cell, before = ex.stats.rev; setFS(key, f.id, { up: 1 });
   ex.cargo.e -= PRICE.beacon; fxFloat(f.x, f.y, '-' + PRICE.beacon, 'energy');
-  const was = S.revealed.slice(); revealAround(cell, 3); const n = ex.stats.rev - before;
+  const was = S.seen.rev.slice(); revealAround(cell, 3); const n = ex.stats.rev - before;
   logEv('Lit the beacon · −' + PRICE.beacon + ' Energy · ' + n + ' cells');
   advance('patch', { noise: 'act' });
   if (n && S.exp && !S.exp.ending) { // show it: back on the map, the fog lifts outward from the beacon
     const p0 = cxy(cell); FX.reveal = { at: NOW + 200, cells: [] };
-    for (let c = 0; c < MW * MH; c++) if (S.revealed[c] && !was[c]) FX.reveal.cells.push({ c, d: cheb(cxy(c), p0) });
+    for (let c = 0; c < MW * MH; c++) if (S.seen.rev[c] && !was[c]) FX.reveal.cells.push({ c, d: cheb(cxy(c), p0) });
     ex.beaconView = 1; FX.beaconAt = NOW; setTimeout(beaconDone, BEACON_MS); S.phase = 'map'; }   // the map shows the sweep; the place (and where you stand) stays as it was
   fxMsg((n ? 'The beacon lights the land around · ' + n + ' cell' + (n > 1 ? 's' : '') + ' revealed' : 'The beacon burns · nothing new in sight') + ' · −1 Energy', 2);
 }
@@ -3710,12 +3647,11 @@ function offer(c) { if (darkRefuse()) return;
 // The Call is not cut at the place's edge (owner 11-17, #49): the finds of the places next door (the eight round this one) that lie inside the Call's circle, drawn in this place's tile
 // coordinates, are lit too, but only in a place the Probe's reach holds. A pod is read from the pod list (no place is built for it); a feature (stone, crack) only where that place's
 // layout is already made, so the Call never generates a place. cue entries carry nk (the neighbour's key) and ax, ay (the find's own tile there).
-// The Call also lifts the veil of the part of its circle inside a place next door held by the Probe's reach (owner #49: "explore the adjacent place"). The lifted rows are kept apart
-// (S.veilPre[key], one bit per tile as S.veil) because S.veil's presence means "been in this place" to the map; takeCallVeil merges them when the player enters (walkLift and checkWalked
-// then run as usual, so "explored" counts them). Needs no layout: a place not made yet is taken to be this place's size, as nextDoorFinds does.
-function nextDoorVeil(P, lay, reach) {
+// The Call also lifts the part of its circle inside a place next door held by the Probe's reach (owner #49: "explore the adjacent place"). It writes the same record a walk writes
+// (S.seen.tile[key]); "been here" is its own flag and a Call never sets it. Needs no layout: a place not made yet is taken to be this place's size, as nextDoorFinds does.
+function callNextDoor(P, lay, reach) {
   const ex = S.exp; if (!ex || !ex.reach || lay.cave) return false;
-  const c = cxy(lay.cell); S.veilPre = S.veilPre || {}; let reached = false;   // returns whether the circle lifted anything next door (the message line says so)
+  const c = cxy(lay.cell); let reached = false;   // returns whether the circle lifted anything next door (the message line says so)
   for (const [dx, dy] of PEEK_DIRS) {
     const X = c.x + dx, Y = c.y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
     const nc = Y * MW + X;
@@ -3723,19 +3659,9 @@ function nextDoorVeil(P, lay, reach) {
     if (!atSide && !ex.reach.includes(nc)) continue;
     const nk = String(nc), nl = layoutCache.get(nk); if (nl && nl.cave) continue;
     const w = nl ? nl.w : lay.w, h = nl ? nl.h : lay.h, ox = dx * (dx < 0 ? w : lay.w), oy = dy * (dy < 0 ? h : lay.h);
-    const v = S.veil[nk] || S.veilPre[nk] || new Array(h).fill(0);   // a place walked in before keeps its own veil
-    let any = false;
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (inCall(P, x + ox, y + oy, reach)) { v[y] = (v[y] | (1 << x)) >>> 0; any = true; }
-    if (any && !S.veil[nk]) S.veilPre[nk] = v;   // nothing is kept for a place the circle does not touch
-    if (any) { revealCell(nc); reached = true; }   // the lifted cells show only on a revealed map cell (the hold view draws an unrevealed one as fog): reveal it (owner #97)
+    if (liftWhere(S.seen, nk, w, h, ox, oy, (x, y) => inCall(P, x, y, reach))) { revealCell(nc); reached = true; }   // the lifted cells show only on a revealed map cell (the hold view draws an unrevealed one as fog): reveal it (owner #97)
   }
   return reached;
-}
-function takeCallVeil(key, lay) {
-  const pre = S.veilPre && S.veilPre[key]; if (!pre) return;
-  const v = S.veil[key] || (S.veil[key] = new Array(lay.h).fill(0));
-  for (let y = 0; y < lay.h; y++) v[y] = (v[y] | (pre[y] || 0)) >>> 0;
-  delete S.veilPre[key];
 }
 function nextDoorFinds(P, lay, reach, cue) {
   const ex = S.exp; if (!ex || !ex.reach || lay.cave) return 0;
@@ -3766,10 +3692,10 @@ function callPlace() { if (darkRefuse()) return;
     if (f.kind === 'g' && !burrowOpen()) fxGlint(f.x, f.y, 350);
   }
   let nextDoor = false, nextFound = 0;
-  if (!lay.cave) nextDoor = nextDoorVeil(P, lay, reach);   // and lifts the veil of the strip it covers there (the finds below read it)
+  if (!lay.cave) nextDoor = callNextDoor(P, lay, reach);   // and lifts the veil of the strip it covers there (the finds below read it)
   if (!lay.cave) { nextFound = nextDoorFinds(P, lay, reach, cue); found += nextFound; }   // the wave goes on past the place's edge, cut only by the Probe's reach (owner #49)
   let lifted = null;
-  if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); checkWalked(); }
+  if (!lay.cave) { lifted = callLift(key, P.x, P.y, reach); checkWalked(); }
   FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach, key, lifted };   // the ring sweeps out over 300 ms and the veil lifts as it passes
   FX.cue = { key, at: NOW, until: ex.actions + 3, r: reach, finds: cue };   // the finds' edge tabs, for the 3 actions after the Call
   ex.stats.calls = (ex.stats.calls || 0) + 1; if (!lay.cave) { ex.callsAt = ex.callsAt || {}; ex.callsAt[lay.cell] = (ex.callsAt[lay.cell] || 0) + 1; }
@@ -3781,9 +3707,9 @@ function callPlace() { if (darkRefuse()) return;
   if (!lay.cave) {
     fxSign('call');   // if the entry did not show it, this press does, beside the ring it explains (hazard signs outrank it)
     if (muffled) fxSign('muffled');
-    const lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
+    const lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && isSeen(key, q.x, q.y));
     if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); cue.push({ x: lp.x, y: lp.y }); }   // a pod still lying here glints again, so a beat always leads somewhere
-    for (const q of S.pods) if (q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y)) q.out = 1;   // announced pods keep the dotted outline until taken
+    for (const q of S.pods) if (q.k === key && !q.h && q.x >= 0 && isSeen(key, q.x, q.y)) q.out = 1;   // announced pods keep the dotted outline until taken
     { const rep = nextDoor ? WORDS.callNextDoor(nextFound) : callReport(lay, P); if (rep) fxMsg(rep, found ? 1 : 2); }   // a Call that reached next door says so (editor 11-24, #143)
   }
   if (digNow && !ex.ending) dig();
@@ -3793,7 +3719,7 @@ function waitSnap(scope) {
   const ex = S.exp, o = { storm: ex.storm ? { x: ex.storm.x, dir: ex.storm.dir } : null, lvl: stormLevel(), fogIn: inFog(ex.pos), fogNear: fogNear(), cr: new Map(), cups: 0 };
   if (scope === 'patch' && ex.patch) { const key = ex.patch.key, live = curLive(), lay = curLay();
     for (const c of live.cr) if (!c.hide && inSight(c.x, c.y)) o.cr.set(c.id, { x: c.x, y: c.y, st: c.st, sp: c.sp, calm: c.calm });
-    for (const f of lay.feats) if (f.kind === 'u' && cupFull(key, f) && unveiled(key, f.x, f.y)) o.cups++; }
+    for (const f of lay.feats) if (f.kind === 'u' && cupFull(key, f) && isSeen(key, f.x, f.y)) o.cups++; }
   return o;
 }
 function fogNear() { if (!fogActive()) return false; const p = cxy(S.exp.pos); for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && inFog(y * MW + x)) return true; } return false; }
@@ -3910,7 +3836,7 @@ function patchTick(info) {
     const st = lay.feats.find(f => f.kind === 'k' && f.x === strike.x && f.y === strike.y);
     // a stone takes charge at most once per storm pass over the place; struck again, nothing more
     if (st && !(live.struck = live.struck || {})[st.id]) { live.struck[st.id] = 1; setFS(key, st.id, { ch: Math.max(stormCharge(key, st), strike.peak ? 3 : 2), sn: 1 });
-      if (!lay.cave && !unveiled(key, st.x, st.y)) { unveil(key, st.x, st.y, 1); } }   // the flash shows a 3×3 around the stone
+      if (!lay.cave && !isSeen(key, st.x, st.y)) { lightningLift(key, st.x, st.y, 1); } }   // the flash shows a 3×3 around the stone
     ex.stormCells[lay.cell] = 1;
   }
   const pc = ptCtx();
@@ -3925,7 +3851,7 @@ function patchTick(info) {
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
   partnerTick(X);
   endOfActionHabits(X, info);
-  if (!lay.cave) for (const f of lay.feats) if (f.kind === 'k' && cheb(f, P) <= 3 && unveiled(key, f.x, f.y) && stormCharge(key, f) <= 0 && stoneWarm(key, f) && fs(key, f.id).wseen !== S.turn) setFS(key, f.id, { wseen: S.turn });   // its ring stops blinking once you have been near
+  if (!lay.cave) for (const f of lay.feats) if (f.kind === 'k' && cheb(f, P) <= 3 && isSeen(key, f.x, f.y) && stormCharge(key, f) <= 0 && stoneWarm(key, f) && fs(key, f.id).wseen !== S.turn) setFS(key, f.id, { wseen: S.turn });   // its ring stops blinking once you have been near
   // the four bubbles over creatures, each explained the first time it shows in view
   const inView = live.cr.filter(c => !c.hide && !X.away(c) && inSight(c.x, c.y));
   for (const c of inView) { const b = bubbleOf(c, ex.carry); if (b && BUBBLE_SIGN[b]) fxSign(BUBBLE_SIGN[b]); }
@@ -4428,7 +4354,7 @@ function endExpedition(reason) {
   const explored = exploredAny(ex), rc = reachCounts();
   let notch = null;   // a notch earned is named on Expedition ended as its own row of the outcome block (and logged), never with a count, never a world line
   { const n = {}, mud = c => !!(G.soft && G.soft.wade[c]);   // a wade the partner crossed counts as 'mud', apart from a ford (both are L.WATER)
-    for (const c of new Set(ex.trail)) if (S.visited[c] && (passable(c) || mud(c))) { const k = mud(c) ? 'mud' : G.land[c]; n[k] = (n[k] || 0) + 1; }   // every mibi with you remembers where you went most
+    for (const c of new Set(ex.trail)) if (S.seen.been[c] && (passable(c) || mud(c))) { const k = mud(c) ? 'mud' : G.land[c]; n[k] = (n[k] || 0) + 1; }   // every mibi with you remembers where you went most
     const best = Object.keys(n).sort((a, b) => n[b] - n[a] || (a === 'mud' ? 1 : b === 'mud' ? -1 : a - b))[0];
     for (const w of carriedMibis()) { if (best != null) w.mem = best === 'mud' ? 'mud' : LAND_NAME[best];
       if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
@@ -4486,8 +4412,8 @@ function emptyLead(flag) {
     return best && { cell: best.c, land: LAND_NAME[G.land[best.c]], dir: best.d ? dirWord(best.dx, best.dy, best.d) : null, first, pod }; };
   for (const p of S.pods) if (/^\d+$/.test(String(p.k)) && (first || !p.h)) seen.add(+p.k);
   let r = seen.size ? pick(seen, true) : null;
-  if (!r && !first) { const beats = []; for (let c = 0; c < MW * MH; c++) if (S.revealed[c] && signsAt(c).includes('b')) beats.push(c); r = beats.length ? pick(beats, true) : null; }
-  if (!r) { const rock = []; for (let c = 0; c < MW * MH; c++) if (S.revealed[c] && (G.land[c] === L.WOOD || G.land[c] === L.ROCK)) rock.push(c); r = rock.length ? pick(rock, false) : null; }
+  if (!r && !first) { const beats = []; for (let c = 0; c < MW * MH; c++) if (S.seen.rev[c] && signsAt(c).includes('b')) beats.push(c); r = beats.length ? pick(beats, true) : null; }
+  if (!r) { const rock = []; for (let c = 0; c < MW * MH; c++) if (S.seen.rev[c] && (G.land[c] === L.WOOD || G.land[c] === L.ROCK)) rock.push(c); r = rock.length ? pick(rock, false) : null; }
   return r;
 }
 // Play together: once per world turn, undocked, between expeditions, with every mibi with you together.
@@ -4647,7 +4573,7 @@ function regionTurn(R, t, pending, farFromPlayer) {
   for (let i = 0; i < nYoung && families.length; i++) { const c = rng.pick(families), here = S.cr.filter(w => w.c === c && !w.cv);
     const counts = kinds.map(sp => here.filter(w => w.sp === sp).length), sp = kinds[counts.indexOf(Math.max(...counts))];
     S.cr.push({ id: nextCr, sp, c, cv: 0, b: Math.round(rnd(S.seed, 'bold', nextCr) * 100) / 100, s: 0, young: 1 }); nextCr++; young.push({ sp, c }); }
-  for (const c of newPods) if (S.revealed[c]) recordSigns(c, t + 1);   // a sign carries the turn that has just been made
+  for (const c of newPods) if (S.seen.rev[c]) recordSigns(c, t + 1);   // a sign carries the turn that has just been made
   surfaceMissing(R, t, farFromPlayer);
   indexCreatures();
   return { mv, charged, bushes, bloom, newPods, young };
@@ -5631,9 +5557,6 @@ function buildMapPBCells() {
 function buildFogPB(seed) {   // the unknown: NAMED EMPTY SLOT paper-grain-32 (the paper hatch, art desk to paint); one flat fill of the palette colour nearest #fff8e6 (bone), no hatch drawn in code
   return new PB(MW * CELL, MH * CELL).rect(0, 0, MW * CELL, MH * CELL, C.bone);
 }
-function fogCellArt(v) { return art('fog' + v, () => { const pb = new PB(CELL, CELL), R = makeRng(hash('fog', v)); pb.rect(0, 0, CELL, CELL, C.night);
-  for (let i = 0; i < 16; i++) pb.set(R.int(CELL), R.int(CELL), C.slate);
-  const ox = 6 + R.int(14), oy = 6 + R.int(14), r = 4 + R.int(3); pb.ell(ox, oy, r, r * .8, C.slate); pb.set(ox - 1, oy - 2, C.stone); return pb; }); }
 function fogEdgeArt(m) { return art('fe' + m, () => { const pb = new PB(CELL, CELL);
   for (let y = 0; y < CELL; y++) for (let x = 0; x < CELL; x++) {
     const d = Math.min(m & 1 ? y : 99, m & 2 ? CELL - 1 - x : 99, m & 4 ? CELL - 1 - y : 99, m & 8 ? x : 99);
@@ -5778,18 +5701,18 @@ function mapSigns() {
   for (const p of S.pins) add(p.c, p.k === 'own' ? 'pin' : p.k, 10);
   if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);
   for (const k in (S.skulls || {})) add(+k, 'skull', 11);   // where the Probe broke; the pods lie there until you come back
-  for (const c of depotCells(S.seed)) { if (!S.visited[c]) continue; const f = depotOf(c); if (f && unveiled(String(c), f.x, f.y)) add(c, 'depot', 10, { lit: outpostLeft(String(c), f) }); }
-  for (let c = 0; c < MW * MH; c++) { if (!S.revealed[c] || !passable(c) || !(S.visited[c] || S.cells[c])) continue; const k = String(c); if (!placeHave(k)) continue; const j = layout(k).feats.find(f => f.kind === 'j'); if (!j) continue;   /* a place the worker has not made yet is not baked here for its beacon: it is signed when it comes (every frame draws this) */ if (fs(k, j.id).up) add(c, 'beacon', 10, { lit: 1 }); else if (S.visited[c] && unveiled(k, j.x, j.y)) add(c, 'beacon', 9, { lit: 0 }); }   // a lit beacon, for good   // a gated cell shows its gate
+  for (const c of depotCells(S.seed)) { if (!S.seen.been[c]) continue; const f = depotOf(c); if (f && isSeen(String(c), f.x, f.y)) add(c, 'depot', 10, { lit: outpostLeft(String(c), f) }); }
+  for (let c = 0; c < MW * MH; c++) { if (!S.seen.rev[c] || !passable(c) || !(S.seen.been[c] || S.cells[c])) continue; const k = String(c); if (!placeHave(k)) continue; const j = layout(k).feats.find(f => f.kind === 'j'); if (!j) continue;   /* a place the worker has not made yet is not baked here for its beacon: it is signed when it comes (every frame draws this) */ if (fs(k, j.id).up) add(c, 'beacon', 10, { lit: 1 }); else if (S.seen.been[c] && isSeen(k, j.x, j.y)) add(c, 'beacon', 9, { lit: 0 }); }   // a lit beacon, for good   // a gated cell shows its gate
   // Energy the Probe has found stays marked until drawn, found place or not: solid bolt for storm charge, hollow for warm
   if (S.exp) for (const c of S.exp.reach) { if (!placeHave(String(c))) continue; const f = foundEnergy(c); if (f.charge) add(c, 'k', 9); else if (f.warm) add(c, 'kw', 9);
-    if (S.visited[c] && passable(c) && leftItems(c).some(i => i.k === 'pod' && !i.cave)) add(c, 'pod', 9); }   // a pod you saw and left behind
+    if (S.seen.been[c] && passable(c) && leftItems(c).some(i => i.k === 'pod' && !i.cave)) add(c, 'pod', 9); }   // a pod you saw and left behind
   for (const k in S.signs) { const c = +k, s = S.signs[k], age = S.turn - s.t; if (age > 1) continue; const rm = age ? 4 : 0;
     if (s.d && !S.deepRead) add(c, 'deep', 9, { rm }); if (s.g) add(c, 'burrow', 9, { rm }); if (hide(c)) continue; if (s.b) add(c, 'b', 5, { rm }); if (s.k) add(c, 'k', 4, { rm });
     if (s.tr.some(sp => !S.known.includes(sp))) add(c, 't', 3, { rm }); }
-  for (const sp of S.known) { const n = {}; for (const w of S.cr) if (w.sp === sp && !w.cv && S.revealed[w.c] && !hide(w.c)) n[w.c] = (n[w.c] || 0) + 1;
+  for (const sp of S.known) { const n = {}; for (const w of S.cr) if (w.sp === sp && !w.cv && S.seen.rev[w.c] && !hide(w.c)) n[w.c] = (n[w.c] || 0) + 1;
     Object.keys(n).filter(c => n[c] >= 2).sort((a, b) => n[b] - n[a] || a - b).slice(0, 3).forEach(c => add(+c, 't', 4, { sp })); }
   { const ge = out.get(G.gate); if (ge && gatedCell(G.gate)) ge.list = ge.list.filter(q => q.kind === 'burrow'); }   // a gated cell shows its gate, on top of everything
-  return book.pick(S.revealed.reduce((a, v) => a + v, 0));
+  return book.pick(S.seen.rev.reduce((a, v) => a + v, 0));
 }
 function signsAt(c) { const e = mapSigns().find(q => q.c === c); return e ? e.list.map(q => q.kind) : []; }
 // The signs as pictures are src/render/map-signs.mjs; the pixel core they draw with is handed in.
@@ -5831,7 +5754,7 @@ function sectorHere() {
   const seed = S.regions[0].seed;
   if (typeof Worker === 'undefined') return sectorMake(seed, R.slot);
   const sec = sectorReady(seed, R.slot); if (!sec) wantSector(R);   // asked once; the maps keep to the cell labels until it comes
-  if (sec && sec.have) { for (let c = 0; c < MW * MH; c++) if (S.revealed[c] && !sec.have[c]) return null; }   // the places in view only, so far: it serves while every seen cell is in it
+  if (sec && sec.have) { for (let c = 0; c < MW * MH; c++) if (S.seen.rev[c] && !sec.have[c]) return null; }   // the places in view only, so far: it serves while every seen cell is in it
   return sec;
 }
 // spec: { X0, Y0 (the top-left cell), w, h (pixels), cs (the cell's size) }
@@ -5841,8 +5764,8 @@ const landReset = () => { LAND_CACHE.key = null; LAND_CACHE.more.clear(); LAND_C
 // What a painting is made from: the cells it shows (seen, in fog, under a storm) and its key (a change in any of them is a new painting).
 function landState(spec) {
   const { X0, Y0, w: N, h: NH, cs } = spec, ex = S.exp;
-  // spec.glimpse: cells drawn as seen and never been in (the opening's five lights before the first walk); drawn only, S.revealed is never touched
-  const glimpse = spec.glimpse ? new Set(spec.glimpse) : null, seen = c => !!S.revealed[c] || (glimpse !== null && glimpse.has(c)), fogOf = c => S.revealed[c] ? fogState(c) : glimpse !== null && glimpse.has(c) && passable(c) && G.land[c] !== L.WATER ? 2 : 0;
+  // spec.glimpse: cells drawn as seen and never been in (the opening's five lights before the first walk); drawn only, S.seen.rev is never touched
+  const glimpse = spec.glimpse ? new Set(spec.glimpse) : null, seen = c => !!S.seen.rev[c] || (glimpse !== null && glimpse.has(c)), fogOf = c => S.seen.rev[c] ? cellFog(c) : glimpse !== null && glimpse.has(c) && passable(c) && G.land[c] !== L.WATER ? 2 : 0;
   const nx = Math.ceil(N / cs), ny = Math.ceil(NH / cs); let st = '';
   for (let j = -1; j <= ny; j++) for (let i = -1; i <= nx; i++) { const X = X0 + i, Y = Y0 + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) { st += 'x'; continue; } const c = Y * MW + X; st += !seen(c) ? 'n' : (fogOf(c) + (ex && ex.storm && stormCovers(X) ? 4 : 0)); }
   const mist = spec.mist != null && OPEN_ART.ready ? OPEN_ART.night : null;   // the opening's night mist: unseen pixels take the desk's tiles (frame 0, 1 or 2 = still), a variant per 96 px block of world pixels
@@ -5908,7 +5831,7 @@ function drawReachView(t) {
   for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
     const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j, x = q.dx + i * q.cs, y = q.dy + j * q.cs;
     if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
-    const c = Y * MW + X; if (!S.revealed[c]) continue;
+    const c = Y * MW + X; if (!S.seen.rev[c]) continue;
     if ((ex.mstrike && ex.mstrike.c === c) || (ex.stray && ex.stray.scope === 'map' && ex.stray.cell === c)) { ditherFill(x, y, q.cs, q.cs, 'yellow', 6); blit(q.big ? up2('bolt', ICON.bolt()) : ICON.bolt(), x + q.cs / 2 - (q.big ? 12 : 6), y + q.cs / 2 - (q.big ? 16 : 8)); }
   }
   // pass 3: the edge marks (on the sector's block contour, then its lines and destination rings); the fog is already in the painting
@@ -5917,7 +5840,7 @@ function drawReachView(t) {
   for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
     const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j, x = q.dx + i * q.cs, y = q.dy + j * q.cs;
     if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
-    const c = Y * MW + X; if (!S.revealed[c]) continue;
+    const c = Y * MW + X; if (!S.seen.rev[c]) continue;
     const list = (signs.get(c) || []).slice().sort((a, b) => SIGN_ORDER.indexOf(a.kind) - SIGN_ORDER.indexOf(b.kind));
     const small = q.big && c === ex.pos;   // on the pawn's own cell at tier 1 the outpost and the burrow sign draw at 1×, clear of the pawn
     let n = 0; for (const sg of list.slice(0, 4)) { 
@@ -5981,10 +5904,10 @@ function drawEdgeMarks(q) {
 // A cell takes its marks once it is revealed (a block edge needs both its cells revealed, or the pawn's).
 const DEST_RING = { pass: 'plum', ravine: 'plum', 'ravine head': 'plum', falls: 'river', spring: 'river', 'stream mouth': 'river', ford: 'river', shore: 'river', 'stream bend': 'river', 'cliff foot': 'plum', bridge: 'gold', reach: 'gold' };
 function drawSectorMarks(q, cells, pawn, sec) {
-  const cs = q.cs, u = cs / 4, rmOf = c => !S.revealed[c] ? 3 : q.map ? q.rmOf(c) : reachRm(c), inV = new Map(cells.map(([c]) => [c, 1]));
+  const cs = q.cs, u = cs / 4, rmOf = c => !S.seen.rev[c] ? 3 : q.map ? q.rmOf(c) : reachRm(c), inV = new Map(cells.map(([c]) => [c, 1]));
   const X0 = q.map ? 0 : q.s0.x - q.r, Y0 = q.map ? 0 : q.s0.y - q.r, W = q.map ? MW * CELL : q.size, H = q.map ? MH * CELL : q.size, sx = q.map ? q.ox : q.dx, sy = q.map ? q.oy : q.dy;
-  const ramps = sec.ramps.filter(r => inV.has(r.c) && inV.has(r.c + MW) && S.revealed[r.c] && S.revealed[r.c + MW]).map(r => ({ ...r, off: stairBlinkOff(edgeIndex(r.c, 'down')) }));
-  const key = [q.map ? 'm' : 'r', X0, Y0, cs, S.seed, S.gen || 1, WART.ready ? 1 : 0, pawn, ramps.map(r => r.c + (r.off ? 'o' : '')).join(','), cells.map(([c]) => S.revealed[c] ? rmOf(c) : '-').join('')].join('|'), slot = q.map ? 'map' : 'reach';
+  const ramps = sec.ramps.filter(r => inV.has(r.c) && inV.has(r.c + MW) && S.seen.rev[r.c] && S.seen.rev[r.c + MW]).map(r => ({ ...r, off: stairBlinkOff(edgeIndex(r.c, 'down')) }));
+  const key = [q.map ? 'm' : 'r', X0, Y0, cs, S.seed, S.gen || 1, WART.ready ? 1 : 0, pawn, ramps.map(r => r.c + (r.off ? 'o' : '')).join(','), cells.map(([c]) => S.seen.rev[c] ? rmOf(c) : '-').join('')].join('|'), slot = q.map ? 'map' : 'reach';
   let cv = EDGE_CACHE[slot] && EDGE_CACHE[slot].key === key ? EDGE_CACHE[slot].cv : null;
   if (!cv) {
     const pix = new Int16Array(W * H).fill(-1);
@@ -5992,7 +5915,7 @@ function drawSectorMarks(q, cells, pawn, sec) {
     const lvAt = (gx, gy) => { const X = Math.floor(gx / 4), Y = Math.floor(gy / 4); return X < 0 || Y < 0 || X >= MW || Y >= MH ? -1 : sec.lv[(Y * MW + X) * 16 + (gy - Y * 4) * 4 + gx - X * 4]; };
     const cellOfBlock = (gx, gy) => Math.floor(gy / 4) * MW + Math.floor(gx / 4);
     const pc = hiA => ({ face: walkPB(`edge-cliff-${hiA ? 'face' : 'lip-h'}-${cs}`), side: walkPB(`edge-cliff-${hiA ? 'side' : 'lip-v'}-${cs}`), ramp: walkPB(`edge-ramp-${cs}`) });
-    const seen = (a, b) => (S.revealed[a] && S.revealed[b]) || a === pawn || b === pawn;
+    const seen = (a, b) => (S.seen.rev[a] && S.seen.rev[b]) || a === pawn || b === pawn;
     const soft = (a, b, dir) => a !== b && softEdge(edgeIndex(a, dir));   // scree and earth banks have their own marks (drawSoftMarks), never a cliff's
     const edges = [];
     for (const [c] of cells) { const X = c % MW, Y = (c / MW) | 0;
@@ -6016,15 +5939,15 @@ function drawSectorMarks(q, cells, pawn, sec) {
     const wide = cs > 26 ? 2 : 1, px = v => Math.round(v * cs / OCW), py = v => Math.round(v * cs / OCH);
     const dot = (wx, wy, col, rm) => { for (let j = 0; j < wide; j++) for (let i = 0; i < wide; i++) put(wx + i, wy + j, col, rm); };
     const seg = (x0, y0, x1, y1, col, rm) => { const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0), 1); for (let i = 0; i <= n; i++) dot(Math.round(x0 + (x1 - x0) * i / n), Math.round(y0 + (y1 - y0) * i / n), col, rm); };
-    for (const l of sec.lines) { if (!inV.has(l.c) || !S.revealed[l.c]) continue; const rm = rmOf(l.c), col = l.k === 'trail' ? C.orange : C.sky;
+    for (const l of sec.lines) { if (!inV.has(l.c) || !S.seen.rev[l.c]) continue; const rm = rmOf(l.c), col = l.k === 'trail' ? C.orange : C.sky;
       for (let i = 0; i + 3 < l.pts.length; i += 2) seg(px(l.pts[i]), py(l.pts[i + 1]), px(l.pts[i + 2]), py(l.pts[i + 3]), col, rm); }
     const bw = cs > 26 ? 8 : 5;
-    for (const m of sec.marks) { if (!inV.has(m.c) || !S.revealed[m.c]) continue; const rm = rmOf(m.c), mx = px(m.x), my = py(m.y);
+    for (const m of sec.marks) { if (!inV.has(m.c) || !S.seen.rev[m.c]) continue; const rm = rmOf(m.c), mx = px(m.x), my = py(m.y);
       if (m.k === 'bridge') { const lx = m.ax === 0 ? bw : 2, ly = m.ax === 0 ? 2 : bw; for (let j = -ly; j <= ly; j++) for (let i = -lx; i <= lx; i++) put(mx + i, my + j, Math.abs(i) === lx || Math.abs(j) === ly ? C.bark : C.paper, rm); }
       else for (const d of [-bw, 0, bw]) { put(mx + d, my, C.ice, rm); put(mx + d + 1, my, C.ice, rm); put(mx + d, my + 1, C.ice, rm); put(mx + d + 1, my + 1, C.ice, rm); } }
     // a destination's ring once its place is in sight, in its cell's upper left (the place's own mark and signs keep the middle)
     const rr = cs > 26 ? 4 : 3;
-    for (const d of sec.dest) { if (!inV.has(d.c) || !S.revealed[d.c]) continue; const X = d.c % MW, Y = (d.c / MW) | 0, rm = rmOf(d.c), mx = Math.round((X + 0.28) * cs), my = Math.round((Y + 0.28) * cs), col = C[DEST_RING[d.kind] || 'gold'];
+    for (const d of sec.dest) { if (!inV.has(d.c) || !S.seen.rev[d.c]) continue; const X = d.c % MW, Y = (d.c / MW) | 0, rm = rmOf(d.c), mx = Math.round((X + 0.28) * cs), my = Math.round((Y + 0.28) * cs), col = C[DEST_RING[d.kind] || 'gold'];
       for (let j = -rr; j <= rr; j++) for (let i = -rr; i <= rr; i++) { const dd = i * i + j * j; if (dd <= rr * rr) put(mx + i, my + j, dd > (rr - 1) * (rr - 1) ? C.bone : col, rm); } }
     cv = document.createElement('canvas'); cv.width = W; cv.height = H; const cg = cv.getContext('2d'), id = cg.createImageData(W, H), pu = new Uint32Array(id.data.buffer);
     for (let i = 0; i < pix.length; i++) { const v = pix[i]; if (v >= 0) { const c = RGB[v]; pu[i] = (255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0]; } }
@@ -6036,10 +5959,10 @@ function drawSectorMarks(q, cells, pawn, sec) {
 const softEdge = i => !!((G.soft && G.soft.scree[i]) || (G.banks && G.banks[i]));
 function drawSoftMarks(q, cells, pawn) {
   if (!G.soft && !G.banks) return;
-  const cs = q.cs, dug = S.exp && S.exp.dug || [], seen = (c, n) => (S.revealed[c] && S.revealed[n]) || c === pawn || n === pawn, ex = S.exp;
+  const cs = q.cs, dug = S.exp && S.exp.dug || [], seen = (c, n) => (S.seen.rev[c] && S.seen.rev[n]) || c === pawn || n === pawn, ex = S.exp;
   const rmFor = c => q.map ? q.rmOf(c) : reachRm(c);
   for (const [c, x, y] of cells) {
-    if (G.soft && G.soft.wade[c] && S.revealed[c] && !G.island[c]) {
+    if (G.soft && G.soft.wade[c] && S.seen.rev[c] && !G.island[c]) {
       const nb = ['up', 'right', 'down', 'left'].map(dir => { const n = stepCell(c, dir); return n < 0 ? 'o' : G.soft.wade[n] ? 'w' : G.land[n] === L.WATER ? 'o' : 'l'; }).join('');
       blit(art('l2wm' + cs + nb + c, () => wadeMarkPB(cs, nb, c)), x, y, rmFor(c)); }
     const sides = [];
@@ -6047,14 +5970,14 @@ function drawSoftMarks(q, cells, pawn) {
       if (edgeKind(c, dir) !== EDGE.CLIFF || !softEdge(ei) || !seen(c, n)) continue;
       sides.push([dir, G.soft && G.soft.scree[ei] ? 'scree' : 'bank', G.level[n] > G.level[c], dug.includes(ei) ? 1 : 0, ei]); }
     if (!sides.length) continue;
-    const fog = !S.revealed[c], parity = (x + y) & 1, key = 'l2sm' + cs + ':' + c + ':' + sides.map(s => s[0][0] + s[1][0] + (s[2] ? 1 : 0) + s[3]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed;
+    const fog = !S.seen.rev[c], parity = (x + y) & 1, key = 'l2sm' + cs + ':' + c + ':' + sides.map(s => s[0][0] + s[1][0] + (s[2] ? 1 : 0) + s[3]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed;
     const pb = art(key, () => { const gp = fog ? null : q.map ? mapPB : landPatchPB(c, cs, 0), gx = q.map ? (c % MW) * CELL : 0, gy = q.map ? ((c / MW) | 0) * CELL : 0;
       return softMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity, c); });
     blit(pb, x, y, fog ? 3 : rmFor(c));
   }
   // Tuliko's extra ring: on the cells one ring past the Probe's own range, a light lattice of gold dots (the coin crest's), under everything else
   if (ex && canSure()) { const s0 = cxy(ex.start), r = ex.range, sp = cs >= 48 ? 8 : 6;   // the full map and the reach view the player walks on
-    for (const [c, x, y] of cells) { const p = cxy(c); if (Math.max(Math.abs(p.x - s0.x), Math.abs(p.y - s0.y)) !== r || !S.revealed[c]) continue;
+    for (const [c, x, y] of cells) { const p = cxy(c); if (Math.max(Math.abs(p.x - s0.x), Math.abs(p.y - s0.y)) !== r || !S.seen.rev[c]) continue;
       for (let j = 0, yy = 3; yy < cs - 2; yy += sp >> 1, j++) for (let xx = 3 + (j & 1) * (sp >> 1); xx < cs - 2; xx += sp) R(x + xx, y + yy, 1, 1, C.gold); } }
 }
 function drawInset(x, y, t, u) {
@@ -6062,12 +5985,12 @@ function drawInset(x, y, t, u) {
   panel(x - 3, y - 3, W + 6, H + 6, C.ink, C.slate);
   g.drawImage(mapCvFade, 0, 0, MW * CELL, MH * CELL, x, y, W, H);
   for (let c = 0; c < MW * MH; c++) { const cx = x + (c % MW) * u, cy = y + ((c / MW) | 0) * u;
-    if (!S.revealed[c]) R(cx, cy, u, u, C.night);
-    else if (S.visited[c]) g.drawImage(mapCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, u, u); }
+    if (!S.seen.rev[c]) R(cx, cy, u, u, C.night);
+    else if (S.seen.been[c]) g.drawImage(mapCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, u, u); }
   if (ex.storm) { const a = Math.round(x + ex.storm.x * u), b = Math.round(x + (ex.storm.x + ex.storm.w) * u);
     for (const sx of [a, b]) if (sx > x && sx < x + W) for (let yy = y; yy < y + H; yy += 3) R(sx, yy, 1, 2, C.mist); }
   for (const pin of S.pins) R(x + (pin.c % MW) * u + o, y + ((pin.c / MW) | 0) * u + o, 2, 2, C.orange);
-  for (const c of depotCells(S.seed)) { if (!S.visited[c]) continue; const f = depotOf(c); if (f && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * u + o, y + ((c / MW) | 0) * u + o, d, d, outpostLeft(String(c), f) ? C.amber : C.bark); }
+  for (const c of depotCells(S.seed)) { if (!S.seen.been[c]) continue; const f = depotOf(c); if (f && isSeen(String(c), f.x, f.y)) R(x + (c % MW) * u + o, y + ((c / MW) | 0) * u + o, d, d, outpostLeft(String(c), f) ? C.amber : C.bark); }
   for (const k in (S.skulls || {})) R(x + (k % MW) * u + o, y + ((k / MW) | 0) * u + o, d, d, C.bone);
   const s0 = cxy(ex.start), r = ex.range, rx0 = x + Math.max(0, s0.x - r) * u, ry0 = y + Math.max(0, s0.y - r) * u, rx1 = x + Math.min(MW, s0.x + r + 1) * u, ry1 = y + Math.min(MH, s0.y + r + 1) * u;
   R(rx0, ry0, rx1 - rx0, 1, C.amber); R(rx0, ry1 - 1, rx1 - rx0, 1, C.amber); R(rx0, ry0, 1, ry1 - ry0, C.amber); R(rx1 - 1, ry0, 1, ry1 - ry0, C.amber);
@@ -6091,15 +6014,15 @@ function drawMap(mode, t) {
   for (let c = 0; c < MW * MH; c++) {
     const { x, y } = cxy(c), px = ox + x * CELL, py = oy + y * CELL;
     const inBand = !preview && x * CELL >= bx0 && x * CELL < bx1;
-    if (ex) { const rv = FX.reveal && S.revealed[c] && FX.reveal.cells.find(q => q.c === c);
+    if (ex) { const rv = FX.reveal && S.seen.rev[c] && FX.reveal.cells.find(q => q.c === c);
       if (rv) { const a = NOW - FX.reveal.at - rv.d * 140; if (a < 0) R(px, py, CELL, CELL, C.night); else if (a < 240 && motion()) ditherFill(px, py, CELL, CELL, 'night', 16 - Math.floor(a / 15)); }
       continue; }
-    if (!S.revealed[c]) { g.drawImage(inBand ? fogCvDark : fogCv, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL); continue; }
+    if (!S.seen.rev[c]) { g.drawImage(inBand ? fogCvDark : fogCv, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL); continue; }
     const rv = FX.reveal && FX.reveal.cells.find(q => q.c === c);   // a beacon's sweep: cells flip from fog ring by ring
     if (rv) { const a = NOW - FX.reveal.at - rv.d * 140; if (a < 0) { g.drawImage(fogCv, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL); continue; }
       if (a < 240 && motion()) ditherFill(px, py, CELL, CELL, 'night', 16 - Math.floor(a / 15)); }
-    if (!S.visited[c] && !inBand && (!ex || !passable(c))) g.drawImage(mapCvFade, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL);   // seen, never visited: muted
-    let m = 0; [[0, -1], [1, 0], [0, 1], [-1, 0]].forEach(([dx, dy], i) => { const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < MW && Y < MH && !S.revealed[Y * MW + X]) m |= 1 << i; });
+    if (!S.seen.been[c] && !inBand && (!ex || !passable(c))) g.drawImage(mapCvFade, x * CELL, y * CELL, CELL, CELL, px, py, CELL, CELL);   // seen, never visited: muted
+    let m = 0; [[0, -1], [1, 0], [0, 1], [-1, 0]].forEach(([dx, dy], i) => { const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < MW && Y < MH && !S.seen.rev[Y * MW + X]) m |= 1 << i; });
     if (m) blit(fogEdgeArt(m), px, py);
   }
   // the map's edge veil (art desk, places/veil/): over the deep water of the coast and the sides that face land not opened yet; still
@@ -6107,16 +6030,16 @@ function drawMap(mode, t) {
   // signs: last seen this turn (bright) or last turn (faded); older ones are gone
   const signs = mapSigns();
   // the edge marks at 26 px, after the fog, before the signs; each cell in the light it is drawn in
-  const rmOf = c => (!preview && (c % MW) * CELL >= bx0 && (c % MW) * CELL < bx1) ? 1 : (!S.visited[c] && (!ex || !passable(c))) ? 4 : (ex && fogState(c) === 2) ? 1 : 0;
+  const rmOf = c => (!preview && (c % MW) * CELL >= bx0 && (c % MW) * CELL < bx1) ? 1 : (!S.seen.been[c] && (!ex || !passable(c))) ? 4 : (ex && cellFog(c) === 2) ? 1 : 0;
   drawEdgeMarks({ map: true, cs: CELL, ox, oy, rmOf });
   if (ex) for (let c = 0; c < MW * MH; c++) { const m = cellMark(c, ox + (c % MW) * CELL, oy + ((c / MW) | 0) * CELL, CELL, markSizeFor(CELL)); if (m) blit(m.mk, m.x, m.y); }   // the places you have been into: state only (12 px: slate silhouette, or full colour once found)
   // generator 2: the burrow hole on the gate cell's face, drawn each frame (never baked), base on the face's foot line, rising into the mouth cell
-  if (G.gen && S.revealed[G.gate] && S.revealed[G.mouth]) { const p = cxy(G.gate), px = ox + p.x * CELL, py = oy + p.y * CELL;
+  if (G.gen && S.seen.rev[G.gate] && S.seen.rev[G.mouth]) { const p = cxy(G.gate), px = ox + p.x * CELL, py = oy + p.y * CELL;
     blit(art('g2hole', () => { const pb = new PB(CELL, CELL + 4), clip = { clip: (X, Y) => Y < CELL + 4 };   // local origin (px, py - CELL)
       pb.ell(13, CELL + 4, 7, 15, C.bark, clip); pb.ell(13, CELL + 5, 5, 13, C.void, clip); return pb; }), px, py - CELL, rmOf(G.gate)); }
   for (const e of signs) { const { x, y } = cxy(e.c), px = ox + x * CELL, py = oy + y * CELL;
     for (const s of e.list) if (s.kind !== 'pin') drawSign(s.kind, s, px, py, fr); }
-  if (burrowOpen() && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
+  if (burrowOpen() && S.seen.rev[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
   // storm band: rain, edges, a lightning mark and the direction it travels
   if (bx1 > bx0 && preview) {
     for (let yy = 0; yy < MH * CELL; yy += 8) { R(ox + bx0, oy + yy, 2, 3, C.mist); R(ox + bx1 - 2, oy + yy, 2, 3, C.mist); }
@@ -6230,7 +6153,7 @@ function fogEdgeTile(pbKey, pb, L, mask, veil) {
     u[o] = pk(f[o] > (b + .5) / 16 ? fogT[c] : veil ? (b < 4 ? C.night : DARK[lc]) : (lit === DUSKLIT ? DUSKLIT_RGB[c] : lc)); }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(key, cv); return cv;
 }
-// The same for the veil: an unveiled tile beside veiled ones fades into the veil's dots at the shared sides.
+// The same for the veil: a seen tile beside veiled ones fades into the veil's dots at the shared sides.
 function veilEdgeTile(pbKey, pb, L, mask) {
   const n = pb.w, key = 'v' + pbKey + '|' + L + '|' + mask + '|' + n + '|' + RT.remap.id; let cv = EDGE_TILE.get(key); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = n;
@@ -6268,19 +6191,9 @@ function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.
 // is built is its whole-place picture at its own veil; land not yet seen is the map's fog, land seen with no place to draw (water, cliff, or its place not here yet) the map's own cell.
 // Nothing is built on the page thread in one go: a neighbour's picture is made in steps (overviewSteps), PEEK_NB_MS of steps a frame, the nearest first, and shows when it is done.
 // A cell the places worker still owes is never asked of layout() (rule: PR 316); it stays under the map's fog until it is here.
-function unwalkedVeil(veil, nl, pre, dx, dy) {   // veil (placeVeil's, one byte a picture tile): only the tiles a Call lifted in the place next door (pre: S.veilPre's rows; dx/dy: where it lies) are lit, and the apron beside them on the near side; the rest stays veiled
-  const pw = nl.baked.place.w, W = nl.w, H = nl.h;
-  for (let i = 0; i < veil.length; i++) {
-    const px = i % pw + nl.baked.ox, py = ((i / pw) | 0) + nl.baked.oy, inside = px >= 0 && py >= 0 && px < W && py < H;
-    // the apron strip between two lit halves is lit by the same rule (the tile's nearest cell tile decides); on an axis where the neighbour leans away from the held place (dx/dy != 0) only the apron on the near side counts, so the outer edge of the whole lit area keeps its veil
-    const cx = Math.min(W - 1, Math.max(0, px)), cy = Math.min(H - 1, Math.max(0, py));
-    const nearX = dx == null || dx == 0 || (dx > 0 ? px < W : px >= 0), nearY = dy == null || dy == 0 || (dy > 0 ? py < H : py >= 0);
-    veil[i] = pre && (dx == null ? inside : nearX && nearY) && ((pre[cy] >>> cx) & 1) ? 0 : 1; }   // lit only where a Call lifted the place (owner #90: not half of every neighbour, which hid what a Call reveals)
-  return veil;
-}
 const PEEK_NB_MS = 6, PEEK_DIRS = [[0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [1, -1], [-1, 1], [1, 1]];
 function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
-  // The cells meet cell to cell (call-zoom-wide-2): a neighbour is drawn as its own cell only, never with its apron (the ground beyond the cell that a place picture carries unveiled, as the
+  // The cells meet cell to cell (call-zoom-wide-2): a neighbour is drawn as its own cell only, never with its apron (the ground beyond the cell that a place picture carries lit, as the
   // walking view does), or each border would show a doubled green strip. Only the current place keeps its apron, drawn over the meeting. Land that is not drawn is the veil's dark, never the map's paper.
   // (call-zoom-wide-4) a picture's x is the cell's x minus the view's ox (page.mjs: px = x + ox), so the cell stands -ox tiles into it (the apron is the ox = -1 tile before it)
   const bkc = bakedView(lay), cw = lay.w * Tp, ch = lay.h * Tp, cx0 = ox - bkc.ox * Tp, cy0 = oy - bkc.oy * Tp;
@@ -6293,25 +6206,22 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     const rect = (nw, nh) => ({ x: dx < 0 ? cx0 - nw : dx > 0 ? cx0 + cw : cx0 + ((cw - nw) >> 1), y: dy < 0 ? cy0 - nh : dy > 0 ? cy0 + ch : cy0 + ((ch - nh) >> 1), w: nw, h: nh });
     if (X < 0 || Y < 0 || X >= MW || Y >= MH) { darkSlots.add(dx + ',' + dy); continue; }   // past the realm's edge: the fog stands
     const c = Y * MW + X, key = String(c); let nl = null, e = nb.get(key);
-    if (S.revealed[c] && passable(c) && G.gen === 7 && !placeHave(key) && ((S.veilPre && S.veilPre[key]) || (S.veil[key] && S.visited[c]))) {   // a Call lifted land there and its place is not here: ask for it now, once for this view, and say so (owner #136); never layout()
+    if (S.seen.rev[c] && passable(c) && G.gen === 7 && !placeHave(key) && S.seen.tile[key]) {   // a Call lifted land there and its place is not here: ask for it now, once for this view, and say so (owner #136); never layout()
       owed = true; if (!v.owedAsked) v.owedAsked = new Set(); if (!v.owedAsked.has(key)) { v.owedAsked.add(key); readyPlaces(S.regions[0].seed, hereRegion().slot, biomeVersion(S), [c], { ctx: PL.ctx, first: true }); } }
-    if (S.revealed[c] && passable(c) && G.gen === 7 && PL.ready && placeHave(key)) {
+    if (S.seen.rev[c] && passable(c) && G.gen === 7 && PL.ready && placeHave(key)) {
       nl = layoutCache.get(key); if (!nl && asked < 1) { asked++; nl = layout(key); }   // made at most one a frame, and only from a place that is here
       if (nl && !(nl.baked && !nl.cave)) nl = null;
     }
+    if (nl && !anySeen(S.seen, key)) nl = null;   // nothing of it seen in the one record: the dark, with the soft edge (render-seen-2)
     const nbk = nl && bakedView(nl);
     if (nbk) { w = nl.w * Tp; h = nl.h * Tp; }
     const r = rect(w, h); g.imageSmoothingEnabled = false;
     if (nbk) {
-      const own = S.visited[c] && !!S.veil[key];   // a place with its own veil record; a visited place with none (an old save, or the Call lifted it first) is still unwalked here (owner #136)
-      const pre = !own && S.veilPre && S.veilPre[key];   // the strip a Call from next door lifted there (owner #85; #377 kept it apart in S.veilPre)
-      const veil = placeVeil(nl); if (!own) unwalkedVeil(veil, nl, pre, dx, dy);
-      { let lit = 0; const pw = nl.baked.place.w; for (let i = 0; i < veil.length; i++) { if (veil[i]) continue; const px = i % pw + nl.baked.ox, py = ((i / pw) | 0) + nl.baked.oy; if (px >= 0 && py >= 0 && px < nl.w && py < nl.h) lit++; }
-        if (lit <= 0.15 * nl.w * nl.h) darkSlots.add(dx + ',' + dy); }   // a place (nearly) wholly veiled is the dark here: its edge is the soft one too
+      const veil = veilMask(S.seen, nl, nl.baked.place.w, nl.baked.place.h, nl.baked.ox, nl.baked.oy);   // the one record: a place he has not been in shows only the tiles lifted there (a Call from next door writes the same rows a walk does)
       // a place never walked is wholly veiled, save the strip a Call lifted there, its unreachable border band too (that band is lit in a place's own view and would draw a grid of green strips between the cells)
       const wk = wholeKeyOf(nl, veil); let cvn = WHOLE.get(wk) || (e && e.wk === wk ? e.cv : null);
       if (!cvn) {
-        if (!e || e.wk !== wk) { e = { wk, it: nbk.overviewSteps(veil, 0, nl.cut), cv: null }; nb.set(key, e); }
+        if (!e || e.wk !== wk) { e = { wk, it: nbk.overviewSteps(veil, 0), cv: null }; nb.set(key, e); }
         for (let n = 0; n < 40 && !e.cv && performance.now() < end; n++) { const s = e.it.next(); if (s.done) { e.cv = wholeCanvas(nl, nbk, s.value, veil); break; } }   // [tune] one step at least a frame
         cvn = e.cv;
       }
@@ -6319,7 +6229,7 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     }
     // (call-zoom-wide-4) land not seen, or a place not made yet (or made without a picture to show): the map's fog, as the map draws unseen land; never a flat block of the map's colour.
     // Wide water and cliff that is seen has no place to borrow from: the map's own land for it (landPatchPB, a pixel texture, not the 26 px cell blown up), under the veil of a place not walked.
-    if (!S.revealed[c] || passable(c)) { peekFog(r.x, r.y, r.w, r.h); darkSlots.add(dx + ',' + dy); continue; }
+    if (!S.seen.rev[c] || passable(c)) { peekFog(r.x, r.y, r.w, r.h); darkSlots.add(dx + ',' + dy); continue; }
     const cs = Math.max(r.w, r.h), shaped = G.gen === 7 && G.land[c] === L.WATER; g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); g.drawImage(landPatchPB(c, cs, 0).canvas(0), r.x, r.y); if (shaped) peekShore(r, X, Y, Tp, lay, bkc); g.restore();   // owner #141, #178: a sea cell's coast is the one line the places lay (shore7.mjs), not the cell's edge
     g.save(); g.globalAlpha = .55; R(r.x, r.y, r.w, r.h, C.night); g.restore();
     if (!shaped && G.land[c] === L.WATER && !dx !== !dy) { const ap = dx > 0 ? bkc.place.w + bkc.ox - lay.w : dx < 0 ? -bkc.ox : dy > 0 ? bkc.place.h + bkc.oy - lay.h : -bkc.oy; g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); peekWaterFront(r, dx, dy, Tp, key, Math.max(0, ap), lay, bkc, ox, oy); g.restore(); }   // water-edge-5: the seeded front with the signed pieces as its lip; water-edge-6: its shallows are the place's own
@@ -6469,7 +6379,7 @@ function peekWaterFront(r, dx, dy, Tp, key, ap, lay, bk, pox, poy) {
     g.save(); g.beginPath(); g.rect(bx, by, dx ? w : U, dy ? w : U); g.clip();
     const ex = dx ? w : U, ey = dy ? w : U;
     for (let ty = Math.floor((by - poy) / Tp); ty * Tp + poy < by + ey; ty++) for (let tx = Math.floor((bx - pox) / Tp); tx * Tp + pox < bx + ex; tx++) { const t = dx ? ty : tx, ex = dx > 0 ? bk.place.w - 1 : 0, ey = dy > 0 ? bk.place.h - 1 : 0, lx = Math.max(0, Math.min(lay.w - 1, (dx ? ex : t) + bk.ox)), ly = Math.max(0, Math.min(lay.h - 1, (dy ? ey : t) + bk.oy));
-      g.drawImage((!VL && !unveiled(lay.key, lx, ly) ? src.waterV : src.water)[hash('wfront', lay.key, tx, ty) % src.water.length], pox + tx * Tp, poy + ty * Tp); }   // the place's own shallow tile, on the picture's tile grid; under the survey veil where the place's own edge is
+      g.drawImage((!VL && !isSeen(lay.key, lx, ly) ? src.waterV : src.water)[hash('wfront', lay.key, tx, ty) % src.water.length], pox + tx * Tp, poy + ty * Tp); }   // the place's own shallow tile, on the picture's tile grid; under the survey veil where the place's own edge is
     if (VL) g.drawImage(VL.cv, VL.x, VL.y);
     g.restore();
   }
@@ -6556,10 +6466,10 @@ function blitScaled(pb, x, y, k) {
   g.drawImage(cv, Math.round(x + (pb.dx || 0) * k), Math.round(y + (pb.dy || 0) * k), Math.max(1, Math.round(cv.width * k)), Math.max(1, Math.round(cv.height * k)));
 }
 function peekFruit(key, lay, at, Tp) {
-  if (!lay || lay.cave || !S.exp || !(key === S.exp.patch.key || S.visited[+key])) return;
+  if (!lay || lay.cave || !S.exp || !(key === S.exp.patch.key || S.seen.been[+key])) return;
   const k = Tp / placeTs(lay), live = S.exp.live[key];
-  for (const f of lay.feats) { if (f.kind !== 'b' || f.tree || !bushFull(key, f) || !unveiled(key, f.x, f.y)) continue; const a = at(f.x, f.y); blitScaled(bushArt(true, f), a.x, a.y, k); }
-  if (live) for (const q of live.fr) { if (!(unveiled(key, q.x, q.y) || q.put)) continue; const a = at(q.x, q.y); blitScaled(FRUIT(), a.x + 10 * k, a.y + 14 * k, k); }
+  for (const f of lay.feats) { if (f.kind !== 'b' || f.tree || !bushFull(key, f) || !isSeen(key, f.x, f.y)) continue; const a = at(f.x, f.y); blitScaled(bushArt(true, f), a.x, a.y, k); }
+  if (live) for (const q of live.fr) { if (!(isSeen(key, q.x, q.y) || q.put)) continue; const a = at(q.x, q.y); blitScaled(FRUIT(), a.x + 10 * k, a.y + 14 * k, k); }
 }
 // The canvas state a frame starts from: no clip, no transform, no pending save, sharp pixels. A frame that threw half way (a save with no restore) can never leave a clip behind.
 function resetCanvas() { while (gDepth > 0) g.restore(); g.setTransform(1, 0, 0, 1, 0, 0); g.imageSmoothingEnabled = false; }
@@ -6595,7 +6505,7 @@ function drawPatchBody(t) {
   const sight = sightR(lay), inS = (x, y) => sight >= 99 || Math.hypot(x - P.x, y - P.y) <= sight + .5;
   const lampDark = !lay.cave && nightNow();   // night step 4: beyond the lamp the ground takes the night veil (the cave light's method outdoors: the veil's 4x4 dither edge)
   const pu = FX.pulse && FX.pulse.key === P.key && FX.pulse.lifted && motion() && NOW - FX.pulse.at < CALL_MS ? FX.pulse : null, puR = pu ? pu.r * (NOW - pu.at) / CALL_MS : 0;
-  const shown = (x, y) => unveiled(P.key, x, y) && !(pu && pu.lifted.has(y * lay.w + x) && (x - pu.x) ** 2 + (y - pu.y) ** 2 > (puR + .5) ** 2);
+  const shown = (x, y) => isSeen(P.key, x, y) && !(pu && pu.lifted.has(y * lay.w + x) && (x - pu.x) ** 2 + (y - pu.y) ** 2 > (puR + .5) ** 2);
   const see = (x, y) => inS(x, y) && shown(x, y);   // the veil hides what stands on a tile until a Call
   // a tile's light without the fog: 1 under the storm or inside the approaching band's columns, else 0 (the fog edge's clear side takes this)
   const clockLv = clockLevel(lay);
@@ -6611,13 +6521,13 @@ function drawPatchBody(t) {
   const spriteRm = (x, y) => lightAt ? lightAt(x, y) : clockLv;
   const findRm = (x, y) => lightAt ? lightAt(x, y) : bakedView(lay) ? clearLight(x, y) : clockLv;   // things to act on (finds, marks, fruit, pods) take the world's storm grade, not a pasted full-colour sprite
   // overlays (canopies, roofs) take the veil like the tiles under them; beyond fog sight the fog table
-  const overlay = (pb, x, y, tx, ty) => { const rm = lightAt ? lightAt(tx, ty) : tileLight(tx, ty), vl = !lightAt && rm !== 3 && !unveiled(P.key, tx, ty);
+  const overlay = (pb, x, y, tx, ty) => { const rm = lightAt ? lightAt(tx, ty) : tileLight(tx, ty), vl = !lightAt && rm !== 3 && !isSeen(P.key, tx, ty);
     g.drawImage(pb.canvas(rm, false, false, vl), Math.round(x), Math.round(y)); };
   clipView();
   // tile map
   const r = visTiles(v, cam);
   const sgGrid = new Map(), inSG = (x, y) => { const k = y * lay.w + x; let v = sgGrid.get(k); if (v === undefined) { v = inS(x, y); sgGrid.set(k, v); } return v; };
-  // unveiled, per tile, read once per frame (off the place counts as unveiled, so edges never fade into the border)
+  // seen, per tile, read once per frame (off the place counts as seen, so edges never fade into the border)
   const uvGrid = new Map(), uvAt = (x, y) => { if (x < 0 || y < 0 || x >= lay.w || y >= lay.h) return true; const k = y * lay.w + x; let v = uvGrid.get(k); if (v === undefined) { v = shown(x, y); uvGrid.set(k, v); } return v; };
   const lvGrid = new Map(), lvAt = (x, y) => { const k = (y + 2) * 64 + x + 2; let v = lvGrid.get(k); if (v === undefined) { v = lightAt(x, y); lvGrid.set(k, v); } return v; };
   // eighth grids (48 px only): the place's tile far bits opened by eighthGrid, rebuilt only when the bits change, kept on the layout. Drawing only: built from
@@ -6634,7 +6544,6 @@ function drawPatchBody(t) {
   const pickE = ms => { const cv = ms.map(coverE); return (x, y) => cv[((y / 12) | 0) * 4 + ((x / 12) | 0)][(y % 12) * 12 + x % 12]; };
   const bk = bakedView(lay), bandOn = !!bk && ts === 48 && darkW > 0, bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
-  if (bk) bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));   // a closed opening's path drawn as grass; the map's end a thicket
   if (bk) { hazeSync(lay); const vp = veilPlanOf(lay); bk.setVeil(vp && vp.plan, vp ? vp.id : ''); }   // the edge veil: the coast and the sides past the Probe's reach
   if (bk) { const lfns = { veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => bandOn ? clockLv : clearLight(x, y) }; RT.frontFns = Object.assign({ key: lay.key }, lfns);   // water-edge-7: the front beside the place takes this same light (its veil dither) and the edge veil's cloud shadow
     const ls = bk.lightFor(lfns, lay.key); ls.storm = bandOn ? { darkW, left: darkLeft, seed: stormSeed, level: stormGrade(clockLv) } : null; ls.fogEdge = fogEdge;   // the soft edge: per pixel, in the ground's light pass
@@ -6761,7 +6670,8 @@ function drawPatchBody(t) {
   // Near a place's edge, and through a crossing slide, the pawn is kept out of the place's picture: the slide layers are pictures of the place, so a pawn in them would show twice. It is drawn once on top instead (after the picture is kept, or by drawSlide riding between its two spots).
   RT.heroFn = heroDraw; RT.heroLater = motion() && (!!FX.slide || nearEdge(P));
   items.push({ y: RT.pl.y + 5, hero: true, d: RT.heroLater ? () => {} : heroDraw });
-  if (bk && ts === 48) { const fi = bk.feetItem(g, bOrg, bclk, { x: P.x, y: P.y }, (x, y) => tileLight(x, y), RT.pl.y + 5, RT.pl.ry + 46); if (fi) items.push(fi); }   // standing in a plant: its lower part over the explorer's feet (his feet are 46 px down his tile; a plant whose base is well above them is behind him)
+  if (bk && ts === 48) { const fi = bk.feetItem(g, bOrg, bclk, { x: P.x, y: P.y }, (x, y) => tileLight(x, y), RT.pl.y + 5, RT.pl.ry + 46); if (fi) items.push(fi); }   // standing in a plant: its lower part over the explorer's feet (his feet are 46 px down his tile; a plant whose base is well above them is behind him: owner #54)
+  if (TEST.boom === 1) items.push({ y: -1e9, d: () => { throw new Error('test: a sprite throws'); } });   // test hook only: an item that throws before everything else
   if (bk) items.push(...bk.propItems(g, bOrg, bclk, (x, y) => see(x, y), (x, y) => tileLight(x, y), lay.cut));
   if (ts === 48 && bk && lay.rim && ART48.ready) { const rs = lay.rimSet || (lay.rimSet = new Set(lay.rim)); for (const s2 of layers48(lay, fr).sprites) if (rs.has(s2.ty * lay.w + s2.tx) && vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) }); }   // the rim's reeds, as a generated place's
   if (ts === 48 && !bk) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
@@ -6770,7 +6680,7 @@ function drawPatchBody(t) {
   if (!heroDrawn && !RT.heroLater) { try { heroDraw(); } catch (e) { if (RT.err++ < 3) console.error(e); } }
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
-  if (bk) bk.drawCanopy(g, bOrg, bclk, [{ x: RT.pl.rx + 24, y: RT.pl.ry + 24 }].concat(RT.pt ? [{ x: RT.pt.rx + 24, y: RT.pt.ry + 24 }] : []), (x, y) => shown(x, y), (x, y) => tileLight(x, y), lay.cut);   // the crowns, cut away round the explorer and the partner
+  if (bk) bk.drawCanopy(g, bOrg, bclk, [{ x: RT.pl.rx + 24, y: RT.pl.ry + 24 }].concat(RT.pt ? [{ x: RT.pt.rx + 24, y: RT.pt.ry + 24 }] : []), (x, y) => shown(x, y), (x, y) => tileLight(x, y));   // the crowns, cut away round the explorer and the partner
   for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.TRUNK && !bk) {
     const x = i % lay.w, y = (i / lay.w) | 0; if (!vis2(x * ts, y * ts)) continue;
     const under = tokens.some(o => cheb(o, { x, y }) <= 1);
@@ -7311,11 +7221,11 @@ function placeLightFn(P, lay) {   // the place's own light for a tile (fog beyon
   const clockLv = clockLevel(lay);
   const light = (tx, ty) => { if (fogged && !inS(tx, ty)) return 3; if (overcast) return stormGrade(clockLv);
     if (darkW) { const cx = tx * ts + (ts >> 1) - cam.x; return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? stormGrade(clockLv) : clockLv; } return clockLv; };
-  return { ts, light, inS, see: (x, y) => inS(x, y) && unveiled(P.key, x, y) };
+  return { ts, light, inS, see: (x, y) => inS(x, y) && isSeen(P.key, x, y) };
 }
 function warnPicPlace(x0, y0, a) {
   const ex = S.exp, P = ex.patch, lay = layout(a.key), live = ex.live[a.key] || { fr: [], tf: [], cr: [] }, { ts, light, inS, see } = placeLightFn(P, lay), o = sprOff(ts), keepRm = RT.remap;   // at 48 the card shows the cell's sprite box (columns 8–39, rows 16–47 of the cell: everything shifted up and left by sprOff, (8, 16)) in the place's own tables
-  const i = a.y * lay.w + a.x, L = light(a.x, a.y), uv = unveiled(a.key, a.x, a.y), ox = a.x * ts, oy = a.y * ts, X = sx => x0 + sx - ox - o.x, Y = sy => y0 + sy - oy - o.y;
+  const i = a.y * lay.w + a.x, L = light(a.x, a.y), uv = isSeen(a.key, a.x, a.y), ox = a.x * ts, oy = a.y * ts, X = sx => x0 + sx - ox - o.x, Y = sy => y0 + sy - oy - o.y;
   g.save(); g.beginPath(); g.rect(x0, y0, 32, 32); g.clip(); if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;
   g.drawImage((ts === 48 ? tile48(lay, i, 0, L === 3) : tilePB(lay, i, 0)).canvas(L, false, false, L !== 3 && !uv), x0 - o.x, y0 - o.y);
   const here = (x, y) => x === a.x && y === a.y;
@@ -7338,7 +7248,7 @@ function warnPicPlace(x0, y0, a) {
   // canopies and roofs over the tile, in the variant the view draws (thinned to a checkerboard when something is beneath)
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
   const over = (pb, sx, sy, tx, ty) => { if (sx >= ox + ts || sx + pb.w <= ox || sy >= oy + ts || sy + pb.h <= oy) return; const rm = light(tx, ty);
-    g.drawImage(pb.canvas(rm, false, false, rm !== 3 && !unveiled(a.key, tx, ty)), Math.round(X(sx)), Math.round(Y(sy))); };
+    g.drawImage(pb.canvas(rm, false, false, rm !== 3 && !isSeen(a.key, tx, ty)), Math.round(X(sx)), Math.round(Y(sy))); };
   for (let k = 0; k < lay.w * lay.h; k++) if (lay.tiles[k] === T.TRUNK) { const tx = k % lay.w, ty = (k / lay.w) | 0, under = tokens.some(q => cheb(q, { x: tx, y: ty }) <= 1);
     const crown = ts === 48 && treeCanopy(lay, k, under ? 1 : 0, light(tx, ty) === 3); if (crown) over(crown, tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
   for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) { const nt = isNightPod(q); blit(nt ? podPic(q, 1, 'tile') : podArt(POD_SHELL[q.g] || 'bone', 1), x0 + (nt ? 0 : 8), y0 + (nt ? 0 : 8)); }
@@ -7352,7 +7262,7 @@ const PIC = {
   shield: (x, y) => shieldBars(x + 4, y + 10, 2, 3, 6, 12),
   storm: (x, y, dir) => { blit(ICON.bolt(), x + 1, y + 8); text(dir > 0 ? '▶' : '◀', x + 15, y + 9, C.yellow); },
   warn: (x, y, a) => { if (a && a.key && S.exp && S.exp.patch && S.exp.patch.key === a.key) { warnPicPlace(x, y, a); return; }
-    if (a && a.c != null) { const ex = S.exp, c = a.c, X = c % MW; g.drawImage(landPatch(c, 32, !S.visited[c] ? 4 : (ex && ex.storm && stormCovers(X)) ? 1 : 0, 0), x, y); ditherFill(x, y, 32, 32, 'yellow', 6); blit(ICON.bolt(), x + 10, y + 8);   // the map's lit cell: dither and bolt, no outline
+    if (a && a.c != null) { const ex = S.exp, c = a.c, X = c % MW; g.drawImage(landPatch(c, 32, !S.seen.been[c] ? 4 : (ex && ex.storm && stormCovers(X)) ? 1 : 0, 0), x, y); ditherFill(x, y, 32, 32, 'yellow', 6); blit(ICON.bolt(), x + 10, y + 8);   // the map's lit cell: dither and bolt, no outline
       if (S.ui.mapFull) { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); } return; }
     onGrass(x, y, () => { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); }); },   // the Probe's tile: flat grass and the outline, no stone
   stone: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, 0, 0, 1), x, y)),
@@ -7496,7 +7406,7 @@ function cutByName(n) {
   return null;
 }
 // Deep ground shows once the player has met a digging kind, seen the burrow, or has a grown digger with them.
-const deepShown = () => !!digger() || S.known.some(sp => spOf(sp).ab === 'dig') || !!S.revealed[G.gate];
+const deepShown = () => !!digger() || S.known.some(sp => spOf(sp).ab === 'dig') || !!S.seen.rev[G.gate];
 // A mibi's picture at k× at (x, y); a kind the Companion has no art for is its labelled plate.
 function openCreature(sp, pose, fr, k, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(creatureArt(sp, pose, fr, k, juv), x, y); }
 // The Companion's front door: the land you know (the frame), one line of what changed, the way out as two tabs, and who comes along.
@@ -7546,7 +7456,7 @@ function drawOpenLand(t, fr) {
   g.drawImage(cv, WX - q.ox, WY - q.oy, WW, WH, WX, WY, WW, WH);
   const x1 = q.X0 + Math.ceil((WW + cs) / cs), y1 = q.Y0 + Math.ceil((WH + cs) / cs), ms = markSizeFor(cs), signs = ready && !q.first ? new Map(mapSigns().map(e => [e.c, e.list])) : new Map();   // a place layout is built only once the places have loaded (an earlier one would be cached as the generated stand-in)
   for (let Y = q.Y0; Y < Math.min(MH, y1); Y++) for (let X = q.X0; X < Math.min(MW, x1); X++) {
-    const c = Y * MW + X, p = q.at(c); if (!ready || !S.revealed[c]) continue;
+    const c = Y * MW + X, p = q.at(c); if (!ready || !S.seen.rev[c]) continue;
     const m = cellMark(c, p.x, p.y, cs, ms, true); if (m && inF(m.x, m.y, m.mk.w, m.mk.h)) blit(m.mk, m.x, m.y);
     const list = (signs.get(c) || []).slice().sort((a, b) => SIGN_ORDER.indexOf(a.kind) - SIGN_ORDER.indexOf(b.kind)); let n = 0;
     for (const sg of list.slice(0, 4)) { 
@@ -8410,11 +8320,11 @@ function outpostLights() { const out = []; for (const c of depotCells(S.seed)) {
 function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() + (l.length ? ' · ' + DEPOT_NAME + ' lights: ' + l.join(', ') : ''); }
 
 // ===================== 15. Screen dispatch =====================
-function firstPlacement() { return firstPlacementOf(S.revealed); }
-function placeValid(c) { return placeValidIn({ G, revealed: S.revealed, passable, starts: firstPlacement() ? startPlaces() : null }, c); }   // src/map-rules.mjs: never on a sealed plateau
+function firstPlacement() { return firstPlacementOf(S.seen.rev); }
+function placeValid(c) { return placeValidIn({ G, revealed: S.seen.rev, passable, starts: firstPlacement() ? startPlaces() : null }, c); }   // src/map-rules.mjs: never on a sealed plateau
 function placeReason(c) {
   if (firstPlacement()) return 'Pick a glint';
-  if (!S.revealed[c]) return 'Not seen yet';
+  if (!S.seen.rev[c]) return 'Not seen yet';
   if (G.island[c]) return 'Out of reach';
   if (G.gen && passable(c) && !G.comp[c]) return 'No stairs out · can’t start';   // generator 2's sealed plateau (the fallback's)
   return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
@@ -8422,22 +8332,22 @@ function placeReason(c) {
 function signWords(c) { const e = mapSigns().find(q => q.c === c), list = e ? e.list : [];
   return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? DEPOT_NAME + (q.lit ? ' · lit ' + q.lit + ' turn' + (q.lit === 1 ? '' : 's') : ' (dark)') : q.kind === 'beacon' ? 'beacon' + (q.lit ? ' (lit)' : ' (unlit)') : SIGN_NAME[q.kind]); }
 // A place's name: its landmark's, as editorial wrote it, once you have been in; else the land's words (the IR's pond is the pond edge, its rock the rock field).
-const placeName = lay => lay.landmark && S.veil[lay.key] ? lay.landmark.name : G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land];
+const placeName = lay => lay.landmark && S.seen.into[lay.cell] ? lay.landmark.name : G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land];
 function landWord(c) {
   if (G.land[c] === L.WATER) return G.ford[c] ? 'ford' : G.soft && G.soft.wade[c] ? 'muddy water' : nextToIsland(c) ? 'fast water' : 'wide water';
-  if (G.gen === 7 && S.veil[String(c)] && passable(c) && PL.ready && placeHave(String(c))) { const nm = layout(String(c)).landmark; if (nm) return nm.name; }
+  if (G.gen === 7 && S.seen.into[c] && passable(c) && PL.ready && placeHave(String(c))) { const nm = layout(String(c)).landmark; if (nm) return nm.name; }
   return LAND_NAME[G.land[c]] + (c === G.gate ? ' under the cliff' : c === G.swim ? ' by the island' : ''); }
 function cellWords(c) { const w = signWords(c); return landWord(c) + (w.length ? ' · ' + w.join(', ') : ''); }
 function aheadCell() { const ex = S.exp, p = cxy(ex.pos), [dx, dy] = DIRS[ex.face || 'down'], x = p.x + dx, y = p.y + dy; return x < 0 || y < 0 || x >= MW || y >= MH ? -1 : y * MW + x; }
 // The map's middle part: the cell you're on and the one you face, shortest forms last.
 function mapContext() {
-  const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · burrow too narrow' : S.visited[ex.pos] && passable(ex.pos) && walkedCell(ex.pos) ? ' · ' + WORDS.explored : ''), hs = signWords(ex.pos), a = aheadCell();
-  const toTake = c => S.visited[c] && passable(c) && leftTotal(c) ? ' · ' + leftTotal(c) + ' to take' : '';
+  const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · burrow too narrow' : S.seen.been[ex.pos] && passable(ex.pos) && walkedCell(ex.pos) ? ' · ' + WORDS.explored : ''), hs = signWords(ex.pos), a = aheadCell();
+  const toTake = c => S.seen.been[c] && passable(c) && leftTotal(c) ? ' · ' + leftTotal(c) + ' to take' : '';
   // the edge you face, named even when the cell beyond is fog (your own four edges always show): a steep edge or stairs
   const ek = a >= 0 && inRange(a) ? edgeKind(ex.pos, ex.face || 'down') : EDGE.OPEN;
   const sk = ek === EDGE.CLIFF ? softKind(ex.pos, ex.face || 'down') : null, up = a >= 0 && G.level[a] > G.level[ex.pos];   // scree and banks are named as the bump names them; a dug bank crosses like a stair
   const es = ek === EDGE.CLIFF ? (sk === 'scree' ? 'loose scree' : sk === 'bank' ? (bankIsDug(edgeIndex(ex.pos, ex.face || 'down')) ? 'dug way ' + (up ? 'up' : 'down') : 'earth bank') : 'cliff') : ek === EDGE.RAMP ? (G.level[a] > G.level[ex.pos] ? 'stairs up' : 'stairs down') : '';
-  const beyond = a < 0 ? (seamSlot(ex.face || 'down') ? 'more land' : borderCliff(ex.pos) ? 'high cliffs' : 'shore') : G.coast && G.coast[a] ? 'shore' : !inRange(a) ? 'edge of range' : !S.revealed[a] ? 'fog' : gatedCell(a) ? 'cave · burrow too narrow' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.revealed[a] && !gatedCell(a) ? signWords(a) : [];
+  const beyond = a < 0 ? (seamSlot(ex.face || 'down') ? 'more land' : borderCliff(ex.pos) ? 'high cliffs' : 'shore') : G.coast && G.coast[a] ? 'shore' : !inRange(a) ? 'edge of range' : !S.seen.rev[a] ? 'fog' : gatedCell(a) ? 'cave · burrow too narrow' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.seen.rev[a] && !gatedCell(a) ? signWords(a) : [];
   const there = es ? es + ' · ' + beyond : beyond, AS = 'Ahead: ' + (es || there);   // the short forms cut the cell beyond first, never the edge
   const H = here + (hs.length ? ' · ' + hs.join(', ') : ''), A = 'Ahead: ' + there + (as.length ? ' · ' + as.join(', ') : '');
   // where you stand comes first when it has a sign; otherwise what you face; the edge word alone is the last before here
@@ -8465,24 +8375,24 @@ function noteState() {
 // Stones are met the first time they are in view in a place: plain, warm (the ring) and charged.
 function noteStones() {
   const ex = S.exp, P = ex && ex.patch; if (!P || S.phase !== 'patch' || P.key[0] === 'c') return;
-  for (const f of layout(P.key).feats) if (f.kind === 'k' && cheb(f, P) <= 6 && unveiled(P.key, f.x, f.y)) {
+  for (const f of layout(P.key).feats) if (f.kind === 'k' && cheb(f, P) <= 6 && isSeen(P.key, f.x, f.y)) {
     meet('stone'); if (stormCharge(P.key, f) > 0) meet('charged'); else if (stoneWarm(P.key, f)) meet('warm'); }
 }
 // The map key's marks, met the first time they are in view: a pod in water, the gold find tab, and (on the map) a destination ring and a trail or stream line.
 function noteMapMarks() {
   const ex = S.exp, P = ex && ex.patch;
   if (P && S.phase === 'patch' && P.key[0] !== 'c') {
-    if (S.pods.some(p => p.k === P.key && !p.h && p.x >= 0 && p.g === 'pond' && unveiled(P.key, p.x, p.y))) meet('wpod');
+    if (S.pods.some(p => p.k === P.key && !p.h && p.x >= 0 && p.g === 'pond' && isSeen(P.key, p.x, p.y))) meet('wpod');
     if (edgeTabs().some(t => t.kind === 'find')) meet('tab'); }
   if (S.phase === 'map' && ex) { const sec = sectorHere();
-    if (sec) { if (sec.dest.some(d => S.revealed[d.c])) meet('ring'); if (sec.lines.some(l => S.revealed[l.c])) meet('trail'); } }
+    if (sec) { if (sec.dest.some(d => S.seen.rev[d.c])) meet('ring'); if (sec.lines.some(l => S.seen.rev[l.c])) meet('trail'); } }
 }
 function noteSigns() {
   noteStones(); noteMapMarks();
   if (S.phase === 'patch' && S.exp && S.exp.patch && S.exp.patch.key[0] !== 'c') { const P = S.exp.patch;   // the hut or the beacon in sight in a place
-    for (const f of layout(P.key).feats) if ((f.kind === 'h' || f.kind === 'j') && unveiled(P.key, f.x, f.y) && cheb(f, P) <= 6) fxSign('m:' + (f.kind === 'h' ? 'depot' : 'beacon')); }
+    for (const f of layout(P.key).feats) if ((f.kind === 'h' || f.kind === 'j') && isSeen(P.key, f.x, f.y) && cheb(f, P) <= 6) fxSign('m:' + (f.kind === 'h' ? 'depot' : 'beacon')); }
   if (S.phase !== 'map' || !S.exp) return; const a = aheadCell();
-  const kinds = new Set(signsAt(S.exp.pos).concat(a >= 0 && S.revealed[a] && inRange(a) ? signsAt(a) : []));
+  const kinds = new Set(signsAt(S.exp.pos).concat(a >= 0 && S.seen.rev[a] && inRange(a) ? signsAt(a) : []));
   for (const k of SIGN_ORDER) if (kinds.has(k) && k !== 'pin') fxSign('m:' + k);   // a pin teaches itself: it is yours
   // the fog bank, the first time it is next to you
   if (fogActive()) { const p = cxy(S.exp.pos); let near = false; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && inFog(y * MW + x)) near = true; }
@@ -8531,7 +8441,7 @@ function lineBase() {
     case 'place': { const c = S.ui.cur, first = firstPlacement();
       const tail = placeStormWords(c), wx = tail ? ' · ' + tail : '';   // the storm stands still; the cursor changes only this last part (note 14)
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (c === homeStart() ? ' · ' + WORDS.startMorning : sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), tail ? [base + wx, tail, base] : base, 'back', !placeValid(c)); }
-      const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? (tail ? [base + wx, tail, base] : base) : tail, 'back', !placeValid(c)); }
+      const base = S.seen.rev[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? (tail ? [base + wx, tail, base] : base) : tail, 'back', !placeValid(c)); }
     case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
       return L1('Go in', dayCtx(mapContext()), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
     case 'patch': {
@@ -9009,17 +8919,17 @@ function mapCounts() {
 // The heart of the cell you are in, and the reach count (the observer's line).
 function heartText() {
   const ex = S.exp; if (!ex) return '–';
-  const c = ex.patch ? layout(ex.patch.key).cell : ex.pos, st = passable(c) && S.visited[c] ? (walkedCell(c) ? 'explored' : 'not explored') : 'not visited';
+  const c = ex.patch ? layout(ex.patch.key).cell : ex.pos, st = passable(c) && S.seen.been[c] ? (walkedCell(c) ? 'explored' : 'not explored') : 'not visited';
   const calls = ex.callsAt && ex.callsAt[c] || 0;
   return 'here: ' + st + ' · ' + calls + ' Call' + (calls === 1 ? '' : 's') + ' | ' + reachLine();
 }
-// Energy sources in reach right now: warm stones and storm charges (found = unveiled).
+// Energy sources in reach right now: warm stones and storm charges (found = seen).
 function energyText() {
   const ex = S.exp; if (!ex) return '–';
   let w = 0, wf = 0, k = 0, kf = 0;
   for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER) continue; const key = String(c);
-    for (const f of layout(key).feats) if (f.kind === 'k') { if (stormCharge(key, f) > 0) { k++; if (unveiled(key, f.x, f.y)) kf++; } else if (stoneWarm(key, f)) { w++; if (unveiled(key, f.x, f.y)) wf++; } } }
-  return 'in reach: ' + w + ' warm stones (' + wf + ' unveiled) · ' + k + ' storm-charged (' + kf + ' unveiled) · drawn from warm this expedition ' + (ex.stats.warm || 0);
+    for (const f of layout(key).feats) if (f.kind === 'k') { if (stormCharge(key, f) > 0) { k++; if (isSeen(key, f.x, f.y)) kf++; } else if (stoneWarm(key, f)) { w++; if (isSeen(key, f.x, f.y)) wf++; } } }
+  return 'in reach: ' + w + ' warm stones (' + wf + ' seen) · ' + k + ' storm-charged (' + kf + ' seen) · drawn from warm this expedition ' + (ex.stats.warm || 0);
 }
 function onStateChanged() {
   if (!obsEl || obsEl.hidden || !S || RT.readOnly) return;
@@ -9210,10 +9120,10 @@ requestAnimationFrame(frame);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 // test-harness only (s32): the words as bone glyphs on a bare canvas, the crop a screenshot of the band is judged against; and the band's text box
-window.__mb = { onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
-  CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, signsAt, stormLevel, inFog,
+window.__mb = { onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, lightningLift, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkSeen, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+  CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isSeen, veilable, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideApplies, crossLanding, patchStep, inRange, TEST,
-  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, fogEdgeReady: () => !!FOGEDGE, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
+  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, fogEdgeReady: () => !!FOGEDGE, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, cellFog, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }

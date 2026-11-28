@@ -60,7 +60,7 @@ test("the page draws the desk's pieces as they are: marks and the bubble", () =>
 
 test("a cliff on the full map runs on the sector's block contour: a one-pixel ink line on the block's border row and no grey face block under it (bug #61); a stair is the ramp piece at its port", () => {
   const p = makePage({ gen: 7, console: "silent", els: true, canvas: true, raf: 1 });
-  p.run("newWorld(14); startExpedition('weather', G.gate); S.exp.fog = null; S.exp.storm = null; for (let c = 0; c < MW * MH; c++) S.revealed[c] = 1;");
+  p.run("newWorld(14); startExpedition('weather', G.gate); S.exp.fog = null; S.exp.storm = null; for (let c = 0; c < MW * MH; c++) S.seen.rev[c] = 1;");
   // a horizontal block edge inside one place (never on a place edge): the block above raised, the block below low
   const e = p.run(`(() => { const sec = sectorHere(); for (let c = 0; c < MW * MH; c++) for (let by = 0; by < 3; by++) for (let bx = 0; bx < 4; bx++) { if (sec.lv[c * 16 + by * 4 + bx] === 1 && sec.lv[c * 16 + (by + 1) * 4 + bx] === 0) return [c, bx, by]; } return null; })()`);
   assert.ok(e, "a south-facing block edge on this map");
@@ -72,7 +72,7 @@ test("a cliff on the full map runs on the sector's block contour: a one-pixel in
   assert.ok(line >= (x1 - x0) * 0.6, `the ink line runs along the block's border row in ${line} of ${x1 - x0} columns`);
   assert.ok(below >= (x1 - x0) * 0.6, `the rows under the line are left as the land in ${below} of ${x1 - x0} columns`);
   // the stair: the ramp piece's rows stand at the stair's port, on the sector's level line (or the place edge) within two block rows
-  const r0 = p.run(`(() => { const sec = sectorHere(); const r = sec.ramps.find(r => S.revealed[r.c] && r.c + MW < MW * MH); return r ? { c: r.c, x: r.x, y: r.y } : null; })()`);
+  const r0 = p.run(`(() => { const sec = sectorHere(); const r = sec.ramps.find(r => S.seen.rev[r.c] && r.c + MW < MW * MH); return r ? { c: r.c, x: r.x, y: r.y } : null; })()`);
   if (r0) { const rp = WALK_ART["edge-ramp-26"], rx = Math.round(r0.x * CELL / p.run("OCW")) - (rp.width >> 1), ey = (((r0.c / MW) | 0) + 1) * CELL;
     let found = false; for (let y = ey - 2 * u - 2; y <= ey + 2 * u + 2 && !found; y++) { let n = 0, t = 0; for (let j = 0; j < rp.height; j++) for (let i = 0; i < rp.width; i++) { const o = (j * rp.width + i) * 4; if (!rp.data[o + 3]) continue; t++; const v = px[(y + j) * W + rx + i]; if (v >= 0 && Array.from(rgb[v]).join() === [rp.data[o], rp.data[o + 1], rp.data[o + 2]].join()) n++; } if (n / t >= 0.8) found = true; }   // a trail line may cross a few of its pixels
     assert.ok(found, "the ramp piece stands at the stair's port, within two block rows of the place edge"); }

@@ -25,7 +25,7 @@ try {
     const errors = []; page.on("pageerror", (e) => { errors.push(e.message); console.log("ERR", e.message); }); page.on("requestfailed", (r) => console.log("FAIL", r.url())); page.on("response", (r) => { if (r.status() >= 400) console.log(r.status(), r.url()); });
     await page.goto(`http://127.0.0.1:${server.address().port}/play/exploration/?seed=7`);
     await page.waitForFunction(() => window.__mb && window.__mb.TEST, null, { timeout: 60000 }); await page.waitForTimeout(1500);
-    await page.evaluate(() => { const m = window.__mb; m.TEST.calm = true; m.newWorld(7, 2); const pos = 13 * m.MW + 9; m.startExpedition("weather", pos); m.S.exp.fog = null; m.S.exp.storm = null; m.S.exp.pos = pos; m.enterPatch(); m.S.exp.patch.x = 5; m.S.exp.patch.y = 20; m.S.veil[m.S.exp.patch.key] = new Array(m.PH).fill(0x0fffffff); });
+    await page.evaluate(() => { const m = window.__mb; m.TEST.calm = true; m.newWorld(7, 2); const pos = 13 * m.MW + 9; m.startExpedition("weather", pos); m.S.exp.fog = null; m.S.exp.storm = null; m.S.exp.pos = pos; m.enterPatch(); m.S.exp.patch.x = 5; m.S.exp.patch.y = 20; m.S.seen.tile[m.S.exp.patch.key] = new Array(m.PH).fill(0x0fffffff); });
     // a step on the map, then each part of the day; the dusk and night lines come from the real advance
     const steps = [["1-day", 30, null], ["2-dusk", 161, "dusk"], ["3-night", 186, "night"]];
     for (const [name, spent, news] of steps) {

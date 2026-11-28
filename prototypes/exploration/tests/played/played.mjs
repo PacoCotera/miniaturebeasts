@@ -880,7 +880,7 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
   // OWNER 11-25 ("didn't we have stone slabs that you could move?"; "ok" to core-loop-walkthrough-1); QA verify-live 0fc2b4e; design bus 0e4483 ("a lasting mark: the glint stays on the tile while anything is left under the slab and goes when it is taken").
-  // Arranged saves: slab-mark-hold and slab-mark-room are slab-full-hold and slab-full-room with the place marked explored (S.called; the glints show only in an explored place, 60% of it seen: the walk here does not reach that). Played by presses: push with the hold full, walk away and back; the old tile glints like every takeable (find-glint-1's pixels within 1.6 s); the hold has room, ✓ takes it, and over the next 1.6 s no glint there.
+  // Arranged saves: slab-mark-hold and slab-mark-room are slab-full-hold and slab-full-room with the place marked explored (S.seen.walked; the glints show only in an explored place, 60% of it seen: the walk here does not reach that). Played by presses: push with the hold full, walk away and back; the old tile glints like every takeable (find-glint-1's pixels within 1.6 s); the hold has room, ✓ takes it, and over the next 1.6 s no glint there.
   // State only asserts the reach (what is left under the slab: > 0, then 0) and gives the old tile's position; the verdict is the pixels of the tile on the shots.
   // The light tints the glint's colours, so the verdict is the blink itself: pixels of the old tile that are warm (find-glint-1 is tan, orange and yellow; the rain is blue, the slab's dashes brown) in some shots of 1.6 s and not warm in others. The glint is on for 400 ms of every 1.6 s. Since PR 688 (#160) the glint stands dim between pulses (alpha 0.4), so fewer pixels read warm only on the pulse: the bar is 40 pixels, not 100.
   const blink = (crops) => { let n = 0; const m = crops[0].length / 4, warm = (c, i) => c[i * 4] > 110 && c[i * 4] - c[i * 4 + 2] > 45; for (let i = 0; i < m; i++) { let on = 0; for (const c of crops) if (warm(c, i)) on++; if (on > 0 && on < crops.length) n++; } return n; };
@@ -1504,7 +1504,7 @@ it(`s21 tell-seen-fix-4 (seed 33): Osier's tell starts within ten tiles of him: 
   const size = { w: 390, h: 844, dpr: 3 };
   const g = await open(size, { seed: 33 });
   const MSGBOX = [0.02, 0.80, 0.96, 0.10];
-  const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; const c = P && m.curLive().cr.find(q => q.ind && q.ind.name === "Osier"); let t = null; try { t = m.targetLine(); } catch {} return { phase: S.phase, key: P && P.key, x: P && P.x, y: P && P.y, hb: !!(c && c.hb), named: !!(c && S.named && S.named[c.id]), open: !!(c && P && S.veil && S.veil[P.key] && (Number(S.veil[P.key][c.y]) & (1 << c.x)) !== 0), top: !!(t && c && String(t.id) === String(c.id)), dx: c && P ? c.x - P.x : null, dy: c && P ? c.y - P.y : null, ts: m.RT.ts, pl: m.RT.plScr }; });
+  const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; const c = P && m.curLive().cr.find(q => q.ind && q.ind.name === "Osier"); let t = null; try { t = m.targetLine(); } catch {} return { phase: S.phase, key: P && P.key, x: P && P.x, y: P && P.y, hb: !!(c && c.hb), named: !!(c && S.named && S.named[c.id]), open: !!(c && P && S.seen.tile && S.seen.tile[P.key] && (Number(S.seen.tile[P.key][c.y]) & (1 << c.x)) !== 0), top: !!(t && c && String(t.id) === String(c.id)), dx: c && P ? c.x - P.x : null, dy: c && P ? c.y - P.y : null, ts: m.RT.ts, pl: m.RT.plScr }; });
   try {
     const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.key, P && P.x, P && P.y, S.day && S.day.spent, S.ui && S.ui.menuSel].join("|"); });
     const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };   // the effect: the state changes, then holds still for 400 ms (a press during a screen's change is swallowed)
@@ -1861,7 +1861,7 @@ if (SIZES[0].w === 412) it(`s35 a map step lifts the 5x5 ring (reveal-build-1, s
   const size = SIZES[0];
   const g = await open(size, { seed: 13 });
   const m = (f) => g.page.evaluate(f);
-  const count = () => m(() => { const S = window.__play.frames.companion.contentWindow.__mb.S; return S.revealed.reduce((n, v) => n + (v ? 1 : 0), 0); });
+  const count = () => m(() => { const S = window.__play.frames.companion.contentWindow.__mb.S; return S.seen.rev.reduce((n, v) => n + (v ? 1 : 0), 0); });
   try {
     for (let i = 0; i < 8 && (await g.where()).phase !== "map"; i++) await g.press("confirm", 100, 2500);   // ✓ to set out
     assert.equal((await g.where()).phase, "map", "the case is reached: he is on the map");
@@ -2103,6 +2103,115 @@ it(`s41 facing Dunnock at ease 3 the bar's middle reads her word, ears up (#174,
     assert.ok(bad < ref.width * ref.height * 0.02, `the bar's middle reads her word, ears up (${bad} pixels differ from its crop)`);
   } finally { await g.ctx.close(); }
 });
+
+// OWNER 2026-11-27 23:3x: "yes, again, review the build, top down, and see why it's like this. must be patches over patches over patches" (render-seen-1: one seen record for every world tile, read the same on both sides of a border; the build desk's NO, rule 12).
+// His 180.save (seed 24, place 146, a Call from there lifted strips in 129, 130 and 145 next door) arranged once to night (saves/180-night.save: S.day.spent 551, as the sleep-dusk saves were), at his size 412x915, by presses: hold Call for the look-around.
+// s44a: the place and the strip of 145 that its Call lifted meet with no navy column or frame between them (defect 2 of the review): no column of the seam box is flat night, and the seam is as its crop (refs/s44a-seam.png, cut from this build by PLAYED_MAKE_REFS=1 once looked at);
+// s44b: the same save before and after a reload (after one step out and back, so the page writes it in the record's format): the seen ground is the same, pixel for pixel, on the map and in the look-around;
+// s44c: his 178.save (seed 20, cell 186, the coast), the look-around: no tile he had not seen is lit (the north rows and the south-west rows of the place, which his veil never reached, are dark) and the tiles he had seen (the west block he walked) are drawn.
+{
+  const size = { w: 412, h: 915, dpr: 2.625 };
+  const NAVY = ([r, gg, b]) => Math.abs(r - 41) < 5 && Math.abs(gg - 37) < 5 && Math.abs(b - 58) < 5;   // the flat night of the look-around (#29253a)
+  const DARKISH = ([r, gg, b]) => r < 75 && gg < 75 && b < 90;   // the veiled dark, flat or dithered: nothing of the land shows
+  // the longest run of columns of the box that are flat night in at least `share` of its rows: a navy column between two lands
+  const navyColumns = (im, b, share) => {
+    let best = 0, run = 0;
+    for (let x = b.x; x < b.x + b.w; x++) { let n = 0; for (let y = b.y; y < b.y + b.h; y++) if (NAVY(px(im, x, y))) n++; if (n >= share * b.h) { run++; if (run > best) best = run; } else run = 0; }
+    return best;
+  };
+  const darkShare = (im, b) => { let n = 0; for (let y = b.y; y < b.y + b.h; y++) for (let x = b.x; x < b.x + b.w; x++) if (DARKISH(px(im, x, y))) n++; return n / (b.w * b.h); };
+  const edgesReady = (g) => g.page.waitForFunction(() => { try { return window.__play.frames.companion.contentWindow.__mb.fogEdgeReady(); } catch { return false; } }, null, { timeout: 40000 });   // the signed edge pieces are in: the look-around is then the same picture every time
+  const differ = (a, b, bx, tol = 24) => { let n = 0; for (let y = bx.y; y < bx.y + bx.h; y++) for (let x = bx.x; x < bx.x + bx.w; x++) { const p = px(a, x, y), q = px(b, x, y); if (Math.abs(p[0] - q[0]) > tol || Math.abs(p[1] - q[1]) > tol || Math.abs(p[2] - q[2]) > tol) n++; } return { n, of: bx.w * bx.h, frac: n / (bx.w * bx.h) }; };
+  const lookAround = async (g, name, keys = []) => { await edgesReady(g); await g.hold("call"); await wait(3000); await g.page.waitForFunction((ks) => { try { const m = window.__play.frames.companion.contentWindow.__mb; return ks.every((k) => m.placeHave(k)); } catch { return false; } }, keys, { timeout: 90000 });   // the places next door that a Call lifted are made (the case is reached)
+    await wait(1000); await g.page.waitForFunction(() => { try { const m = window.__play.frames.companion.contentWindow.__mb; return m.FX.msg !== m.LAND_COMING && !m.FX.notes.some((n) => n.text === m.LAND_COMING); } catch { return false; } }, null, { timeout: 60000 }); await wait(1500); await stable(g.page, 25000); const a = await g.shot(name); await wait(700); const b = await g.shot(name + "-b"); await g.release(); await wait(1000); return [a, b]; };
+  const leave = async (g) => {
+    await g.press("back", 100, 2500);
+    if ((await g.where()).phase === "menu") { for (let i = 0; i < 10 && await g.menuRow() !== "leave"; i++) await g.press("down"); assert.equal(await g.menuRow(), "leave", "the case is reached: the selected row is Leave this place"); await g.press("confirm", 100, 3500); }
+    assert.equal((await g.where()).phase, "map", "the case is reached: he left the place for the map"); await wait(2500);
+  };
+  it("s44a the place and its neighbour's lifted strip meet with no navy column or frame between them (#180, night, his save, the look-around) [412x915]", async () => {
+    const g = await open(size, "180-night");
+    try {
+      assert.deepEqual(await g.where(), { phase: "patch", x: 4, y: 4, key: "146" }, "the case is reached: his save stands in place 146");
+      const r = await g.region();
+      const [a, b2] = await lookAround(g, "s44a-look", ["129", "130", "145"]);
+      const seam = { x: r.x + 235, y: r.y + 390, w: 45, h: 110 };   // across the west edge of the place, where the strip a Call lifted in 145 meets the place's own lit ground
+      assert.ok(darkShare(a, { x: r.x + 212, y: r.y + 385, w: 26, h: 130 }) < 0.5, "the case is reached: the neighbour's lifted strip is drawn west of the seam");
+      const cols = navyColumns(a, seam, 0.8);
+      console.log(`# s44a: the widest run of columns of the seam box that are flat night: ${cols} device px`);
+      assert.ok(cols < 4, `no navy column between the place and its neighbour: ${cols} device px of the seam are flat night (4 allowed)`);
+      const wide = { x: r.x + 200, y: r.y + 360, w: 260, h: 180 };
+      assert.ok(changed(a, b2, wide).frac < 0.02, "two shots of the look-around alike, so a crop can judge it");
+      const c = againstRef(a, wide, "s44a-seam");
+      assert.ok(c.frac < 0.03, `the seam and the ground round it are as its crop (${c.frac.toFixed(3)} differ)`);
+    } finally { await g.ctx.close(); }
+  });
+  it("s44b the seen ground is the same before and after a reload, in the look-around and on the map (#180, his save) [412x915]", async () => {
+    const g = await open(size, "180-night");
+    try {
+      assert.equal((await g.where()).key, "146", "the case is reached: his save stands in place 146");
+      await g.press("right", 100, 900); await g.press("left", 100, 900);   // a step out and back: the page writes its save, in the record's format
+      assert.deepEqual(await g.where(), { phase: "patch", x: 4, y: 4, key: "146" }, "the case is reached: he is back on his tile");
+      const r = await g.region(), view = { x: r.x + 190, y: r.y + 310, w: 440, h: 270 };   // the seen ground: the lit blob of the place and its Call's strips (the dotted fog backdrop of the unrevealed cells is the map's own and is painted when its canvases are ready)
+      const [lookBefore] = await lookAround(g, "s44b-look-before", ["129", "130", "145"]);
+      await leave(g); const mapBefore = await g.shot("s44b-map-before");
+      await g.page.reload(); await g.page.waitForFunction(() => { try { return !!window.__play.frames.companion.contentWindow.__mb.S; } catch { return false; } }, null, { timeout: 60000 }); await wait(8000);
+      await g.page.getByRole("tab", { name: "Companion" }).click(); await wait(2500);
+      if ((await g.where()).phase === "patch") await leave(g);   // the page may resume in the place: out to the map, as before the reload
+      assert.equal((await g.where()).phase, "map", "the case is reached: after the reload he is on the map");
+      const mapAfter = await g.shot("s44b-map-after");
+      const m = changed(mapBefore, mapAfter, r);
+      console.log(`# s44b map: ${m.n} of ${m.of} pixels differ after the reload`);
+      assert.ok(m.frac < 0.01, `the map's seen ground is the same after a reload (${m.frac.toFixed(4)} differ)`);
+      await g.press("confirm", 100, 3500);
+      assert.equal((await g.where()).phase, "patch", "the case is reached: he is back in the place");
+      const [lookAfter] = await lookAround(g, "s44b-look-after", ["129", "130", "145"]);
+      const l = differ(lookBefore, lookAfter, view);
+      console.log(`# s44b look-around: ${l.n} of ${l.of} pixels differ after the reload`);
+      assert.ok(l.frac < 0.01, `the look-around's seen ground is the same after a reload (${l.frac.toFixed(4)} differ)`);
+    } finally { await g.ctx.close(); }
+  });
+  it("s44c no tile he had not seen is lit in the look-around, the tiles he had seen are (#178, his save: the coast cell 186) [412x915]", async () => {
+    const g = await open(size, "178");
+    try {
+      assert.deepEqual(await g.where(), { phase: "patch", x: 18, y: 18, key: "186" }, "the case is reached: his save stands in the coastal place");
+      const r = await g.region(), T = 16;   // a tile of the look-around is 16 device px; the place's cell starts 242 px right of and 375 px below the game screen's corner
+      const [a, b2] = await lookAround(g, "s44c-look");
+      const cell = { x: r.x + 242, y: r.y + 375 };
+      const north = { x: cell.x, y: cell.y, w: 24 * T, h: 5 * T }, southWest = { x: cell.x, y: cell.y + 22 * T, w: 17 * T, h: 6 * T }, westBlock = { x: cell.x + 5 * T, y: cell.y + 11 * T, w: 6 * T, h: 6 * T };
+      const dn = darkShare(a, north), ds = darkShare(a, southWest), dw = darkShare(a, westBlock);
+      console.log(`# s44c: dark share north rows ${dn.toFixed(3)}, south-west rows ${ds.toFixed(3)}, the west block he walked ${dw.toFixed(3)}`);
+      assert.ok(dw < 0.4, `the case is reached: the ground he walked, west of the middle, is drawn (${dw.toFixed(3)} of it dark)`);
+      assert.ok(dn > 0.99, `no tile he had not seen is lit in the north rows (${dn.toFixed(3)} dark)`);
+      assert.ok(ds > 0.99, `no tile he had not seen is lit in the south-west rows (${ds.toFixed(3)} dark)`);
+      const land = { x: r.x + 330, y: r.y + 340, w: 250, h: 420 };   // right of the place's first five tile columns: the cell's own edge draws one way when the cell west of it is built and another when it is not yet (the edge shapers, render-edge-1)
+      assert.ok(changed(a, b2, land).frac < 0.02, "two shots of the look-around alike, so a crop can judge it");
+      const c = againstRef(a, land, "s44c-west");
+      assert.ok(c.frac < 0.03, `the ground west of the place is as its crop (${c.frac.toFixed(3)} differ)`);
+    } finally { await g.ctx.close(); }
+  });
+  // render-seen-2: a built place next door with nothing of it seen takes the soft dark edge (the one seen record: no seen tile of it). His 178.save, hold Call, the look-around: where the seen ground meets the unseen cell west of it
+  // (the strip at device x 250-390, wide enough to hold the cut at about 333) the first pixel that is not dark, per row, takes several positions, not one column.
+  const softEdge = (im, b, dark) => {   // per row of the box the first column, scanning right, where three pixels in a row are not dark
+    const e = []; for (let i = 0; i < b.h; i++) { let c = -1; for (let s = 0; s < b.w - 3; s++) if (!dark(px(im, b.x + s, b.y + i)) && !dark(px(im, b.x + s + 1, b.y + i)) && !dark(px(im, b.x + s + 2, b.y + i))) { c = s; break; } e.push(c); }
+    let best = 1, run = 1; for (let i = 1; i < e.length; i++) { if (e[i] >= 0 && e[i - 1] >= 0 && Math.abs(e[i] - e[i - 1]) <= 2) { run++; if (run > best) best = run; } else run = 1; }
+    return { rows: e.length, found: e.filter((c) => c >= 0).length, distinct: new Set(e.filter((c) => c >= 0)).size, longest: best };
+  };
+  it("s43 the seen ground meets the unseen neighbour west on the soft edge, no straight cut (#178, his save: cell 186) [412x915]", async () => {
+    const g = await open(size, "178");
+    try {
+      assert.deepEqual(await g.where(), { phase: "patch", x: 18, y: 18, key: "186" }, "the case is reached: his save stands in the coastal place");
+      const r = await g.region();
+      const [a, b2] = await lookAround(g, "s43-look");
+      const box = { x: r.x + 250, y: r.y + 340, w: 140, h: 420 }, e = softEdge(a, box, DARKISH);
+      console.log(`# s43 178 west: ${e.found}/${e.rows} rows have ground, ${e.distinct} different edge positions, longest straight run ${e.longest} rows`);
+      assert.ok(e.found > e.rows * 0.3, `the case is reached: seen ground is in the strip (${e.found}/${e.rows})`);
+      assert.ok(e.distinct >= 6, `the seen ground's west edge wanders (${e.distinct} different positions)`);
+      assert.ok(e.longest < 60, `no straight cut: the west edge keeps one position for ${e.longest} rows (60 allowed; the cut was 140)`);
+      assert.ok(changed(a, b2, box).frac < 0.02, "two shots of the strip alike, so a crop can judge it");
+    } finally { await g.ctx.close(); }
+  });
+}
 // BUILD 2026-11-28 (ruling 8 on the code review: "drawing never reads a test flag"): the top bar draws the Probe's pulse from what the warming says, not from a test flag or the document.
 // Seed 13, a fresh game (the page's ?seed=), 412x915. Played: ✓ to set out, ✓ at "Start here", ✓ into the first place; nothing is pressed after that.
 // State only asserts the case is reached (in the place, the landing done). The verdict is the pixels: in the last shot the top bar is whole (the reach grid and plates, the three counters) and the frame

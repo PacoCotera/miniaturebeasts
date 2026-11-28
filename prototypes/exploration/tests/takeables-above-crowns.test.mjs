@@ -49,8 +49,8 @@ async function setUp(page, T, feat, found, settle = 700) {
   await page.evaluate(([T, feat, found]) => {
     const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key);
     lay.feats = lay.feats.filter((f) => !f.id.startsWith("t-test")); if (feat) lay.feats.push({ ...feat, x: T[0], y: T[1] });
-    m.S.veil[P.key] = new Array(m.PH).fill(0x0FFFFFFF); P.x = T[0]; P.y = T[1] + 4;
-    m.S.called = found ? { [lay.cell]: 1 } : {};
+    m.S.seen.tile[P.key] = new Array(m.PH).fill(0x0FFFFFFF); P.x = T[0]; P.y = T[1] + 4;
+    m.S.seen.walked = found ? { [lay.cell]: 1 } : {};
   }, [T, feat, found]);
   await page.waitForTimeout(settle);   // the camera settles on the explorer
 }
