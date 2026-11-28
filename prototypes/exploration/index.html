@@ -264,7 +264,7 @@ import { readPixels } from "./src/pngdecode.mjs";
 const canvasPx = im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0); return { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; };   // the fallback only: no DecompressionStream
 const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
+import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { GLYPHS, glyphOf, textW, wrapText, clipText, cutLine } from "./src/font.mjs";
 import { SPECIES_ART, JUVENILE_ART, STEP_ART, SADDLED_ART, WILD_BEAT, HOPPER_SP } from "./src/data/tokens.mjs";
@@ -1046,7 +1046,7 @@ function sendHint() { const w = sendWay(); return SEND_TXT.hint(w.b, w.dir); }
 // FX holds presentation-only events the renderer reads; rules write to it but never read it.
 const FX = { msg: '', sign: null, hintNote: null, notes: [], floats: [], bursts: [], pops: {}, rings: [], strikes: [], bolts: [], lockUntil: 0, transAt: -1e9, bumpAt: -1e9, hitAt: -1e9, dig: null, pulse: null };
 let NOW = 0;
-const RIPE_PENDING = [];   // bloom centres whose fruit trees still wait to ripen (set at an expedition's end, done at the next save or set-out)
+const RIPE_PENDING = [];   // bloom centres whose fruit trees still wait to ripen (set at an expedition's end, done a step at a time behind the sealed screen; the next set-out finishes what is left)
 // Messages: actions and offscreen results both add notes; the most important ones share the line until the next action.
 const OWN_HOLD_MS = 2000;   // a line his own ✓ just caused keeps the box this long; a sign that arrives meanwhile waits (slab-full-1)
 function fxMsg(text, pri) { const n = { text, pri: pri == null ? 2 : pri }; if (FX.ownRun) { n.own = 1; FX.ownUntil = NOW + OWN_HOLD_MS; } FX.notes.push(n); composeMsg(); }
@@ -1708,48 +1708,37 @@ function inRegion(id, fn) {
   const was = S.here; mountRegion(id);
   try { return fn(); } finally { mountRegion(was); }
 }
-// A new home region in a free slot: its kind and generator by the realm's rule (src/regions.mjs openHome), its own life; the hand is put back.
-function openRegion(slot) {
-  const rec = openHome(S, slot); S.regions.push(rec);
-  inRegion(rec.id, () => { const life = genLife(S.seed); S.cr = life.cr; S.pods = noAnon(prefixPods(life.pods, rec.n)); indexCreatures(); });
-  return rec.id;
-}
 // Crates and the expedition under way name their region; none means region 1, so a realm of one region writes nothing new.
 const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
-// The Station's part as last stored, if it belongs to this world.
-function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
-function save(keepRipe, noWrite) {   // noWrite: the storage event's call: the Station's part is read and synced, the bytes are left as they are
+// What a write would replace: the Station's part of the stored save if it belongs to this world ({ st }), or why the stored bytes are not this page's to write over
+// ({ held: 'newer' }, a newer build's save; { held: 'broken' }, bytes that are no save). Nothing stored, or storage that cannot be read: { st: null }, and the write itself says if it fails.
+function storedSave() {
+  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { return { st: null }; }
+  if (!raw) return { st: null };
+  let o; try { o = JSON.parse(raw); } catch (e) { return { held: 'broken' }; }
+  if (!o || typeof o !== 'object' || Array.isArray(o)) return { held: 'broken' };
+  if (typeof o.v === 'number' && o.v > SAVE_V) return { held: 'newer' };
+  return { st: o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null };
+}
+function save({ noWrite } = {}) {   // noWrite: the storage event's call: the Station's part is read and synced, the bytes are left as they are
   if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
+  const had = storedSave();
+  if (had.held) {   // the stored save changed under this page into one it cannot read or a newer build's: it is never replaced; the page goes read-only, as boot does for the same bytes
+    console.error('the stored save is ' + (had.held === 'newer' ? 'a newer build’s' : 'not readable') + ': it stays as it is and this page writes nothing more');
+    if (had.held === 'newer') readOnlyNewer(); else readOnlyBroken(); return; }
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
-  const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
+  if (had.st) S.st = had.st; else delete S.st;   // the Station's part stays as the Station wrote it
   if (fieldFrozen() && FX.shieldAtDock == null) FX.shieldAtDock = S.exp.shield;   // the Shield as docked, before the cradle mends it
   if (S.st) { syncStation(); normalizeCare(S); }
   if (!fieldFrozen() && FX.shieldAtDock != null) {   // Lift (or the expedition ended): the bars the cradle mended flash once
     if (S.exp && S.exp.shield > FX.shieldAtDock) FX.shieldFlash = { from: FX.shieldAtDock, at: NOW };
     FX.shieldAtDock = null; FX.dockSaid = 0; }
-  if (typeof keepCompanion === 'function') keepCompanion();
-  const moving = typeof legacyTo === 'string' ? legacyTo : null;   // the shared save of earlier builds, moving under this Companion's key with this write
-  if (noWrite) { if (typeof onStateChanged === 'function') onStateChanged(); return; }
-  try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } noteSet('saveFailed', false); } catch (e) { noteSet('saveFailed', true); /* storage full, blocked or private: keep playing in memory, and say so until a save works again (WORDS.notice.saveFailed) */ }
-  if (typeof onStateChanged === 'function') onStateChanged();
-}
-// v7 → v8, the same structural move on both pages: the old Station store becomes the Station's part, mibis move to
-// the Station (the Companion keeps its copies), the bay starts empty. The Station page fills in genomes.
-function migrate7(o) {
-  const wid = 'w' + (o.seed >>> 0).toString(36), H = o.home || { e: 0, d: 0, s: 0, pods: [] };
-  const st = { wid, at: Date.now(), turn: o.turn || 0, e: H.e | 0, d: H.d | 0, s: H.s | 0, tray: [], waiting: [], accepted: [], known: (o.known || []).slice(), met: (o.known || []).slice(),
-    seen: {}, studiedW: {}, mibis: [], nextMibi: 1, nameN: 0, inc: null, dock: { docked: false, at: Date.now() }, withReq: null, probe: null, mendFull: true, freeId: false, returned: [], firstMibi: true, log: [] };
-  (H.pods || []).forEach((p, i) => { const pod = { id: 'v7-' + i, sp: p.sp, g: p.g, how: p.how, gs: hash(o.seed, 'gs7', i, p.sp), n: p.n || 0, idd: p.idd ? 1 : 0, st: [] }; (st.tray.length < 6 ? st.tray : st.waiting).push(pod); });
-  st.mibis = (o.mibis || []).map(m => ({ id: m.id, name: m.name, sp: m.sp, gs: hash(o.seed, 'mibi7', m.id), born: m.born || 0, from: { n: m.from || 0, g: '', how: '' }, mem: m.mem || null, outings: 0, notches: 0, bonded: false }));
-  st.nextMibi = st.mibis.reduce((a, m) => Math.max(a, m.id), 0) + 1; st.nameN = st.mibis.length; st.freeId = (o.found || []).includes('freeid'); st.firstMibi = !st.mibis.length;
-  const s = Object.assign({}, o); delete s.home; delete s.report;
-  s.v = 8; s.wid = wid; s.bay = []; s.hold = null; s.walkTurn = -1; s.withSeen = 0; s.probeSeen = 0; s.retSeen = []; s.dockSeen = 0; s.st = st;
-  if (s.exp && s.exp.cargo) s.exp.cargo.pods.forEach((p, i) => { if (p.gs == null) p.gs = hash(o.seed, 'gs7c', String(p.id), i, p.sp); });   // pods in flight get their own genomes
-  if (s.phase === 'station') s.phase = 'setup';
-  if (s.phase === 'watch' || s.phase === 'card' || s.phase === 'her') { s.phase = s.exp && s.exp.patch ? 'patch' : 'setup'; if (s.ui) { s.ui.watch = null; s.ui.card = null; s.ui.her = null; } }   // w6b: the watch view and the card are not kept across a reload; nor is her page
-  if (s.phase === 'mibis' || s.phase === 'active') s.phase = 'riding';   // an old save opens on Riding, with its riders
-  if (s.ui && (s.ui.from === 'mibis' || s.ui.from === 'active')) s.ui.from = 'riding';
-  return s;
+  keepCompanion();
+  const moving = legacyTo;   // the shared save of earlier builds, moving under this Companion's key with this write
+  if (noWrite) { onStateChanged(); return; }
+  try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } noteSet('saveFailed', false); }
+  catch (e) { if (!NOTE.flags.saveFailed) console.error('the save could not be written', e); noteSet('saveFailed', true); }   // storage full, blocked or private: play goes on in memory, and the notice line says so until a save works again (WORDS.notice.saveFailed)
+  onStateChanged();
 }
 // Every string `id` held anywhere in a loaded save, at any depth (pods in the field, the cargo, the bay, the hold, a report, the Station's part).
 function idsIn(o, out = new Set()) {
@@ -1757,40 +1746,40 @@ function idsIn(o, out = new Set()) {
   else if (o && typeof o === 'object') { if (typeof o.id === 'string') out.add(o.id); for (const k of Object.keys(o)) idsIn(o[k], out); }
   return out;
 }
-// What the stored save is: nothing (a new world), a save to load (true), a save from a newer page ('newer'), or bytes this page cannot use ('broken').
-// Bytes the page did not load are never written over: both read-only states keep them, and nothing older is removed (the v7 save moves only into an empty slot).
+// What the stored save is: nothing (false: a new world), a save to load (true), a save from a newer page ('newer'), or bytes this page cannot use ('broken').
+// Bytes the page did not load are never written over: both read-only states keep them, and nothing older is removed.
 function load() {
-  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { return false; }   // storage unavailable: a new world in memory
+  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { console.warn('storage cannot be read: a new world, in memory', e); return false; }
   const own = SAVE_KEY;
-  if (raw == null && COMPANION.slot === 'A') { let old = null; try { old = localStorage.getItem(LEGACY_KEY); } catch (e) { } if (old != null) { SAVE_KEY = LEGACY_KEY; raw = old; } }   // the shared save of earlier builds: read where it is
+  if (raw == null && COMPANION.slot === 'A') { const old = localStorage.getItem(LEGACY_KEY); if (old != null) { SAVE_KEY = LEGACY_KEY; raw = old; } }   // the shared save of earlier builds: read where it is
   const r = (() => {
-  const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
   try {
-    let s = null;
-    if (!raw) {   // an empty slot: a v7 save moves in
-      try { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); raw = JSON.stringify(s); localStorage.setItem(SAVE_KEY, raw); } localStorage.removeItem(V7_KEY); } } catch (e) { s = null; }
-      if (!s) { dropOld(); return false; }
-    } else s = JSON.parse(raw);
+    if (!raw) {   // an empty slot. A save from before v8 lies under its own key: it is reset as a v8 or v9 one is, its bytes copied whole to this slot's copy and left where they are; anything else there is left alone
+      const old = localStorage.getItem(V7_KEY), plan = resetPlan(old, SAVE_V);
+      if (plan.action !== 'reset') return false;
+      if (!keepPre10(localStorage, own, old)) return 'broken';
+      RESET_CARRY = { resetFrom: plan.from }; return false;
+    }
+    const s = JSON.parse(raw);
     if (!s || typeof s !== 'object' || Array.isArray(s)) return 'broken';
-    const plan = resetPlan(raw, SAVE_V, OLD_GENS);   // (a v10 realm of generator 5 only is reset too: the world is new at generator 6) what to do with what is found: play it, reset it (a v8 or v9 save), keep it read-only (newer, unreadable)
+    const plan = resetPlan(raw, SAVE_V, OLD_GENS);   // what to do with what is found: play it, reset it (an older save, or a realm only of generators no longer played), keep it read-only (newer, unreadable)
     if (plan.action === 'newer') return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
-    if (plan.action === 'reset') {   // the release's reset: the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
+    if (plan.action === 'reset') {   // the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
       if (!(plan.gen ? keepGen(localStorage, own, raw, oldGenOf(raw)) : keepPre10(localStorage, own, raw))) return 'broken';   // a generator reset keeps its own copy (<key>.gen6, or .gen5): the .pre10 of the earlier reset stays what it was
-      if (SAVE_KEY === LEGACY_KEY) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) { } }   // the shared old save is kept in the copy: it must not be found and reset again
-      RESET_CARRY = { resetFrom: plan.from }; dropOld(); return false;
+      if (SAVE_KEY === LEGACY_KEY) localStorage.removeItem(LEGACY_KEY);   // the shared old save is kept in the copy: it must not be found and reset again
+      RESET_CARRY = { resetFrom: plan.from }; return false;
     }
     if (plan.action !== 'play') return 'broken';
-    if (s.v === SAVE_V) {   // v10: a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet) starts a new world
-      if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { RESET_CARRY = { resetFrom: s.resetFrom ?? null, wid: s.wid ?? null }; dropOld(); return false; }   // the Station reset first: its world id and its part stay
-      const rs = realmStatus(s, GENS); if (rs !== 'ok') return rs;   // 'newer': a region of a generator this page does not know, kept as stored
-      mount(s, s.here);
-    }
-    if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) { if (s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; } return 'broken'; }   // a Station-only save: a new world starts (and a fresh Station with it)
-    const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
+    // a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet: the Station reset first) starts a new world, and its world id and its part stay
+    if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { RESET_CARRY = { resetFrom: s.resetFrom ?? null, wid: s.wid ?? null }; return false; }
+    const rs = realmStatus(s, GENS); if (rs !== 'ok') return rs;   // 'newer': a region of a generator this page does not know, kept as stored
+    mount(s, s.here);
+    if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) return 'broken';
+    const gen = s.gen;
     S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
-    // whatever it holds, and `gen` is never filled (a save without it is generator 1). A missing pods is the world's life,
+    // whatever it holds, and `gen` is never filled (it is the mounted region's). A missing pods is the world's life,
     // regenerated below without any pod the save already holds (as itself, or as the Station's crate id + ':' + pod id),
     // and a missing or invalid nextId is counted from the pod ids the save holds.
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
@@ -1801,7 +1790,7 @@ function load() {
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     if (typeof S.realmRev !== 'number') S.realmRev = REALM_REV;   // a save from before the land freeze: the land of REALM_REV 9 is the one it was made on (the generator's output did not change)
     noteSet('landChanged', S.realmRev !== REALM_REV);   // a save made on another land than this build makes: it keeps the number it was made on, and the page says so (WORDS.notice.landChanged)
-    indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
+    indexCreatures(); return true;
   } catch (e) { console.error('the save would not load', e); S = null; return 'broken'; }   // it would not load: kept as it is; the cause is logged so the next failure shows it
   })();
   if (SAVE_KEY === LEGACY_KEY && r === true) legacyTo = own;   // loaded: its first write goes under this Companion's key and the old key goes (a read-only save is never moved)
@@ -4621,7 +4610,7 @@ function endExpedition(reason) {
       S.bay.push(c); S.hold = null; rep.sealed = c; sendSleepersHome(ex); logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
-  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(true);   // a line from the walk does not linger over the sealed screen
+  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save();   // a line from the walk does not linger over the sealed screen
 }
 // Where the next try lies, said at the end of a walk that found no pod, from the flag: the first walk names the pod the game knows; later walks the nearest cell with a pod found and
 // left or a slow beat; with none known, the nearest wood or rock (pods sleep in woods and rock, never in open meadow). { cell, land, dir, first, pod } or null.
@@ -4740,7 +4729,7 @@ function ripeStep() {
   while (RIPE_CELLS.length && performance.now() - t0 < 8) { const key = RIPE_CELLS.shift(); for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); }
   return RIPE_CELLS.length > 0 || RIPE_PENDING.length > 0;
 }
-function ripeLoop() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return; if (ripeStep()) setTimeout(ripeLoop, 40); else save(true); }
+function ripeLoop() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return; if (ripeStep()) setTimeout(ripeLoop, 40); else save(); }
 let RIPE_LATER = null;   // while an expedition ends: the bloom centres whose fruit trees ripen after the first sealed frame
 function ripenBloom(ctr) {   // fruit trees in the bloom's reach ripen too (silently: the line counts bushes)
   if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || cdist(c, ctr) > 3) continue; const key = String(c);
@@ -9384,7 +9373,8 @@ function actReadOnly(k) {
   if (!RT.armNew) { RT.armNew = 1; return; }
   let raw = null;
   try { raw = localStorage.getItem(SAVE_KEY); if (raw != null) { let at = Date.now(); while (localStorage.getItem(KEPT_KEY + '-' + at) != null) at++;   // one key per move: an older kept save is never replaced
-      localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept'); } }
+      localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept');
+      localStorage.removeItem(SAVE_KEY); } }   // kept whole: the slot is empty for the new world (save() never writes over bytes it cannot read)
   catch (e) { RT.armNew = 0; FX.bumpAt = NOW; return; }   // it cannot be kept: nothing changes
   RT.readOnly = false; RT.broken = false; RT.armNew = 0; const note = document.getElementById('resetNote'); if (note) note.hidden = true;
   newWorldLive(false);
@@ -9416,7 +9406,7 @@ if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) 
   const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
   btn.addEventListener('click', () => { ask.hidden = false; yes.focus(); });
   no.addEventListener('click', back);
-  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', SAVE_KEY + '.pre10', V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
+  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', SAVE_KEY + '.pre10', V7_KEY]) localStorage.removeItem(k); } catch (e) { }
     window.__mbResetting = true; location.reload(); }); }
 // The Station page wrote the shared save: take its part (dock, accepted crates, mibis, the Probe) and keep ours.
 // A reset there (the save erased) reloads this page too.
@@ -9425,7 +9415,7 @@ window.addEventListener('storage', e => {
   if (window.__mbResetting) return;
   let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (_) { }
   if (!raw) { window.__mbResetting = true; location.reload(); return; }
-  save(false, true);   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
+  save({ noWrite: true });   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
 });
 // A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
 if (ld === true) { try { if (S.exp && S.exp.shield <= 0 && !S.exp.dark) goDark(S.exp);   // an old save with no plates opens in the realm, dark (night step 1), never on the ended card

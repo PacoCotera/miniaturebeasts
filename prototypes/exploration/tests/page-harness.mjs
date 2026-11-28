@@ -4,6 +4,7 @@
 //   import { loadPage, makePage, PAGE, MODULE, SCRIPT } from "./page-harness.mjs";
 import { readFileSync, readdirSync } from "node:fs";
 import vm from "node:vm";
+import * as regions from "../src/regions.mjs";
 
 export const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 export const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
@@ -136,6 +137,13 @@ export function makePage(opts = {}) {
     storageEvent(key) { for (const f of listeners.storage || []) f({ key }); },   // the other tab wrote `key`
     // the Station writes its part of the shared save, and the Companion reads it (the page's storage event calls save())
     writeSt(st) { const o = JSON.parse(store[KEY]); o.st = JSON.parse(JSON.stringify(st)); store[KEY] = JSON.stringify(o); run("save()"); },
+    // A second home region in a free slot, for the tests and tools that need one (the game opens none yet): its record by the realm's own rule (src/regions.mjs openHome),
+    // its life made with that region mounted, as a new realm makes region 1's; the region in hand is put back. Returns its id.
+    openRegion(slot) {
+      const rec = regions.openHome(run("S"), slot);
+      run(`S.regions.push(${JSON.stringify(rec)}); inRegion(${JSON.stringify(rec.id)}, () => { const life = genLife(S.seed); S.cr = life.cr; S.pods = prefixPods(life.pods, ${rec.n}).filter(p => p.how !== 'ground'); indexCreatures(); })`);
+      return rec.id;
+    },
   };
   return p;
 }

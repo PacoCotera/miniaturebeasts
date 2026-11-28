@@ -467,3 +467,40 @@ test("a newer save: ✓ reloads in one press, no arm, no new world; the save is 
   p.run("var __said = []; { const t0 = text; text = (s, ...a) => { __said.push(s); return t0(s, ...a); }; render(0); text = t0; }");
   const t = p.run("__said.join('|')"); assert.ok(t.includes("Newer save · untouched · reload plays it") && !/new world|out of date/i.test(t), t);
 });
+
+// ---- save() keeps what it cannot use, as load() does: stored bytes that changed under a playing page are never written over ----
+const playing = () => { const p = makePage({ store: {}, console: "collect" }); assert.ok(!p.run("!!RT.readOnly") && p.S.phase === "setup", "a new world, playing"); assert.equal(JSON.parse(p.store[p.KEY]).v, p.run("SAVE_V")); return p; };
+const savedLines = p => p.errors.filter(e => /stored save/.test(String(e))).length;
+test("a newer build's save stored while this page plays: the next press writes nothing over it, the newer-save screen opens, one line is logged", () => {
+  const p = playing(), newer = JSON.stringify({ v: p.run("SAVE_V") + 1, seed: 5, cr: [], mibis: [], note: "another tab, on a newer build" });
+  p.store[p.KEY] = newer;
+  p.key("confirm");   // one act: its save finds the newer bytes
+  assert.equal(p.store[p.KEY], newer, "the stored bytes are unchanged");
+  assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("!!RT.broken"), false); assert.equal(savedLines(p), 1, "one log line");
+  p.run("globalThis.__rl = 0; location = { reload: () => { __rl++; } };");
+  for (const k of ["up", "down", "left", "right", "back", "call"]) { p.key(k); assert.equal(p.store[p.KEY], newer, k); }
+  p.key("confirm"); assert.equal(p.run("__rl"), 1, "✓ reloads, as on the newer-save screen at boot"); assert.equal(p.store[p.KEY], newer); assert.equal(savedLines(p), 1, "and no second line");
+  p.run("var __said = []; { const t0 = text; text = (s, ...a) => { __said.push(s); return t0(s, ...a); }; render(0); text = t0; }");
+  assert.ok(p.run("__said.join('|')").includes("Newer save · untouched · reload plays it"));
+});
+test("bytes that are no save stored while this page plays: the next press writes nothing over them; ✓ ✓ keeps them under their own key and starts a new world", () => {
+  for (const bad of ["{not json", "[]", "7"]) {
+    const p = playing(); p.store[p.KEY] = bad;
+    p.key("down");
+    assert.equal(p.store[p.KEY], bad, "unchanged: " + bad); assert.equal(p.run("RT.readOnly"), true); assert.equal(p.run("RT.broken"), true); assert.equal(savedLines(p), 1);
+    for (const k of ["up", "left", "back", "call"]) { p.key(k); assert.equal(p.store[p.KEY], bad, k); }
+    p.key("confirm"); p.key("confirm");
+    const kept = Object.keys(p.store).filter(k => k.startsWith("mb-save-kept-"));
+    assert.equal(kept.length, 1); assert.equal(p.store[kept[0]], bad, "byte for byte"); assert.equal(p.run("RT.readOnly"), false); assert.equal(JSON.parse(p.store[p.KEY]).v, p.run("SAVE_V"));
+  }
+});
+test("the other tab's write, read by the storage event: a newer save there makes this page read-only too, and nothing is written", () => {
+  const p = playing(), newer = JSON.stringify({ v: p.run("SAVE_V") + 1, seed: 5 }), n = p.writes.length;
+  p.store[p.KEY] = newer; p.storageEvent(p.KEY);
+  assert.equal(p.run("RT.readOnly"), true); assert.equal(p.store[p.KEY], newer); assert.equal(p.writes.length, n, "no write"); assert.equal(savedLines(p), 1);
+});
+test("a save of this build stored by the other tab is taken as before: the Station's part is read, this page's write keeps it", () => {
+  const p = playing(), st = freshSt(p.S.wid, p.S.turn);
+  p.writeSt(st); p.key("confirm");
+  assert.ok(!p.run("!!RT.readOnly")); assert.equal(p.sv().st.wid, p.S.wid, "the Station's part is still in the stored save"); assert.equal(savedLines(p), 0);
+});

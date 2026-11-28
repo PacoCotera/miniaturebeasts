@@ -105,7 +105,7 @@ test("the part of day is named in the bottom line's middle: morning and dusk", (
 });
 
 test("a save with no day starts it at dawn; a day in a save is kept", () => {
-  const a = start(); spend(a, 12); a.run("save(true)");
+  const a = start(); spend(a, 12); a.run("save()");
   const kept = page({ ...a.store }); assert.equal(kept.run("S.day.spent"), 12, "the day in the save is kept");
   const o = JSON.parse(a.store[a.KEY]); delete o.day; for (const r of o.regions || []) delete r.day;
   const old = page({ ...a.store, [a.KEY]: JSON.stringify(o) });
