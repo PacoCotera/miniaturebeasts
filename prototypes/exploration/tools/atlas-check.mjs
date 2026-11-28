@@ -22,20 +22,20 @@ import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { inflateSync } from "node:zlib";
 import { decodeExact, catalogue, coreMissing, paletteTable, overrideCounts, stormOnGrass, PLACE_OVERRIDES, QUADS, LIP_STATES } from "../src/atlas.mjs";
+import { PALETTE, DARK_OF, LIGHT_OF } from "../src/data/palette.mjs";
 
-// The page's palette, read from index.html as the tests read it (the page's own PALETTE, HEX and RGB declarations).
+// The page's palette as RGB: the palette module's colours through the page's own HEX and RGB declarations.
 export function pageRGB() {
   const page = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-  const pal = page.match(/^const PALETTE = \[$[\s\S]*?^\];$/m)[0], hex = page.match(/^const HEX = .*$/m)[0], rgb = page.match(/^const RGB = .*$/m)[0];
-  return vm.runInContext(pal + "\n" + hex + "\n" + rgb + "\n;RGB.map(c => c.slice())", vm.createContext({}));
+  const hex = page.match(/^const HEX = .*$/m)[0], rgb = page.match(/^const RGB = .*$/m)[0];
+  return vm.runInContext(hex + "\n" + rgb + "\n;RGB.map(c => c.slice())", vm.createContext({ PALETTE }));
 }
-// The page's five lookup tables over the core 48 (DARK, LIGHT, DARK2, FOGLUT, FADE), read the same way: its own declarations, run.
+// The page's five lookup tables over the core 48 (DARK, LIGHT, DARK2, FOGLUT, FADE): the palette module's tables through the page's own declarations, run.
 export function pageTables() {
   const page = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-  const pal = page.match(/^const PALETTE = \[$[\s\S]*?^\];$/m)[0], darkOf = page.match(/^const DARK_OF = \{[\s\S]*?\};$/m)[0], lightOf = page.match(/^const LIGHT_OF = \{[\s\S]*?\};$/m)[0];
   const a = page.indexOf("const C = {}; PALETTE.forEach("), b = page.indexOf("\n", page.indexOf("     FADE = mixLUT("));
   const core = page.slice(a, b);
-  return vm.runInContext([pal, darkOf, lightOf, core, ";({ names: PALETTE.map(p => p[0]), dark: DARK.slice(), light: LIGHT.slice(), dark2: DARK2.slice(), fog: FOGLUT.slice(), fade: FADE.slice() })"].join("\n"), vm.createContext({}));
+  return vm.runInContext([core, ";({ names: PALETTE.map(p => p[0]), dark: DARK.slice(), light: LIGHT.slice(), dark2: DARK2.slice(), fog: FOGLUT.slice(), fade: FADE.slice() })"].join("\n"), vm.createContext({ PALETTE, DARK_OF, LIGHT_OF }));
 }
 // The palette file a manifest names, read from that manifest's own folder: absent or "core48" is the page's 48 (no file); any other
 // name is <name>-palette.json beside the manifest. Returns { name, file, json } or { name, file, unread } when it cannot be read.

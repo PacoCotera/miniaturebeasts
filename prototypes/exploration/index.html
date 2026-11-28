@@ -275,48 +275,20 @@ import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
 import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBook } from "./src/map-rules.mjs";
 import { readOptions } from "./src/options.mjs";
 import { SOUNDS, tallyTick, playNotes, soundOff } from "./src/sound/blips.mjs";
+import { PALETTE, DARK_OF, LIGHT_OF } from "./src/data/palette.mjs";
 const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot
 soundOff(OPT.mute);
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
-   offscreen 450×600 frame at 1:1 device pixels, from the fixed palette below,
+   offscreen 450×600 frame at 1:1 device pixels, from the fixed palette (src/data/palette.mjs),
    with tile maps, small sprites and a bitmap font. The frame is then blitted to
    the page and scaled without smoothing.
    Rules are separate from rendering. All world randomness is seeded.
-   Sections: 0 palette · 1 constants · 2 RNG · 3 world · 4 patch layouts
+   Sections: 1 constants · 2 RNG · 3 world · 4 patch layouts
    5 state & persistence · 6 map rules · 7 patch rules · 8 creatures & partner
    9 End expedition, the sealed bay & world turn · 10+ rendering, input, page
    ===================================================================== */
-
-// ===================== 0. Screen palette (data; maps 1:1 to an LVGL palette) =====================
-// 51 colours (the first 48 and the three sage). Every pixel the screen shows is one of these. Names are used by the art code.
-const PALETTE = [
-  ['void', '#0c0a12'], ['ink', '#1a1725'], ['night', '#29253a'], ['slate', '#3d3954'], ['stone', '#5d5974'], ['mist', '#8d8aa6'],
-  ['fog', '#c6c4d8'], ['bone', '#f1ebdf'], ['white', '#ffffff'],
-  ['paper', '#f5e6c4'], ['sand', '#e6c98c'], ['clay', '#bf9157'], ['bark', '#7d5435'], ['soil', '#4b3023'],
-  ['pine', '#173b2d'], ['forest', '#23623c'], ['leaf', '#329245'], ['grass', '#5cbb4c'], ['sprout', '#98d85c'], ['lime', '#d4f281'],
-  ['deep', '#142650'], ['sea', '#1e5196'], ['river', '#3084d8'], ['sky', '#5bb9f3'], ['ice', '#a9e6ff'],
-  ['tealD', '#0f4c50'], ['teal', '#1f9d8f'], ['aqua', '#45d8be'], ['mint', '#adf6e0'],
-  ['plumD', '#3c1e6c'], ['plum', '#6f41c6'], ['lilac', '#a87bf3'], ['lavender', '#dbc0ff'],
-  ['wine', '#6b1e33'], ['red', '#c93440'], ['coral', '#ff5f57'], ['peach', '#ffa67c'], ['blush', '#ffd4bf'],
-  ['rust', '#a6420c'], ['orange', '#f2671b'], ['amber', '#ffa83f'],
-  ['gold', '#d89b14'], ['yellow', '#ffd441'], ['cream', '#fff4a6'],
-  ['magenta', '#c3387e'], ['pink', '#ff80c0'],
-  ['rock', '#847fa8'], ['rockL', '#bab6d4'],
-  ['sageL', '#bfccb6'], ['sage', '#87947f'], ['sageD', '#556251'],
-];
-// One step darker (storm light, shade, outlines) and one step lighter (highlights).
-const DARK_OF = { void: 'void', ink: 'void', night: 'ink', slate: 'night', stone: 'slate', mist: 'stone', fog: 'mist', bone: 'fog', white: 'bone',
-  paper: 'sand', sand: 'clay', clay: 'bark', bark: 'soil', soil: 'ink', pine: 'ink', forest: 'pine', leaf: 'forest', grass: 'leaf', sprout: 'grass', lime: 'sprout',
-  deep: 'ink', sea: 'deep', river: 'sea', sky: 'river', ice: 'sky', tealD: 'ink', teal: 'tealD', aqua: 'teal', mint: 'aqua',
-  plumD: 'ink', plum: 'plumD', lilac: 'plum', lavender: 'lilac', wine: 'night', red: 'wine', coral: 'red', peach: 'coral', blush: 'peach',
-  rust: 'soil', orange: 'rust', amber: 'orange', gold: 'bark', yellow: 'gold', cream: 'yellow', magenta: 'wine', pink: 'magenta', rock: 'stone', rockL: 'rock', sageL: 'sage', sage: 'sageD', sageD: 'ink' };
-const LIGHT_OF = { void: 'ink', ink: 'night', night: 'slate', slate: 'stone', stone: 'mist', mist: 'fog', fog: 'bone', bone: 'white', white: 'white',
-  paper: 'bone', sand: 'paper', clay: 'sand', bark: 'clay', soil: 'bark', pine: 'forest', forest: 'leaf', leaf: 'grass', grass: 'sprout', sprout: 'lime', lime: 'cream',
-  deep: 'sea', sea: 'river', river: 'sky', sky: 'ice', ice: 'white', tealD: 'teal', teal: 'aqua', aqua: 'mint', mint: 'white',
-  plumD: 'plum', plum: 'lilac', lilac: 'lavender', lavender: 'white', wine: 'red', red: 'coral', coral: 'peach', peach: 'blush', blush: 'bone',
-  rust: 'orange', orange: 'amber', amber: 'cream', gold: 'yellow', yellow: 'cream', cream: 'white', magenta: 'pink', pink: 'blush', rock: 'rockL', rockL: 'fog', sageL: 'bone', sage: 'sageL', sageD: 'sage' };
 
 // ===================== 1. Constants =====================
 const SCR_W = 450, SCR_H = 600, HUD_H = 32, LINE_H = 36, VIEW_Y = HUD_H, VIEW_H = SCR_H - HUD_H - LINE_H; // view 450×532
@@ -546,7 +518,7 @@ const PL = { ready: false, ts: null, terrains: null, desc: null, ctx: null, View
 const PL_VIEWS_MAX = 8, SET7 = 'ninja-test';
 // The release number (build.json, never cached) rides on every fetch of game data and every image, so a new release never reads an older release's files from the browser's cache. One helper, no player option.
 const REL = { v: '' };
-REL.ready = (async () => { try { const b = await (await fetch(new URL('../../build.json', location.href).href, { cache: 'no-store' })).json(); if (b && b.version) REL.v = String(b.version); REL.build = b; } catch (e) { } })();
+REL.ready = (async () => { try { const b = await (await fetch(new URL('../../build.json', location.href).href, { cache: 'no-store' })).json(); if (b && b.version) REL.v = String(b.version); REL.build = b; } catch (e) { console.warn('build.json was not read: files load without the release number', e); } })();
 const vurl = u => REL.v ? u + (u.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(REL.v) : u;
 // The first frame waits for the new art and the place (the Probe line shows meanwhile); a load that fails says so with a reload, and never draws old art.
 const ART_DONE = { walk: false, open: false, atlas: false, places: false }, ART_FAIL = [], ART_WHY = [];   // ART_WHY: { part, file, why } for each part that failed, shown under the failed screen
@@ -1215,7 +1187,7 @@ function namedCells() {
     if (!placeHave(String(x.c))) continue;
     if (!memo.m.has(x.c)) {
       const had = layoutCache.has(String(x.c)); let ok = false;
-      try { ok = !!individualOf(x.q, layout(String(x.c))); } catch (e) { }
+      try { ok = !!individualOf(x.q, layout(String(x.c))); } catch (e) { if (RT.err++ < 3) console.error(e); }
       if (!had) layoutCache.delete(String(x.c));
       memo.m.set(x.c, ok);
     }
@@ -2936,7 +2908,7 @@ let MARKED = { key: '', ids: [] };
 // (none qualify in a realm: all are offered as before). The places are not in yet: all of G.spawns.
 let STARTS = { key: '', list: [] };
 let OWED_AT = new Set();   // boot-bake-1: cells a check below needed whose place the worker still owes (never baked on the page: one place is seconds of one task); asked of the worker, the check is made again when they come (PLACES.epoch)
-const namedAt = q => { try { const k = String(q.c); if (!placeHave(k)) { OWED_AT.add(+q.c); return false; } return !!individualOf(q, layout(k)); } catch (e) { return false; } };
+const namedAt = q => { try { const k = String(q.c); if (!placeHave(k)) { OWED_AT.add(+q.c); return false; } return !!individualOf(q, layout(k)); } catch (e) { if (RT.err++ < 3) console.error(e); return false; } };
 function askOwedAt() {   // the owed cells go to the worker, ahead of the background list; false when none is owed
   if (!OWED_AT.size) return false;
   const cells = [...OWED_AT]; OWED_AT = new Set();
@@ -2953,7 +2925,7 @@ function startPlaces() {
   const ok = G.spawns.filter(s => { const reach = new Set(reachCells(s, TIER[1].range, {}).map(String)); return wild.some(q => reach.has(String(q.c)) && namedAt(q)); });
   // w5-day1-start-1: the FIRST glint is a named Loika's own place whose morning haunt is not her dawn one (she comes there from light 20), within tier 1's reach of a spawn; chosen from the seed. None such: the list as it was.
   const inReach = new Set(); for (const s of G.spawns) for (const k of reachCells(s, TIER[1].range, {})) inReach.add(+k);
-  const homes = [...new Set(wild.filter(q => inReach.has(+q.c) && passable(+q.c) && !G.island[+q.c] && (!G.gen || !!G.comp[+q.c]) && (() => { try { if (!placeHave(String(q.c))) { OWED_AT.add(+q.c); return false; } const ind = individualOf(q, layout(String(q.c))); if (!ind) return false; const d = hauntAt(ind.hs, ind.doings, 'dawn'), m = hauntAt(ind.hs, ind.doings, 'morning'); return !!m && (!d || d.x !== m.x || d.y !== m.y); } catch (e) { return false; } })()).map(q => +q.c))].sort((x, y) => x - y);
+  const homes = [...new Set(wild.filter(q => inReach.has(+q.c) && passable(+q.c) && !G.island[+q.c] && (!G.gen || !!G.comp[+q.c]) && (() => { try { if (!placeHave(String(q.c))) { OWED_AT.add(+q.c); return false; } const ind = individualOf(q, layout(String(q.c))); if (!ind) return false; const d = hauntAt(ind.hs, ind.doings, 'dawn'), m = hauntAt(ind.hs, ind.doings, 'morning'); return !!m && (!d || d.x !== m.x || d.y !== m.y); } catch (e) { if (RT.err++ < 3) console.error(e); return false; } })()).map(q => +q.c))].sort((x, y) => x - y);
   for (const k of [...layoutCache.keys()]) if (!had.has(k)) layoutCache.delete(k);
   if (OWED_AT.size) { askOwedAt(); STARTS.owedKey = key; STARTS.owedEp = PLACES.epoch; return G.spawns.slice(); }   // places still owed: all of G.spawns for now (not kept), made again when they come
   const home = homes.length ? homes[Math.abs(S.seed | 0) % homes.length] : null, base = ok.length ? ok : G.spawns.slice();
@@ -2975,7 +2947,7 @@ function markedCandidates() {
 }
 function wildMarked(c) {
   const L = S.looks || (S.looks = {}); let r = L[c.id];
-  if (r === undefined) { if (!WILD.ok) return false; try { r = L[c.id] = WILD.shows(S.seed, c.id) ? 1 : 0; } catch (e) { return false; } }
+  if (r === undefined) { if (!WILD.ok) return false; try { r = L[c.id] = WILD.shows(S.seed, c.id) ? 1 : 0; } catch (e) { if (RT.err++ < 3) console.error(e); return false; } }
   return !!r;
 }
 const wildSaddled = c => !!c.ind && c.sp === 0 && coatRead(c.id) && wildMarked(c);   // the token is plain until her coat is read, then it shows what she has
@@ -7974,7 +7946,7 @@ const sgSp = sp => Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? sp :
 // Is the tile (x, y) inside the place view when the player stands on P? (the camera clamps at the place's edges)
 function tileInView(px, py, x, y) {
   try { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), ts = v.ts, c = camPos(v, px * ts, py * ts);
-    return x * ts >= c.x && (x + 1) * ts <= c.x + SCR_W && y * ts >= c.y && (y + 1) * ts <= c.y + VIEW_H; } catch (e) { return true; }
+    return x * ts >= c.x && (x + 1) * ts <= c.x + SCR_W && y * ts >= c.y && (y + 1) * ts <= c.y + VIEW_H; } catch (e) { if (RT.err++ < 3) console.error(e); return true; }
 }
 // The lit tile as the place draws it on that frame, without the things that move (rain, drifting fog, the pawn, creatures, outlines that blink):
 // the tile at the view's light and veil, the marks and props still on it, the part of a canopy or roof over it, a pod lying on it, then the 2 px outline.
@@ -9732,16 +9704,16 @@ if (EMBED) { setEmbedS(); window.addEventListener('resize', setEmbedS); }
 
 const footEl = document.getElementById('buildFoot');
 import('../station/src/genome.mjs').then(async g => { const L = await import('../station/src/looks.mjs'), fr = await (await fetch('../species/frames/language/species-S01.json')).json();
-  { const SD = await import('../station/src/stands.mjs'), more = await Promise.all(Object.keys(SD.COAT_TRAITS).filter(k => k !== 'S01').map(async k => { try { return await (await fetch('../species/frames/language/species-' + k + '.json')).json(); } catch (e) { return null; } }));   // a frame that fails leaves that kind on its painted cut; Riding draws a home mibi in her own coat: the frames of the kinds that have coats
+  { const SD = await import('../station/src/stands.mjs'), more = await Promise.all(Object.keys(SD.COAT_TRAITS).filter(k => k !== 'S01').map(async k => { try { return await (await fetch('../species/frames/language/species-' + k + '.json')).json(); } catch (e) { console.warn('the frame of ' + k + ' did not load', e); return null; } }));   // a frame that fails leaves that kind on its painted cut; Riding draws a home mibi in her own coat: the frames of the kinds that have coats
     g.setFrames([fr, ...more.filter(Boolean)]); RIDE.coatOf = SD.coatOf; RIDE.ownLooks = L.ownLooks; RIDE.frameOf = g.frameOf; }
   WILD.shows = (seed, id) => L.saddleShown(fr, { genome: g.wildGenome(fr, seed, id, g.markedLoika(seed, markedCandidates())), read: ['coat'] });   // one Loika of the realm shows it (wild-marking-named-2); the wild Loika's marking, her coat taken as read (the walk keeps the read apart)
   WILD.partner = id => { const st = stPart(), m = st && (st.mibis || []).find(q => q.id === id); return !!m && !!m.genome && m.species === 'S01' && L.saddleShown(fr, m); };   // the Station's own drawnLooks on the partner: shown and read
-  WILD.ok = true; }).catch(() => { });   // a failed load leaves every token plain and the walk goes on
+  WILD.ok = true; }).catch(e => { console.warn('the coats and the wild marking did not load', e); });   // a failed load leaves every token plain and the walk goes on
 import('../play/src/footer.mjs').then(m => { window.__mbNotice = NOTE.ui = m.mountNotice(document.getElementById('notice'), WORDS.notice, { buildUrl: '../../build.json' });   // the notice line: a save that cannot be written, a land that changed, a page that broke (the head's script saw it first)
   for (const k of Object.keys(NOTE.flags)) if (NOTE.flags[k]) NOTE.ui.set(k, true);
   if (window.__mbBroke) noteSet('pageBroke', true);
   window.addEventListener('error', e => { if (e.error) noteSet('pageBroke', true); }); window.addEventListener('unhandledrejection', () => noteSet('pageBroke', true));
-  m.mountFooter(footEl, { buildUrl: '../../build.json', schema: SAVE_V, caddy: m.caddyAnswers }); }).catch(() => { });   // the build footer (page chrome, always shown): build, save version, whether the Caddy service answers
+  m.mountFooter(footEl, { buildUrl: '../../build.json', schema: SAVE_V, caddy: m.caddyAnswers }); }).catch(e => { console.warn('the notice line and the build footer did not load', e); });   // the build footer (page chrome, always shown): build, save version, whether the Caddy service answers
 
 const obsBtn = document.getElementById('obsToggle'), obsEl = document.getElementById('obs');
 function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
@@ -9958,7 +9930,7 @@ if (ld === true) { try { if (S.exp && S.exp.shield <= 0 && !S.exp.dark) goDark(S
 else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';
 SLEEP.holdAtBoot();   // a sleep still pending keeps this page from writing
 RT.bootHold = false; save();
-if (!RT.readOnly) SLEEP.start().catch(() => { });   // the key at the first boot (and its pub), and a committed sleep finished
+if (!RT.readOnly) SLEEP.start().catch(e => { console.warn('the sleeper did not start', e); });   // the key at the first boot (and its pub), and a committed sleep finished
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
 if (OPT.dev || new URLSearchParams(location.search).has('observer')) setObserver(true);   // the Developer tools option opens the Observer, the page's developer panel
 fit();
