@@ -1,9 +1,9 @@
 // The screens outside the game (UI): the wait while the land is made or comes in, a load that failed, a save kept as stored, and the release's one-time notice.
 // Each draws only from its arguments: an empty top bar over the plain ground, its lines centred, and a bottom line that carries only ✓'s word.
 // The pixel core and the bottom line are still the page's: it hands them in once as `env` (R, text, viewBg, drawLine and the palette C).
-import { PIPS } from "../waitpips.mjs";
+import { PIPS } from "../logic/waitpips.mjs";
 import { textW } from "../font.mjs";
-import { breakLines, buildTag } from "../breakline.mjs";
+import { breakLines, buildTag } from "../../../play/src/breakline.mjs";
 import { RESET_TEXT, KEPT_TEXT, LOAD_FAILED } from "../data/boot-words.mjs";
 
 export function makeBootScreens(env) {

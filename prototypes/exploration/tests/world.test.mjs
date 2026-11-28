@@ -14,7 +14,7 @@ import * as W from "../src/world.mjs";
 import { PLAYTEST_SEEDS, PLAYTEST_REALM_REV, PLAYTEST_BIOME_V } from "../src/playtest-seeds.mjs";
 import { REALM_REV } from "../src/gen7/region.mjs";
 import { WORDS } from "../src/words.mjs";
-import * as R from "../src/regions.mjs";
+import * as R from "../src/logic/regions.mjs";
 import * as A from "../src/atlas.mjs";
 import * as V from "../src/view.mjs";
 import * as SHAPE from "../src/render/edge.mjs";

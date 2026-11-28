@@ -8,7 +8,7 @@
 import { REALM_REV } from './gen7/region.mjs';
 import { PLACE_REV } from './place-store.mjs';
 import { MW, MH, DIRS, cxy, cheb, passableIn, canStepIn } from './world.mjs';
-import { reachCellsIn, tierOf } from './map-rules.mjs';
+import { reachCellsIn, tierOf } from './logic/map-rules.mjs';
 import { writeBaked, readBaked } from '../../places/src/format/baked.mjs';
 export const cellOfBytes = readBaked;   // the one read path: the bytes to the { ir, place } layout() reads
 

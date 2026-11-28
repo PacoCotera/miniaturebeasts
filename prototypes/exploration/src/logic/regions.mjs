@@ -5,9 +5,9 @@
 //   save v10 on disk: { v: 10, seed (= regions[0].seed), began, here, regions: [Region …], resetFrom?, …the realm's fields… }
 //   Region = { id, n, kind: "home", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
 //              closes, closed, exploredN, seenN, map: { …MAP_KEYS… } }
-import { MW, MH, GENS, hash, ROSTER, FAMILY_GROUND } from "./world.mjs";
-import { LANGUAGE, kindLands } from "../../species/framework/language.mjs";
-import { newSeen, isRecord, seenFromOld } from "./logic/seen.mjs";
+import { MW, MH, GENS, hash, ROSTER, FAMILY_GROUND } from "../world.mjs";
+import { LANGUAGE, kindLands } from "../../../species/framework/language.mjs";
+import { newSeen, isRecord, seenFromOld } from "./seen.mjs";
 
 export const REALM_SAVE_V = 10;
 // the fields of a region's own map state: on S while the region is mounted, in regions[i].map when it is not.
@@ -259,4 +259,4 @@ export function keepPre9(store, key, raw) {
   } catch (e) { return false; }
 }
 
-export { RESET_V, RESET_FROM, resetPlan, keepPre10, keepGen, oldGenOf } from "../../play/src/realm/reset.mjs";   // the release's save reset, shared with the Station (release 21b)
+export { RESET_V, RESET_FROM, resetPlan, keepPre10, keepGen, oldGenOf } from "../../../play/src/realm/reset.mjs";   // the release's save reset, shared with the Station (release 21b)

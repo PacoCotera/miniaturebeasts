@@ -14,7 +14,7 @@ import { RULES } from '../src/gen7/rules.mjs';
 import { recipeAt, GROUND, BLEND } from '../src/gen7/ground.mjs';
 import { slotBiomes } from '../src/gen7/world.mjs';
 import { genRegion7 } from '../src/gen7/region.mjs';
-import { ATLAS } from '../src/regions.mjs';
+import { ATLAS } from '../src/logic/regions.mjs';
 import { MW, MH, L } from '../src/world.mjs';
 
 // The whole-world proofs take about five minutes a seed. A pull request into main (MB_CI_FAST=1) runs seed 7 and seeds 1-5 only; the full set runs locally before every merge.

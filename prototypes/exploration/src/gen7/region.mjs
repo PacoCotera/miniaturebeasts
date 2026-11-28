@@ -5,7 +5,7 @@
 // Every decision is a hash of the realm seed and a world position (and the region's attempt number), never of the order regions were opened in.
 import FlatQueue from 'flatqueue';
 import { hash, makeRng, MW, MH, L, EDGE, G2, WALK_MIN, BIOME_GROUND, cdist, cxy, cheb, passableIn, canStepIn, edgeIndex } from '../world.mjs';
-import { ATLAS } from '../regions.mjs';
+import { ATLAS } from '../logic/regions.mjs';
 import { buildRealm, rawRealm, editE0, RW, RH, CW, CH, NB8, isSaddle, levelZones, closeLevels, fixSaddles } from './world.mjs';
 import { realmFeatures } from './features.mjs';
 import { realmRoads, roadGraph, ringDist } from './roads.mjs';

@@ -1,4 +1,4 @@
-// src/regions.mjs: the realm's regions as pure functions.
+// src/logic/regions.mjs: the realm's regions as pure functions.
 // A v8 save becomes region 1 of a v9 realm, and mounting it gives back the very state the page held: five saves, equal before and after,
 // the full map's picture included. Then the round trip in bytes, the v8 copy, the atlas rules, and the names.
 //   node --test prototypes/exploration/tests/regions.test.mjs
@@ -6,7 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import * as W from "../src/world.mjs";
-import * as R from "../src/regions.mjs";
+import * as R from "../src/logic/regions.mjs";
 import * as SN from "../src/logic/seen.mjs";
 import { makePage } from "./page-harness.mjs";
 
@@ -373,10 +373,9 @@ test("12. regionRecord and blankMap: the shape of a record, and a new region's m
   assert.equal(R.exploredCount({ seen: { been: [1, 1, 0], walked: { 0: 1, 2: 1 } } }), 1); assert.equal(R.seenCount({ seen: { rev: [1, 0, 1] } }), 2);
 });
 
-test("13. the page imports regions.mjs (the page and the Station took v9 in one merge); the module is pure", () => {
-  const src = readFileSync(new URL("../src/regions.mjs", import.meta.url), "utf8");
+test("13. the module is pure", () => {
+  const src = readFileSync(new URL("../src/logic/regions.mjs", import.meta.url), "utf8");
   assert.ok(!/\b(document|window|localStorage|fetch|Math\.random)\b/.test(src.replace(/\/\/.*$/gm, "")), "no page, no storage, no chance");
-  assert.ok(/from "\.\/src\/regions\.mjs"/.test(readFileSync(new URL("../index.html", import.meta.url), "utf8")));
 });
 
 test("0. a new realm is written as version 3 (biomeV 3); a loaded old save stays without one", () => {

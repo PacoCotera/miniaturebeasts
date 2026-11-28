@@ -8,7 +8,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import * as C from "../src/companions.mjs";
-import { migrate8 } from "../../exploration/src/regions.mjs";
+import { migrate8 } from "../../exploration/src/logic/regions.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const RAW = readFileSync(path.join(here, "fixtures/save-v8-schema1.json"), "utf8");

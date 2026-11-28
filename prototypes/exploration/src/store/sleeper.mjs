@@ -10,9 +10,9 @@
 //
 // The tombstone is `mb-sleep-pending@<companion id>` = { wid, sha, newSeed, newWid, state: "pending" | "committed" | "done" }. While it is pending or committed
 // nothing writes the save (the lock is taken again at boot). A page that boots, or is lifted, with a committed tombstone finishes the clear on its own.
-import { canonical } from "../../core/base/written.mjs";
-import { hexEncode, utf8 } from "../../play/src/realm/b64.mjs";
-import { sha256, sign, companionKey, idbStore } from "../../play/src/realm/keys.mjs";
+import { canonical } from "../../../core/base/written.mjs";
+import { hexEncode, utf8 } from "../../../play/src/realm/b64.mjs";
+import { sha256, sign, companionKey, idbStore } from "../../../play/src/realm/keys.mjs";
 
 export const TOMB_PREFIX = "mb-sleep-pending@";
 export const OPS = ["lock", "sign", "clear", "unlock"];

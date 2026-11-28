@@ -1,7 +1,7 @@
-// The first-load wait's pips (src/waitpips.mjs): 0 to 10 from the real steps, never past 10, never backwards by itself being fed more.
+// The first-load wait's pips (src/logic/waitpips.mjs): 0 to 10 from the real steps, never past 10, never backwards by itself being fed more.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { waitPips, fracPips, startPlaceWait, placeWaitPips, BAKE_STAGES, PIPS } from "../src/waitpips.mjs";
+import { waitPips, fracPips, startPlaceWait, placeWaitPips, BAKE_STAGES, PIPS } from "../src/logic/waitpips.mjs";
 
 // #104 part 2: the first place of a set-out takes seconds in the worker; its real stages (terrain window, IR, bake) move the pips before the place is made.
 test("a place's real stages light the pips before any place is made; never full while on; never fewer for more stages", () => {

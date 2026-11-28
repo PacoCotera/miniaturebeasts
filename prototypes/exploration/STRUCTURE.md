@@ -60,11 +60,10 @@ Reads every module under `src/`, takes its layer from its folder, and fails with
 
 | Layer | Modules in `src/` today |
 | --- | --- |
-| data | `words`, `walk-data`, `playtest-seeds`, `playtest`, `riding-cut` |
-| logic | `world`, `world7`, `adapt7`, `bake7`, `regions`, `habits`, `ease`, `watch`, `map-rules`, `shore7`, `waitpips`, all of `gen7/` |
-| store | `place-store`, `realm-store`, `package-store`, `package-dock`, `sleeper`, `options` |
-| render | `atlas`, `view`, `landpaint`, `map-paint`, `mapkinds`, `trees48`, `fogedge`, `night`, `dusk`, `card-motion`, `font`, `pngdecode`, `fetchretry` |
-| ui | `breakline` |
+| data | `words`, `walk-data`, `playtest-seeds`, `playtest` |
+| logic | `world`, `world7`, `adapt7`, `bake7`, `shore7`, all of `gen7/` |
+| store | `place-store`, `realm-store`, `package-store`, `package-dock`, `options` |
+| render | `atlas`, `view`, `landpaint`, `map-paint`, `trees48`, `fogedge`, `card-motion`, `font`, `pngdecode`, `fetchretry` |
 | main | `realm-worker` (becomes `worker.mjs`) |
 
 ## Where the page's script goes

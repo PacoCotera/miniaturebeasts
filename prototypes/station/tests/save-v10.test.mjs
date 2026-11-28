@@ -8,7 +8,7 @@ const store = new Map(); let writes = [], dropCopy = false;
 globalThis.localStorage = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => { if (dropCopy && String(k).endsWith(".pre10")) throw new Error("full"); writes.push(k); store.set(k, String(v)); }, removeItem: (k) => { writes.push(k); store.delete(k); } };
 const S = await import("../src/state.mjs");
 const game = await import("../src/game.mjs");
-const { migrate8 } = await import("../../exploration/src/regions.mjs");
+const { migrate8 } = await import("../../exploration/src/logic/regions.mjs");
 const fixture = (name) => JSON.parse(readFileSync(new URL(`./fixtures/save-v8-${name}.json`, import.meta.url), "utf8"));
 const key = () => game.saveKey();
 const realm = () => migrate8({ ...fixture("played-g2"), gen: 5 }, { now: Date.UTC(2026, 10, 3) });   // a played realm as v10: generator 5, two mibis, two crates

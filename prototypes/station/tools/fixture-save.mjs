@@ -4,7 +4,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { migrate8 } from "../../exploration/src/regions.mjs";
+import { migrate8 } from "../../exploration/src/logic/regions.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const COMPANION_ID = "cfixturesavea";   // c + 12 letters or digits, as every Companion id

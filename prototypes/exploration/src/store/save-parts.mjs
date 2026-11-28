@@ -1,5 +1,5 @@
 // A save read as data: what it holds and what of it stays. No storage and no page state here.
-import { MAP_KEYS, serialize } from "../regions.mjs";
+import { MAP_KEYS, serialize } from "../logic/regions.mjs";
 
 // Every string `id` held anywhere in a save, at any depth (pods in the field, the cargo, the bay, the hold, a report, the Station's part).
 export function idsIn(o, out = new Set()) {

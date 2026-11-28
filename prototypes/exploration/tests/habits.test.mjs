@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { rangeOf, givesAt, clearAir, wantOf, tellOf, rainEndsIn, calmWindow, noteIn, blank, leftHaunts, dewLies, HABITS, SAMPLE, BEATS } from "../src/habits.mjs";
+import { rangeOf, givesAt, clearAir, wantOf, tellOf, rainEndsIn, calmWindow, noteIn, blank, leftHaunts, dewLies, HABITS, SAMPLE, BEATS } from "../src/logic/habits.mjs";
 import { DAY, WORDS } from "../src/words.mjs";
 import { ROUTINE } from "../src/gen7/haunts.mjs";
 

@@ -3,7 +3,7 @@
 //   cellWorldXY(slot, cell)      the realm cell [X, Y] of a region cell
 //   layout7(ctx, G, seed, slot, key)   the page's layout of a land cell: its IR, baked in the page, adapted. ctx: { ts, terrains, desc }
 import { genRegion7, realm7, REALM_REV } from './gen7/region.mjs';
-import { WINDOW_STAGES, BAKE_STAGES } from './waitpips.mjs';
+import { WINDOW_STAGES, BAKE_STAGES } from './logic/waitpips.mjs';
 import { cellIR, raisedAt, CW, CH, COAST_REACH, sectorOf } from './gen7/place.mjs';
 import { inlandOf } from './gen7/levels.mjs';
 import { MW, MH } from './world.mjs';
@@ -42,7 +42,7 @@ export const sectorNow = (seed, slot) => { let s = SECTORS.get(secKey(seed, slot
 export const genWorld7 = (seed, slot) => genRegion7(seed, slot[0], slot[1]);
 export const cellWorldXY = (slot, cell) => [slot[0] * MW + (cell % MW), slot[1] * MH + ((cell / MW) | 0)];
 // the IR of a cell and the baked place it makes
-// stage(n): told as stage n of BAKE_STAGES (src/waitpips.mjs) of the place finishes: the terrain window's own stages 1..WINDOW_STAGES (the worker counts them, place.mjs F6_STAGE), then its IR (decor, holds), then its bake.
+// stage(n): told as stage n of BAKE_STAGES (src/logic/waitpips.mjs) of the place finishes: the terrain window's own stages 1..WINDOW_STAGES (the worker counts them, place.mjs F6_STAGE), then its IR (decor, holds), then its bake.
 // The wait's pips count them (#104).
 export function bakedCell(ctx, seed, slot, cell, v, stage = null) {   // v: the realm's kind version (biomeVersion), which lists its creatures come from
   const [X, Y] = cellWorldXY(slot, cell), ir = cellIR(seed, X, Y, v); if (stage) stage(WINDOW_STAGES + 1);

@@ -1,11 +1,11 @@
-// Riding (companion-riding-build-2): a home mibi's picture is a cut of her own signed master, chosen by the one picker (src/riding-cut.mjs):
+// Riding (companion-riding-build-2): a home mibi's picture is a cut of her own signed master, chosen by the one picker (src/data/riding-cut.mjs):
 // her coat and marking from her genome (the Station's ownLooks and coatOf), her 96 cut by the same key, a young one her young cut, a kind with one painted stand that stand's cut, no stock picture where none exists.
 //   node --test prototypes/exploration/tests/riding-cut.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
-import { cutName, kindId, CUT_DIR } from "../src/riding-cut.mjs";
+import { cutName, kindId, CUT_DIR } from "../src/data/riding-cut.mjs";
 import { coatOf } from "../../station/src/stands.mjs";
 import { ownLooks } from "../../station/src/looks.mjs";
 import { setFrames, frameOf } from "../../station/src/genome.mjs";

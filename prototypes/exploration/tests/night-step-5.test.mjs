@@ -3,8 +3,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { easeTick } from "../src/ease.mjs";
-import { sleeperGives, isSleeper, noteIn, blank, givesAt } from "../src/habits.mjs";
+import { easeTick } from "../src/logic/ease.mjs";
+import { sleeperGives, isSleeper, noteIn, blank, givesAt } from "../src/logic/habits.mjs";
 import { DAY, WORDS } from "../src/words.mjs";
 
 const nightAt = DAY.parts.slice(0, -1).reduce((a, q) => a + q[1], 0) + 5;   // five light into the night

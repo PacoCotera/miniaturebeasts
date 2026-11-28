@@ -2,8 +2,8 @@
 //   node --test prototypes/exploration/tests/watch.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { beatOf, poseOf, stripPoses, chipOf, giveWords, givesNow } from "../src/watch.mjs";
-import { BEATS } from "../src/habits.mjs";
+import { beatOf, poseOf, stripPoses, chipOf, giveWords, givesNow } from "../src/logic/watch.mjs";
+import { BEATS } from "../src/logic/habits.mjs";
 
 test("the beat follows the tell: -1 while it goes on, then 0 to 3", () => {
   assert.equal(beatOf({ n: 0, tell: 3 }), -1);

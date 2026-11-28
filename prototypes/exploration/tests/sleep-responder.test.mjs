@@ -1,4 +1,4 @@
-// The Companion's side of putting a realm to sleep (src/sleeper.mjs, wired in index.html): its key at the first boot, its pub, and the answers to the Station's
+// The Companion's side of putting a realm to sleep (src/store/sleeper.mjs, wired in index.html): its key at the first boot, its pub, and the answers to the Station's
 // lock, sign, clear and unlock. The page's own code, run in the sandbox; the key pairs live in a Map, the Station's request is built with the sleep file's own prepareSleep.
 //   node --test prototypes/exploration/tests/sleep-responder.test.mjs
 import { test } from "node:test";
@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 import { memoryStore, verify } from "../../play/src/realm/keys.mjs";
 import { prepareSleep } from "../../play/src/realm/sleepfile.mjs";
-import { TOMB_PREFIX } from "../src/sleeper.mjs";
+import { TOMB_PREFIX } from "../src/store/sleeper.mjs";
 
 const SLEPT = 1800000000000;
 const NEW = { newSeed: 424242, newWid: "wnewrealm1" };
