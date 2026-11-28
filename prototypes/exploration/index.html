@@ -241,7 +241,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, TERR, genWorld, genPlace, placeTrees, depotCells as depotCellsIn } from "./src/logic/world.mjs";
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, BANK_EI, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf, makeHauntWalk } from "./src/gen7/world7.mjs";
 import { nightTable } from "./src/render/night.mjs";
-import { newSeen, seenFromOld, reveal as seenReveal, markWalked, markBeen, walkedCell as seenWalked, fogState as seenFog, veilable, anySeen, tileBit, unveiled as seenUnveiled, unveiledRows, rowsCopy, liftRound, liftSquare, liftLine, liftFlood, walkLift as seenWalkLift, liftWhere, seenShare, liftAll, veilMask } from "./src/logic/seen.mjs";
+import { newSeen, seenFromOld, reveal as seenReveal, markWalked, markBeen, walkedCell as seenWalked, fogState as seenFog, veilable, anySeen, tileBit, unveiled as seenUnveiled, unveiledRows, rowsCopy, liftRound, liftSquare, liftLine, liftFlood, walkLift as seenWalkLift, liftWhere, seenShare, liftAll, veilMask, levelAt } from "./src/logic/seen.mjs";
 import { cardStep } from "./src/render/card-motion.mjs";
 import { duskTable, duskLitRgb } from "./src/render/dusk.mjs";
 import { cutName, kindId, CUT_DIR } from "./src/data/riding-cut.mjs";
@@ -253,6 +253,8 @@ import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesRese
 import { paintLand } from "./src/render/landpaint.mjs";
 import { fogEdgeRead, fogEdges, FOG_EDGE_FILES } from "./src/render/fogedge.mjs";
 import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from "./src/gen7/shore7.mjs";
+import { isSeaCell } from "./src/gen7/sea.mjs";
+import { drawWindow } from "./src/render/window.mjs";
 import { makeMapPaint, markSizeFor } from "./src/render/map-paint.mjs";
 import { makeMapSigns } from "./src/render/map-signs.mjs";
 import { NB9, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, edgeFade, fogFade, pickE } from "./src/render/edge.mjs";
@@ -6019,6 +6021,36 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
   }
   return owed;   // some neighbour holds a Call's lift and its place is still owed: the caller says the land is coming
 }
+// The walking view's neighbours at a border (render-window-1b-2): each neighbour a baked place is drawn at 48 px by the one drawer (src/render/window.mjs), land and sea alike; what is seen is
+// the seen record's reads (veilMask / levelAt), never written. A sea cell (isSeaCell: wide water no reach names) is asked of the worker once (readyPlaces, after the reach) and stays under the
+// map's fog until it is here; the page never bakes it and never calls layout() for a cell the worker still owes (PR 316). drawPeekNeighbours stays for the look-around only (1c replaces it).
+function drawWalkNeighbours(v, lay, ox, oy, W, H, Tp) {
+  const bkc = bakedView(lay), cw = lay.w * Tp, ch = lay.h * Tp, cx0 = ox - bkc.ox * Tp, cy0 = oy - bkc.oy * Tp;
+  ensureMap(); const cx = lay.cell % MW, cy = (lay.cell / MW) | 0, seed = S.regions[0].seed, slot = hereRegion().slot, ver = biomeVersion(S); let asked = 0;
+  peekFog(0, VIEW_Y, SCR_W, VIEW_H);
+  const cells = [], later = [];
+  for (const [dx, dy] of PEEK_DIRS) {
+    const X = cx + dx, Y = cy + dy;
+    if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;   // past the realm's edge: the fog stands
+    const c = Y * MW + X, key = String(c), seen = !!S.seen.rev[c], sea = G.gen === 7 && seen && G.land[c] === L.WATER && !G.ford[c] && isSeaCell(seed, slot[0] * MW + X, slot[1] * MH + Y), land = seen && !sea && G.gen === 7 && (passable(c) || G.land[c] === L.WATER);   // a ford or a wade a Tuliko crosses is a land place like any other (cellIR), though the step is shut without him
+    let nl = null;
+    if ((land && S.seen.tile[key]) || sea) {
+      if (!placeHave(key)) { if (!v.owedAsked) v.owedAsked = new Set(); if (!v.owedAsked.has(key)) { v.owedAsked.add(key); readyPlaces(seed, slot, ver, [c], { ctx: PL.ctx, first: !sea }); } }   // a land cell a Call lifted: now (owner #136); a sea cell: the same path, after the reach
+    }
+    if ((land || sea) && PL.ready && placeHave(key)) { nl = layoutCache.get(key); if (!nl && asked < 1) { asked++; nl = layout(key); } if (nl && !(nl.baked && !nl.cave)) nl = null; }
+    if (nl && !sea && !anySeen(S.seen, key)) nl = null;   // nothing of it seen in the one record: the dark
+    const nbk = nl && bakedView(nl), rect = { x: dx < 0 ? cx0 - cw : dx > 0 ? cx0 + cw : cx0, y: dy < 0 ? cy0 - ch : dy > 0 ? cy0 + ch : cy0, w: cw, h: ch };   // a cell is its own tiles only, laid cell to cell
+    if (nbk && nl.w === lay.w && nl.h === lay.h) {
+      const pw = nl.baked.place.w, mask = veilMask(S.seen, nl, pw, nl.baked.place.h, nl.baked.ox, nl.baked.oy);
+      cells.push({ bk: nbk, lay: nl, rect, veiled: (px, py) => !!mask[(py - nbk.oy) * pw + (px - nbk.ox)], level: () => clockLevel(nl) }); continue; }
+    later.push({ c, X, Y, dx, dy, rect, land, sea });
+  }
+  drawWindow(g, cells, { clockMs: motion() ? NOW : 0, mk: PL.mk });
+  for (const q of later) {   // not here yet, or nothing to draw: land and owed sea stay under the map's fog; cliff and a wade the map's own land, under the veil
+    const r = q.rect, c = q.c; if (!S.seen.rev[c] || q.land || q.sea) continue;
+    const shaped = G.gen === 7 && G.land[c] === L.WATER; g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); g.drawImage(landPatchPB(c, Math.max(r.w, r.h), 0).canvas(0), r.x, r.y); if (shaped) peekShore(r, q.X, q.Y, Tp, lay, bkc); g.restore();
+    g.save(); g.globalAlpha = .55; R(r.x, r.y, r.w, r.h, C.night); g.restore(); }
+}
 // owner #141 / #178 ("water is so blocky, very long straight shores"): a wide-water cell seen beside the place is drawn tile by tile from shoreValue (src/shore7.mjs), the same line the places lay: where it says land
 // (a point the land reaches out into the sea cell) a beach strip of 3 tiles then meadow, along the line the place's own shallow tile for SHORE_SHALLOW tiles, and the cell's plain sea beyond. Drawn under the veil of the cell.
 function peekShore(r, X, Y, Tp, lay, bk) {
@@ -6335,7 +6367,7 @@ function drawPatchBody(t) {
   // the edge peek (bug #58): the neighbours, as the call-hold draws them (veiled as they stand), on the view outside the place's picture. The ground is put with putImageData, which writes
   // transparent over anything under it, so the neighbours go after it and are clipped to outside the picture; the place, its props and the pawn slide with the same camera.
   if (bk && (po.x || po.y)) { g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.rect(bOrg.x, bOrg.y, bk.place.w * 48, bk.place.h * 48); g.clip('evenodd');
-    try { drawPeekNeighbours(RT.pkv && RT.pkv.key === P.key ? RT.pkv : (RT.pkv = { key: P.key, nb: new Map() }), lay, bOrg.x, bOrg.y, lay.w * 48, lay.h * 48, 48); } finally { g.restore(); } }
+    try { drawWalkNeighbours(RT.pkv && RT.pkv.key === P.key ? RT.pkv : (RT.pkv = { key: P.key, nb: new Map() }), lay, bOrg.x, bOrg.y, lay.w * 48, lay.h * 48, 48); } finally { g.restore(); } }
   if (!bk) for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= lay.w || ty >= lay.h) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
     if (lightAt) { const i = ty * lay.w + tx, L = lvAt(tx, ty);
