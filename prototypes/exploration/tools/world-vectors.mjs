@@ -346,7 +346,7 @@ async function main(argv) {
   const BIOMES = (await import(new URL("../src/world.mjs", import.meta.url))).BIOMES, g4 = {};
   for (const b of BIOMES) { const api = await moduleApi(4, b); g4[b] = SEEDS.map(s => seedDigest(api, s)); }
   const st4 = stored.gens["4"], same4 = st4 && JSON.stringify(g4) === JSON.stringify(Object.fromEntries(Object.keys(st4.biomes).map(b => [b, st4.biomes[b].seeds])));
-  const V = await import(new URL("../src/view.mjs", import.meta.url)), A = await import(new URL("../src/atlas.mjs", import.meta.url)), W = await import(new URL("../src/world.mjs", import.meta.url));
+  const V = { ...(await import(new URL("../src/view.mjs", import.meta.url))), ...(await import(new URL("../src/render/edge.mjs", import.meta.url))) }, A = await import(new URL("../src/atlas.mjs", import.meta.url)), W = await import(new URL("../src/world.mjs", import.meta.url));
   process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: same2 ? st2.capturedFrom : headCommit(), seeds: g2 }, viewVectors(V), atlasVectors(A, W, stored), { capturedFrom: same3 ? st3.capturedFrom : headCommit(), seeds: g3 }, { capturedFrom: same4 ? st4.capturedFrom : headCommit(), biomes: g4 }));
 }
 
