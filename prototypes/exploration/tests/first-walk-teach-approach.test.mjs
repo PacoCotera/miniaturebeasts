@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { newPage } from "../tools/walker.mjs";
-import { WORDS } from "../src/words.mjs";
+import { WORDS } from "../src/data/words.mjs";
 
 const W = WORDS.teachWalk;
 const setup = `(() => { const m = __mb, S = m.S; m.startExpedition('weather', G.spawns[0]);

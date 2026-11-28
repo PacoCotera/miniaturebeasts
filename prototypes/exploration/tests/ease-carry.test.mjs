@@ -7,7 +7,7 @@ import { makePage } from "./page-harness.mjs";
 import { CARRY, carryOf, wariness1, WIND_VEC } from "../src/walk-data.mjs";
 import { heardAt, carryAt, stayAt, stayLeft, stayTick, easeTick, windOf, windAt, los, holdRun, HOLD_MAX } from "../src/ease.mjs";
 import { doingsOf } from "../src/gen7/haunts.mjs";
-import { DAY, WORDS } from "../src/words.mjs";
+import { DAY, WORDS } from "../src/data/words.mjs";
 
 // ---------- the table, by hand ----------
 // creep 2, walk 4; reeds or tall grass -1; sand +1; downwind -1, across 0, upwind +2; rain -1; calm -1, steady 0, wary +1; never under 1.

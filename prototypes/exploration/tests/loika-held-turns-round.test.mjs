@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { DAY } from "../src/words.mjs";
+import { DAY } from "../src/data/words.mjs";
 
 const at = p => JSON.parse(p.run(`JSON.stringify(curLive().cr.filter(c => c.id === 152 || c.id === 153).map(c => [c.id, c.x, c.y, c.held || 0]))`));
 

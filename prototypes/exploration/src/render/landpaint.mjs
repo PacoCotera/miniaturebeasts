@@ -3,10 +3,10 @@
 // One continuous painting: each pixel takes the ground and tone of the block under it (the region's sector, world-topdown-spec-1 2.4: 4 x 4 blocks a place, each a ground class and a level bit, made from the realm
 // before any place is built); until the sector is here, the land of the cell under it after a soft displacement of value noise (±11 px at 72 px cells and ±2.5 px fine), so cell borders become coastlines, wood edges
 // and field edges and no grid lines are drawn. Fog keeps its three states on the same borders. Pure: no page state.
-import { hash, L, MW, MH } from './world.mjs';
-import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from './shore7.mjs';
+import { hash, L, MW, MH } from '../world.mjs';
+import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from '../shore7.mjs';
 import { fogEdges } from './fogedge.mjs';
-import { CW as CWT, CH as CHT } from './gen7/world.mjs';   // the tiles of a cell
+import { CW as CWT, CH as CHT } from '../gen7/world.mjs';   // the tiles of a cell
 
 const VN_LAT = new Map();   // the lattice values of the value noise, by (s, a, b): the same numbers as hash gives, found once (a painting asks for each of them thousands of times)
 const vnLat = (s, a, b) => { if (a < 0 || b < 0 || a > 8191 || b > 8191 || s < 0 || s > 15) return (hash(9, s, a, b) % 1000) / 1000; const k = ((s * 8192 + a) * 8192) + b; let v = VN_LAT.get(k); if (v === undefined) { v = (hash(9, s, a, b) % 1000) / 1000; VN_LAT.set(k, v); } return v; };
@@ -36,7 +36,7 @@ export function paintLand(inp) {
     for (let Y = 0; Y < MH; Y++) for (let X = 0; X < MW; X++) { const w0 = shoreCells.wide(rx + X, ry + Y); for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (shoreCells.wide(rx + X + i, ry + Y + j) !== w0) seamC[Y * MW + X] = 1; }
   }
   const u = new Uint32Array(N * NH), cellOf = landCellOf(cs, !!sec);
-  // owner #178 / #141: where the cells are straight (the sector is here) the dark's edge is the art desk's signed soft one, laid on the seen side (src/fogedge.mjs), not the cell's straight line
+  // owner #178 / #141: where the cells are straight (the sector is here) the dark's edge is the art desk's signed soft one, laid on the seen side (src/render/fogedge.mjs), not the cell's straight line
   const fe = inp.fogEdge, softEdge = !!(fe && sec && !mist);
   const tile = (n, wx, wy) => { const t = tiles[n]; return t ? t.p[(((wy % t.h) + t.h) % t.h) * t.w + (((wx % t.w) + t.w) % t.w)] : K.ink; };   // no art yet: a named empty slot (ink)
   const landOf = c => c < 0 ? -1 : land[c];

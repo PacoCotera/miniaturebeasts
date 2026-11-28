@@ -3,7 +3,7 @@
 //   run    a strip along a side, dark on its west side, 3 cells long (map: 26 x 78; look-around: 24 x 72), three variants a, b, c, laid back to back so the depth wanders;
 //   outer  a cell corner where the dark wraps two sides (rounded), 26 x 26, dark at its north-west;
 //   inner  a cell corner whose two sides are seen and only the diagonal is dark (a quarter bay), 26 x 26, dark at its north-west.
-// Pure: plain data in, a list of placements out; the map's painting (src/landpaint.mjs) and the look-around (index.html) draw them. Nothing here is drawn art: every pixel is a signed piece's.
+// Pure: plain data in, a list of placements out; the map's painting (src/render/landpaint.mjs) and the look-around (index.html) draw them. Nothing here is drawn art: every pixel is a signed piece's.
 
 // files: { name: { width, height, data (RGBA) } } -> { map: { runs: [3 pieces], outer, inner }, peek: { runs: [3 pieces] } } or null when a file is missing.
 // A piece is { w, h, m } with m a Uint8Array: 0 clear, 1 the ink colour, 2 the night colour (the only two colours the pieces hold).

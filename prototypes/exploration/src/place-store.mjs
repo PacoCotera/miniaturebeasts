@@ -171,7 +171,7 @@ export function groundAsk(id, place, kit) {   // kit as readyPlaces'
   GROUND_ASKED.add(id);
   try { worker('ground', kit.ctx).postMessage({ op: 'ground', id, place }); return true; } catch (e) { GROUND_ASKED.delete(id); return false; }
 }
-// A painting of the map's land (src/landpaint.mjs), painted in the same worker: landAsk sends the plain inputs, landTake hands the pixels over once.
+// A painting of the map's land (src/render/landpaint.mjs), painted in the same worker: landAsk sends the plain inputs, landTake hands the pixels over once.
 const LANDS = new Map(), LAND_ASKED = new Set();
 export function landAsk(id, inp, kit) {
   if (!PW_ON || LANDS.has(id) || LAND_ASKED.has(id)) return false;

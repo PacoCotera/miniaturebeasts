@@ -6,9 +6,9 @@
 //   { op: 'seed', seed, realm, sites }  the realm this worker bakes cells of (the page has it already);
 //   { op: 'bake', seed, slot, v, cells }  each cell's IR and baked place (world7.mjs bakedCell), one reply a cell, in the order asked;
 //   { op: 'ground', id }           a baked place's ground, rendered: its 48 px frames (one a clock step) and the whole-place picture's (places/src/ground.mjs), the pixel work the page would do a frame at a time.
-//   { op: 'land', id, inp }        the painted land of the maps (src/landpaint.mjs paintLand): the pixels of one painting.
+//   { op: 'land', id, inp }        the painted land of the maps (src/render/landpaint.mjs paintLand): the pixels of one painting.
 // This file imports the generator and nothing of the page.
-import { paintLand } from './landpaint.mjs';
+import { paintLand } from './render/landpaint.mjs';
 import { realm7, setRealm7 } from './gen7/region.mjs';
 import { decorOf, presetHollowSites, banksOfRegion, madeBanks, presetBanks } from './gen7/place.mjs';
 import { bakedCell, sectorOfRegion } from './world7.mjs';

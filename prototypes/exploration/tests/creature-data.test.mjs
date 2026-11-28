@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
-import { WORDS } from "../src/words.mjs";
+import { WORDS } from "../src/data/words.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 function source(name) {

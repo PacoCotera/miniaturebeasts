@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
-import { viewOf, camAt, TS } from "../src/view.mjs";
+import { viewOf, camAt, TS } from "../src/render/view.mjs";
 import { seedDigest, SEEDS, placeKeys2, placeDigest, syntheticPieces, SYNTH_TONE } from "../tools/world-vectors.mjs";
 
 const { L, EDGE, MW, MH } = W, N = MW * MH;
