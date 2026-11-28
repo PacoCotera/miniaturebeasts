@@ -1,9 +1,9 @@
-"""The Companion's 48 colours and tables, read from the page's own PALETTE (prototypes/exploration/index.html).
+"""The Companion's colours and tables, read from the Companion's own palette (prototypes/exploration/src/data/palette.mjs).
 
-Shared by every script under art/companion-48/. Nothing here invents a colour: the palette is parsed from the
-page at run time (or from palette/palette.json once signed), the DARK/LIGHT tables from DARK_OF/LIGHT_OF, and the
-FOG/FADE tables by the page's own mixLUT rule (nearest colour to a mix toward bone at .62 and stone at .5, with the
-page's 3/4/2 weighted distance).
+Shared by every script under art/companion-48/. Nothing here invents a colour: the palette is read from
+palette/palette.json once signed, or from the Companion's source (the colours from the design tokens' output, the
+DARK/LIGHT tables from DARK_OF/LIGHT_OF), and the FOG/FADE tables by the page's own mixLUT rule (nearest colour to a
+mix toward bone at .62 and stone at .5, with the page's 3/4/2 weighted distance).
 """
 import json, os, re
 import numpy as np
@@ -12,20 +12,20 @@ from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 PAGE = os.path.join(ROOT, "prototypes", "exploration", "index.html")
+COLOURS = os.path.join(ROOT, "prototypes", "ui", "tokens", "out", "companion-colors.mjs")
+TABLES = os.path.join(ROOT, "prototypes", "exploration", "src", "data", "palette.mjs")
 SIGNED = os.path.join(HERE, "..", "palette", "palette.json")
 
 BAYER4 = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
 
 
-def parse_page():
-    src = open(PAGE, encoding="utf-8").read()
-    m = re.search(r"const PALETTE = \[(.*?)\];", src, re.S)
+def parse_source():
     names, hexes = [], []
-    for n, h in re.findall(r"\['(\w+)', '(#[0-9a-f]{6})'\]", m.group(1)):
+    for n, h in re.findall(r'\["(\w+)", "(#[0-9a-f]{6})"\]', open(COLOURS, encoding="utf-8").read()):
         names.append(n); hexes.append(h)
+    src = open(TABLES, encoding="utf-8").read()
     def table(key):
-        mm = re.search(r"const %s = \{(.*?)\};" % key, src, re.S)
-        return dict(re.findall(r"(\w+): '(\w+)'", mm.group(1)))
+        return dict(re.findall(r"(\w+): '(\w+)'", re.search(r"const %s = \{(.*?)\};" % key, src, re.S).group(1)))
     return names, hexes, table("DARK_OF"), table("LIGHT_OF")
 
 
@@ -109,8 +109,7 @@ def load(signed=True):
     if signed and os.path.exists(SIGNED):
         d = json.load(open(SIGNED))
         return Palette([c["name"] for c in d["colours"]], [c["hex"] for c in d["colours"]], d["darkOf"], d["lightOf"])
-    names, hexes, dark_of, light_of = parse_page()
-    return Palette(names, hexes, dark_of, light_of)
+    return Palette(*parse_source())
 
 
 # Ramps by name, dark to light, as ui-kit §2 groups them; the outline rule uses a part's own ramp.

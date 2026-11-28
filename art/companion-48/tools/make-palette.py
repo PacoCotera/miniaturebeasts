@@ -1,4 +1,4 @@
-"""Write the signed palette file from the page's PALETTE: palette.json, palette.png (48x1 indexed), palette-tables.png.
+"""Write the signed palette file from the Companion's palette: palette.json, palette.png (48x1 indexed), palette-tables.png.
 
 usage: python3 -I make-palette.py
 """
@@ -8,11 +8,11 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import pal
 
-names, hexes, dark_of, light_of = pal.parse_page()
+names, hexes, dark_of, light_of = pal.parse_source()
 P = pal.Palette(names, hexes, dark_of, light_of)
 out = os.path.join(pal.HERE, "..", "palette")
 doc = {
-    "source": "prototypes/exploration/index.html, const PALETTE, DARK_OF, LIGHT_OF; FOG and FADE by the page's mixLUT (bone .62, stone .5) with its 3/4/2 weighted nearest colour",
+    "source": "prototypes/exploration/src/data/palette.mjs, PALETTE, DARK_OF, LIGHT_OF; FOG and FADE by the page's mixLUT (bone .62, stone .5) with its 3/4/2 weighted nearest colour",
     "count": len(names),
     "colours": [{"index": i, "name": n, "hex": h, "rgb": pal.hex_rgb(h)} for i, (n, h) in enumerate(zip(names, hexes))],
     "darkOf": dark_of, "lightOf": light_of,
