@@ -2081,8 +2081,8 @@ it(`s38 he walks up to Nut with fruit in hand and she eats from it (#179, his sa
 });
 // OWNER 2026-11-25 22:02 UTC (#174): "I'm facing a loika and there's no habit." Build desk bus c0efeb259c (PR 705): the played case on his own save.
 // His replay.save (saves/174.save: patch, tile 1,18, Dunnock beside him at ease 3). By presses: the d-pad left once (he faces her). State only asserts the case is reached (her ease, his facing, the bar's reach).
-// The verdict is the pixels: the bar's middle against a crop of her word "ears up" (saves/s40-ears-up-word.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it).
-it(`s40 facing Dunnock at ease 3 the bar's middle reads her word, ears up (#174, his save) [412x915]`, async () => {
+// The verdict is the pixels: the bar's middle against a crop of her word "ears up" (saves/s41-ears-up-word.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it).
+it(`s41 facing Dunnock at ease 3 the bar's middle reads her word, ears up (#174, his save) [412x915]`, async () => {
   const size = { w: 412, h: 915, dpr: 2.625 };
   const WORD = frac(570, 1142, 140, 52);   // the bar's word after ←Leave, in the 900x1200 frame
   const g = await open(size, "174");
@@ -2092,14 +2092,14 @@ it(`s40 facing Dunnock at ease 3 the bar's middle reads her word, ears up (#174,
     await step("left");
     const s = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, d = m.curLive().cr.find((c) => c.ind && c.ind.name === "Dunnock"); return { phase: m.S.phase, dir: P.dir, adj: d && Math.abs(d.x - P.x) + Math.abs(d.y - P.y) === 1, ease: d && (d.ease | 0), front: (m.occupant(P.key, m.frontOf(P).x, m.frontOf(P).y, "player") || {}).type }; });
     assert.ok(s.phase === "patch" && s.dir === "left" && s.adj && s.ease === 3 && s.front === "cr", `the case is reached: in the place, facing Dunnock at ease 3 (${JSON.stringify(s)})`);
-    const r = await g.region(), im = await g.shot("s40-ears-up");
+    const r = await g.region(), im = await g.shot("s41-ears-up");
     const w = { x: r.x + Math.round(r.w * WORD[0]), y: r.y + Math.round(r.h * WORD[1]), w: Math.round(r.w * WORD[2]), h: Math.round(r.h * WORD[3]) };
     const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
-    const f = path.join(savesDir, "s40-ears-up-word.png");
+    const f = path.join(savesDir, "s41-ears-up-word.png");
     if (process.env.PLAYED_WRITE_CROPS) { const c = crop(w); writeFileSync(f, encodePNG(c.width, c.height, c.data)); }
     const ref = decodePNG(readFileSync(f)), c = crop({ x: w.x, y: w.y, w: ref.width, h: ref.height });
     let bad = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) bad++;
-    console.log(`# s40: the bar's word differs from the crop of "ears up" by ${bad} of ${ref.width * ref.height} pixels`);
+    console.log(`# s41: the bar's word differs from the crop of "ears up" by ${bad} of ${ref.width * ref.height} pixels`);
     assert.ok(bad < ref.width * ref.height * 0.02, `the bar's middle reads her word, ears up (${bad} pixels differ from its crop)`);
   } finally { await g.ctx.close(); }
 });
