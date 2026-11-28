@@ -511,7 +511,7 @@
   "title": "Incubator",
   "skip": "Skip",
   "meet": "Meet {Name}",
-  "hatchFirst": "{Name} is your first mibi. {Name} lives in the Vivarium now, and grows up on expeditions.",
+  "hatchFirst": "First mibi · in the Vivarium",
   "hatchLine": "{Name} lives in the Vivarium now, and grows up on expeditions.",
   "grow": "Open now",
   "open": "Open",

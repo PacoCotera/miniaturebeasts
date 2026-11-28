@@ -318,6 +318,7 @@ void word_messagePlate(void) {
   int focal[4], hasf = spec_len(P, "frame.plate.focal") == 4; for (int i = 0; i < 4 && hasf; i++) { char p[40]; snprintf(p, sizeof p, "frame.plate.focal.%d", i); focal[i] = spec_int(P, p, 0); }
   char scr[32], bp[80]; spec_str(P, "screen", scr, sizeof scr); snprintf(bp, sizeof bp, "regions.plate.bottomBy.%s", scr);
   int bottom = v_si(F, bp, v_si(F, "regions.plate.bottom", 0));   /* a screen whose own line stands at the plate's usual place names a higher bottom (frame.json regions.plate.bottomBy.<screen>): the plate never covers it */
+  { int pb = spec_int(P, "frame.plate.bottom", 0); if (pb > 0) bottom = pb; }   /* the props may name the bottom themselves (the Nursery: under its last shelf row, so the plate covers no row) */
   int rc[4]; layout_plate_position(maxW, pad, lead, line, centre, bottom, v_si(F, "regions.plate.topOverFocal", 0), n, widest, hasf ? focal : v_focal(), rc);   /* the props may name a box; else the screen's own focal region */
   v_region("plate", LAYER_CHROME);
   snprintf(c, 24, "%s", v_scol(F, "colours.plateShadow")); v_rect("plate.shadow", rc[0], rc[1] + 3, rc[2], rc[3], c);

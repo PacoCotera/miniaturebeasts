@@ -11,6 +11,8 @@ import vm from "node:vm";
 import { makePage } from "./page-harness.mjs";
 import { decodePNG } from "../tools/atlas-check.mjs";
 import { decodeExact } from "../src/atlas.mjs";
+import { SPECIES, SP_OTHER, spOf } from "../src/logic/species.mjs";
+import { numWord } from "../src/data/text.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
@@ -34,8 +36,9 @@ function source(name) {
   throw new Error("not found in index.html: " + name);
 }
 const plain = x => JSON.parse(JSON.stringify(x));
-// The one species accessor (SP_OTHER, spOf, mibiSpName, abTextOf), for the checks that run a few functions on their own.
-const ACCESSOR = () => PAGE.match(/^const SP_OTHER = [^]*?\n(?=\/\/)/m)[0] + ["spOf", "mibiSpName", "abTextOf"].map(source).join("\n") + "\n";
+// For the checks that run a few of the page's functions on their own over a stub species table (SPECIES in their context): the lookup over that table
+// (the real SP_OTHER for any other value) and the page's two accessors.
+const ACCESSOR = () => "const SP_OTHER = " + JSON.stringify(SP_OTHER) + ";\nconst spOf = sp => SPECIES[sp] ?? SP_OTHER;\n" + ["mibiSpName", "abTextOf"].map(source).join("\n") + "\n";
 
 // The Station's side, when it has landed.
 const ST = await import("../../station/src/state.mjs");
@@ -292,7 +295,9 @@ test("normalizeCare: defaults for the additive fields; ids not in S.mibis droppe
 test("a new world: the carried set, no `with`; SAVE_V is 10 and the storage key keeps its name", () => {
   assert.match(source("worldFields"), /mibis: \[\], carried: \[\], lead: null, carrySeen: 0, carryRefused: \[\]/);
   assert.ok(!/\bwith: null\b|withSeen: 0, probeSeen/.test(source("worldFields")));
-  assert.match(PAGE, /LEGACY_KEY = 'mb-save-v8', SAVE_V = 10/);
+  const p = makePage({ console: "silent" }); p.run("newWorld(7)");
+  assert.equal(p.sv().v, 10, "a new world is written as version 10"); assert.equal(p.run("SAVE_V"), 10);
+  assert.equal(p.KEY, "mb-save-v8@" + p.run("COMPANION.id"), "under the Companion's own key"); assert.equal(p.run("LEGACY_KEY"), "mb-save-v8", "and the shared key of earlier builds keeps its name");
 });
 
 // ---- §1: the Station's requests, applied at the dock (T3 and T7, the Companion's half) ----
@@ -592,11 +597,11 @@ test("the active screen: a page gone goes to the page now at that index, or the 
 function sealed(rep, lines, bay = 1) {
   const said = [], faces = [], crates = [], dots = [], noop = () => {};
   const ctx = vm.createContext({ console, S: { report: Object.assign({ n: 4, lines }, rep), bay: Array.from({ length: bay }, (_, i) => ({ id: "c" + i })) }, NOW: 0, FX: { transAt: 0 }, BAY: 3, TIER_NAME: ["", "starter", "early", "mid"],
-    NUM_WORD: ["no", "one", "two", "three"], C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x, cutLine: (x, w) => x,
+    numWord, C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x, cutLine: (x, w) => x,
     text: (str, x, y, col, s) => said.push({ str: String(str), x, y, s: s || 2 }), ringFace: (x, y, sp, p) => faces.push({ x, y, sp, p }), crateIcon: (x, y) => crates.push({ x, y }), R: (x, y, w, h, c) => dots.push({ x, y, w, h, c }),
     bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" } });
   ctx.goalForms = () => "";
-  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "numWord", "sealedWords"];
+  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "sealedWords"];
   vm.runInContext(PAGE.match(/^const FIRST_TEXT = [^]*?\n\};/m)[0] + "\n" + names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
   return { said, faces, crates, at: s2 => said.find(q => q.str === s2), world: dots.filter(d => d.c === "orange" && d.w === 4) };
 }
@@ -653,8 +658,8 @@ test("End expedition after a break: 'Docking mends the Probe for free.'", () => 
   assert.ok(sealed({ reason: "break", dropped: 0, lost: [] }, []).at("Docking mends the Probe for free."));
 });
 test("Cargo's preview predicts End: what the hold seals; an empty hold seals nothing", () => {
-  const run = (cargo, bay = [], yld = 2, dField = 0) => vm.runInContext(["sealPreview", "sealedWords", "numWord", "holdEmpty", "exploredAny"].map(source).join("\n") + "\n;sealPreview()",
-    vm.createContext({ S: { exp: { cargo, entered: [0], stats: { hearts: 1 }, shield: 3, smax: 3, dField }, bay }, WORDS: { waits: "Nothing explored · the world waits" }, BAY: 3, CAP: 20, walkYield: () => yld, NUM_WORD: ["no", "one", "two", "three"] }));
+  const run = (cargo, bay = [], yld = 2, dField = 0) => vm.runInContext(["sealPreview", "sealedWords", "holdEmpty", "exploredAny"].map(source).join("\n") + "\n;sealPreview()",
+    vm.createContext({ S: { exp: { cargo, entered: [0], stats: { hearts: 1 }, shield: 3, smax: 3, dField }, bay }, WORDS: { waits: "Nothing explored · the world waits" }, BAY: 3, CAP: 20, walkYield: () => yld, numWord }));
   assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), [], "an empty hold seals nothing (Data comes only from readings and creature acts): no line");
   assert.equal(run({ e: 0, d: 0, s: 0, pods: [1, 2] })[0], "Seals two pods + supplies · crate 1 of 3", "pods only in the hold: pods and supplies");
   assert.equal(run({ e: 1, d: 2, s: 0, pods: [1] }, [{}])[0], "Seals one pod + supplies · crate 2 of 3");
@@ -803,9 +808,9 @@ test("X1 5: with no spName in the save (a Station save from before it), the name
 
 test("X1 6: every SPECIES lookup goes through spOf; the two plates are in the register and the plate table", () => {
   const script = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-  const hits = script.split("\n").filter(l => /SPECIES\[/.test(l));
-  assert.equal(hits.length, 1, "SPECIES[ appears once: " + hits.join("\n")); assert.match(hits[0], /^const spOf = sp => /);
-  assert.match(source("spOf"), /: SP_OTHER\);$/);
+  assert.deepEqual(script.split("\n").filter(l => /SPECIES\[/.test(l)), [], "the page never indexes SPECIES itself");
+  SPECIES.forEach((row, sp) => assert.equal(spOf(sp), row, "a known kind: " + sp));
+  for (const sp of [-1, SPECIES.length, 1.5, "0", null, undefined]) assert.equal(spOf(sp), SP_OTHER, "any other value is SP_OTHER: " + sp);
   const reg = vm.runInContext(PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m)[0] + "\n;CARE_ASSETS", vm.createContext({ PLAYTEST_ON: false }));
   const plate = vm.runInContext(PAGE.match(/^const PLATE = \{[^]*?\};/m)[0] + "\n;PLATE", vm.createContext({ PLAYTEST_ON: false }));
   for (const [id, w] of [["c-sprite-other-32", 32], ["c-mini-other-12", 12]]) {
