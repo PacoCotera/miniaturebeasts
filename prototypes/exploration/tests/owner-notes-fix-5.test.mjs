@@ -9,13 +9,12 @@ const SETUP = "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176)
 test("#83 a young mibi stays young while its two hours run, however many turns pass; it grows when they are over", () => {
   const p = makePage({ console: "silent", canvas: true });
   p.run(SETUP);
-  p.run("S.mibis = [{ id: 1, name: 'Dot', sp: 0, born: 0, grownTurn: null, growAt: Date.now() + GROW_UP_MS }]; S.turn = 40;");
+  p.run("S.mibis = [{ id: 1, name: 'Dot', sp: 0, born: 0, grownTurn: null, growAt: Date.now() + 2 * 3600 * 1000 }]; S.turn = 40;");   // the Station sets growAt two hours after the hatch (station/src/state.mjs)
   assert.equal(p.run("mibiStage(S.mibis[0])"), "juvenile", "40 empty turns do not grow it");
   assert.equal(p.run("grownNow(S.mibis[0])"), false);
   p.run("S.mibis[0].growAt = Date.now() - 1;");
   assert.equal(p.run("mibiStage(S.mibis[0])"), "adult", "two real hours after the hatch it is grown");
   assert.equal(p.run("grownNow(S.mibis[0])"), true, "and the walk's end plays the grow-up moment");
-  assert.equal(p.run("GROW_UP_MS"), 2 * 3600 * 1000);
 });
 
 test("#83 a mibi with no hatch clock keeps the turn rule", () => {
