@@ -194,7 +194,7 @@ test("a side open on part of its length is crossable there and refused at its cl
   assert.ok(land && typeof land.x === "number", "the open part has a landing");
   p.run(`patchStep('${found.dir}', 'creep')`);
   assert.equal(p.run("S.exp.pos"), found.n, "across the open part the step crosses");
-  assert.deepEqual(p.run("({ x: S.exp.patch.x, y: S.exp.patch.y })"), land, "and the pawn lands on the far tile");
+  assert.deepEqual(p.run("[S.exp.patch.x, S.exp.patch.y]").join(), [land.x, land.y].join(), "and the pawn lands on the far tile");
 });
 
 // Bug #14 (the heart slab with no art blocked and said nothing) is fixed at the cause: an undrawn piece is not placed (undrawn-pieces-dont-block.test.mjs).

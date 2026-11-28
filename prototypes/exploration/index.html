@@ -344,9 +344,11 @@ const abTextOf = sp => spOf(sp).abText ?? CARE_TEXT.abOther;
 const abCardOf = (sp, short) => { const s = spOf(sp); return (short ? s.abCardShort : null) ?? s.abCard ?? abTextOf(sp); };
 
 // ===================== 3. World generation =====================
+import { sideReady, sideOf, landingOf } from "./src/logic/tile-sides.mjs";
+import { podSite, shedCell, shedKnown, shedOf } from "./src/logic/pod-sites.mjs";
+// Test hooks only. calm: expeditions start without a storm, for measuring calm Energy; at: the reveal's clock held at this many ms (null: the real one), so its frames can be still pictures; clock: the page's clock held the same way.
 const TEST = { calm: false, at: null, clock: null,
-  paint: (x, y) => { resetCanvas(); g.fillStyle = '#ff00ff'; g.fillRect(x, y, 4, 4); },   // test hook only: a magenta mark on a clean canvas, which the next whole frame must paint over
-   // test hook only: start expeditions without a storm, for measuring calm Energy; at: the reveal's clock held at this many ms (null: the real one), so its frames can be still pictures
+  paint: (x, y) => { resetCanvas(); g.fillStyle = '#ff00ff'; g.fillRect(x, y, 4, 4); },   // a magenta mark on a clean canvas, which the next whole frame must paint over
   // test hook only: the place is walked: its veil is lifted everywhere and it counts as explored (what walking most of it does)
   exploreHere() { const P = S.exp.patch, lay = layout(P.key); S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); checkWalked(); return walkedCell(lay.cell); } };
 let G = null;     // static world generated from the seed (never saved)
@@ -354,69 +356,55 @@ let S = null;     // everything that changes (saved)
 
 // The world with its overlays: soft ground (wades, scree) and earth banks, pure functions of the world and its seed, attached here and never by genWorld (the goldens stay).
 function worldOf(seed, gen, biome, slot) { const g = gen === 7 ? genWorld7(seed, slot || [2, 2]) : genWorld(seed, gen, biome); g.soft = softGround(g, seed); g.banks = bankEdges(g, seed); return g; }
-// What the partner can cross (the partner only: a rider has no ability). Tuliko: mud and scree, and a ring more reach; Rupar: earth banks, dug at the first crossing of a walk.
 // A generator 7 region is the realm's land at its slot, so it is made from the realm's seed (region 1's), not the region's own.
 const worldOfRegion = R => worldOf(R.gen === 7 ? S.regions[0].seed : R.seed, R.gen, R.biome, R.slot);
+// What the partner can cross (the partner only: a rider has no ability). Tuliko: mud and scree, and a ring more reach; Rupar: earth banks, dug at the first crossing of a walk.
 function abIs(ab) { const pt = S && S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab === ab; }
 function canSure() { return abIs('sure'); }
 function canBank() { return abIs('bank'); }
 const abOpts = () => ({ sure: canSure(), bank: canBank() ? 'all' : undefined });
 function passable(c) { return passableIn(G, c); }
 function canStep(a, dir) { const ts = tileSide(a, dir); return ts ? ts.open : canStepIn(G, a, dir, abOpts()); }   // a step from cell a toward dir: the target has land and the edge between is open or a stair (or, for the partner that can, scree, an earth bank, a wade); between two land cells the tiles decide (tileSide)
-// Land shape B1: a side between two land cells (summary open or a plain cliff; a stair, scree, a bank or a wade keep their own rules) is OPEN where its tiles hold a run of 2+ walkable pairs on the
-// same level, CLOSED otherwise. Worked out from both cells' layouts when asked, kept per world (G.tileSides), the same from either cell. `mask`: one byte a tile along the side (west to east, or north to south), 1 where open.
-function tileSideApplies(a, dir, scree) {   // scree: a step from a tile that is not one of the two scree crossing tiles: the tiles decide that edge too (#159); a bank edge keeps its own rule
+// A side between two land cells (summary open or a plain cliff; scree, a bank or a wade keep their own rules) is decided by its tiles (src/logic/tile-sides.mjs): worked out from both cells' layouts
+// when asked, kept per world (G.tileSides), the same from either cell.
+function tileSideApplies(a, dir, scree) {   // scree: a step from a tile that is not one of the two scree crossing tiles: the tiles decide that edge too; a bank edge keeps its own rule
   if (G.gen !== 7 || !S.exp || !PL.ready) return false;
   const n = stepCell(a, dir); if (n < 0) return false;
-  const k = edgeKind(a, dir); if (k === EDGE.CLIFF && softEdge(edgeIndex(a, dir)) && !(scree && softKind(a, dir) === 'scree')) return false;   // a stair edge is tile-decided too: a generator 7 place lists no stairs of its own (adapt7 stairs: []), so the old stair-only crossing refused the whole side over open grass (bugs #95, #96)
+  const k = edgeKind(a, dir); if (k === EDGE.CLIFF && softEdge(edgeIndex(a, dir)) && !(scree && softKind(a, dir) === 'scree')) return false;   // a stair edge is tile-decided too: a generator 7 place lists no stairs of its own (adapt7 stairs: []), and a stair-only crossing would refuse the whole side over open grass
   return passable(a) && passable(n) && !G.island[a] && !G.island[n] && G.land[a] !== L.WATER && G.land[n] !== L.WATER;
 }
-// A change of level between two tiles across a border stops a step only where a cliff is drawn on both sides (a cliff drawn on one side only is not seen from the other, so it is a slope); with none drawn it is a slope and walks (design 2026-11-18, bugs #45 #67).
-const levelBlocks = (la, ax, ay, lb, bx, by) => !!la.raisedFn(ax, ay) !== !!lb.raisedFn(bx, by) && !!((la.cliffShown && la.cliffShown(ax, ay)) && (lb.cliffShown && lb.cliffShown(bx, by)));
-const tileSideKey = (a, n) => Math.min(a, n) * 4096 + Math.max(a, n);
 function tileSide(a, dir) {
   if (!tileSideApplies(a, dir)) return null;
-  const n = stepCell(a, dir), key = tileSideKey(a, n), known = G.tileSides && G.tileSides.get(key); if (known) return known;
+  const n = stepCell(a, dir), lo = Math.min(a, n), hi = Math.max(a, n), sides = G.tileSides || (G.tileSides = new Map()), known = sides.get(lo * 4096 + hi); if (known) return known;
   if (!placeHave(String(a)) || !placeHave(String(n))) return null;   // a place the worker still owes: not known yet (never baked on the page: a cold decor is seconds of one task); asked again when it has come (PLACES.epoch)
-  const lo = Math.min(a, n), hi = Math.max(a, n), la = layout(String(lo)), lb = layout(String(hi)); if (!la.tiles || !lb.tiles || !la.raisedFn || !lb.raisedFn) return null;
-  const east = hi - lo === 1, len = east ? la.h : la.w, mask = new Uint8Array(len), ok = new Uint8Array(len);
-  for (let k = 0; k < len; k++) {
-    const ax = east ? la.w - 1 : k, ay = east ? k : la.h - 1, bx = east ? 0 : k, by = east ? k : 0;
-    ok[k] = !T_BLOCK[la.tiles[ay * la.w + ax]] && !T_BLOCK[lb.tiles[by * lb.w + bx]] && !levelBlocks(la, ax, ay, lb, bx, by) ? 1 : 0; }
-  for (let k = 0, s = 0; k <= len; k++) { if (k < len && ok[k]) continue; if (k - s >= 2) for (let j = s; j < k; j++) mask[j] = 1; s = k + 1; }
-  const st = { open: mask.some(v => v), mask, len, east };
-  (G.tileSides || (G.tileSides = new Map())).set(key, st); return st;
+  const la = layout(String(lo)), lb = layout(String(hi)); if (!sideReady(la, lb)) return null;
+  const st = sideOf(la, lb, hi - lo === 1); sides.set(lo * 4096 + hi, st); return st;
 }
-// A step out of a place over a side the tiles decide: the tile you stand on and the tile beyond (the same row or column, continued) both walk on the same level. Returns the landing tile or null.
+// A step out of a place over a side the tiles decide: the landing tile, null where the tile you stand on and the tile beyond do not walk on the same level, undefined where the tiles do not decide this side (or the place beyond is not here yet).
 function crossLanding(dir, scree) {
   const ex = S.exp, P = ex.patch, c = stepCell(ex.pos, dir); if (c < 0 || !tileSideApplies(ex.pos, dir, scree)) return undefined;
   if (!placeHave(String(c))) return undefined;   // the place beyond is still owed by the worker: crossEdge waits for it, then asks again
-  const la = layout(P.key), lb = layout(String(c)); if (!la.tiles || !lb.tiles || !la.raisedFn || !lb.raisedFn) return undefined;
-  const x = dir === 'right' ? 0 : dir === 'left' ? lb.w - 1 : P.x, y = dir === 'down' ? 0 : dir === 'up' ? lb.h - 1 : P.y;
-  if (T_BLOCK[la.tiles[P.y * la.w + P.x]] || T_BLOCK[lb.tiles[y * lb.w + x]] || levelBlocks(la, P.x, P.y, lb, x, y)) return null;
-  return { x, y };
+  const la = layout(P.key), lb = layout(String(c)); if (!sideReady(la, lb)) return undefined;
+  return landingOf(la, lb, dir, P.x, P.y);
 }
 function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
-
 
 // The world's creatures and buried pods: src/world.mjs, by the world's generator (the herd floor is generator 3's).
 const hereRegion = () => S.regions.find(r => r.id === S.here);   // the region mounted on S
 const hereKinds = (R = hereRegion()) => regionKinds(R, biomeVersion(S));   // its kinds: the home region's three starters, any other region's land by the realm's kind version (src/regions.mjs)
-function genLife(seed, region) { return genLifeIn(G, seed, G.gen >= 5 ? hereKinds(region ?? hereRegion()) : ROSTER); }
-// The first expedition of a new world finds two buried pods in tier 1 reach of the start glint (design/world-and-exploration.md,
-// Pods, "The first expedition finds pods"): pod A, a Loika's, at distance 1 unless a buried Loika pod is already there; pod B,
-// a Tuikis's, at the reach's edge while the reach holds fewer than 2. Pure: reads G, never S, and never mutates `pods`;
-// its own seed, so genLife's seven world pods stay where they are. startExpedition adds them on the first placement only.
-function podSite(c, buried) { return !G.spawns.includes(c) && c !== G.gate && c !== G.deep && c !== G.swim && !G.island[c] && G.land[c] !== L.WATER && G.comp[c] === 1 && passable(c) && !buried.some(p => p.k === String(c)); }
-// W5: the end of anonymous pods (walk-design-1 W5; plan v6 S3). A pod has a known parent: the world's buried ground pods, the first expedition's two and the night's arrivals are not made; a pod now comes from a wild
-// one's own young, a returned mibi's line, or the land's slab and deep finds. ANON_PODS = true brings the old buried pods back (the tests that still exercise the old route).
-let ANON_PODS = false;   // a let so the tests of the old route can set it (makePage anonPods)
+function genLife(seed, region) { return genLifeIn(G, seed, G.gen >= 5 ? hereKinds(region) : ROSTER); }
+// A pod has a known parent: it comes from a wild one's own young, a returned mibi's line, or the land's slab and deep finds. The world's buried ground pods, the first expedition's two and
+// the night's arrivals are not made. ANON_PODS = true brings that old route back, for the tests that still exercise it (the harness's anonPods).
+let ANON_PODS = false;
 const noAnon = pods => ANON_PODS ? pods : pods.filter(p => p.how !== 'ground');
+// The old route's first expedition: two buried pods in tier 1 reach of the start glint (design/world-and-exploration.md, Pods, "The first expedition finds pods"): pod A, a Loika's, at distance 1
+// unless a buried Loika pod is already there; pod B, a Tuikis's, at the reach's edge while the reach holds fewer than 2. Reads G, never S, and never changes `pods`; its own seed, so genLife's
+// seven world pods stay where they are. startExpedition adds them on the first placement only.
 function firstPods(seed, cell, pods) {
   if (!ANON_PODS) return [];
   const R =makeRng(hash(seed, 'firstPods', cell)), s0 = cxy(cell), reach = reachCells(cell, TIER[1].range).sort((a, b) => a - b), out = [];
   const buried = () => [...pods, ...out].filter(p => p.h === 1 && p.bur === 1), dist = c => cheb(cxy(c), s0);
-  const ok = c => podSite(c, buried());
+  const ok = c => podSite(G, c, buried());
   // a first pod lies in a place that holds a pod slot (the find mix gives most places one, not every place): a few picks are tried, one place's layout each
   const hasSlot = c => { if (firstPods.need && !placeHave(String(c))) throw { needCell: c }; return !(PL.ready && G.gen === 7) || (layout(String(c)).podSlots || []).length > 0; };   // need: the set-out asks for exactly the places this reads (startExpedition), never baking one on the page
   const pick = (pools, id, sp) => { let pool = pools.find(a => a.length); for (let n = 0; pool && n < 6; n++) { const c = R.pick(pool); if (!hasSlot(c) && pool.length > 1) { pool = pool.filter(q => q !== c); continue; } out.push({ id, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); break; } };
@@ -431,21 +419,8 @@ function firstPods(seed, cell, pods) {
   return out;
 }
 
-// The shed pod of a returned mibi's line: the nearest cell to the start within reach (Chebyshev, ties by lower index)
-// whose ground is the record's, else the nearest cell that passes firstPods' ok. Pure: reads G, never S. null when no cell is fit.
-function shedCell(cell, range, pods, g) {
-  const s0 = cxy(cell), buried = pods.filter(p => p.h === 1 && p.bur === 1), fit = reachCells(cell, range).sort((a, b) => a - b).filter(c => podSite(c, buried)), d = c => cheb(cxy(c), s0);
-  const near = list => list.reduce((b, c) => (b == null || d(c) < d(b) ? c : b), null);
-  const own = near(fit.filter(c => groundName(G.land[c], false) === g));
-  return own != null ? own : near(fit);
-}
-// A shed pod is due once its record says so and its turn has come; it is known once any pod of the Companion carries its id.
-function shedKnown(id) {
-  const has = a => (a || []).some(p => p.shed === id);
-  return has(S.pods) || has(S.hold && S.hold.pods) || S.bay.some(c => has(c.pods)) || has(S.exp && S.exp.cargo && S.exp.cargo.pods);
-}
-const shedOf = p => p.shed != null ? { shed: p.shed, of: p.of, genome: p.genome } : p.own != null ? { own: p.own, of: p.of } : {};   // a shed pod keeps its line, a wild one's own pod its mother, wherever it is copied
-function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state === 'due' && S.turn >= r.due && !shedKnown(r.id)); }
+// A line's shed pod is due once its record says so, its turn has come and no pod of the Companion carries it yet (src/logic/pod-sites.mjs).
+function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state === 'due' && S.turn >= r.due && !shedKnown(S, r.id)); }
 
 // ===================== 4. Patch layouts =====================
 import { STONE_FILES, STONE_DIM, PROP_DY, PROP_FILES, LM_PIECE, PROP_SIZE, WALK_TEX, WALK_CS, WALK_FILES } from "./src/data/walk-art.mjs";
@@ -2156,7 +2131,7 @@ function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: 
   const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
   if (!dry && firstPlacement()) S.pods.push(...(firstPodList || firstPods(S.seed, cell, S.pods)));   // a new world's first expedition: two pods in reach (X2)
   const sr = dry ? null : shedsDue()[0];   // one shed pod an expedition; the rest wait for the next
-  if (sr) { const c = shedCell(cell, tier.range, S.pods, sr.g);
+  if (sr) { const c = shedCell(G, cell, tier.range, S.pods, sr.g, abOpts());
     if (c != null) S.pods.push({ id: 's' + sr.id, k: String(c), x: -1, y: -1, sp: sr.sp, h: 0, bur: 0, g: sr.g, how: 'shed', shed: sr.id, of: sr.name, genome: sr.genome }); }
   if (S.report) S.report.news = null;   // the opening's pips on last turn's cells end with the set-out
   const stormOn = type === 'weather' || R.chance(.3);
