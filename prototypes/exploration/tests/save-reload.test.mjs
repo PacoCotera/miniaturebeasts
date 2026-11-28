@@ -43,3 +43,18 @@ test("load() logs the cause when it cannot read a save, and still gives a screen
   assert.ok(b.errors.length >= 1, "the cause was logged (console.error), not swallowed");
   assert.doesNotThrow(() => b.run("render(0)"), "a working screen: Start a new world is offered");
 });
+
+test("a kept Companion that cannot be read: the page starts as a new one, says why, and leaves the bytes as they are", () => {
+  const BYTES = "{not an identity";
+  const p = page({ "mb-companion-A": BYTES });
+  assert.match(p.run("COMPANION.id"), /^c[0-9a-z]{12}$/, "a new Companion for this page load");
+  assert.equal(p.run("SAVE_KEY"), "mb-save-v8@" + p.run("COMPANION.id"), "and its own save key");
+  assert.ok(p.errors.some(e => /kept Companion could not be read/.test(e)), "the read said why: " + p.errors.join(" | "));
+  p.run("newWorld(7)");
+  assert.ok(p.store[p.run("SAVE_KEY")], "the game plays and saves");
+  assert.equal(p.store["mb-companion-A"], BYTES, "the bytes are never written over");
+  assert.ok(p.errors.some(e => /Companion could not be kept/.test(e)), "the first write said it was not kept");
+  const fresh = page({});
+  assert.deepEqual(fresh.errors, [], "control: a first boot logs nothing");
+  assert.deepEqual(JSON.parse(fresh.store["mb-companion-A"]), JSON.parse(JSON.stringify(fresh.run("COMPANION"))), "and keeps its new identity with its first write");
+});
