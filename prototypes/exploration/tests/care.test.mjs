@@ -1084,14 +1084,14 @@ test("species art: every pose draws a kind's idle, the cards show it at whole pi
 });
 
 test("juvenile pictures: with no juvenile entry a juvenile shows exactly the adult's picture, at every size", () => {
-  const p = X1.page();
-  for (const sp of [0, 7]) for (const k of Object.keys(plain(p.run(`JUVENILE_ART[${sp}]`)))) p.run(`delete JUVENILE_ART[${sp}].${k}`);   // as if unsigned
-  for (const sp of [0, 7]) {
+  const p = X1.page(), signed = [0, 7].map(sp => [sp, plain(p.run(`JUVENILE_ART[${sp}]`))]);
+  for (const [sp, e] of signed) for (const k of Object.keys(e)) p.run(`delete JUVENILE_ART[${sp}].${k}`);   // as if unsigned
+  try { for (const sp of [0, 7]) {
     for (const pose of ["idle", "alert", "flee", "huddle", "shake", "eat", "approach", "glow", "nest"]) for (const fr of [0, 1]) assert.equal(px(p, `tokenOf(${sp}, '${pose}', ${fr}, true)`), px(p, `tokenOf(${sp}, '${pose}', ${fr})`), sp + " " + pose + " " + fr);
     assert.equal(px(p, `ICON.mini(${sp}, true)`), px(p, `ICON.mini(${sp})`));
     assert.equal(px(p, `creatureArt(${sp}, 'idle', 0, 2, true)`), px(p, `creatureArt(${sp}, 'idle', 0, 2)`), "2x");
     assert.equal(px(p, `bigArt(${sp}, 'idle', 0, true)`), px(p, `bigArt(${sp}, 'idle', 0)`), "8x");
-  }
+  } } finally { for (const [sp, e] of signed) p.run(`Object.assign(JUVENILE_ART[${sp}], ${JSON.stringify(e)})`); }   // the table is one module (src/data/tokens.mjs) for every page of the run: the signed entries go back
   const q = X1.page();   // the real table: every kind's juvenile differs from its adult, in the idle and the mini
   for (let sp = 0; sp < 20; sp++) { assert.notEqual(px(q, `tokenOf(${sp}, 'idle', 0, true)`), px(q, `tokenOf(${sp}, 'idle', 0)`), sp + " idle"); assert.notEqual(px(q, `ICON.mini(${sp}, true)`), px(q, `ICON.mini(${sp})`), sp + " mini"); }
 });
