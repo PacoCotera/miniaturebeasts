@@ -52,7 +52,7 @@ for (const seed of [7, 13, 42]) {
   const stand = (p, pick, d) => p.run(`(() => { const lay = curLay(), P = S.exp.patch, c = curLive().cr.find(q => q.id === ${pick.id});
     for (const dir of ['up', 'down', 'left', 'right']) { const [fx, fy] = DIRS[dir], x = c.x - fx * ${d}, y = c.y - fy * ${d}; let ok = x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1;
       for (let k = 0; ok && k <= ${d}; k++) { const tx = c.x - fx * k, ty = c.y - fy * k; if (!lay.reach[ty * lay.w + tx] || T_BLOCK[lay.tiles[ty * lay.w + tx]]) ok = false; }
-      if (ok) { P.x = x; P.y = y; P.dir = dir; unveil(P.key, P.x, P.y, 12); return true; } } return false; })()`);
+      if (ok) { P.x = x; P.y = y; P.dir = dir; lightningLift(P.key, P.x, P.y, 12); return true; } } return false; })()`);
   const start = p => { p.run(`newWorld(${seed}); TEST.calm = true; startExpedition('weather', G.spawns[0]);`); const pick = JSON.parse(p.run(find)); assert.ok(pick, "a Loika in a mounted place"); return pick; };
 
   test("seed " + seed + ": by night a sleeper's first heard step stirs her, the second wakes her, the third sends her from that bed to her dawn haunt, and the next morning she is there", () => {
@@ -108,7 +108,7 @@ for (const seed of [7, 13, 42]) {
   test("seed " + seed + ": her bed goes on her page from any sighting of her in it, from far", () => {
     const p = page(), pick = start(p); setup(p, pick, duskAt);
     const out = JSON.parse(p.run(`(() => { const c = curLive().cr.find(q => q.id === ${pick.id}), P = S.exp.patch, lay = curLay(); S.pages = {};
-      P.x = Math.min(lay.w - 2, Math.max(1, c.x + (c.x > lay.w / 2 ? -6 : 6))); P.y = c.y; unveil(P.key, P.x, P.y, 12); const far = Math.max(Math.abs(P.x - c.x), Math.abs(P.y - c.y)), seen = inSight(c.x, c.y);
+      P.x = Math.min(lay.w - 2, Math.max(1, c.x + (c.x > lay.w / 2 ? -6 : 6))); P.y = c.y; lightningLift(P.key, P.x, P.y, 12); const far = Math.max(Math.abs(P.x - c.x), Math.abs(P.y - c.y)), seen = inSight(c.x, c.y);
       advance('patch', { noise: 'act' }); const pg = (S.pages || {})[c.id] || {}; return JSON.stringify({ far, seen, bed: pg.bed || null, hs: c.ind.hs.bed }); })()`));
     if (!out.seen || out.far <= 5) return;   // this place gives no far sight of her bed
     assert.ok(out.bed && out.bed.x === out.hs.x && out.bed.y === out.hs.y, "her bed is on her page after a far sighting: " + JSON.stringify(out));

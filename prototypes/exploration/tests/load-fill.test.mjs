@@ -48,7 +48,7 @@ test("a save missing several fields gains exactly the new world's values for the
   const S = plain(p.run("S")), nw = plain(p.run("worldFields(7, 2)"));
   for (const k of gone) assert.deepEqual(S[k], nw[k], k + " is the new world's");
   for (const k of Object.keys(kept)) if (!gone.includes(k)) assert.deepEqual(S[k], kept[k], k + " is kept as saved");
-  assert.equal(S.revealed.length, p.run("MW * MH")); assert.ok(S.revealed.every(v => v === 0) && S.visited.every(v => v === 0));
+  assert.equal(S.seen.rev.length, p.run("MW * MH")); assert.ok(S.seen.rev.every(v => v === 0) && S.seen.been.every(v => v === 0));
   assert.doesNotThrow(() => p.run("drawSetup(0)"));
 });
 

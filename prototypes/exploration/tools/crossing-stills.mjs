@@ -48,7 +48,7 @@ const picks = await page.evaluate(() => { const m = window.__mb, out = [], used 
     used.add(c); used.add(n); out.push({ c, n, dir, k, wall, mask: Array.from(ts.mask).join("") }); break; }
   return out; });
 console.log(JSON.stringify(picks));
-const lift = () => page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; if (P) { const lay = m.layout(P.key); m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff); m.walkLift(); } if (m.RT.view) m.endView(); });
+const lift = () => page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; if (P) { const lay = m.layout(P.key); m.S.seen.tile[P.key] = new Array(lay.h).fill(0x0fffffff); m.walkSeen(); } if (m.RT.view) m.endView(); });
 let i = 0;
 for (const b of picks) {
   i++;
@@ -64,7 +64,7 @@ for (const b of picks) {
     await lift(); await settle(600); await quiet(); await page.evaluate((b) => window.__mb.patchStep(b.dir, "creep"), b); await settle(500); await clear(); await save("b1-3-cliff-stretch-refuses.png");
     console.log("refused, pos", await page.evaluate(() => window.__mb.S.exp.pos));
     // the map: the pawn's cell and its neighbour seen, the cliff mark with its gap
-    await page.evaluate((b) => { const m = window.__mb; if (m.S.exp.patch) m.leavePatch(); m.S.exp.pos = b.c; m.S.revealed[b.c] = 1; m.S.revealed[b.n] = 1; }, b);
+    await page.evaluate((b) => { const m = window.__mb; if (m.S.exp.patch) m.leavePatch(); m.S.exp.pos = b.c; m.S.seen.rev[b.c] = 1; m.S.seen.rev[b.n] = 1; }, b);
     await settle(900); await save("b1-4-map-gap-in-the-cliff-mark.png");
   }
 }

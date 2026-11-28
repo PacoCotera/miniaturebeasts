@@ -165,7 +165,7 @@ test("a Tuikis is needed on every visit: dug this walk it is open for the walk o
   p.run(`{ ensureLive(${JSON.stringify(key)}); const g = layout(${JSON.stringify(key)}).feats.find(f => f.kind === 'g'); S.exp.patch = { key: ${JSON.stringify(key)}, x: g.x, y: g.y + 1, dir: 'up', noise: 'creep' }; dig(); }`);
   assert.ok(!J(p, "!!S.opened[G.gate]")); assert.equal(J(p, "S.exp.burrowDug"), 1); assert.ok(J(p, "burrowOpen()"));
   assert.ok(J(p, "S.log").some(l => /dug the burrow out wide enough/.test(JSON.stringify(l))));
-  const lo = walk(7, 0, { tier: 2 }); lo.run(`{ const k = String(G.gate); ensureLive(k); const g = layout(k).feats.find(f => f.kind === 'g'); S.exp.patch = { key: k, x: g.x, y: g.y + 1, dir: 'up', noise: 'creep' }; unveil(k, g.x, g.y, 2); }`);
+  const lo = walk(7, 0, { tier: 2 }); lo.run(`{ const k = String(G.gate); ensureLive(k); const g = layout(k).feats.find(f => f.kind === 'g'); S.exp.patch = { key: k, x: g.x, y: g.y + 1, dir: 'up', noise: 'creep' }; lightningLift(k, g.x, g.y, 2); }`);
   assert.ok(!J(lo, "burrowOpen()")); assert.equal(J(lo, "patchAction().label"), "Too narrow");
   lo.run("S.opened[G.gate] = 1"); assert.ok(J(lo, "burrowOpen()")); assert.equal(J(lo, "patchAction().label"), "Go down the burrow");
 });
@@ -227,7 +227,7 @@ test("a walk that dug a bank but explored nothing still turns the world and says
 test("a generator 7 earth bank blocks; a grown Rupar digs it and the two columns walk up; a Loika is refused; the dug bank stays dug for the walk", () => {
   const g7 = sp => { const p = makePage({ gen: 7, console: "silent" });
     p.run(`newWorld(78); TEST.calm = true; S.turn = 5; S.tier = 2; S.known = [0, 1, 2]; S.mibis = [${JSON.stringify(mibi(1, sp))}]; S.carried = [1]; S.lead = 1; startExpedition('weather', G.spawns[0]); S.exp.start = 55; S.exp.pos = 55; S.exp.range = 4; enterPatch();`);
-    p.run("{ const P = S.exp.patch, lay = curLay(); ensureLive(P.key); P.x = 19; P.y = 24; P.dir = 'up'; for (let y = 0; y < lay.h; y++) unveil(P.key, 19, y, 3); }"); return p; };
+    p.run("{ const P = S.exp.patch, lay = curLay(); ensureLive(P.key); P.x = 19; P.y = 24; P.dir = 'up'; for (let y = 0; y < lay.h; y++) lightningLift(P.key, 19, y, 3); }"); return p; };
   const p = g7(7), bank = J(p, "curLay().banks");
   assert.equal(bank.length, 1, "the cell holds the bank"); assert.deepEqual([bank[0].x, bank[0].y, bank[0].w, bank[0].h], [19, 20, 2, 4]);
   assert.ok(J(p, "T_BLOCK[curLay().tiles[22 * curLay().w + 19]]"), "the face is rock");
@@ -245,7 +245,7 @@ test("Tuliko's ring is drawn on the reach view; the message box keeps off the so
   assert.ok(J(tul, "canSure()") && J(tul, "S.exp.range") === 3);
   { const goldOf = (sp) => { const q = makePage({ canvas: true });   // the ring's gold dots on the reach view the player walks on: more gold with Tuliko than with a Loika
       q.run(`newWorld(7); TEST.calm = true; S.turn = 5; S.tier = 1; S.known = [0, 1, 2]; S.mibis = [${JSON.stringify(mibi(1, sp))}]; S.carried = [1]; S.lead = 1; startExpedition('weather', G.spawns[0])`);
-      q.run("for (let c = 0; c < MW * MH; c++) S.revealed[c] = 1; S.phase = 'map'; S.ui.mapFull = false; RT.key = null; render(0)");
+      q.run("for (let c = 0; c < MW * MH; c++) S.seen.rev[c] = 1; S.phase = 'map'; S.ui.mapFull = false; RT.key = null; render(0)");
       return q.run("(() => { let n = 0; for (const v of scr.px()) if (v === C.gold) n++; return n; })()"); };
     assert.ok(goldOf(19) > goldOf(0) + 100, "the ring's gold dots are drawn on the reach view"); }
   const p = walk(7, 19, { tier: 2 }), at = inPlace(p, "SCREE");

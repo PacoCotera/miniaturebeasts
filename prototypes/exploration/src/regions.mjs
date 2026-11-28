@@ -1,17 +1,18 @@
 // Regions: a realm is many maps. A region is today's world (16 x 20 cells) with its own seed, generator and biome; the realm keeps
 // everything else. Pure functions on plain objects, no page, no storage but an adapter.
-// The page keeps reading S.seed, S.revealed, S.pods and the rest; the region in use is
+// The page keeps reading S.seed, S.seen, S.pods and the rest; the region in use is
 // mounted onto S, and unmounted before anything is written.
 //   save v10 on disk: { v: 10, seed (= regions[0].seed), began, here, regions: [Region …], resetFrom?, …the realm's fields… }
 //   Region = { id, n, kind: "home", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
 //              closes, closed, exploredN, seenN, map: { …MAP_KEYS… } }
 import { MW, MH, GENS, hash, ROSTER, FAMILY_GROUND } from "./world.mjs";
 import { LANGUAGE, kindLands } from "../../species/framework/language.mjs";
+import { newSeen, isRecord, seenFromOld } from "./logic/seen.mjs";
 
 export const REALM_SAVE_V = 10;
 // the fields of a region's own map state: on S while the region is mounted, in regions[i].map when it is not.
 // lastPos lives in S.ui.lastPos on the page (the last start flag of the inset) and moves with the region.
-export const MAP_KEYS = ["revealed", "visited", "called", "signs", "pins", "cells", "pods", "cr", "veil", "svy", "svyF", "opened", "skulls", "lastStorm", "lastEntered", "lastTrail", "lastPos"];
+export const MAP_KEYS = ["seen", "signs", "pins", "cells", "pods", "cr", "svy", "svyF", "opened", "skulls", "lastStorm", "lastEntered", "lastTrail", "lastPos"];
 export const BIOMES_V1 = ["mixed", "woods", "fells", "marsh"];   // the kinds a realm of version 1 draws from
 export const BIOMES = [...BIOMES_V1, "downs", "thickets", "tallwood", "tarns", "meres"];
 export const BIOME_NAME = { mixed: "Meadows", woods: "Woods", fells: "Cliffs", marsh: "Marsh", downs: "Hills", thickets: "Thickets", tallwood: "Tallwood", tarns: "Highpools", meres: "Lakes" };   // the player's words (the copywriter owns them)
@@ -57,11 +58,11 @@ export const regionSeed = (seed1, n) => n === 1 ? seed1 : hash(seed1, "region", 
 // A new region's map, as a new world starts it (the page's worldFields, map part). Fields the page creates only when needed
 // (svyF, skulls, lastEntered, lastTrail, lastPos) are absent until then.
 export function blankMap() {
-  return { revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), called: {}, signs: {}, pins: [], cells: {}, pods: [], cr: [], veil: {}, opened: {}, lastStorm: null };
+  return { seen: newSeen(MW * MH), signs: {}, pins: [], cells: {}, pods: [], cr: [], opened: {}, lastStorm: null };
 }
 // the counts the atlas and the opening rule read: "explored" is visited and called (the page's explored(c)); "seen" is revealed
-export function exploredCount(map) { let n = 0; for (let c = 0; c < MW * MH; c++) if (map.visited && map.visited[c] && map.called && map.called[c]) n++; return n; }
-export function seenCount(map) { let n = 0; for (let c = 0; c < MW * MH; c++) if (map.revealed && map.revealed[c]) n++; return n; }
+export function exploredCount(map) { let n = 0; const sn = map.seen; if (!sn) return 0; for (let c = 0; c < MW * MH; c++) if (sn.been[c] && sn.walked[c]) n++; return n; }
+export function seenCount(map) { let n = 0; const sn = map.seen; if (!sn) return 0; for (let c = 0; c < MW * MH; c++) if (sn.rev[c]) n++; return n; }
 
 export function regionRecord(o) {
   const n = o.n, kind = o.kind || "home";
@@ -148,7 +149,7 @@ export function freeSlots(regions) {
   }
   return [...out.values()].sort((a, b) => a[1] - b[1] || a[0] - b[0]);
 }
-const isMounted = S => Array.isArray(S.visited);
+const isMounted = S => isRecord(S.seen);
 // Explored cells of one region: live for the region that is mounted, cached (at its last unmount) for the others.
 const exploredOf = (S, r) => r.id === S.here && isMounted(S) ? exploredCount(S) : r.exploredN;
 // The rule: a realm with n home regions can open the next when 140 x n cells are explored across them, up to 25 regions.
@@ -172,9 +173,20 @@ export function regionName(region, realm) {
 
 // ---- mount and unmount ----
 export const regionById = (S, id) => { const r = S.regions.find(x => x.id === id); if (!r) throw new Error("no region " + id); return r; };
+// An old save keeps what he had seen in revealed, visited, called, veil (and S.veilPre beside them): read once into the seen record (src/logic/seen.mjs seenFromOld), the old fields dropped.
+// holder: a region's map or a flat save; pre: the object that may hold veilPre (S, for the region in use).
+const OLD_SEEN_KEYS = ["revealed", "visited", "called", "veil"];
+function foldOldSeen(holder, pre) {
+  if (isRecord(holder.seen)) { for (const k of OLD_SEEN_KEYS) delete holder[k]; return; }
+  if (!OLD_SEEN_KEYS.some(k => Object.hasOwn(holder, k))) return;
+  holder.seen = seenFromOld({ ...holder, veilPre: pre && pre.veilPre }, MW * MH);
+  for (const k of OLD_SEEN_KEYS) delete holder[k];
+  if (pre) delete pre.veilPre;
+}
 // Puts the region on S: its map fields, its seed and generator, its last start. A key the region lacks is removed from S.
 export function mount(S, id) {
   const R = regionById(S, id);
+  foldOldSeen(R.map, id === S.here ? S : null);
   for (const k of MAP_KEYS) { if (k === "lastPos") continue; if (Object.hasOwn(R.map, k)) S[k] = R.map[k]; else delete S[k]; }
   S.seed = R.seed; S.gen = R.gen; S.here = id;
   if (S.ui && typeof S.ui === "object") { if (Object.hasOwn(R.map, "lastPos")) S.ui.lastPos = R.map.lastPos; else delete S.ui.lastPos; }
@@ -215,6 +227,7 @@ function beganOf(s, now) {
 export function migrate8(v8, { now = Date.now() } = {}) {
   if (!v8 || typeof v8 !== "object" || v8.v !== 8) throw new Error("migrate8 takes a v8 save");
   const s = JSON.parse(JSON.stringify(v8));
+  foldOldSeen(s, s);
   const map = {};
   for (const k of MAP_KEYS) if (k !== "lastPos" && Object.hasOwn(s, k)) { map[k] = s[k]; delete s[k]; }
   if (s.ui && typeof s.ui === "object" && Object.hasOwn(s.ui, "lastPos")) { map.lastPos = s.ui.lastPos; delete s.ui.lastPos; }

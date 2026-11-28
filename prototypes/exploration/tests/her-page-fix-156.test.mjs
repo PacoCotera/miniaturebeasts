@@ -18,7 +18,7 @@ const start = () => {
 test("her name tag stands under her when the bottom line names her and the hero does not face her", () => {
   const p = start();
   p.run(`{ const P = S.exp.patch, c = curLive().cr.find(q => q.id === 36); P.dir = 'up'; c.x = P.x; c.y = P.y - 3; c.st = 'idle'; c.ease = 0; c.hide = 0;
-    S.named[36] = 'Cinder'; S.metIds.push('36'); S.veil[P.key] = new Array(PH).fill(0x0fffffff); RT.pl = null; RT.key = null; NOW = 5000; FX.msg = ''; }`);
+    S.named[36] = 'Cinder'; S.metIds.push('36'); S.seen.tile[P.key] = new Array(PH).fill(0x0fffffff); RT.pl = null; RT.key = null; NOW = 5000; FX.msg = ''; }`);
   assert.equal(p.run("herInSight()"), "36");
   p.run("var SPOT = 'none'; { const d0 = drawTag; drawTag = s => { SPOT = s; d0(s); }; }");
   p.run("scr.px().fill(-1); render(5)");

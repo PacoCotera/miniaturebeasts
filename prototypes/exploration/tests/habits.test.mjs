@@ -100,7 +100,7 @@ for (const seed of [7, 13, 42]) {
       const W = windAt(S.seed, lay.cell, S.day.spent), vec = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] }[W]; let ok = true;
       for (let d = 1; d <= 4; d++) { const x = c.x + vec[0] * d, y = c.y + vec[1] * d; if (x < 1 || y < 1 || x >= lay.w - 1 || y >= lay.h - 1) { ok = false; break; } lay.tiles[y * lay.w + x] = T.REEDS; lay.reach[y * lay.w + x] = 1; }
       if (!ok) return JSON.stringify({ bad: 1 });
-      unveil(key, c.x, c.y, 5); P.x = c.x + vec[0] * 4; P.y = c.y + vec[1] * 4; P.dir = vec[1] > 0 ? 'up' : vec[1] < 0 ? 'down' : vec[0] > 0 ? 'left' : 'right'; S.exp.storm = { x: col + .5 - 1.5 + 1.7 - 1.5, w: 3, dir: -1, v: .25, t: 0 };
+      lightningLift(key, c.x, c.y, 5); P.x = c.x + vec[0] * 4; P.y = c.y + vec[1] * 4; P.dir = vec[1] > 0 ? 'up' : vec[1] < 0 ? 'down' : vec[0] > 0 ? 'left' : 'right'; S.exp.storm = { x: col + .5 - 1.5 + 1.7 - 1.5, w: 3, dir: -1, v: .25, t: 0 };
       const log = []; let closed = 0, noted = null, tellRain = null, beatRain = null, shook = false, tuft = false, prompted = false;
       const d0 = S.exp.cargo.d;
       for (let i = 0; i < 40 && S.exp && !S.exp.ending; i++) {

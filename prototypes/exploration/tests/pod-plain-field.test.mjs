@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 
-const SETUP = "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); S.exp.patch.x = 14; S.exp.patch.y = 14; S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);";
+const SETUP = "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); S.exp.patch.x = 14; S.exp.patch.y = 14; S.seen.tile[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);";
 const frame = (sp, how) => {
   const p = makePage({ console: "silent", canvas: true });   // a fresh page: no cached pod picture is shared between species
   p.run(SETUP);

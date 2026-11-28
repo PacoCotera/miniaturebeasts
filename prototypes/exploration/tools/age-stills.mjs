@@ -41,7 +41,7 @@ const setup = await page.evaluate(({ key, id }) => {
   const far = list[0].mark || list[0].stand;
   c.x = far.x + 7; c.y = far.y; c.gone = null; c.ease = 0; c.st = "idle"; c.ind.go = { part: m.dayPart(), t: { x: c.x, y: c.y } };
   const side = [[1, 0], [-1, 0], [0, 1], [0, -1]].find(([dx, dy]) => m.passable(far.x + dx, far.y + dy));
-  m.unveil(key, far.x, far.y, 8); P.x = far.x + side[0] * 3; P.y = far.y + side[1] * 3; P.dir = "up";
+  m.lightningLift(key, far.x, far.y, 8); P.x = far.x + side[0] * 3; P.y = far.y + side[1] * 3; P.dir = "up";
   window.__pr = { mark: far, side }; return { mark: far, side }; }, pick);
 if (setup.none) { console.log("no prints", JSON.stringify(setup)); process.exit(1); }
 const markNow = () => page.evaluate(() => { const l = window.__mb.printsHere(); return l[0] && l[0].mark; });
@@ -52,7 +52,7 @@ const found = await page.evaluate(() => { const m = window.__mb, out = {}; m.S.e
   return out; });
 log.found = found;
 for (const a of [0, 1, 2]) { if (!found[a]) continue;
-  await page.evaluate(({ s, mk }) => { const m = window.__mb, P = m.S.exp.patch; m.S.day.spent = s; m.unveil(P.key, mk.x, mk.y, 8); const side = [[1, 0], [-1, 0], [0, 1], [0, -1]].find(([dx, dy]) => m.passable(mk.x + dx * 3, mk.y + dy * 3)) || [1, 0]; P.x = mk.x + side[0] * 3; P.y = mk.y + side[1] * 3; }, { s: found[a].s, mk: found[a].mark });
+  await page.evaluate(({ s, mk }) => { const m = window.__mb, P = m.S.exp.patch; m.S.day.spent = s; m.lightningLift(P.key, mk.x, mk.y, 8); const side = [[1, 0], [-1, 0], [0, 1], [0, -1]].find(([dx, dy]) => m.passable(mk.x + dx * 3, mk.y + dy * 3)) || [1, 0]; P.x = mk.x + side[0] * 3; P.y = mk.y + side[1] * 3; }, { s: found[a].s, mk: found[a].mark });
   await shot("print-age-" + a + "-" + found[a].part + (found[a].yday ? "-yday" : "")); }
 // ✓ in open ground facing nothing: Keep still, the clock moves one
 await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch, p = window.__pr; m.S.day.spent = 200; P.x = p.mark.x + p.side[0] * 3; P.y = p.mark.y + p.side[1] * 3; P.dir = "up"; });

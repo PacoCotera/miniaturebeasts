@@ -31,7 +31,7 @@ await cdp.send("Emulation.setCPUThrottlingRate", { rate: CPU }); await page.eval
 let steps = 0;
 for (let i = 0; i < N; i++) {
   const moved = await page.evaluate(() => { const m = window.__mb, ex = m.S.exp, D = { up: -m.MW, down: m.MW, left: -1, right: 1 };
-    const dirs = ["up", "right", "down", "left"].filter((d) => m.canStep(ex.pos, d) && !m.crossReason(ex.pos, d)), dir = dirs.find((d) => !m.S.visited[ex.pos + D[d]] && !ex.trail.includes(ex.pos + D[d])) || dirs[0]; if (!dir) return false; m.act(dir); return true; });
+    const dirs = ["up", "right", "down", "left"].filter((d) => m.canStep(ex.pos, d) && !m.crossReason(ex.pos, d)), dir = dirs.find((d) => !m.S.seen.been[ex.pos + D[d]] && !ex.trail.includes(ex.pos + D[d])) || dirs[0]; if (!dir) return false; m.act(dir); return true; });
   if (!moved) break; steps++; await page.waitForTimeout(700);
   await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(700);
   await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); if (m.S.exp && m.S.exp.patch) m.leavePatch(); }); await page.waitForTimeout(300);

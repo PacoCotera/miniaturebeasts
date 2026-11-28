@@ -55,11 +55,11 @@ for (const seed of seeds) {
     { const pl = planNow(seed, q.X, q.Y); q.patchTiles = pl ? contentOf(pl, seed).patches.flatMap((p) => p.tiles || []) : []; }   // the heart's patch, tile by tile (the sheets for it are empty slots: it draws as grass until they are signed)
     await page.evaluate((o) => {
       const m = window.__mb; if (m.S.exp.patch) m.leavePatch(); m.S.exp.pos = o.c; m.S.exp.start = o.c; m.enterPatch();
-      const P = m.S.exp.patch, lay = m.layout(P.key); m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff);
+      const P = m.S.exp.patch, lay = m.layout(P.key); m.S.seen.tile[P.key] = new Array(lay.h).fill(0x0fffffff);
       // the pawn: the reachable tile nearest to three tiles below the heart's middle (else the place's middle), so the heart fills the upper half of the view
       const hx = o.heart ? o.heart.x + (o.heart.w >> 1) - 1 : 12, hy = o.heart ? o.heart.y + (o.heart.h >> 1) + 3 - 1 : 14;
       let best = null, bd = 1e9; for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) { if (!lay.reach[y * lay.w + x]) continue; const d = Math.abs(x - hx) + Math.abs(y - hy); if (d < bd) { bd = d; best = { x, y }; } }
-      if (best) { P.x = best.x; P.y = best.y; P.dir = 'up'; } m.walkLift(); if (m.RT.view) m.endView();
+      if (best) { P.x = best.x; P.y = best.y; P.dir = 'up'; } m.walkSeen(); if (m.RT.view) m.endView();
     }, q);
     await settle(page, 1400);
     const data = await page.evaluate(async ([ov, patchTiles]) => {

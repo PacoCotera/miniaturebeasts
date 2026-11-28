@@ -107,7 +107,7 @@ for (const sc of SCENES) {
       else newWorld(s.seed);
       startExpedition('weather', s.cell); const ex = S.exp; ex.fog = null; ex.range = 6; ex.storm = null; FX.lockUntil = 0; ex.pos = s.cell; enterPatch();
       const P = ex.patch, key = P.key, lay = layout(key); P.x = s.x; P.y = s.y; P.dir = s.dir || 'down';
-      S.veil[key] = new Array(PH).fill(0); if (s.light !== 'veil') S.veil[key] = new Array(PH).fill(0x0fffffff); else unveilRound(key, s.x, s.y, 4);
+      S.seen.tile[key] = new Array(PH).fill(0); if (s.light !== 'veil') S.seen.tile[key] = new Array(PH).fill(0x0fffffff); else callLift(key, s.x, s.y, 4);
       const col = s.cell % MW;
       if (s.light === 'storm') ex.storm = { x: col - 3 - (s.gap == null ? 1.25 : s.gap), dir: 1, w: 3, v: .25, t: 0 };
       if (s.light === 'overcast') ex.storm = { x: col - 1, dir: 1, w: 3, v: .25, t: 0 };
