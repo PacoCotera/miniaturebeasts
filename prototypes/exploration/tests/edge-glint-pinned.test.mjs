@@ -9,7 +9,7 @@ const SETUP = "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176)
 test("the tab's target is the buried pod's own tile and holds while walking toward it", () => {
   const p = makePage({ console: "silent", canvas: true });
   p.run(SETUP);
-  p.run("{ const P = S.exp.patch, k = P.key, lay = layout(k); S.exp.callsAt = { [lay.cell]: 1 }; S.veil[k] = new Array(PH).fill(0);"
+  p.run("{ const P = S.exp.patch, k = P.key, lay = layout(k); S.exp.callsAt = { [lay.cell]: 1 }; S.seen.tile[k] = new Array(PH).fill(0);"
     + " globalThis.__tx = Math.min(lay.w - 2, P.x + 20); globalThis.__ty = P.y;"
     + " S.pods = [{ id: 'z', k, x: __tx, y: __ty, sp: 0, h: 1, g: 'grass', how: 'ground' }]; RT.lead = null; RT.leadPin = null; }");
   const way = () => p.run("leadWay(S.exp.patch, layout(S.exp.patch.key))");

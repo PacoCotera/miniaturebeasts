@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import * as W from "../src/world.mjs";
 import * as R from "../src/regions.mjs";
+import * as SN from "../src/logic/seen.mjs";
 import { makePage } from "./page-harness.mjs";
 
 const NOW = Date.UTC(2026, 10, 3, 9, 0, 0);
@@ -23,7 +24,7 @@ const picture = p => { p.run("mapCv = null; ensureMap(); scr.px().fill(-1); draw
   assert.ok(frame.some(v => v >= 0), "something is drawn"); return { frame: fnv(frame), baked: fnv(baked) }; };
 // the state the page holds after a load, as the v8 page held it: the realm's own fields (began, here, regions) taken off, the map still mounted on S
 const flat = p => { const o = plain(p.S); o.v = 8; for (const k of ["began", "here", "regions"]) delete o[k]; return o; };
-const pageExplored = p => plain(p.run("(() => { let n = 0, s = 0; for (let c = 0; c < MW * MH; c++) { if (explored(c)) n++; if (S.revealed[c]) s++; } return [n, s]; })()"));
+const pageExplored = p => plain(p.run("(() => { let n = 0, s = 0; for (let c = 0; c < MW * MH; c++) { if (explored(c)) n++; if (S.seen.rev[c]) s++; } return [n, s]; })()"));
 const store = (init = {}) => { const m = new Map(Object.entries(init)); return { m, getItem: k => m.has(k) ? m.get(k) : null, setItem: (k, v) => { m.set(k, String(v)); } }; };
 
 for (const name of FIXTURES) {
@@ -64,7 +65,7 @@ for (const name of FIXTURES) {
     assert.equal(JSON.stringify(R.serialize(again)), text1, "load, serialize: the same bytes");
     assert.equal(R.realmStatus(o, [5, 6]), "ok");
     // S is left as it was
-    assert.ok(Array.isArray(live.visited) && live.seed === o.regions[0].seed);
+    assert.ok(Array.isArray(live.seen.been) && live.seed === o.regions[0].seed);
   });
 }
 
@@ -123,7 +124,7 @@ const realm2 = () => {
   return S;
 };
 test("6. two regions: each keeps its own map, a reassigned array is caught, S follows the region in use", () => {
-  const S = realm2(), seed1 = S.seed, g1Pods = S.pods.length, g1Seen = S.revealed.filter(Boolean).length;
+  const S = realm2(), seed1 = S.seed, g1Pods = S.pods.length, g1Seen = S.seen.rev.filter(Boolean).length;
   S.pods = S.pods.filter((p, i) => i > 0);   // a page reassigns: it must still reach the region
   S.ui.lastPos = 33;
   R.unmount(S);   // the page unmounts, then goes
@@ -131,14 +132,14 @@ test("6. two regions: each keeps its own map, a reassigned array is caught, S fo
   assert.equal(g1.map.pods.length, g1Pods - 1, "the reassigned list is in g1"); assert.equal(g1.map.lastPos, 33); assert.equal(g1.seenN, g1Seen);
   const R2 = R.mount(S, "g2");
   assert.equal(R2.id, "g2"); assert.equal(S.here, "g2"); assert.equal(S.seed, R2.seed); assert.equal(S.gen, 5); assert.notEqual(S.seed, seed1);
-  assert.equal(S.pods.length, 0, "a new region starts with its own"); assert.equal(S.revealed.filter(Boolean).length, 0); assert.ok(S.ui.lastPos === undefined, "no last start there yet");
-  S.revealed[5] = 1; S.revealed[6] = 1; S.visited[5] = 1; S.called[5] = 1; S.pods.push({ id: "g2.w0", k: "5" });
+  assert.equal(S.pods.length, 0, "a new region starts with its own"); assert.equal(S.seen.rev.filter(Boolean).length, 0); assert.ok(S.ui.lastPos === undefined, "no last start there yet");
+  S.seen.rev[5] = 1; S.seen.rev[6] = 1; S.seen.been[5] = 1; S.seen.walked[5] = 1; S.pods.push({ id: "g2.w0", k: "5" });
   R.unmount(S);
   assert.equal(S.regions[1].exploredN, 1); assert.equal(S.regions[1].seenN, 2, "refreshed at the unmount");
   assert.equal(S.regions[1].map.pods.length, 1);
   R.mount(S, "g1");
-  assert.equal(S.seed, seed1); assert.equal(S.pods.length, g1Pods - 1, "g1 is as it was left"); assert.equal(S.ui.lastPos, 33); assert.equal(S.revealed.filter(Boolean).length, g1Seen);
-  assert.equal(S.regions[0].map.revealed, S.revealed, "held by reference: what the page does to S is done to the region");
+  assert.equal(S.seed, seed1); assert.equal(S.pods.length, g1Pods - 1, "g1 is as it was left"); assert.equal(S.ui.lastPos, 33); assert.equal(S.seen.rev.filter(Boolean).length, g1Seen);
+  assert.equal(S.regions[0].map.revealed, S.seen.rev, "held by reference: what the page does to S is done to the region");
 });
 test("6b. mount takes a key the region lacks off S, and unmount drops a key S has lost", () => {
   const S = realm2(); S.svyF = { 3: 1 }; R.unmount(S); assert.deepEqual(S.regions[0].map.svyF, { 3: 1 });
@@ -148,14 +149,14 @@ test("6b. mount takes a key the region lacks off S, and unmount drops a key S ha
 });
 test("6c. serialize with the second region mounted: the realm's seed, every map in its record, nothing mounted left on disk", () => {
   const S = realm2(), seed1 = S.seed;
-  R.unmount(S); R.mount(S, "g2"); S.visited[7] = 1; S.called[7] = 1;
+  R.unmount(S); R.mount(S, "g2"); S.seen.been[7] = 1; S.seen.walked[7] = 1;
   const o = JSON.parse(JSON.stringify(R.serialize(S)));
   assert.equal(o.seed, seed1, "the realm seed, not the mounted region's"); assert.ok(!("gen" in o)); assert.equal(o.here, "g2");
   for (const k of R.MAP_KEYS) assert.ok(!(k in o), k);
-  assert.equal(o.regions[1].map.visited[7], 1); assert.equal(o.regions[1].exploredN, 1);
+  assert.equal(o.regions[1].map.seen.been[7], 1); assert.equal(o.regions[1].exploredN, 1);
   assert.equal(R.realmStatus(o, [5, 6]), "ok");
   const back = JSON.parse(JSON.stringify(o)); R.mount(back, back.here);
-  assert.equal(back.visited[7], 1); assert.equal(back.seed, S.regions[1].seed);
+  assert.equal(back.seen.been[7], 1); assert.equal(back.seed, S.regions[1].seed);
   assert.equal(JSON.stringify(R.serialize(back)), JSON.stringify(o));
 });
 
@@ -303,10 +304,10 @@ test("9. canOpen: 140 x n explored cells across the home regions, up to 25", () 
   assert.equal(R.canOpen({ ...S, regions: S.regions.slice(0, 2) }, 100), true, "the developer's number");
   assert.equal(R.exploredAcross({ here: "g1", regions: S.regions.slice(0, 2) }), 279);
   // the region in use counts live, not as last cached
-  const live = { here: "g1", regions: [home(1, [2, 2], { exploredN: 0 })], visited: new Array(320).fill(0), called: {} };
+  const live = { here: "g1", regions: [home(1, [2, 2], { exploredN: 0 })], seen: SN.newSeen(320) };
   assert.equal(R.canOpen(live), false);
-  for (let c = 0; c < 140; c++) { live.visited[c] = 1; live.called[c] = 1; } assert.equal(R.canOpen(live), true, "140 explored now");
-  live.visited[0] = 0; assert.equal(R.canOpen(live), false, "visited and called, both");
+  for (let c = 0; c < 140; c++) { live.seen.been[c] = 1; live.seen.walked[c] = 1; } assert.equal(R.canOpen(live), true, "140 explored now");
+  live.seen.been[0] = 0; assert.equal(R.canOpen(live), false, "visited and called, both");
   // 25 home regions: no more
   const all = []; for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) all.push(home(all.length + 1, [x, y], { exploredN: 9999 }));
   assert.equal(R.canOpen({ here: "g1", regions: all }), false);
@@ -362,14 +363,14 @@ test("12. regionRecord and blankMap: the shape of a record, and a new region's m
   assert.ok(Object.keys(blank).every(k => R.MAP_KEYS.includes(k)));
   const r = R.regionRecord({ n: 2, slot: [3, 2], biome: "fells", seed: 99, gen: 4, opened: NOW, openedTurn: 6 });
   assert.deepEqual(Object.keys(r), ["id", "n", "kind", "biome", "slot", "ev", "name", "seed", "gen", "opened", "openedTurn", "turnSeen", "closes", "closed", "exploredN", "seenN", "map"]);
-  assert.equal(r.id, "g2"); assert.equal(r.turnSeen, 6); assert.equal(r.exploredN, 0); assert.equal(r.seenN, 0); assert.equal(r.map.revealed.length, 320);
+  assert.equal(r.id, "g2"); assert.equal(r.turnSeen, 6); assert.equal(r.exploredN, 0); assert.equal(r.seenN, 0); assert.equal(r.map.seen.rev.length, 320);
   const o = { slot: [1, 1] }; const q = R.regionRecord({ n: 2, ...o, seed: 1, gen: 3, opened: 1 }); q.slot[0] = 9; assert.deepEqual(o.slot, [1, 1], "the slot is copied");
   assert.throws(() => R.regionRecord({ n: 0, slot: [0, 0], seed: 1, gen: 1, opened: 1 }), /from 1/);
   assert.throws(() => R.regionRecord({ n: 2, seed: 1, gen: 1, opened: 1 }), /slot/);
   assert.throws(() => R.regionRecord({ n: 2, slot: [0, 0], biome: "swamp", seed: 1, gen: 1, opened: 1 }), /biome/);
   assert.throws(() => R.regionRecord({ n: 2, slot: [0, 0], kind: "x", seed: 1, gen: 1, opened: 1 }), /kind/);
   assert.throws(() => R.regionRecord({ n: 2, slot: [0, 0], seed: 1, opened: 1 }), /generator/);
-  assert.equal(R.exploredCount({ visited: [1, 1, 0], called: { 0: 1, 2: 1 } }), 1); assert.equal(R.seenCount({ revealed: [1, 0, 1] }), 2);
+  assert.equal(R.exploredCount({ seen: { been: [1, 1, 0], walked: { 0: 1, 2: 1 } } }), 1); assert.equal(R.seenCount({ seen: { rev: [1, 0, 1] } }), 2);
 });
 
 test("13. the page imports regions.mjs (the page and the Station took v9 in one merge); the module is pure", () => {

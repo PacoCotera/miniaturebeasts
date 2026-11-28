@@ -38,7 +38,7 @@ try {
     S.known = [0, ...S.known.filter((k) => k !== 0)]; S.day.spent = 50; c.hide = 0; c.gone = null; c.st = "idle";
     let spot = null; for (let r = 2; r <= 3 && !spot; r++) for (const [dx, dy] of [[0, 1], [1, 0], [-1, 0], [0, -1]]) { const x = c.x + dx * r, y = c.y + dy * r; if (x > 0 && y > 0 && x < m.PW - 1 && y < m.PH - 1 && lay.reach[y * m.PW + x]) { spot = { x, y, dx, dy }; break; } }
     P.x = spot.x; P.y = spot.y; P.dir = spot.dy > 0 ? "up" : spot.dy < 0 ? "down" : spot.dx > 0 ? "left" : "right";
-    m.unveil(key, c.x, c.y, 6);
+    m.lightningLift(key, c.x, c.y, 6);
     S.habits = S.habits || {}; S.looks = S.looks || {}; delete S.looks[id]; S.habits[id] = { calm: { got: { coat: true } } };
     S.named = S.named || {}; S.named[id] = c.ind.name; S.metIds = [String(id)];
     window.__wmn = id;

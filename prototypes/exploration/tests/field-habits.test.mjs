@@ -45,7 +45,7 @@ test("tiptoe (Hiljan): you creep up to a wild mibi that stays idle that action, 
 
 test("stone-sense (Tepor): you end an action within 1 tile of a warm or charged stone you can see", () => {
   const stoneAt = (f, d, mode) => { const s = f.spot(d, d, f.P());
-    f.run(`curLay().feats.push({ kind: 'k', id: 'kx', x: ${s.x}, y: ${s.y} }); ${mode === "warm" ? "S.exp.warm.push(curLay().key + ':kx')" : mode === "charged" ? "setFS(curLay().key, 'kx', { ch: 2 })" : ""}; unveil(curLay().key, ${s.x}, ${s.y}, 1)`); };
+    f.run(`curLay().feats.push({ kind: 'k', id: 'kx', x: ${s.x}, y: ${s.y} }); ${mode === "warm" ? "S.exp.warm.push(curLay().key + ':kx')" : mode === "charged" ? "setFS(curLay().key, 'kx', { ch: 2 })" : ""}; lightningLift(curLay().key, ${s.x}, ${s.y}, 1)`); };
   for (const [mode, want] of [["warm", ["stone-sense"]], ["charged", ["stone-sense"]], ["cold", []]]) { const f = fixture({ partner: 4 }); stoneAt(f, 1, mode); f.tick(); assert.deepEqual(done(f), want, mode); }
   const f = fixture({ partner: 4 }); stoneAt(f, 3, "warm"); f.tick(); assert.deepEqual(done(f), [], "3 tiles away");
 });
