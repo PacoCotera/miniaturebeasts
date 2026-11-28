@@ -39,7 +39,7 @@ test("a full hold takes nothing and shows no juice", () => {
 
 test("every row of the table has a sound and a known counter or none", () => {
   const run = setup(); run("RM.matches = false");
-  assert.equal(run("Object.keys(JUICE).every(k => Array.isArray(JUICE[k].snd) && JUICE[k].snd.length > 0)"), true);
+  assert.equal(run("Object.keys(JUICE).every(k => Array.isArray(SOUNDS[k]) && SOUNDS[k].length > 0)"), true);
 });
 
 test("a fruit pick-up says where it goes", () => {

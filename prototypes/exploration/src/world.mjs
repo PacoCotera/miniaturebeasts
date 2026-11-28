@@ -388,7 +388,6 @@ export const LEVELS = 3;
 export const EDGE = { OPEN: 0, CLIFF: 1, RAMP: 2 };          // 3 LEDGE, 4 RIVER, 5 FOREST, 6 GATE reserved for phases 2–5
 export const STAIR = { W: 2, H: 2, LANDING_ROWS: 1, FACE_ROWS_PER_LEVEL: 3, JITTER: 4,
                        PER_EDGE: 1, MIN_RUN_BETWEEN: 2, PITCH: 4 };
-export const CLIFF_EDGE_GAPS = 0;                              // cliff edges are solid
 export const G2 = { TRIES: 8, P1: 8, P2: 4, WOOD_N: 80, ROCK_N: 48, RAMP_Q: 16384, LV_PCT: [15, 45, 40],
                     ZONE_MIN: 4, MIN_SHARE_PCT: 10, MIN_COMP_PCT: 70, START_REACH: 12, SADDLE_SCANS: 64 };
 // The terrain layer of a generator 2 place: the piece kind in lay.terr, its mask or part in lay.tmask.

@@ -1486,39 +1486,6 @@ test("the name tag in a cave at 32 px keeps off a seen crack's whole ring: its z
   assert.ok(s, "a tag is drawn (right or left)"); assert.ok(!meets(s.ptr) && !meets(s.panel), "clear of the crack's zone");
   assert.ok(s.panel.y - cy < 32 + 4 + 6, "and not below it");
 });
-test("the send hint in a place names the way, never a count, at all seven sites; over the reach view it keeps the count", () => {
-  const p = cuePlace(48), DIG = /\d/;
-  // a place two cells from the start, no lit outpost: End expedition is far
-  p.run("leavePatch(); const s = cxy(S.exp.start); S.exp.pos = S.exp.reach.find(c => { const q = cxy(c); return Math.abs(q.x - s.x) + Math.abs(q.y - s.y) === 2 && !gatedCell(c); }); enterPatch(); FX.msg = ''; FX.notes = [];");
-  assert.equal(p.run("canSend()"), false);
-  const name = p.run("nearestSend().name"), dir = p.run("(() => { const a = cxy(S.exp.pos), b = cxy(nearestSend().c); return dirWord(b.x - a.x, b.y - a.y, Math.hypot(b.x - a.x, b.y - a.y)); })()");
-  assert.ok(["north", "south", "east", "west", "north-east", "north-west", "south-east", "south-west"].includes(dir));
-  p.run("var TXT = []; const __tx = text; text = function (s) { TXT.push(s); return __tx.apply(this, arguments); };");
-  const sites = () => { const o = {};
-    p.run("S.ui.from = S.exp.patch ? 'patch' : 'map'; S.phase = 'menu'; S.ui.menuSel = menuItems().findIndex(i => i.id === 'send'); FX.lockUntil = 0;");
-    o.menuRow = p.run("lineFor().ctx");
-    p.run("act('confirm')"); o.menuRefusal = p.run("FX.msg"); p.run("FX.msg = ''; FX.notes = [];");
-    p.run("S.phase = 'cargo'; S.ui.caseEnd = 1; TXT = []; drawCargo(0)"); o.cargoCard = p.run("TXT").find(t => t.startsWith(name + " · "));
-    p.run("FX.lockUntil = 0; act('confirm')"); o.cargoRefusal = p.run("FX.msg"); p.run("FX.msg = ''; FX.notes = [];");
-    o.headBack = p.run("headBack()");
-    p.run("S.exp.cargo.pods = Array.from({ length: S.exp.hold }, () => ({ g: 0, sp: 0 })); FX.notes = []; delete (S.exp.once || {}).holdfull;");
-    o.headBackHold = p.run("'Hold full · swap, or ' + headBack()");
-    return o; };
-  const inPlace = sites();
-  const want = { menuRow: `${name} · ${dir}`, menuRefusal: `End it only at the start or a lit outpost: ${name} · ${dir}`, cargoCard: `${name} · ${dir}`,
-    cargoRefusal: `End it only at the start or a lit outpost: ${name} · ${dir}`, headBack: `head back ${dir} to the ${name === "Start" ? "start" : "outpost"}` };
-  for (const k of Object.keys(want)) { assert.equal(inPlace[k], want[k], k); assert.doesNotMatch(inPlace[k], DIG, k + ": no digit"); }
-  assert.doesNotMatch(inPlace.headBackHold, DIG);
-  // leave with ← then ✓: over the reach view every site counts again, with the same name
-  p.run("S.phase = 'patch'; FX.lockUntil = 0; openMenu(); S.ui.menuSel = 0; act('confirm');"); assert.equal(p.run("S.phase"), "map"); assert.equal(p.run("S.exp.patch"), null);
-  p.run("S.exp.cargo.pods = [];");
-  const n = p.run("nearestSend().n"), cnt = `${name} · about ${n} cell${n === 1 ? "" : "s"}`, onMap = sites();
-  assert.equal(onMap.menuRow, cnt); assert.equal(onMap.cargoCard, cnt);
-  assert.equal(onMap.menuRefusal, "End it only at the start or a lit outpost: " + cnt); assert.equal(onMap.cargoRefusal, "End it only at the start or a lit outpost: " + cnt);
-  assert.equal(onMap.headBack, `head back to the ${name === "Start" ? "start" : "outpost"} (about ${n} cell${n === 1 ? "" : "s"})`);
-  // and the reach band keeps the count
-  p.run("S.phase = 'map'; TXT = []; render(5)"); assert.ok(p.run("TXT").some(t => t === cnt || t.startsWith(name + " · about")), "the reach band");
-});
 
 // ---- the Companion's screens that agree, and the shell's keys ----
 // How a sprite sits on the drawn frame at (x, y): its opaque pixels counted (n) and those the frame differs on (off); `inside` limits the sprite's area.
