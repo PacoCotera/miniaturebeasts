@@ -86,7 +86,7 @@ export function checkSeed(seed, { regions = 5, trip: playTrip = true } = {}) {  
   row.trip = { ok: trip.ok, why: trip.why, pods: trip.pods, data: trip.data, energy: trip.energy, actions: trip.actions };
   const p = makePage({ gen: 7, console: "silent" });
   p.run(`newWorld(${seed}); TEST.calm = true;`);
-  const ids = ["g1", ...RING1.map((s) => p.run(`openRegion(${JSON.stringify(s)})`))].slice(0, regions);
+  const ids = ["g1", ...RING1.map((s) => p.openRegion(s))].slice(0, regions);
   p.run(`startExpedition('weather', G.spawns[0]);`);
   const reach = { regions: [], fail: null };
   for (const id of ids) {

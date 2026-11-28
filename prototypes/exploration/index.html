@@ -266,7 +266,7 @@ import { readPixels } from "./src/pngdecode.mjs";
 const canvasPx = im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0); return { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; };   // the fallback only: no DecompressionStream
 const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { GLYPHS, glyphOf, textW, wrapText, clipText, cutLine } from "./src/font.mjs";
 import { SPECIES_ART, JUVENILE_ART, STEP_ART, SADDLED_ART, WILD_BEAT, HOPPER_SP } from "./src/data/tokens.mjs";
@@ -314,7 +314,7 @@ import { LEGACY_KEY, keyOfCompanion, keptCompanion, newCompanion, keepCompanionA
 // each page re-reads the stored save before writing and keeps the other's part. Bytes this page cannot load stay where they are and open read-only.
 const OLD_GENS = [5, 6].filter(g => !GENS.includes(g));   // a save of an older generator is reset, not played: its bytes are kept under <key>.gen<N>
 let RESET_CARRY = null;   // set by load() when the save found was reset (or the Station reset first); the new realm takes it (newRealm)
-const V7_KEY = 'mb-exploration-v7', OLD_SAVE_KEYS = ['mb-exploration-v1', 'mb-exploration-v2', 'mb-exploration-v3', 'mb-exploration-v4', 'mb-exploration-v5', 'mb-exploration-v6'];
+const V7_KEY = 'mb-exploration-v7';   // where a save from before v8 lies: load() resets it, its bytes kept (src/regions.mjs resetPlan)
 let companionKept = false, legacyTo = null, COMPANION = companionIdentity();
 let SAVE_KEY = keyOfCompanion(COMPANION.id);
 // The Companion's identity (src/store/companion.mjs): the one kept for this slot, or a new one, kept with its first write.
@@ -896,12 +896,16 @@ function sendHint() { const w = sendWay(); return SEND_TXT.hint(w.b, w.dir); }
 
 
 // ===================== 5. State, persistence, effects hooks =====================
-// FX holds presentation-only events the renderer reads; rules write to it but never read it.
+import { FIRST_TEXT, GOAL_MARK, SWAP_TEXT, SIGN_LINE, JUICE, DOCK_TEXT } from "./src/data/field-lines.mjs";
+import { idsIn, keepOfGame } from "./src/store/save-parts.mjs";
+import { SLIDE_MS, slideAt, slideOffsets } from "./src/render/slide.mjs";
+// FX: what the screen shows of what just happened (the message box's notes, the effects and their clocks). Rules write to it; the message rules below
+// (composeMsg, settleOnce, teachFill) also read the box back, to tell which line was shown and so is spent.
 const FX = { msg: '', sign: null, hintNote: null, notes: [], floats: [], bursts: [], pops: {}, rings: [], strikes: [], bolts: [], lockUntil: 0, transAt: -1e9, bumpAt: -1e9, hitAt: -1e9, dig: null, pulse: null };
 let NOW = 0;
-const RIPE_PENDING = [];   // bloom centres whose fruit trees still wait to ripen (set at an expedition's end, done at the next save or set-out)
+const RIPE_PENDING = [];   // bloom centres whose fruit trees still wait to ripen (set at an expedition's end, done a step at a time behind the sealed screen; the next set-out finishes what is left)
 // Messages: actions and offscreen results both add notes; the most important ones share the line until the next action.
-const OWN_HOLD_MS = 2000;   // a line his own ✓ just caused keeps the box this long; a sign that arrives meanwhile waits (slab-full-1)
+const OWN_HOLD_MS = 2000;   // a line his own ✓ just caused keeps the box this long; a sign that arrives meanwhile waits
 function fxMsg(text, pri) { const n = { text, pri: pri == null ? 2 : pri }; if (FX.ownRun) { n.own = 1; FX.ownUntil = NOW + OWN_HOLD_MS; } FX.notes.push(n); composeMsg(); }
 function composeMsg() {
   const n = FX.notes.slice().sort((a, b) => b.pri - a.pri); let out = ''; FX.held = []; FX.sign = null;
@@ -909,8 +913,8 @@ function composeMsg() {
   // outranks it; the other signs keep their flags unspent and come again at their own next trigger, and plain notes wait one action.
   // (first ten minutes) before the first pod is home no first-sighting sign or one-time line shows or is spent, a hazard sign apart; each comes at its own trigger after
   const keep = firstWalk() ? n.filter(x => !x.once || x.beat || (x.sign && FIRST_HAZARD.includes(x.sign))) : n;
-  // slab-full-1: a line his own ✓ just caused holds the box about 2 s; a sign that arrives in that time waits, its flag unspent (never dropped), and shows when the time is over or with his next press
-  // steering (design, 11-26): a hazard sign (FIRST_HAZARD) is never held: it shows at once, and the line his press caused waits one action (FX.held) and shows after the warning
+  // a line his own ✓ just caused holds the box about 2 s; a sign that arrives in that time waits, its flag unspent (never dropped), and shows when the time is over or with his next press
+  // a hazard sign (FIRST_HAZARD) is never held: it shows at once, and the line his press caused waits one action (FX.held) and shows after the warning
   const ownHold = (FX.ownUntil || 0) > NOW && keep.some(x => x.own && !x.sign), signs = keep.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign));
   const hz = ownHold ? signs.find(x => FIRST_HAZARD.includes(x.sign)) : null, holding = ownHold && !hz;
   if (hz) { signs.splice(signs.indexOf(hz), 1); signs.unshift(hz); }
@@ -942,28 +946,17 @@ function settleOnce() {
     else fxOnce(h.key, h.text, h.pri); }   // too long for the bottom line's middle: a plain note until the copy has a short form
   const covered = S.phase === 'patch' && S.ui.swap;   // the swap chooser has the box's place: nothing is drawn, so nothing is spent
   const bl = FX.beatLine; FX.beatLine = null;
-  const wanderOnly = FX.notes.length > 0 && FX.notes.every(n => n.wander);   // wild-beats-fix-5: a wander note ("The creature wanders") gives the box to the act's line for the 2.5 s hold
-  if (bl && !covered && (!FX.msg || wanderOnly || (FX.msg === FX.teachMsg && !FX.beatOver)) && !FX.sign && (!FX.notes.length || wanderOnly)) {   // wild-life-build-3: a free box takes the act's line; wild-life-build-6: so does a box holding only the standing target line, for the 2.5 s hold (teachFill puts it back)
+  const wanderOnly = FX.notes.length > 0 && FX.notes.every(n => n.wander);   // a wander note ("The creature wanders") gives the box to the act's line for the 2.5 s hold
+  if (bl && !covered && (!FX.msg || wanderOnly || (FX.msg === FX.teachMsg && !FX.beatOver)) && !FX.sign && (!FX.notes.length || wanderOnly)) {   // a free box takes the act's line; so does a box holding only the standing target line, for the 2.5 s hold (teachFill puts it back)
     if (wanderOnly) FX.notes = [];
     FX.notes.push({ text: bl.text, pri: 0, once: 'beat', beat: bl.key }); composeMsg(); FX.beatOver = FX.msg === bl.text ? { text: bl.text, until: NOW + BEAT_HOLD_MS } : null; }
-  for (const n of covered ? [] : FX.notes) if (n.beat && FX.msg.includes(n.text)) (S.beatSaid || (S.beatSaid = {}))[n.beat] = S.turn;   // wild-life-build-3: an act's line is spent for the day only once it showed
+  for (const n of covered ? [] : FX.notes) if (n.beat && FX.msg.includes(n.text)) (S.beatSaid || (S.beatSaid = {}))[n.beat] = S.turn;   // an act's line is spent for the day only once it showed
   for (const n of covered ? [] : FX.notes) if (n.once && !n.beat && (n.sign ? FX.sign === n : FX.msg.includes(n.text)) && !onceDone(n.once, n.local)) {
     if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once);
     if (n.sign) { const k = 'met:' + SIGN[n.sign].tile; if (!S.found.includes(k)) S.found.push(k); } }
 }
 // ===================== The first ten minutes, the walk side =====================
-// [copy] placeholders: the copywriter picks the final words. All the player strings of the first walk are in this one table.
-const FIRST_TEXT = {
-  goal: { find: 'Find a Loika · feed her', feed: name => name + ' · feed her', pod: name => name + ' left a pod · at her bed', home: 'Bring it home · back to the start',
-    dock: 'Dock the Companion · the pod goes home', dockFinds: 'Dock the Companion · your finds go home' },   // F1-F3; [copy] find, feed (habits-out-build-1: the plan line names feeding her, working words as in still p-6b), pod, dockFinds (w5-first-goal-1)
-  teach: { setOut: 'Press ✓ to set out', place: 'Start at a glint · ✓ starts there', go: 'Press ✓ to go into this place', pod: 'Go to the glint · ✓ takes the pod',
-    stone: 'A charged stone · ✓ takes its Energy', end: '← then End · your finds go in a crate', dock: 'Dock: the key below',
-    endHere: '← End · your finds go in a crate' },
-  face: { still: 'Keep still', beat: 'Face the beat', pod: 'Face the pod', stone: 'Face the stone', turn: dir => 'Turn ' + dir },   // the ✓ words on the walk, facing nothing (the way back is SEND_TXT.way)
-  empty: { later: 'A pod waits', look: 'Still looking', rock: 'Pods sleep in woods and rock', where: (land, dir) => 'In the ' + land + ', ' + (dir ? dir + ' of where you set out' : 'where you set out') + '.',   // [copy]
-    start: 'Start there and press ))) Call.', back: 'Back to the pod' },
-};
-const GOAL_MARK = { slot: 'goal-mark-12', w: 12 };   // [art] the goal line's mark, an empty named slot: the art director's piece fills it (nothing is drawn in it)
+// Its words are FIRST_TEXT (src/data/field-lines.mjs).
 const FIRST_HAZARD = ['shield', 'warn', 'storm', 'shelter'];   // the signs that still show on the first walk: a hit, a strike, a storm
 // "First pod home": the play page's word (the Station's `podHome` in its dock state), else the Station's part of the save. A mibi on the Companion counts too.
 function firstHome() {
@@ -971,8 +964,7 @@ function firstHome() {
   if (S.mibis && S.mibis.length) return true;
   const st = stPart(); return !!st && ((st.tray || []).length > 0 || (st.waiting || []).length > 0 || !!st.bud || (st.mibis || []).length > 0);
 }
-const firstWalk = () => !!S && !(RT && RT.readOnly) && !firstHome();
-// The one teaching line due now on the first walk, or '' (each line waits for its deed; the Station's goal takes over once the pod is home).
+const firstWalk = () => !!S && !RT.readOnly && !firstHome();
 // A pod this place shows now (a Call lifted it, or the veil does): the glint to go to.
 const podShown = (key, night) => S.pods.some(p => p.k === key && !p.h && p.x >= 0 && isNightPod(p) === !!night && isSeen(key, p.x, p.y));   // a pod in view: the built kind's, or (night) her night pod
 // The first walk's pod beat as a way from here: the nearest buried pod, in this place or next door; { dir: 'north-east', vx, vy } or null.
@@ -983,12 +975,12 @@ function beatWay(P) {
     .filter(q => q && q.d > 0).sort((a, c) => a.d - c.d)[0];
   const dir = b && dirWord(b.dx, b.dy, b.d); return dir ? { dir, vx: DIR_VEC[dir][0], vy: DIR_VEC[dir][1], tx: b.tx, ty: b.ty } : null;   // tx, ty: the pod's own tile when it lies in this place
 }
-// (call-probe-marks-1, owner #56) After every Call here, if nothing to take is in sight, the way to the nearest thing to take or explore: a buried find first (its beat), then anything to take seen
+// After every Call here, if nothing to take is in sight, the way to the nearest thing to take or explore: a buried find first (its beat), then anything to take seen
 // in another place of the reach, then the nearest way out not yet walked. { dir, vx, vy, kind } or null; null at once when something to take is in sight (no tab then).
 const SIDE_VEC = { N: [0, -1], S: [0, 1], W: [-1, 0], E: [1, 0] };
 function leadWay(P, lay) {
   const ex = S.exp; if (!ex || !P || lay.cave || !(ex.callsAt && ex.callsAt[lay.cell]) || leftItems(lay.cell).length) return null;
-  // the tab keeps one target until it is reached (owner bug 2026-11-20): pinned for this place and Call while a buried pod of this place is still there
+  // the tab keeps one target until it is reached: pinned for this place and Call while a buried pod of this place is still there
   const pin = RT.leadPin;
   if (pin && pin.key === P.key && pin.calls === ex.stats.calls && pin.pods === S.pods.length && pin.held === ex.cargo.pods.length && (pin.way.tx === undefined || S.pods.some(p => p.h && p.k === P.key && p.x === pin.way.tx && p.y === pin.way.ty))) return pin.way;
   const sig = P.key + ':' + P.x + ':' + P.y + ':' + ex.actions + ':' + ex.stats.calls + ':' + S.pods.length + ':' + ex.cargo.pods.length + ':' + ex.carry;
@@ -999,7 +991,7 @@ function leadWay(P, lay) {
   else {
     let best = null;   // anything to take seen in a place already made in this reach
     for (const c of ex.reach) { if (c === lay.cell || !S.seen.been[c] || !layoutCache.has(String(c)) || !leftItems(c).length) continue; const q = cxy(c), d = Math.max(Math.abs(q.x - here.x), Math.abs(q.y - here.y)); if (!best || d < best.d) best = { c, d, dx: q.x - here.x, dy: q.y - here.y }; }
-    if (best) { way = toWay(best.dx, best.dy, 'take'); if (way) { way.cell = best.c; (RT.pointed = RT.pointed || {})[best.c] = 1; } }   // owner-notes-fix-160: the tab promised a find there; that place glints it (and keeps its tab) until it is taken
+    if (best) { way = toWay(best.dx, best.dy, 'take'); if (way) { way.cell = best.c; (RT.pointed = RT.pointed || {})[best.c] = 1; } }   // the tab promised a find there; that place glints it (and keeps its tab) until it is taken
     if (!way) {   // the nearest side of this place that leads on to a cell of the reach not walked yet
       let out = null;
       for (const o of lay.openings || []) { if (openingKind(lay, o).kind !== 'open') continue; const [dx, dy] = SIDE_VEC[o.side], c = (here.y + dy) * MW + here.x + dx;
@@ -1011,6 +1003,7 @@ function leadWay(P, lay) {
   }
   RT.lead = { sig, way }; RT.leadPin = way ? { key: P.key, calls: ex.stats.calls, pods: S.pods.length, held: ex.cargo.pods.length, way } : null; return way;
 }
+// The one teaching line due now on the first walk, or '' (each line waits for its deed; the Station's goal takes over once the pod is home).
 function teachStep() {
   const T = FIRST_TEXT.teach, ex = S.exp;
   if (isDocked() || RT.view || (S.phase === 'patch' && S.ui.swap)) return '';
@@ -1018,18 +1011,18 @@ function teachStep() {
   if (S.phase === 'place') return T.place;
   if (S.phase === 'map') return ex.cargo.pods.length && ex.pos === ex.start ? T.endHere : T.go;
   const P = S.phase === 'patch' ? ex.patch : null; if (!P) return '';
-  { const np = S.pods.find(p => isNightPod(p) && p.k === P.key && !p.h && isSeen(P.key, p.x, p.y)); if (np && !ex.cargo.pods.some(isNightPod) && !S.found.includes('teach:nightpod')) return WORDS.pod.podTeach(np.nm); }   // pod-sleep-build-1: her pod in sight: the line names her, never the built line for a pod (once per save: spent when she is taken up)
+  { const np = S.pods.find(p => isNightPod(p) && p.k === P.key && !p.h && isSeen(P.key, p.x, p.y)); if (np && !ex.cargo.pods.some(isNightPod) && !S.found.includes('teach:nightpod')) return WORDS.pod.podTeach(np.nm); }   // her pod in sight: the line names her, never the built line for a pod (once per save: spent when she is taken up)
   if (!ex.cargo.pods.length) { if (podShown(P.key)) return T.pod;   // her own pod, in sight
     let c0 = ex.carry === 'fruit' ? indInSight() : null; if (c0 && !onScreen(c0.x, c0.y)) c0 = null; if (c0 && S.named && S.named[c0.id] && !S.found.includes('teach:eats')) return WORDS.pod.eatsTeach(S.named[c0.id]);   // fruit in hand, a named Loika in sight: once per save (spent at the feed)
-    const w = loikaTeach(); if (w) return w; }   // W5: the next deed with a named Loika, in the words W4 uses
+    const w = loikaTeach(); if (w) return w; }   // the next deed with a named Loika, in her card's words
   if (!ex.cargo.e && layout(P.key).feats.some(f => f.kind === 'k' && stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f))) return T.stone;
-  { const wl = whereTeach(P); if (wl) return wl; }   // first-walk-teach-approach-1: where she comes, in a place with none
+  { const wl = whereTeach(P); if (wl) return wl; }   // where she comes, in a place with none
   if (!ex.cargo.pods.length) return '';   // nothing to take home yet: no line asks for the end
   return T.end;
 }
-// first-walk-teach-approach-1: the cells of the reach that hold a named Loika (made places only; layouts built for the check are dropped again), kept per reach and place count
+// The cells of the reach that hold a named Loika (made places only; layouts built for the check are dropped again), kept per reach and place count
 function namedCells() {
-  // round 2: not keyed on PLACES.epoch (it climbs with every place the worker delivers); keyed on the reach and on how many of the Loika's reach cells have their place, and a cell is checked once (memo) when its place arrives
+  // not keyed on PLACES.epoch (it climbs with every place the worker delivers); keyed on the reach and on how many of the Loika's reach cells have their place, and a cell is checked once (memo) when its place arrives
   const ex = S.exp, reach = new Set(ex.reach.map(Number)), cand = [];
   for (const q of S.cr) { if (q.sp !== 0 || q.cv || q.home || !reach.has(+q.c) || cand.some(x => x.c === +q.c)) continue; cand.push({ c: +q.c, q }); }
   const have = cand.filter(x => placeHave(String(x.c))).length, key = S.seed + '|' + S.cr.length + '|' + ex.reach.length + '|' + have;
@@ -1063,13 +1056,13 @@ const APPROACH_ONCE = { near: 'teach:near', heard: 'teach:heard', tell: 'teach:t
 function approachTeach(c) {
   const W = WORDS.teachWalk, e = c.ease | 0;
   if (e >= 1 && e < 3 && !S.found.includes(APPROACH_ONCE.heard)) return { k: 'heard', t: W.heard };
-  if (e === 0 && !c.hb && c.st === 'idle' && habRange(cheb(c, S.exp.patch)) === 'mid' && !S.found.includes(APPROACH_ONCE.tell)) return { k: 'tell', t: W.tell };   // (5) mid range and still: her tell comes first
+  if (e === 0 && !c.hb && c.st === 'idle' && habRange(cheb(c, S.exp.patch)) === 'mid' && !S.found.includes(APPROACH_ONCE.tell)) return { k: 'tell', t: W.tell };   // mid range and still: her tell comes first
   if (e === 0 && cheb(c, S.exp.patch) > 2 && !S.found.includes(APPROACH_ONCE.near)) return { k: 'near', t: W.near };
   return null;
 }
 // The teaching line takes the message box whenever no real note or sign holds it; an action clears it and the next frame sets the next one.
 function teachFill() {
-  const bo = FX.beatOver;   // wild-life-build-6: her line over the standing target line ends after its hold, or when another line has the box; the target line comes back as it was
+  const bo = FX.beatOver;   // her line over the standing target line ends after its hold, or when another line has the box; the target line comes back as it was
   if (bo) { if (FX.msg !== bo.text || NOW >= bo.until) { FX.beatOver = null; if (FX.msg === bo.text && firstWalk()) { FX.notes = FX.notes.filter(x => x.text !== bo.text); FX.msg = ''; FX.sign = null; } } }
   if (FX.msg && FX.msg !== FX.teachMsg) return;
   const prevUp = RT.approachUp; RT.approachUp = null;
@@ -1077,29 +1070,28 @@ function teachFill() {
   if (prevUp && !(RT.approachUp && RT.approachUp.k === prevUp.k) && !S.found.includes(APPROACH_ONCE[prevUp.k])) S.found.push(APPROACH_ONCE[prevUp.k]);   // each approach line once per save, spent when it is left
   FX.msg = t; FX.teachMsg = t; FX.sign = null;   // on a first save the opening draws its one teaching line under the land itself
 }
-// The goal line: F1-F3 before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
-// W5 (first walk): the named Loika he follows; { id, name } or null when none is met.
+// The named Loika he follows on the first walk; { id, name } or null when none is met.
 function metBest() {
-  const nm = S.named || {}, gone = S.homeIds || {}, order = (S.metIds || []).filter(id => nm[id] && !gone[id]);   // pod-sleep-build-1: one gone home is skipped: the goal moves to the next Loika met
+  const nm = S.named || {}, gone = S.homeIds || {}, order = (S.metIds || []).filter(id => nm[id] && !gone[id]);   // one gone home is skipped: the goal moves to the next Loika met
   for (const id of Object.keys(nm)) if (!order.includes(id) && !gone[id]) order.push(id);   // a save from before the met order: by id
-  // owner note 167 (rule 47a): the one he follows is the named Loika he last faced, watched or noted (S.follow); before any of those the first named one he met; a Loika newly seen never takes it
+  // the one he follows is the named Loika he last faced, watched or noted (S.follow); before any of those the first named one he met; a Loika newly seen never takes it
   const id = S.follow && nm[S.follow] && !gone[S.follow] ? S.follow : order[0]; return id ? { id, name: nm[id] } : null;
 }
-// owner note 167: facing, watching or noting a named Loika makes her the one followed
+// Facing, watching or noting a named Loika makes her the one followed.
 function followSet(c) { if (RT.readOnly || !c || !c.ind || !S.named || !S.named[c.id]) return; S.follow = String(c.id); }
 function followFront() { const ex = S && S.exp, P = ex && ex.patch; if (!P) return; const f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player'); if (o && o.type === 'cr') followSet(o.c); }
 const ownPodLying = () => S.pods.find(p => p.how === 'own' && !p.h) || null;
-// The teaching line in a place: a named Loika's prints to read, or her next want (coat first, then face), both in W4's words.
+// The teaching line in a place: a named Loika's prints to read, or her next want (coat first, then face), both in her card's words.
 function loikaTeach() {
   const pr = printsToRead(); if (pr) return habName(pr.c) + ' · ' + WORDS.prints.read;
-  const c = indInSight(), ap = c && firstWalk() ? approachTeach(c) : null; if (ap) { RT.approachUp = ap; return ap.t; }   // first-walk-teach-approach-1
-  const ct = c || indInSight(true);   // pr722-fix-1: before her first feed her kind is not known yet, so indInSight() is null; the teach asks for any named Loika in sight (not bolted)
-  if (ct && (ct.ease | 0) < 3 && firstWalk() && S.exp.carry !== 'fruit' && S.named && S.named[ct.id] && spOf(ct.sp).eats && !S.found.includes('teach:eats')) { const n = S.named[ct.id], long = WORDS.pod.fruitTeach(n); return long.length <= 44 ? long : WORDS.pod.fruitTeachShort(n); }   // first-pod-fix-1 (1): a named Loika met, no fruit in hand: where the food comes from (spent at her first feed); editorial's words, bus 2dd0bb
+  const c = indInSight(), ap = c && firstWalk() ? approachTeach(c) : null; if (ap) { RT.approachUp = ap; return ap.t; }
+  const ct = c || indInSight(true);   // before her first feed her kind is not known yet, so indInSight() is null; the teach asks for any named Loika in sight (not bolted)
+  if (ct && (ct.ease | 0) < 3 && firstWalk() && S.exp.carry !== 'fruit' && S.named && S.named[ct.id] && spOf(ct.sp).eats && !S.found.includes('teach:eats')) { const n = S.named[ct.id], long = WORDS.pod.fruitTeach(n); return long.length <= 44 ? long : WORDS.pod.fruitTeachShort(n); }   // a named Loika met, no fruit in hand: where the food comes from (spent at her first feed); the editor's words
   const cd = c && habCardNext(c); return cd ? habName(c) + ' · ' + cd : '';
 }
 const waysLine = b => b ? FIRST_TEXT.goal.feed(b.name) : FIRST_TEXT.goal.find;
 const dockHasPod = () => S.bay.some(c => (c.pods || []).length) || !!(S.report && S.report.sealed && (S.report.sealed.pods || []).length) || !!(S.hold && (S.hold.pods || []).length);
-// The goal line: F1-F3 before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
+// The goal line: the first walk's own before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
 function goalLine() {
   if (!S || RT.readOnly) return '';
   if (firstWalk()) { const G1 = FIRST_TEXT.goal, ex = S.exp;
@@ -1107,24 +1099,13 @@ function goalLine() {
     if (ex && ex.cargo.pods.length) return G1.home;
     const op = ownPodLying(); if (op) return G1.pod(op.of);
     return waysLine(metBest()); }
-  // after the first expedition only the Station's Companion part shows; a Station step gives no line, and no band (note 10)
+  // after the first expedition only the Station's Companion part shows; a Station step gives no line, and no band
   const g = RT.caddy && RT.caddy.goal; if (!g) return ''; if (typeof g === 'string') return g; return g.companion ? g.companion.text || '' : '';
 }
 // ===================== Signs: one picture and one line, found again on the Probe =====================
+// A sign's line is its row of SIGN_LINE (src/data/field-lines.mjs).
 // key: the once-flag (an old save keeps its flags); also: other flags that count as seen; tile: its place on the Probe (met-order grid).
 // Priority is the old once-line's (a merged sign takes the highest of its lines; every hazard sign is 3, so the hazard order decides). Then the order below.
-// The bag choice at the find (walk slice W§5): every player string of the chooser, so the words can change without code.
-const SWAP_TEXT = { title: 'Your bag is full', sub: 'Keep one of these. The other stays here.', bag: 'In your bag', found: 'Found here', stays: 'stays here',
-  foot: 'The one you leave waits here. The map remembers it.', take: 'Take it', leave: 'Leave it here', leaveCtx: p => 'leave the ' + p + ' pod', kept: 'Left it here', swapTitle: 'Swap the pod' };
-const SIGN_LINE = {
-  call: 'Call lifts the veil: finds show', shield: 'Plate lost · lose them all and the Probe breaks',   // [copy] placeholder: the copywriter has the final word (owner 11-08: "no plates, Probe breaks" read as "the Probe is broken")
-
-  storm: dir => 'More bolts, more strikes · moving ' + (dir > 0 ? 'east ▶' : 'west ◀'), warn: 'Lightning strikes here next', shelter: 'Overhangs and caves, not trees',
-  full: 'Hold full · a new pod is a choice',bank: 'If the Probe breaks, you lose your finds', fog: 'Fog · creatures calm, sight short',
-  muffled: 'The fog muffles your Call', fruit: WORDS.fruitSign, putdown: 'Back off · eaters come', warm: 'A warm stone · a little Energy',
-  tuft: 'Shed fur · a little Essence', press: 'Pressed fruit · a little Essence', dew: 'Dew refills the cups in fog', strike: WORDS.strike.sign,
-  bubbleNotice: 'Noticed you · stop or it runs', bubbleCurious: 'Curious · it comes to you', bubbleFruit: 'Wants your fruit · put it down', bubbleSettle: 'Settling · keep still', bubbleSeek: 'Going for the fruit · let it eat',
-  untuva: known => known ? 'Well fed, Untuvas may drop pods' : 'Well fed, these may drop pods', calmkeep: 'Your partner keeps them calm' };
 // the first sighting of each map sign: its Probe name (the line on the card is the same one)
 const SIGN_NAME_LINE = { pod: 'Pod · found, not taken', t: 'Tracks · creatures here', b: 'Slow beat · often a pod', k: 'Bolt · a charged stone', kw: 'Hollow bolt · warm stone',
   beacon: 'Beacon · light it to see', skull: 'Skull · lost pods lie here', depot: () => cap(DEPOT_NAME) + ' · lit, end here', burrow: 'Narrow burrow · a Tuikis digs it out', water: 'Fast water · a swimmer', soft: 'Mud or scree · needs a rambler', bank: 'Earth bank · needs a digger', deep: 'Deep ? · the Probe upgrade reads it' };
@@ -1208,23 +1189,9 @@ const spName = sp => S.known.includes(sp) ? spOf(sp).name : 'creature';   // spe
 const aAn = w => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
 function fxFloat(x, y, text, icon) { FX.floats.push({ x, y, text, icon, at: NOW }); }
 function fxGlint(x, y, delay) { FX.rings.push({ x, y, at: NOW + (delay || 0), glint: 1 }); }
-// ===== JUICE (juice-build-1): every act that takes or gives something answers at once, from this one table, through fxJuice. =====
-// A row says: line, what it moved him toward (the canon strings, core-loop-canon-1; null = the act's own line stays). The act's sound is the row of the same name in
-// src/sound/blips.mjs; the burst at the thing is about 4 frames of 80 ms, palette only, off under reduced motion. The +N rising over the thing and the HUD counter's
-// bracket belong to a counter changing, so addMat does them (a counter changes the same way whatever act changed it).
-const JUICE = {
-  stone:   { line: n => '+' + n + ' Energy · it goes home in the crate' },   // a stone's charge
-  cup:     { line: n => '+' + n + ' Essence · it feeds the Station' },       // a cup of dew
-  tuft:    { line: n => '+' + n + ' Essence · it feeds the Station' },       // a tuft on the ground
-  press:   { line: n => '+' + n + ' Essence · it feeds the Station' },       // fruit pressed at a stone
-  fruit:   { line: () => '+1 fruit · in your hand for her' },               // fruit picked up
-  pod:     { line: () => 'A pod · it goes home in the crate' },
-  slab:    { line: null },    // the push's own lines say what lay under it
-  prints:  { line: null },    // her prints line stays
-  note:    { line: null },    // the note's own line stays
-  feed:    { line: null },    // the feeding's own line stays
-  strike:  { line: null }     // a strike mark's own line stays
-};
+// Every act that takes or gives something answers at once, through fxJuice: its row of JUICE (src/data/field-lines.mjs) gives the line, the row of the same name in
+// src/sound/blips.mjs the sound, and a burst plays at the thing (about 4 frames of 80 ms, palette only, off under reduced motion). The +N rising over the thing and the
+// HUD counter's bracket belong to a counter changing, so addMat does them (a counter changes the same way whatever act changed it).
 const JUICE_BURST_MS = 320;   // 4 frames of 80 ms
 // x, y: the tile of the thing (patch coordinates); n: how much it moved, for the line.
 function fxJuice(act, x, y, n) {
@@ -1235,8 +1202,7 @@ function fxJuice(act, x, y, n) {
 }
 const LOCK_MAX = 2500;   // no hold on the keys lasts longer than this, whatever asked for it: input never locks for good
 function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + Math.min(ms, LOCK_MAX)); }
-// A crossing is a camera slide of one screen in the walking direction (owner walk note 18): the last picture of the place left slides out, the new place slides in, input is locked for its length.
-const SLIDE_MS = 300;
+// A crossing is a camera slide of one screen in the walking direction (src/render/slide.mjs): the last picture of the place left slides out, the new place slides in, input is locked for its length.
 // The place's picture sits below the goal band (the band's rows hold no picture), so the sliding layer is the view below the band: nothing of the band, and no empty band rows, travels with it.
 function viewSnapshot() { const gb = goalBandOn() ? GOAL_BAND_H : 0, cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H - gb; cv.gb = gb; cv.hero = RT.heroN || 0; const c = cv.getContext('2d'); c.drawImage(scr, 0, VIEW_Y + gb, SCR_W, VIEW_H - gb, 0, 0, SCR_W, VIEW_H - gb); return cv; }   // the goal band is drawn once, by drawGoalBand over the slide, never inside the sliding layer
 // The place's own picture (before the goal band, the message and the bottom line go over it) is kept each frame the explorer stands within a tile of an edge: that is what slides out.
@@ -1251,40 +1217,27 @@ function keepEdgeView() {
 const plNow = () => RT.plScr ? { x: RT.plScr.x, y: RT.plScr.y } : null;   // where the pawn stands on the screen (the last frame's)
 // What a crossing slides out: the picture of the place left and where the pawn stood in it (null when motion is off: then the next place is a cut).
 function slideOut() { if (!motion()) return null; const ev = FX.edgeView && FX.edgeView.key === S.exp.patch.key ? FX.edgeView : null; return { snap: ev ? ev.snap : viewSnapshot(), pl: ev ? ev.pl : plNow() }; }
-function slideP(sl) { const p = clamp((NOW - sl.at) / SLIDE_MS, 0, 1); return 1 - (1 - p) * (1 - p); }   // ease-out
 // After the new place's frame is on the screen: the screen's view band is moved by the slide (the old picture leaves the way the explorer walks, the new one comes in behind it).
 function drawSlide() {
   const sl = FX.slide; if (!sl) return;
   if (!motion() || NOW - sl.at >= SLIDE_MS) { FX.slide = null; drawHeroLater(); const k = FX.slideKey; FX.slideKey = null; if (k && !HELD.includes(k)) setTimeout(() => { if (S && S.phase === 'patch') act(k, 'creep'); }, 0); return; }   // the slide's last frame: the pawn stands in its place again; a tap made inside the slide is played now (a key still held walks on by the resume)
-  const p = slideP(sl), nw = viewSnapshot(), W = SCR_W, H = VIEW_H;
+  const p = slideAt(sl, NOW), nw = viewSnapshot(), W = SCR_W, H = VIEW_H;
   RT.slideNewHero = nw.hero;
   const top = VIEW_Y + nw.gb;   // the slide runs below the goal band; the band itself stays where it is
   g.save(); g.beginPath(); g.rect(0, top, W, H - nw.gb); g.clip();
   g.fillStyle = HEX[C.ink]; g.fillRect(0, top, W, H - nw.gb);
-  const Hs = H - nw.gb, o = slideOffsets(sl, RT.plScr, W, Hs);   // the layers travel the height they slide in, so no gap opens between them
+  const Hs = H - nw.gb, o = slideOffsets(sl, RT.plScr, RT.ts, W, Hs);   // the layers travel the height they slide in, so no gap opens between them
   g.drawImage(sl.snap, Math.round(o.old.x * p), top + Math.round(o.old.y * p));
   g.drawImage(nw, Math.round(o.nw.x * (1 - p)), top + Math.round(o.nw.y * (1 - p)));
   if (RT.heroLater && RT.heroFn) {   // the pawn, once: it rides from its spot in the old place (p = 0) to its spot in the new one (p = 1), with the camera
-    const a = sl.pl, b = RT.plScr, ride = a && b && slideRides ? { x: (a.x - b.x) * (1 - p), y: (a.y - b.y) * (1 - p) } : { x: 0, y: 0 };
+    const a = sl.pl, b = RT.plScr, ride = a && b && o.rides ? { x: (a.x - b.x) * (1 - p), y: (a.y - b.y) * (1 - p) } : { x: 0, y: 0 };
     try { RT.heroFn(Math.round(ride.x), Math.round(ride.y)); } catch (e) { if (RT.err++ < 3) console.error(e); }
   }
   g.restore();
 }
-// Bug #37: the two places are one map. Each layer is a whole screen of its own place; the pawn stands one tile further on in the new one than in the old (the cell across the shared edge).
-// The old layer ends (p = 1) where that puts its pawn, the new one starts (p = 0) where its pawn is one tile beyond the old pawn's: so the view scrolls by exactly what the camera of each place
-// is off by, and the pawn's line of the map never shifts on the screen, whatever the sizes of the two places (a screen away along the way, a few tiles apart across it).
-let slideRides = false;
-function slideOffsets(sl, pl1, W, Hs) {
-  const dx = sl.dx, dy = sl.dy, plain = { old: { x: -dx * W, y: -dy * Hs }, nw: { x: dx * W, y: dy * Hs } }, pl0 = sl.pl;
-  slideRides = false;   // true when the pawn's two spots are on the same map line (the offsets are not the plain screen slide): drawSlide then carries the pawn between them
-  if (!pl0 || !pl1 || !RT.ts) return plain;
-  const ts = RT.ts, nw = { x: pl0.x + dx * ts - pl1.x, y: pl0.y + dy * ts - pl1.y }, old = { x: pl1.x - dx * ts - pl0.x, y: pl1.y - dy * ts - pl0.y };
-  if (Math.abs(nw.x) > 1.5 * W || Math.abs(nw.y) > 1.5 * Hs) return plain;
-  slideRides = true; return { old, nw };   // a camera that is not flush with the place's edge gives a distance that is no screen: keep the plain slide
-}
 // A cell the storm struck: the world turn at the expedition's end reads its place (stones, strike mark), and a cold layout takes a quarter second to build, so it is built now, a moment after the flash, in the walk's idle time and not all at once when End expedition is pressed.
-function stormMark(ex, c) { ex.stormCells[c] = 1; setTimeout(() => { if (S && S.exp === ex && typeof layout === 'function' && !layoutCache.has(String(c)) && placeHave(String(c))) layout(String(c)); }, 600); }
-function transition() { FX.transAt = NOW; lockInput(160); if (typeof stopRepeat === 'function') stopRepeat(); } // a held direction never carries across scales
+function stormMark(ex, c) { ex.stormCells[c] = 1; setTimeout(() => { if (S && S.exp === ex && !layoutCache.has(String(c)) && placeHave(String(c))) layout(String(c)); }, 600); }
+function transition() { FX.transAt = NOW; lockInput(160); stopRepeat(); } // a held direction never carries across scales
 
 let crById = new Map();
 function indexCreatures() { crById = new Map(S.cr.map(w => [w.id, w])); }
@@ -1292,7 +1245,7 @@ function logEv(text) {
   if (!S) return; const tag = S.exp ? 'E' + S.exp.n : 'T' + wTurn();
   S.log.push(tag + ' · ' + text); if (S.log.length > 40) S.log.splice(0, S.log.length - 40);
 }
-// ---- The Log (companion-device-build-1): S.book keeps a record for each thing that happened on a walk, written by the same calls that write S.log, at the moment it happens. ----
+// ---- The Log: S.book keeps a record for each thing that happened on a walk, written by the same calls that write S.log, at the moment it happens. ----
 // { d: the day (the expedition's number), part: the part of day, place: the place's name, from: where from the flag, id/who: the wild one it is about (or none), kind, text, item }
 // kinds: prints (read), met (met and named), habit (a habit noted, far or mid), near (crept to two steps), find (a find taken). The last 3 days are kept; S.log's 40 lines stay for the observer panel. An old save has no S.book: nothing is shown.
 const BOOK_DAYS = 3;
@@ -1309,10 +1262,10 @@ function bookEv(kind, c, text, item) {
   while (bk.length && bk[0].d < ex.n - (BOOK_DAYS - 1)) bk.shift();
   return rec;
 }
-// Where and when a thing in the hold was taken (companion-case-build-1): day, part of day and place name (the Log's own), written by the calls that add it; the crate keeps it. A thing from an old save has none.
+// Where and when a thing in the hold was taken: day, part of day and place name (the Log's own), written by the calls that add it; the crate keeps it. A thing from an old save has none.
 function gotNow() { const ex = S && S.exp; return ex && ex.patch && S.day ? { got: { d: ex.n, part: dayPart(), place: placeName(curLay()) } } : {}; }
 function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
-// ---- Care and the carried set (the care save shape, C0) ----
+// ---- Care and the carried set ----
 // The Companion carries up to three mibis (S.carried, in the order they were taken). Care happens here and nowhere else:
 // Play together, once a world turn for all of them together. Three plays earn the bond; every young mibi grows up on the
 // clock. The Companion owns plays, bonded, grownTurn, notches and outings; the Station only mirrors them at the dock.
@@ -1340,10 +1293,10 @@ const CARE_TEXT = {
   youngTime: 'young · grows up in time', leadsChip: 'leads',
   withYouCap: 'With you', atHomeCap: 'At home', othersHome: 'the others are at home',
   takeAlong: 'take mibis along', whenDocked: 'when docked',
-  // a mibi of a species the Companion has no entry for (X1): the copywriter's signed strings (2026-10-11 14:42)
+  // a mibi of a species the Companion has no entry for: the copywriter's signed strings
   spOther: 'a Station species', abOther: 'no field ability yet',
   playedOther: (n, mem) => mem === 'mud' ? n + ' crosses the mud' : n + ' plays · ' + (mem ? 'it remembers the ' + mem : 'it hasn’t been out yet'),
-  // the juvenile that rides in the Companion on an expedition (X26): the copywriter's signed strings (2026-10-11 15:04)
+  // the juvenile that rides in the Companion on an expedition: the copywriter's signed strings
   riderTime: 'grows up in time, riding along',
   riderSetOut: n => n + ' rides along until it’s grown', riderMenu: n => n + ' rides along',
   playedYoung: (n, mem) => CARE_TEXT.playedOther(n, mem), onceGrown: ' once grown',
@@ -1391,7 +1344,7 @@ const CARE_ASSETS = [
 ];
 const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f'], 'mini'], 'c-token-48': ['stone', ['token', 't'], 'sprite'],
   'c-sprite-other-32': ['stone', ['mibi', 'm']], 'c-mini-other-12': ['stone', ['m']] };   // each placeholder's plate colour and labels (longest first), and the mibi's own built art it carries ('mini' 12 px, 'sprite' 32 px)
-const CARRY_MAX = 3, BOND_PLAYS = 3;   // the carry cap; the bond: three plays together (owner 2026-11-11)
+const CARRY_MAX = 3, BOND_PLAYS = 3;   // the carry cap; the bond: three plays together
 function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
 // One definition of a mibi's stage on both pages (the Station's copy is the same text; a parity test proves it).
 function stageAt(m, turn, j, e) {
@@ -1483,9 +1436,9 @@ function carryApply(S, st) {
 }
 const tierOf = () => TIER[S.tier] || TIER[1];
 
-function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
+function urlSeed() { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; }
 // A new world's fields, before its life is placed: newRealm starts from them, and load() fills from them what a save lacks.
-// They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk (v9) keeps each region's map in regions[].map.
+// They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk keeps each region's map in regions[].map.
 function worldFields(seed, gen, wid) {
   return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], habits: {}, looks: {}, pages: {}, day: freshDay(), seen: newSeen(MW * MH), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
@@ -1498,20 +1451,6 @@ function realmOf(flat) { const r = migrate8({ ...flat, v: 8 }, { now: Date.now()
 // The notice line (play/src/footer.mjs mountNotice; the words are WORDS.notice's [copy] slots): what holds now is kept here, and drawn once the line is mounted.
 const NOTE = { flags: {}, ui: null };
 function noteSet(kind, on) { on = !!on; if (!!NOTE.flags[kind] === on) return; NOTE.flags[kind] = on; if (NOTE.ui) NOTE.ui.set(kind, on); }
-// New world, from the menu: the map is replaced and the game is not (bug #59, the owner's words: "under no circumstance you should delete user game data").
-// What the player has made (mibis, the Station's part, crates, the hold, the Library, bonds, the world turn) is read off the old save here, as a copy;
-// what belongs to the old land (every region and its map, the expedition on it, the report, the screen the player was on) is left out. Carried mibis come home.
-// An expedition on the old land ends with it: its cargo goes to the hold (nothing in it is lost), the Probe's Shield stays as it was.
-const NEW_MAP_ONLY = new Set(['v', 'seed', 'regions', 'here', 'phase', 'ui', 'exp', 'report', 'walkTurn', 'biomeV', 'realmRev', 'pods', 'cr', 'gen', 'hold', ...MAP_KEYS]);
-function keepOfGame(old) {
-  const o = serialize(old), keep = {};
-  for (const k of Object.keys(o)) if (!NEW_MAP_ONLY.has(k)) keep[k] = o[k];
-  const ex = old.exp, cargo = ex && ex.cargo && (ex.cargo.e | 0 || ex.cargo.d | 0 || ex.cargo.s | 0 || (ex.cargo.pods || []).length || (ex.cargo.samples || []).length) ? ex.cargo : null;
-  const hold = cargo || old.hold; if (hold) keep.hold = hold;
-  const k2 = JSON.parse(JSON.stringify(keep));
-  k2.carried = []; k2.lead = null;   // the mibis with you come home
-  return k2;
-}
 function newRealm(seed, gen = NEW_GEN, wid, keep) {   // a new realm takes the newest generator (a test may ask for an older one); a realm that follows a sleep is given its wid; `keep` is the game that stays (keepOfGame)
   if (seed == null) seed = randomSeed();
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
@@ -1541,13 +1480,14 @@ function mountRegion(id) {
 // until then the maps keep to the cell labels. A page without a worker makes it on the spot when a map first asks (sectorHere).
 const SECTOR_ASKED = new Set();
 function wantSector(R) {
-  if (!R || R.gen !== 7 || !R.slot || !S.regions[0] || typeof readySector !== 'function') return;
+  if (!R || R.gen !== 7 || !R.slot || !S.regions[0]) return;
   const seed = S.regions[0].seed, key = seed + ':' + R.slot.join(','); if (SECTOR_ASKED.has(key)) return; SECTOR_ASKED.add(key);
   const again = () => { if (hereRegion() === R) { landReset(); mapCv = null; } };
   // the places in view first (the Probe's reach and every cell already seen), then the rest of the region, both in the worker
   const view = new Set(S.exp && S.exp.reach ? S.exp.reach : []);
   for (let c = 0; c < MW * MH; c++) if (S.seen.rev[c]) view.add(c);
-  readySector(seed, R.slot, realm7(seed), [...view], again).then(how => { if (how === 'page') sectorMake(seed, R.slot); again(); }, () => { });   // no worker (or it failed): made here, on the spot
+  readySector(seed, R.slot, realm7(seed), [...view], again).then(how => { if (how === 'page') sectorMake(seed, R.slot); again(); },   // 'page': there is no worker, so it is made here, on the spot
+    e => { console.warn('the worker did not make the region’s sector: its maps keep to the cell labels', e); });
 }
 // A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
 // storm or trail, and no line written. Older turns are let go (the world is permanent, not a ledger). With one region, turnSeen is always S.turn.
@@ -1563,89 +1503,73 @@ function inRegion(id, fn) {
   const was = S.here; mountRegion(id);
   try { return fn(); } finally { mountRegion(was); }
 }
-// A new home region in a free slot: its kind and generator by the realm's rule (src/regions.mjs openHome), its own life; the hand is put back.
-function openRegion(slot) {
-  const rec = openHome(S, slot); S.regions.push(rec);
-  inRegion(rec.id, () => { const life = genLife(S.seed); S.cr = life.cr; S.pods = noAnon(prefixPods(life.pods, rec.n)); indexCreatures(); });
-  return rec.id;
-}
 // Crates and the expedition under way name their region; none means region 1, so a realm of one region writes nothing new.
 const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
-// The Station's part as last stored, if it belongs to this world.
-function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
-function save(keepRipe, noWrite) {   // noWrite: the storage event's call: the Station's part is read and synced, the bytes are left as they are
+// What a write would replace: the Station's part of the stored save if it belongs to this world ({ st }), or why the stored bytes are not this page's to write over
+// ({ held: 'newer' }, a newer build's save; { held: 'broken' }, bytes that are no save). Nothing stored, or storage that cannot be read: { st: null }, and the write itself says if it fails.
+function storedSave() {
+  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { return { st: null }; }
+  if (!raw) return { st: null };
+  let o; try { o = JSON.parse(raw); } catch (e) { return { held: 'broken' }; }
+  if (!o || typeof o !== 'object' || Array.isArray(o)) return { held: 'broken' };
+  if (typeof o.v !== 'number') return { held: 'broken' };   // no numeric v: broken to boot too (resetPlan)
+  if (o.v > SAVE_V) return { held: 'newer' };
+  return { st: o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null };
+}
+function save(how) {   // save({ noWrite: true }) is the storage event's call: the Station's part is read and synced, the bytes are left as they are
   if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
+  const had = storedSave();
+  if (had.held) {   // the stored save changed under this page into one it cannot read or a newer build's: it is never replaced; the page goes read-only, as boot does for the same bytes
+    console.error('the stored save is ' + (had.held === 'newer' ? 'a newer build’s' : 'not readable') + ': it stays as it is and this page writes nothing more');
+    if (had.held === 'newer') readOnlyNewer(); else readOnlyBroken(); return; }
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
-  const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
+  if (had.st) S.st = had.st; else delete S.st;   // the Station's part stays as the Station wrote it
   if (fieldFrozen() && FX.shieldAtDock == null) FX.shieldAtDock = S.exp.shield;   // the Shield as docked, before the cradle mends it
   if (S.st) { syncStation(); normalizeCare(S); }
   if (!fieldFrozen() && FX.shieldAtDock != null) {   // Lift (or the expedition ended): the bars the cradle mended flash once
     if (S.exp && S.exp.shield > FX.shieldAtDock) FX.shieldFlash = { from: FX.shieldAtDock, at: NOW };
     FX.shieldAtDock = null; FX.dockSaid = 0; }
-  if (typeof keepCompanion === 'function') keepCompanion();
-  const moving = typeof legacyTo === 'string' ? legacyTo : null;   // the shared save of earlier builds, moving under this Companion's key with this write
-  if (noWrite) { if (typeof onStateChanged === 'function') onStateChanged(); return; }
-  try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } noteSet('saveFailed', false); } catch (e) { noteSet('saveFailed', true); /* storage full, blocked or private: keep playing in memory, and say so until a save works again (WORDS.notice.saveFailed) */ }
-  if (typeof onStateChanged === 'function') onStateChanged();
+  keepCompanion();
+  const moving = legacyTo;   // the shared save of earlier builds, moving under this Companion's key with this write
+  if (how && how.noWrite) { onStateChanged(); return; }
+  try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } noteSet('saveFailed', false); }
+  catch (e) { if (!NOTE.flags.saveFailed) console.error('the save could not be written', e); noteSet('saveFailed', true); }   // storage full, blocked or private: play goes on in memory, and the notice line says so until a save works again (WORDS.notice.saveFailed)
+  onStateChanged();
 }
-// v7 → v8, the same structural move on both pages: the old Station store becomes the Station's part, mibis move to
-// the Station (the Companion keeps its copies), the bay starts empty. The Station page fills in genomes.
-function migrate7(o) {
-  const wid = 'w' + (o.seed >>> 0).toString(36), H = o.home || { e: 0, d: 0, s: 0, pods: [] };
-  const st = { wid, at: Date.now(), turn: o.turn || 0, e: H.e | 0, d: H.d | 0, s: H.s | 0, tray: [], waiting: [], accepted: [], known: (o.known || []).slice(), met: (o.known || []).slice(),
-    seen: {}, studiedW: {}, mibis: [], nextMibi: 1, nameN: 0, inc: null, dock: { docked: false, at: Date.now() }, withReq: null, probe: null, mendFull: true, freeId: false, returned: [], firstMibi: true, log: [] };
-  (H.pods || []).forEach((p, i) => { const pod = { id: 'v7-' + i, sp: p.sp, g: p.g, how: p.how, gs: hash(o.seed, 'gs7', i, p.sp), n: p.n || 0, idd: p.idd ? 1 : 0, st: [] }; (st.tray.length < 6 ? st.tray : st.waiting).push(pod); });
-  st.mibis = (o.mibis || []).map(m => ({ id: m.id, name: m.name, sp: m.sp, gs: hash(o.seed, 'mibi7', m.id), born: m.born || 0, from: { n: m.from || 0, g: '', how: '' }, mem: m.mem || null, outings: 0, notches: 0, bonded: false }));
-  st.nextMibi = st.mibis.reduce((a, m) => Math.max(a, m.id), 0) + 1; st.nameN = st.mibis.length; st.freeId = (o.found || []).includes('freeid'); st.firstMibi = !st.mibis.length;
-  const s = Object.assign({}, o); delete s.home; delete s.report;
-  s.v = 8; s.wid = wid; s.bay = []; s.hold = null; s.walkTurn = -1; s.withSeen = 0; s.probeSeen = 0; s.retSeen = []; s.dockSeen = 0; s.st = st;
-  if (s.exp && s.exp.cargo) s.exp.cargo.pods.forEach((p, i) => { if (p.gs == null) p.gs = hash(o.seed, 'gs7c', String(p.id), i, p.sp); });   // pods in flight get their own genomes
-  if (s.phase === 'station') s.phase = 'setup';
-  if (s.phase === 'watch' || s.phase === 'card' || s.phase === 'her') { s.phase = s.exp && s.exp.patch ? 'patch' : 'setup'; if (s.ui) { s.ui.watch = null; s.ui.card = null; s.ui.her = null; } }   // w6b: the watch view and the card are not kept across a reload; nor is her page
-  if (s.phase === 'mibis' || s.phase === 'active') s.phase = 'riding';   // an old save opens on Riding, with its riders
-  if (s.ui && (s.ui.from === 'mibis' || s.ui.from === 'active')) s.ui.from = 'riding';
-  return s;
-}
-// Every string `id` held anywhere in a loaded save, at any depth (pods in the field, the cargo, the bay, the hold, a report, the Station's part).
-function idsIn(o, out = new Set()) {
-  if (Array.isArray(o)) for (const v of o) idsIn(v, out);
-  else if (o && typeof o === 'object') { if (typeof o.id === 'string') out.add(o.id); for (const k of Object.keys(o)) idsIn(o[k], out); }
-  return out;
-}
-// What the stored save is: nothing (a new world), a save to load (true), a save from a newer page ('newer'), or bytes this page cannot use ('broken').
-// Bytes the page did not load are never written over: both read-only states keep them, and nothing older is removed (the v7 save moves only into an empty slot).
+// What the stored save is: nothing (false: a new world), a save to load (true), a save from a newer page ('newer'), or bytes this page cannot use ('broken').
+// Bytes the page did not load are never written over: both read-only states keep them, and nothing older is removed.
 function load() {
-  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { return false; }   // storage unavailable: a new world in memory
+  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { console.warn('storage cannot be read: a new world, in memory', e); return false; }
   const own = SAVE_KEY;
-  if (raw == null && COMPANION.slot === 'A') { let old = null; try { old = localStorage.getItem(LEGACY_KEY); } catch (e) { } if (old != null) { SAVE_KEY = LEGACY_KEY; raw = old; } }   // the shared save of earlier builds: read where it is
+  if (raw == null && COMPANION.slot === 'A') { const old = localStorage.getItem(LEGACY_KEY); if (old != null) { SAVE_KEY = LEGACY_KEY; raw = old; } }   // the shared save of earlier builds: read where it is
   const r = (() => {
-  const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
   try {
-    let s = null;
-    if (!raw) {   // an empty slot: a v7 save moves in
-      try { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); raw = JSON.stringify(s); localStorage.setItem(SAVE_KEY, raw); } localStorage.removeItem(V7_KEY); } } catch (e) { s = null; }
-      if (!s) { dropOld(); return false; }
-    } else s = JSON.parse(raw);
+    if (!raw) {   // an empty slot. A save from before v8 lies under its own key: it is reset as a v8 or v9 one is, its bytes copied whole to this slot's copy and left where they are; anything else there is left alone
+      const old = localStorage.getItem(V7_KEY), plan = resetPlan(old, SAVE_V);
+      if (plan.action !== 'reset') return false;
+      if (!keepPre10(localStorage, own, old)) return 'broken';
+      RESET_CARRY = { resetFrom: plan.from }; return false;
+    }
+    const s = JSON.parse(raw);
     if (!s || typeof s !== 'object' || Array.isArray(s)) return 'broken';
-    const plan = resetPlan(raw, SAVE_V, OLD_GENS);   // (a v10 realm of generator 5 only is reset too: the world is new at generator 6) what to do with what is found: play it, reset it (a v8 or v9 save), keep it read-only (newer, unreadable)
+    const plan = resetPlan(raw, SAVE_V, OLD_GENS);   // what to do with what is found: play it, reset it (an older save, or a realm only of generators no longer played), keep it read-only (newer, unreadable)
     if (plan.action === 'newer') return 'newer';   // a newer page's save: kept as stored, never overwritten, nothing removed
-    if (plan.action === 'reset') {   // the release's reset: the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
+    if (plan.action === 'reset') {   // the old bytes are copied once to <key>.pre10 (never read by play), then a new realm starts; no copy, no reset: the save opens read-only
       if (!(plan.gen ? keepGen(localStorage, own, raw, oldGenOf(raw)) : keepPre10(localStorage, own, raw))) return 'broken';   // a generator reset keeps its own copy (<key>.gen6, or .gen5): the .pre10 of the earlier reset stays what it was
-      if (SAVE_KEY === LEGACY_KEY) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) { } }   // the shared old save is kept in the copy: it must not be found and reset again
-      RESET_CARRY = { resetFrom: plan.from }; dropOld(); return false;
+      if (SAVE_KEY === LEGACY_KEY) localStorage.removeItem(LEGACY_KEY);   // the shared old save is kept in the copy: it must not be found and reset again
+      RESET_CARRY = { resetFrom: plan.from }; return false;
     }
     if (plan.action !== 'play') return 'broken';
-    if (s.v === SAVE_V) {   // v10: a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet) starts a new world
-      if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { RESET_CARRY = { resetFrom: s.resetFrom ?? null, wid: s.wid ?? null }; dropOld(); return false; }   // the Station reset first: its world id and its part stay
-      const rs = realmStatus(s, GENS); if (rs !== 'ok') return rs;   // 'newer': a region of a generator this page does not know, kept as stored
-      mount(s, s.here);
-    }
-    if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) { if (s.seed == null && s.st && typeof s.st === 'object') { dropOld(); return false; } return 'broken'; }   // a Station-only save: a new world starts (and a fresh Station with it)
-    const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
+    // a realm of regions; the one in use is mounted on S. A Station-only save (no regions yet: the Station reset first) starts a new world, and its world id and its part stay
+    if (s.regions == null && s.seed == null && s.st && typeof s.st === 'object') { RESET_CARRY = { resetFrom: s.resetFrom ?? null, wid: s.wid ?? null }; return false; }
+    const rs = realmStatus(s, GENS); if (rs !== 'ok') return rs;   // 'newer': a region of a generator this page does not know, kept as stored
+    mount(s, s.here);
+    if (typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) return 'broken';
+    const gen = s.gen;
     S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     // every field a new world has and the save lacks, from the new world's own values; a field present is kept as it is,
-    // whatever it holds, and `gen` is never filled (a save without it is generator 1). A missing pods is the world's life,
+    // whatever it holds, and `gen` is never filled (it is the mounted region's). A missing pods is the world's life,
     // regenerated below without any pod the save already holds (as itself, or as the Station's crate id + ':' + pod id),
     // and a missing or invalid nextId is counted from the pod ids the save holds.
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
@@ -1656,7 +1580,7 @@ function load() {
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     if (typeof S.realmRev !== 'number') S.realmRev = REALM_REV;   // a save from before the land freeze: the land of REALM_REV 9 is the one it was made on (the generator's output did not change)
     noteSet('landChanged', S.realmRev !== REALM_REV);   // a save made on another land than this build makes: it keeps the number it was made on, and the page says so (WORDS.notice.landChanged)
-    indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
+    indexCreatures(); return true;
   } catch (e) { console.error('the save would not load', e); S = null; return 'broken'; }   // it would not load: kept as it is; the cause is logged so the next failure shows it
   })();
   if (SAVE_KEY === LEGACY_KEY && r === true) legacyTo = own;   // loaded: its first write goes under this Companion's key and the old key goes (a read-only save is never moved)
@@ -1669,9 +1593,6 @@ function isDocked() { const st = stPart(); return !!(st && st.dock && st.dock.do
 // Docked mid-expedition the field is frozen: nothing that reaches advance(), moves you or spends is taken, and the
 // expedition resumes at Lift as it was (game designer's dock-freeze ruling). Field input only; views still open.
 const fieldFrozen = () => !!(S && S.exp) && isDocked();
-const DOCK_TEXT = { chip: 'Docked', first: 'Field paused while docked · lift to go on · End expedition still works at the start or a lit outpost', again: 'Docked · lift to go on',
-  tierMid: 'Tier 2 · from the next expedition', probe: 'Docked · the Station mends it', bay: n => n + ' crate' + (n === 1 ? '' : 's') + ' aboard · the Bay is full',
-  sealed: 'Docked · the Bay is full', sealedEmpty: 'Docked' };
 // Docked, the Companion takes what the Station hands over: accepted crates leave the bay; the Probe as mended or
 // upgraded; the Station's carry requests (st.carryReqs); the mibis raised; species identified; pods returned to the wild.
 function syncStation() {
@@ -1712,10 +1633,10 @@ function fs(key, id) { const c = S.cells[key]; return (c && c[id]) || {}; }
 function setFS(key, id, patch) { const c = S.cells[key] || (S.cells[key] = {}); c[id] = Object.assign(c[id] || {}, patch); }
 function featPos(key, f) { if (f.kind === 's') { const st = fs(key, f.id); if (st.moved) return { x: st.x, y: st.y }; } return f; }
 function cupFull(key, f) { const s = fs(key, f.id); return s.full != null ? s.full : !!f.full; }
-// ---------- Strike marks (scheme 4.7): the land's record of lightning, read for Data ----------
+// ---------- Strike marks: the land's record of lightning, read for Data ----------
 // A strike mark is a dark glassy streak where lightning went into bare ground (nothing burns). The generator places them (lay.strikes, with an age in world turns) and each world turn's storm
 // adds fresh ones (S.cells[key]['sf...'], kept with the cell). A mark fades STRIKE_FADE turns after the strike. Reading one is a press: it adds the Data of the
-//place's tier (STRIKE_DATA), once a mark, and takes nothing from the land; only the hold limits it. Words: src/words.mjs.
+// place's tier (STRIKE_DATA), once a mark, and takes nothing from the land; only the hold limits it. Words: src/words.mjs.
 const STRIKE_FADE = 12;   // [tune] world turns a mark stays on the land
 const strikeFaded = f => S.turn - f.born >= STRIKE_FADE;
 const strikeIsRead = (key, f) => fs(key, f.id).read != null;
@@ -1724,8 +1645,8 @@ function addStrikeFeats(lay) {   // the generated marks, and the fresh ones the 
   const c = S.cells[lay.key]; if (c) for (const id of Object.keys(c)) if (c[id].fresh) lay.feats.push({ id, kind: 'q', x: c[id].x, y: c[id].y, born: c[id].born, glass: false });
 }
 // What a press on a strike mark would add now: the worth of the place it lies in (2 / 3 / 4 / 5), whole. 0: the whole worth does not fit the hold and a press is not offered.
-function strikeWorth(lay = curLay()) { return STRIKE_DATA[placeTier(lay)] || STRIKE_DATA[1]; }
-function strikeGain(ex, lay = curLay(), f = null) { const left = strikeWorth(lay) - (f ? fs(lay.key, f.id).took || 0 : 0); return Math.max(0, Math.min(left, CAP - ex.cargo.d)); }   // what fits: a mark that does not fit whole is read in part, the rest stays on the mark (owner 11-13)
+function strikeWorth(lay = curLay()) { return STRIKE_DATA[placeTier(lay)]; }
+function strikeGain(ex, lay = curLay(), f = null) { const left = strikeWorth(lay) - (f ? fs(lay.key, f.id).took || 0 : 0); return Math.max(0, Math.min(left, CAP - ex.cargo.d)); }   // what fits: a mark that does not fit whole is read in part, the rest stays on the mark
 function readStrike(f) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, put = strikeGain(ex, curLay(), f);
   if (!put) { FX.bumpAt = NOW; fxMsg(WORDS.strike.holdFull, 2); return; }   // not offered with the hold full; a press that gets here spends nothing and the mark stays unread
@@ -4371,7 +4292,7 @@ function endExpedition(reason) {
       S.bay.push(c); S.hold = null; rep.sealed = c; sendSleepersHome(ex); logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
-  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(true);   // a line from the walk does not linger over the sealed screen
+  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save();   // a line from the walk does not linger over the sealed screen
 }
 // Where the next try lies, said at the end of a walk that found no pod, from the flag: the first walk names the pod the game knows; later walks the nearest cell with a pod found and
 // left or a slow beat; with none known, the nearest wood or rock (pods sleep in woods and rock, never in open meadow). { cell, land, dir, first, pod } or null.
@@ -4490,7 +4411,7 @@ function ripeStep() {
   while (RIPE_CELLS.length && performance.now() - t0 < 8) { const key = RIPE_CELLS.shift(); for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); }
   return RIPE_CELLS.length > 0 || RIPE_PENDING.length > 0;
 }
-function ripeLoop() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return; if (ripeStep()) setTimeout(ripeLoop, 40); else save(true); }
+function ripeLoop() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return; if (ripeStep()) setTimeout(ripeLoop, 40); else save(); }
 let RIPE_LATER = null;   // while an expedition ends: the bloom centres whose fruit trees ripen after the first sealed frame
 function ripenBloom(ctr) {   // fruit trees in the bloom's reach ripen too (silently: the line counts bushes)
   if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || cdist(c, ctr) > 3) continue; const key = String(c);
@@ -8994,7 +8915,8 @@ function actReadOnly(k) {
   if (!RT.armNew) { RT.armNew = 1; return; }
   let raw = null;
   try { raw = localStorage.getItem(SAVE_KEY); if (raw != null) { let at = Date.now(); while (localStorage.getItem(KEPT_KEY + '-' + at) != null) at++;   // one key per move: an older kept save is never replaced
-      localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept'); } }
+      localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept');
+      localStorage.removeItem(SAVE_KEY); } }   // kept whole: the slot is empty for the new world (save() never writes over bytes it cannot read)
   catch (e) { RT.armNew = 0; FX.bumpAt = NOW; return; }   // it cannot be kept: nothing changes
   RT.readOnly = false; RT.broken = false; RT.armNew = 0; const note = document.getElementById('resetNote'); if (note) note.hidden = true;
   newWorldLive(false);
@@ -9026,7 +8948,7 @@ if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) 
   const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
   btn.addEventListener('click', () => { ask.hidden = false; yes.focus(); });
   no.addEventListener('click', back);
-  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', SAVE_KEY + '.pre10', V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
+  yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, SAVE_KEY + '.pre9', SAVE_KEY + '.pre10', V7_KEY]) localStorage.removeItem(k); } catch (e) { }
     window.__mbResetting = true; location.reload(); }); }
 // The Station page wrote the shared save: take its part (dock, accepted crates, mibis, the Probe) and keep ours.
 // A reset there (the save erased) reloads this page too.
@@ -9035,7 +8957,7 @@ window.addEventListener('storage', e => {
   if (window.__mbResetting) return;
   let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (_) { }
   if (!raw) { window.__mbResetting = true; location.reload(); return; }
-  save(false, true);   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
+  save({ noWrite: true });   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
 });
 // A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
 if (ld === true) { try { if (S.exp && S.exp.shield <= 0 && !S.exp.dark) goDark(S.exp);   // an old save with no plates opens in the realm, dark (night step 1), never on the ended card

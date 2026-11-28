@@ -594,15 +594,16 @@ test("the active screen: a page gone goes to the page now at that index, or the 
   S.ui.aId = 1; sh(); t.normalizeCare(S, new Set([1])); assert.equal(sh().id, 2, "the page now at index 0");
 });
 // End expedition: the outcome block, the notch row, the crates and the world lines, as drawn (text and pictures recorded).
+const { FIRST_TEXT } = await import("../src/data/field-lines.mjs");   // the first walk's words, as the page imports them
 function sealed(rep, lines, bay = 1) {
   const said = [], faces = [], crates = [], dots = [], noop = () => {};
   const ctx = vm.createContext({ console, S: { report: Object.assign({ n: 4, lines }, rep), bay: Array.from({ length: bay }, (_, i) => ({ id: "c" + i })) }, NOW: 0, FX: { transAt: 0 }, BAY: 3, TIER_NAME: ["", "starter", "early", "mid"],
     numWord, C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x, cutLine: (x, w) => x,
     text: (str, x, y, col, s) => said.push({ str: String(str), x, y, s: s || 2 }), ringFace: (x, y, sp, p) => faces.push({ x, y, sp, p }), crateIcon: (x, y) => crates.push({ x, y }), R: (x, y, w, h, c) => dots.push({ x, y, w, h, c }),
-    bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" } });
+    bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" }, FIRST_TEXT });
   ctx.goalForms = () => "";
   const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "sealedWords"];
-  vm.runInContext(PAGE.match(/^const FIRST_TEXT = [^]*?\n\};/m)[0] + "\n" + names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
+  vm.runInContext(names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
   return { said, faces, crates, at: s2 => said.find(q => q.str === s2), world: dots.filter(d => d.c === "orange" && d.w === 4) };
 }
 test("End expedition: the notch is its own row under the outcome's last 2× line, the crates move down 28, no world line repeats it", () => {
