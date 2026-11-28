@@ -7762,7 +7762,7 @@ const patchOn = () => canPatch() && !fieldFrozen();
 function patchGuard() { if (S.ui.patchArm && !patchOn()) S.ui.patchArm = 0; }   // armed only while it can be spent
 // The Probe, in groups under one-word captions: the Probe itself (shield plates, reach, the hold with its Energy, the patch, the tier 2 price),
 // the signs you have met as pictures, and the field guide as tokens.
-function drawProbe(t) {
+function drawProbe() {
   // mid-expedition the Probe is as it set out (ex.range, ex.hold, ex.smax): a docked upgrade applies from the next expedition
   const ex = S.exp, tier = ex ? { range: ex.range, hold: ex.hold, shield: ex.smax } : tierOf(), tierN = ex ? +(Object.keys(TIER).find(k => TIER[k].shield === ex.smax) || S.tier) : S.tier;
   patchGuard(); viewBg(); drawTop('Probe', 'tier ' + tierN);
@@ -7882,7 +7882,7 @@ function caseLine() {   // the bottom line: only what works here
   if (S.exp && S.ui.caseEnd) return canSend() ? { ok: W.end, ctx: W.pages, back: W.field, dim: false } : { ok: '', ctx: W.pages, back: W.field, dim: false };   // the end-of-walk Case names the Log too: his named ones' pages are found there
   return { ok: caseEntry(caseThing(caseSel(caseCells())).thing) ? W.page : '', ctx: W.pages, back: W.field, dim: false };
 }
-function drawCargo(t) {
+function drawCargo() {
   const W = WORDS.case, h = caseHold(), cells = caseCells(), cur = caseSel(cells), end = !!(S.exp && S.ui.caseEnd);
   faceFrame(1);
   // the lid: the crates sealed for home; an empty place is dotted
@@ -8070,7 +8070,7 @@ function drawRidingNone() {
   R(16, 434, 418, 1, C.sand); text(W.also, 22, 484, C.clay);
   for (let i = 0; i < CARRY_MAX; i++) dashedRect(145 + 102 * i, 462, 60, 60, C.clay);
 }
-function drawRiding(t) {
+function drawRiding() {
   const W = WORDS.riding, mo = motion(); faceFrame(2); dockCue(); g.imageSmoothingEnabled = false;
   const m = shownMibi(); if (!m) { drawRidingNone(); return; }
   const cuts = FX.cuts || [], growing = cuts.some(c => c.kind === 'grow' && c.id === m.id && NOW < c.at), st = growing ? 'juvenile' : mibiStage(m);   // the cut to the adult comes at its turn
@@ -8131,7 +8131,7 @@ function drawNewWorld() {
 // Expedition ended: the hold sealed into the bay (or why not), the world turn, and the way on. The Station opens the crates
 // only when the Companion is docked (the Station page).
 const WHY_ENDED = 'You ended the expedition.';   // [copy]
-function drawSealed(t) {
+function drawSealed() {
   const r = S.report; viewBg(); drawTop(r ? 'Expedition ' + r.n + ' ended' : 'Expedition ended', goalForms());
   if (!r) return;
   // every line below is clipped at 410 px, so nothing passes x 432; `last` is the outcome block's last 2× line
@@ -8189,49 +8189,49 @@ function outpostLights() { const out = []; for (const c of depotCells(S.seed)) {
 function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() + (l.length ? ' · ' + DEPOT_NAME + ' lights: ' + l.join(', ') : ''); }
 
 // ===================== 15. Screen dispatch =====================
+import { LINE_OK, LINE_BACK, LINE_MID, START_TEXT, MAP_TEXT, DIET_TEXT, TITLE_TEXT } from "./src/data/line-words.mjs";
+import { expireEffects } from "./src/render/effects.mjs";
 function firstPlacement() { return firstPlacementOf(S.seen.rev); }
 function placeValid(c) { return placeValidIn({ G, revealed: S.seen.rev, passable, starts: firstPlacement() ? startPlaces() : null }, c); }   // src/map-rules.mjs: never on a sealed plateau
 function placeReason(c) {
-  if (firstPlacement()) return 'Pick a glint';
-  if (!S.seen.rev[c]) return 'Not seen yet';
-  if (G.island[c]) return 'Out of reach';
-  if (G.gen && passable(c) && !G.comp[c]) return 'No stairs out · can’t start';   // generator 2's sealed plateau (the fallback's)
-  return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
+  if (firstPlacement()) return START_TEXT.pickGlint;
+  if (!S.seen.rev[c]) return START_TEXT.unseen;
+  if (G.island[c]) return START_TEXT.island;
+  if (G.gen && passable(c) && !G.comp[c]) return START_TEXT.sealed;   // a plateau with no stairs out
+  return G.land[c] === L.CLIFF ? START_TEXT.cliff : START_TEXT.water;
 }
 function signWords(c) { const e = mapSigns().find(q => q.c === c), list = e ? e.list : [];
-  return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? DEPOT_NAME + (q.lit ? ' · lit ' + q.lit + ' turn' + (q.lit === 1 ? '' : 's') : ' (dark)') : q.kind === 'beacon' ? 'beacon' + (q.lit ? ' (lit)' : ' (unlit)') : SIGN_NAME[q.kind]); }
+  return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? (q.lit ? MAP_TEXT.depotLit(q.lit) : MAP_TEXT.depotDark) : q.kind === 'beacon' ? (q.lit ? MAP_TEXT.beaconLit : MAP_TEXT.beaconUnlit) : SIGN_NAME[q.kind]); }
 // A place's name: its landmark's, as editorial wrote it, once you have been in; else the land's words (the IR's pond is the pond edge, its rock the rock field).
-const placeName = lay => lay.landmark && S.seen.into[lay.cell] ? lay.landmark.name : G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land];
+const placeName = lay => lay.landmark && S.seen.into[lay.cell] ? lay.landmark.name : G.soft && G.soft.wade[lay.cell] ? MAP_TEXT.wade : LAND_NAME[lay.land];
 function landWord(c) {
-  if (G.land[c] === L.WATER) return G.ford[c] ? 'ford' : G.soft && G.soft.wade[c] ? 'muddy water' : nextToIsland(c) ? 'fast water' : 'wide water';
+  if (G.land[c] === L.WATER) return G.ford[c] ? MAP_TEXT.ford : G.soft && G.soft.wade[c] ? MAP_TEXT.wade : nextToIsland(c) ? MAP_TEXT.fastWater : MAP_TEXT.wideWater;
   if (G.gen === 7 && S.seen.into[c] && passable(c) && PL.ready && placeHave(String(c))) { const nm = layout(String(c)).landmark; if (nm) return nm.name; }
-  return LAND_NAME[G.land[c]] + (c === G.gate ? ' under the cliff' : c === G.swim ? ' by the island' : ''); }
+  return LAND_NAME[G.land[c]] + (c === G.gate ? MAP_TEXT.underCliff : c === G.swim ? MAP_TEXT.byIsland : ''); }
 function cellWords(c) { const w = signWords(c); return landWord(c) + (w.length ? ' · ' + w.join(', ') : ''); }
 function aheadCell() { const ex = S.exp, p = cxy(ex.pos), [dx, dy] = DIRS[ex.face || 'down'], x = p.x + dx, y = p.y + dy; return x < 0 || y < 0 || x >= MW || y >= MH ? -1 : y * MW + x; }
 // The map's middle part: the cell you're on and the one you face, shortest forms last.
 function mapContext() {
-  const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · burrow too narrow' : S.seen.been[ex.pos] && passable(ex.pos) && walkedCell(ex.pos) ? ' · ' + WORDS.explored : ''), hs = signWords(ex.pos), a = aheadCell();
-  const toTake = c => S.seen.been[c] && passable(c) && leftTotal(c) ? ' · ' + leftTotal(c) + ' to take' : '';
+  const ex = S.exp, face = ex.face || 'down', here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · ' + MAP_TEXT.narrow : S.seen.been[ex.pos] && passable(ex.pos) && walkedCell(ex.pos) ? ' · ' + WORDS.explored : ''), hs = signWords(ex.pos), a = aheadCell();
+  const toTake = c => S.seen.been[c] && passable(c) && leftTotal(c) ? ' · ' + MAP_TEXT.toTake(leftTotal(c)) : '';
   // the edge you face, named even when the cell beyond is fog (your own four edges always show): a steep edge or stairs
-  const ek = a >= 0 && inRange(a) ? edgeKind(ex.pos, ex.face || 'down') : EDGE.OPEN;
-  const sk = ek === EDGE.CLIFF ? softKind(ex.pos, ex.face || 'down') : null, up = a >= 0 && G.level[a] > G.level[ex.pos];   // scree and banks are named as the bump names them; a dug bank crosses like a stair
-  const es = ek === EDGE.CLIFF ? (sk === 'scree' ? 'loose scree' : sk === 'bank' ? (bankIsDug(edgeIndex(ex.pos, ex.face || 'down')) ? 'dug way ' + (up ? 'up' : 'down') : 'earth bank') : 'cliff') : ek === EDGE.RAMP ? (G.level[a] > G.level[ex.pos] ? 'stairs up' : 'stairs down') : '';
-  const beyond = a < 0 ? (seamSlot(ex.face || 'down') ? 'more land' : borderCliff(ex.pos) ? 'high cliffs' : 'shore') : G.coast && G.coast[a] ? 'shore' : !inRange(a) ? 'edge of range' : !S.seen.rev[a] ? 'fog' : gatedCell(a) ? 'cave · burrow too narrow' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.seen.rev[a] && !gatedCell(a) ? signWords(a) : [];
-  const there = es ? es + ' · ' + beyond : beyond, AS = 'Ahead: ' + (es || there);   // the short forms cut the cell beyond first, never the edge
-  const H = here + (hs.length ? ' · ' + hs.join(', ') : ''), A = 'Ahead: ' + there + (as.length ? ' · ' + as.join(', ') : '');
+  const ek = a >= 0 && inRange(a) ? edgeKind(ex.pos, face) : EDGE.OPEN;
+  const sk = ek === EDGE.CLIFF ? softKind(ex.pos, face) : null, up = a >= 0 && G.level[a] > G.level[ex.pos];   // scree and banks are named as the bump names them; a dug bank crosses like a stair
+  const es = ek === EDGE.CLIFF ? (sk === 'scree' ? MAP_TEXT.scree : sk === 'bank' ? (bankIsDug(edgeIndex(ex.pos, face)) ? (up ? MAP_TEXT.dugUp : MAP_TEXT.dugDown) : MAP_TEXT.bank) : MAP_TEXT.cliff) : ek === EDGE.RAMP ? (up ? MAP_TEXT.stairsUp : MAP_TEXT.stairsDown) : '';
+  const beyond = a < 0 ? (seamSlot(face) ? MAP_TEXT.moreLand : borderCliff(ex.pos) ? MAP_TEXT.highCliffs : MAP_TEXT.shore) : G.coast && G.coast[a] ? MAP_TEXT.shore : !inRange(a) ? MAP_TEXT.rangeEdge : !S.seen.rev[a] ? MAP_TEXT.fog : gatedCell(a) ? MAP_TEXT.caveNarrow : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.seen.rev[a] && !gatedCell(a) ? signWords(a) : [];
+  const there = es ? es + ' · ' + beyond : beyond, AS = MAP_TEXT.ahead + (es || there);   // the short forms cut the cell beyond first, never the edge
+  const H = here + (hs.length ? ' · ' + hs.join(', ') : ''), A = MAP_TEXT.ahead + there + (as.length ? ' · ' + as.join(', ') : '');
   // where you stand comes first when it has a sign; otherwise what you face; the edge word alone is the last before here
   const list = hs.length ? [H + ' · ' + A, H + ' · ' + AS, H, here + ' · ' + A, A, here] : [here + ' · ' + A, A, here + ' · ' + AS, AS, here];
   if (es) list.splice(list.length - 1, 0, es);
   return list;
 }
-// The first time the line names a sign, its one-line explanation shows once (only if it actually fits the message box).
-
-// First sightings in the top bar: what the Call slot means, and the weather group's arrows.
+// After an action in the field: the control hints for the Call and your own pin, the rider setting out, and the storm and fog signs.
 function noteHud() {
   const ex = S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return;
-  if (S.phase === 'map') fxHint('callmap', 'CALL here drops a pin', 1);
+  if (S.phase === 'map') fxHint('callmap', MAP_TEXT.hintCall, 1);
   if (ex.rider) fxOnce('rider', CARE_TEXT.riderSetOut(ex.rider.name), 2, true);
-  if (S.phase === 'map' && ownPin(ex.pos)) fxHint('pinoff', 'Your pin · ))) takes it away', 1);
+  if (S.phase === 'map' && ownPin(ex.pos)) fxHint('pinoff', MAP_TEXT.hintPin, 1);
   if (stormLevel()) fxSign('storm', ex.storm.dir);
   if (fogNear()) fxSign('fog');
 }
@@ -8256,6 +8256,7 @@ function noteMapMarks() {
   if (S.phase === 'map' && ex) { const sec = sectorHere();
     if (sec) { if (sec.dest.some(d => S.seen.rev[d.c])) meet('ring'); if (sec.lines.some(l => S.seen.rev[l.c])) meet('trail'); } }
 }
+// A sign met for the first time says its one line once: the stones and the marks of the map key, a hut or a beacon in sight in a place, the map signs on your cell and the one you face, the fog bank beside you.
 function noteSigns() {
   noteStones(); noteMapMarks();
   if (S.phase === 'patch' && S.exp && S.exp.patch && S.exp.patch.key[0] !== 'c') { const P = S.exp.patch;   // the hut or the beacon in sight in a place
@@ -8275,11 +8276,11 @@ function actTag(c) {
   return ex.cargo.d < CAP ? ' · +' + ACT_DATA + ' Data' : ' · ' + WORDS.creature.holdFull;
 }
 function dietLine(sp, long) {
-  if (!S.known.includes(sp)) return 'Unknown creature · watch what it does';
-  const nm = spOf(sp).name;
-  if (spOf(sp).eats) return nm + ' · eats fruit';
-  const s = spOf(sp), tail = long && s.settle ? (s.settle === 'fog' ? ' · settles in fog when you keep still' : ' · settles when you keep still') : '';
-  return nm + (s.drinks ? ' · drinks dew' : ' · doesn’t eat fruit') + tail;
+  if (!S.known.includes(sp)) return DIET_TEXT.unknown;
+  const s = spOf(sp);
+  if (s.eats) return s.name + DIET_TEXT.eats;
+  const settles = long && s.settle ? (s.settle === 'fog' ? DIET_TEXT.settlesFog : DIET_TEXT.settles) : '';
+  return s.name + (s.drinks ? DIET_TEXT.drinks : DIET_TEXT.neither) + settles;
 }
 // A control hint, while it is due, leads the middle of the bottom line; the usual words follow if it does not fit.
 function lineFor() {
@@ -8290,71 +8291,73 @@ function lineFor() {
 // The start pick's storm words for a cell: how soon the band reaches it, that it is in it, or that it moves away from it. '' on Deep ground or with no storm.
 function placeStormWords(c) {
   if (S.ui.type === 'deep') return ''; const st = stormAt(); if (!st) return '';
-  const q = stormGap(st, c); return q.in ? 'in the storm' : q.behind ? 'storm moving away' : q.actions === 1 ? 'storm here in 1 action' : 'storm here in ' + q.actions + ' actions';
+  const q = stormGap(st, c); return q.in ? START_TEXT.stormIn : q.behind ? START_TEXT.stormBehind : START_TEXT.stormActions(q.actions);
 }
-// The part of day, in words, in the bottom line's middle while an expedition is out ("morning · Meadow · ..."); each longer form first, the day alone last before the old forms (walk W1, until the HUD's light is drawn).
-// W6a: the day bar (the top bar) is the one clock, so the day words leave the bottom line's middle: it is the place alone. Until the W6a frames have loaded, the words stay.
+// Until the day pictures of the top bar have loaded, the part of day leads the middle of the bottom line in words ("morning · Meadow · ..."): each form with the day before it,
+// then the day alone, then the forms as they were. Once the day bar is drawn it is the one clock, and the middle is the place alone.
 function dayCtx(ctx) {
   if (!S.exp || !S.day || HUD.ok) return ctx;
   const d = DAY_TEXT.line(dayPart(), untilNext()), alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);
   return alts.map(c => d + ' · ' + c).concat([d], alts);
 }
 function lineBase() {
-  // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
+  // a ✓ label past 29 characters is cut with an ellipsis
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 29 ? ok.slice(0, 28) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
-    case 'setup': if (S.ui.sel === 2 && !openAlone()) return L1('Open Mibis', partnerCtx(), 'menu');
-      if (S.ui.sel === 1 && !digger()) return L1(OPEN_TEXT.needsLabel, 'Deep ground', 'menu', true);   // a mibi at home is never named
-      { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked' : 'dock: mended free', 'menu', true); }
-      return L1(OPEN_TEXT.setOut, bayLine() || (S.ui.sel === 1 ? OPEN_TEXT.deepLeads(digger().name) : 'Weather'), 'menu');
-    case 'place': { const c = S.ui.cur, first = firstPlacement();
-      const tail = placeStormWords(c), wx = tail ? ' · ' + tail : '';   // the storm stands still; the cursor changes only this last part (note 14)
-      if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (c === homeStart() ? ' · ' + WORDS.startMorning : sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), tail ? [base + wx, tail, base] : base, 'back', !placeValid(c)); }
-      const base = S.seen.rev[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? (tail ? [base + wx, tail, base] : base) : tail, 'back', !placeValid(c)); }
-    case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
-      return L1('Go in', dayCtx(mapContext()), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
+    case 'setup': if (S.ui.sel === 2 && !openAlone()) return L1(LINE_OK.openMibis, partnerCtx(), LINE_BACK.menu);
+      if (S.ui.sel === 1 && !digger()) return L1(OPEN_TEXT.needsLabel, LINE_MID.deep, LINE_BACK.menu, true);   // a mibi at home is never named
+      if (startBlock()) return L1(isDocked() ? LINE_OK.lift : LINE_OK.broken, isDocked() ? LINE_MID.docked : LINE_MID.mendFree, LINE_BACK.menu, true);
+      return L1(OPEN_TEXT.setOut, bayLine() || (S.ui.sel === 1 ? OPEN_TEXT.deepLeads(digger().name) : LINE_MID.weather), LINE_BACK.menu);
+    case 'place': { const c = S.ui.cur, valid = placeValid(c), ok = valid ? LINE_OK.start : placeReason(c);
+      const tail = placeStormWords(c), wx = tail ? ' · ' + tail : '';   // the storm stands still; the cursor changes only this last part
+      if (firstPlacement()) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (c === homeStart() ? ' · ' + WORDS.startMorning : sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(ok, tail ? [base + wx, tail, base] : base, LINE_BACK.back, !valid); }
+      const base = S.seen.rev[c] ? cellWords(c) : ''; return L1(ok, base ? (tail ? [base + wx, tail, base] : base) : tail, LINE_BACK.back, !valid); }
+    case 'map': if (S.exp.beaconView) return L1('', MAP_TEXT.beaconView, LINE_BACK.back);
+      return L1(LINE_OK.goIn, dayCtx(mapContext()), canSend() ? LINE_BACK.end : LINE_BACK.menu, fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
     case 'patch': {
       if (RT.view) { const v = RT.view; return v.kind === 'look' ? L1('', '', VIEW_TEXT.close) : L1('', '', ''); }   // a view over the place: its own line
-      const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
-      const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
+      const lay = curLay(), col = lay.cell % MW, cov = !lay.cave && stormCovers(col), a = patchAction();
+      const wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? LINE_MID.lull : cov ? LINE_MID.overcast : '';   // storm and fog show as the conditions icons
       // facing a creature you can see, the line names it and its diet before you offer anything
       const P = S.exp.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
       const sv = '\x01' + placeLine(lay, P), svN = '\x01' + placeLine(lay, P, true), land = placeName(lay) + ' · ';
-      let wild = null; let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay)];
+      let wild = null, ctx = lay.cave ? LINE_MID.cave : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) { ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
         const nm = o.c.ind && S.named && S.named[o.c.id];   // a met one is named, and says where it keeps this part of day
-        if (nm && !S.known.includes(o.c.sp)) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h), wk = nameKind(nm, o.c.sp);   // her kind unidentified: her name and what she is, no diet, no act tag
-          ctx = [wk + hw, wk]; }   // her name is never alone, and the diet fallbacks are not appended
-        else if (nm) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h);
-          ctx = [nm + hw + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + hw, nm].concat(ctx); }
-        if (o.c.ind) { const w = wildCtx(o.c, nm && !S.known.includes(o.c.sp) ? nameKind(nm, o.c.sp) : nm); if (w) wild = nm && !S.known.includes(o.c.sp) ? w.filter(s => s.includes(nm) || [...WORDS.ease.stage, WORDS.ease.asleepShort, WORDS.ease.fed].includes(s)) : w; } }   // bug174: her bare word stays a candidate (no room for name and word: the word shows)   // her kind unidentified: the name is never alone   // walk W3: the line under a wild one in sight: its ease, whether this step would be heard, how long it lets you stay
+        const unk = nm && !S.known.includes(o.c.sp), wk = unk && nameKind(nm, o.c.sp);   // her kind unidentified: her name and what she is, never her name alone
+        if (nm) { const hw = hintWord(o.c, hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()));
+          ctx = unk ? [wk + hw, wk]   // no diet and no act tag, and the diet forms are not appended
+            : [nm + hw + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + hw, nm].concat(ctx); }
+        // the line under a wild one in sight: its ease, whether this step would be heard, how long it lets you stay. Unidentified, the forms that carry her name stay, and her bare ease word (no room for both: the word shows)
+        if (o.c.ind) { const w = wildCtx(o.c, unk ? wk : nm); if (w) wild = unk ? w.filter(s => s.includes(nm) || [...WORDS.ease.stage, WORDS.ease.asleepShort, WORDS.ease.fed].includes(s)) : w; } }
       if (S.ui.swap) { const sw = swapState(); if (sw && sw.night) return L1(WORDS.pod.take, '', WORDS.pod.leave, fieldFrozen()); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
       if (!lay.cave && !a.ctx && !(o && o.type === 'cr')) { const sl2 = screenLoika(), w2 = sl2 && sl2.c, n2 = w2 && S.named && S.named[w2.id]; if (w2 && n2 && !S.known.includes(w2.sp)) wild = [nameKind(n2, w2.sp)]; else if (w2) wild = wildCtx(w2, n2); }   // not faced, but in sight: the same line
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx); if (wild) ctx = wild.concat(ctx);   // the wild one's line leads, without the part of day
-      if (!lay.cave && !a.ctx && edgeStepCrosses()) ctx = [WORDS.edgeStep(DAY.mapStep)].concat(ctx);   // facing the edge, the next step crosses: it says what it costs first (edge-cost-line-fix-1)
-      if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
-      const lv = L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim);
-      return lv; }
-    case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close', fieldFrozen());
-      const it = menuItems()[S.ui.menuSel] || menuItems()[0];
-      if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
-      if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
-      if (it.id === 'her') return L1(WORDS.her.open, '', 'close');
-      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'New world, keep mibis' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [reachLine(), 'shows what it does'] : it.id === 'riding' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
+      if (!lay.cave && !a.ctx && edgeStepCrosses()) ctx = [WORDS.edgeStep(DAY.mapStep)].concat(ctx);   // facing the edge, the next step crosses: it says what it costs first
+      if (fieldFrozen()) return L1(a.label, ctx, LINE_BACK.menu, true);   // docked: ✓ dimmed, and ← opens the menu
+      return L1(a.label, ctx, lay.cave ? LINE_BACK.climbOut : LINE_BACK.leave, !a.run || a.dim); }
+    case 'menu': { if (S.ui.waiting && S.exp) return L1(LINE_OK.waitAgain, LINE_MID.waiting, LINE_BACK.close, fieldFrozen());
+      const items = menuItems(), it = items[S.ui.menuSel] || items[0];
+      if (it.frz) return L1(it.id === 'wait' ? LINE_OK.waitOne : it.label, '', LINE_BACK.close, true);   // docked: a frozen row keeps its label, dimmed
+      if (it.id === 'send' && it.far) return L1(LINE_OK.end, sendHint(), LINE_BACK.close, true);
+      if (it.id === 'her') return L1(WORDS.her.open, '', LINE_BACK.close);
+      const ok = it.id === 'wait' ? LINE_OK.waitOne : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? LINE_OK.newWorldKeep : LINE_OK.newWorld) : LINE_OK.open(it.label);
+      const ctx = it.id === 'send' && S.exp ? [reachLine(), LINE_MID.sendShows] : it.id === 'riding' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '';
+      return L1(ok, ctx, LINE_BACK.close); }
     case 'log': return L1(logMarked() ? WORDS.her.logOk : '', (logCanMove() ? WORDS.book.moves + ' ' + WORDS.book.earlier + ' · ' : '') + '▶ ' + WORDS.case.title, WORDS.book.field);
     case 'her': return L1('', metOrder().length > 1 ? WORDS.her.others : '', WORDS.her.backTo);
     case 'watch': return L1(WORDS.watch.note, WORDS.her.watchLine, WORDS.watch.leave);
-    case 'card': return L1(WORDS.watch.keep, '', watchHer() ? WORDS.watch.back : 'field');
+    case 'card': return L1(WORDS.watch.keep, '', watchHer() ? WORDS.watch.back : LINE_BACK.field);
     case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? (tl.id === 'storm' ? [stormOdds(), stormOddsShort()] : []).concat(lineOf(tl.name), lineOf(tl.short)) : '';   // the focused sign: name · gist, then the name alone
-      patchGuard(); return patchShown() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', ctx, 'close', !patchOn()) : L1('', ctx, 'close'); }   // read-only: one way out
+      patchGuard(); return patchShown() ? L1(S.ui.patchArm ? LINE_OK.patchConfirm : LINE_OK.patch, ctx, LINE_BACK.close, !patchOn()) : L1('', ctx, LINE_BACK.close); }   // read-only: one way out
     case 'cargo': { const c = caseLine(); return L1(c.ok, c.ctx, c.back, c.dim); }
     case 'riding': { const m = shownMibi(), a = ridingAct(m), W = WORDS.riding, many = rosterList().length > 1;   // only the ✓ that applies, ← field, ▲▼ who rides, ◀▶ pages
       const warn = a && a.k === 'play' && !a.dim && playWouldBond() ? [CARE_TEXT.playBond] : [];   // the play that will bond says so first: a bond is for good
       return L1(a ? a.label : '', warn.concat(many ? ['▲▼ ' + W.who + ' · ' + W.pages, W.pages] : [W.pages]), W.field, a && a.dim); }
-    case 'newworld': return L1(S.ui.nw ? 'New world, keep mibis' : 'Keep this world', '', 'close');
-    case 'worldmap': return L1('', 'the whole map', 'close');
-    case 'sealed': { const r = S.report, blk = startBlock(); return L1(r && r.empty && r.lead && r.lead.pod && !blk ? FIRST_TEXT.empty.back : 'Next expedition', blk ? (isDocked() ? 'docked · lift to explore' : 'the Probe is broken') : bayLine() || (r && r.kept ? 'finds in the hold' : ''), 'menu', !!blk); }
+    case 'newworld': return L1(S.ui.nw ? LINE_OK.newWorldKeep : LINE_OK.keepWorld, '', LINE_BACK.close);
+    case 'worldmap': return L1('', MAP_TEXT.whole, LINE_BACK.close);
+    case 'sealed': { const r = S.report, blk = startBlock(); return L1(r && r.empty && r.lead && r.lead.pod && !blk ? FIRST_TEXT.empty.back : LINE_OK.next, blk ? (isDocked() ? LINE_MID.dockedLift : LINE_MID.probeBroken) : bayLine() || (r && r.kept ? LINE_MID.kept : ''), LINE_BACK.menu, !!blk); }
   }
   return L1('', '', '');
 }
@@ -8365,50 +8368,49 @@ function render(t) {
   finally { resetCanvas(); RT.remap = REMAP; vctx.drawImage(scr, 0, 0); }
 }
 function renderFrame(t) {
-  if (RT.making || (RT.artHold && artHeld() && !artFailed())) { drawMaking(); vctx.drawImage(scr, 0, 0); return; }   // a world is being made off the page, or the art and the place are still coming in
-  if (RT.artHold && artFailed()) { drawArtFailed(); vctx.drawImage(scr, 0, 0); return; }   // a load failed: say so, and offer the reload
-  if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
-  if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
+  if (RT.making || (RT.artHold && artHeld() && !artFailed())) { drawMaking(); return; }   // a world is being made off the page, or the art and the place are still coming in
+  if (RT.artHold && artFailed()) { drawArtFailed(); return; }   // a load failed: say so, and offer the reload
+  if (RT.readOnly) { drawNewer(); return; }   // nothing that reads S runs
+  if (RT.notice) { drawNotice(); return; }   // the release's notice, until its button is pressed
   trackDock(); RT.heroN = 0; RT.heroFn = null; RT.heroLater = false; RT.plScr = null; RT.gridScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   teachFill();
   if (S.phase === 'watch' && !watchHer()) watchClose();   // the play is over, she is gone or out of sight: the view closes by itself
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
-    case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
+    case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? START_TEXT.noteFirst : START_TEXT.noteDeep) : START_TEXT.noteWeather, rx = drawTop(TITLE_TEXT.expedition(S.expN), note);
       if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
     case 'patch': if (WARM.cold && warmLanding()) { drawHUD(); drawSwap(); break; }   // entered before the land was warm: built a step a frame, the controls live
       if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(); keepEdgeView(); drawHeroLater(); drawInkIn(); drawSlide(); } drawHUD(); drawSwap(); break;   // a view over the place (Look, the peek) has the whole view
-    case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
+    case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop(TITLE_TEXT.menu); break;
     case 'log': drawLog(); break;
     case 'her': drawHer(); break;
     case 'watch': drawWatch(); break;
     case 'card': drawCard(); break;
-    case 'probe': drawProbe(t); break;
-    case 'cargo': drawCargo(t); break;
-    case 'riding': drawRiding(t); break;
+    case 'probe': drawProbe(); break;
+    case 'cargo': drawCargo(); break;
+    case 'riding': drawRiding(); break;
     case 'newworld': drawNewWorld(); break;
-    case 'worldmap': drawMap('map', t); drawTop('Full map', 'world turn ' + wTurn()); break;
-    case 'sealed': drawSealed(t); break;
+    case 'worldmap': drawMap('map', t); drawTop(TITLE_TEXT.fullMap, TITLE_TEXT.turn(wTurn())); break;
+    case 'sealed': drawSealed(); break;
   }
   drawGoalBand();
   hitFrame();
   { const wa = NOW - (FX.waitAt || -1e9); if (wa >= 0 && wa < 220 && motion() && S.exp) { const by = VIEW_Y + Math.round(wa / 220 * (VIEW_H - 24)); ditherFill(0, by, SCR_W, 24, 'cream', 3); ditherFill(0, by + 6, SCR_W, 12, 'cream', 5); } }   // Wait's ripple
   drawLine(lineFor());
   if (!(RT.view && S.phase === 'patch') && S.phase !== 'log' && S.phase !== 'her' && S.phase !== 'watch' && S.phase !== 'card' && !(S.phase === 'cargo' && !(S.exp && S.ui.caseEnd))) drawMessage();   // the Log and the Case are pages: no message box over them (the End refusal is the exception)
-  drawDuskCard();   // a night-step-4 card, when one is up: the whole frame, over everything
+  drawDuskCard();   // a dusk, night or dawn card, when one is up: the whole frame, over everything
   const ta = NOW - FX.transAt; if (ta < 200 && ta >= 0 && motion()) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 16 - Math.floor(ta / 200 * 16));
 }
+// A fault in a frame is counted (RT.err) and logged once per message, up to twenty different ones (a fault that repeats every frame never floods the log); the loop goes on to the next frame.
+const FRAME_FAULTS = new Set();
+function frameFault(e) { RT.err++; const k = String(e && e.message); if (FRAME_FAULTS.has(k) || FRAME_FAULTS.size >= 20) return; FRAME_FAULTS.add(k); console.error(e); }
 function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
-  try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  try { wantPlaces(); warmPay(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
-  FX.bursts = FX.bursts.filter(b => NOW - b.at < JUICE_BURST_MS); FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
-  if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
-  if (FX.reveal && NOW - FX.reveal.at > 1200) FX.reveal = null;
-  if (FX.dig && NOW - FX.dig.at > 900) FX.dig = null;
+  try { render(t / 1000); } catch (e) { frameFault(e); }
+  for (const tick of [wantPlaces, warmPay, warmTick, resumeHeld, panTick, placeNameExpire]) { try { tick(); } catch (e) { frameFault(e); } }
+  expireEffects(FX, NOW, JUICE_BURST_MS, CALL_MS + 400);
   requestAnimationFrame(frame);
 }
 
