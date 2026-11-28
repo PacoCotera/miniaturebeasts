@@ -60,12 +60,11 @@ Reads every module under `src/`, takes its layer from its folder, and fails with
 
 | Layer | Modules in `src/` today |
 | --- | --- |
-| data | `words`, `walk-data`, `playtest-seeds`, `playtest`, `riding-cut` |
-| logic | `world`, `world7`, `adapt7`, `bake7`, `regions`, `habits`, `ease`, `watch`, `map-rules`, `shore7`, `waitpips`, all of `gen7/` |
-| store | `place-store`, `realm-store`, `package-store`, `package-dock`, `sleeper`, `options` |
-| render | `atlas`, `view`, `landpaint`, `map-paint`, `mapkinds`, `trees48`, `fogedge`, `night`, `dusk`, `card-motion`, `font`, `pngdecode`, `fetchretry` |
-| ui | `breakline` |
-| main | `realm-worker` (becomes `worker.mjs`) |
+| logic | all of `gen7/` |
+
+The stores start the places worker (`src/worker.mjs`) by its address, never by an import.
+
+Moved out of the root: generator 7's page entry, bake, layout and shore line are in `src/gen7/` (`world7`, `bake7`, `adapt7`, `shore7`); the retired generators 1 to 5 with the grid's constants and the seeded hash are `src/logic/world.mjs`; `walk-data` is in `src/data/`; `atlas`, `trees48` and `pngdecode` are in `src/render/`. `src/gen7/` itself is still logic by `notMoved`: its move to `src/logic/gen7/` is one folder rename.
 
 ## Where the page's script goes
 
@@ -78,7 +77,7 @@ Sizes are the script's characters by its own section headings, in thousands.
 | 5 state and effects hooks, the first ten minutes, signs | 79 | `logic/state.mjs` and `logic/events.mjs`; teaching and sign rules to `logic/`; the sound table to `sound/`; save, load and migrations to `store/` |
 | 6 signs, fog, map states and map rules | 43 | `logic/` (the seen record, reach, the storm, the fog bank) |
 | 7 patch rules, 8 creatures and the partner, 9 expedition end and world turn | 202 | `logic/` |
-| 10 pixel graphics core, 11 the frame | 129 | `render/`; the mibis' token strings to `data/` (`data/tokens.mjs`) |
+| 10 pixel graphics core, 11 the frame | 129 | `render/` (the frame is `render/frame.mjs`); the mibis' token strings to `data/` (`data/tokens.mjs`) |
 | 12 world map, 13 living patch | 130 | `render/` |
 | 14 HUD, bottom line, mode screens | 131 | `ui/` |
 | 15 screen dispatch | 20 | `ui/` (which screen draws); the frame loop to main |

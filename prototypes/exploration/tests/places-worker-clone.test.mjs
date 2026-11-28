@@ -1,13 +1,13 @@
 // places-worker-clone-1 (live, 2026-11-16: "the places worker did not run DataCloneError ... i=>t[i]<o?2:t[i]<s?3:4 could not be cloned"): everything the page posts to the places worker
-// (src/place-store.mjs) is plain data, so it crosses by structured clone, and a place made in the worker is the place the page would make, tile for tile.
+// (src/store/place-store.mjs) is plain data, so it crosses by structured clone, and a place made in the worker is the place the page would make, tile for tile.
 // The real worker module runs in a node worker thread (tests/places-worker-shim.mjs); the page thread makes places of the seed first, which is what leaves caches on the realm.
 //   node --test prototypes/exploration/tests/places-worker-clone.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
 import { Worker as NodeWorker } from "node:worker_threads";
 import { PLACES } from "./page-harness.mjs";
-import { MW, MH } from "../src/world.mjs";
-import { bakedCell, realm7 } from "../src/world7.mjs";
+import { MW, MH } from "../src/logic/world.mjs";
+import { bakedCell, realm7 } from "../src/gen7/world7.mjs";
 
 const SHIM = new URL("./places-worker-shim.mjs", import.meta.url), threads = [], posted = [];
 class FakeWorker {
@@ -20,7 +20,7 @@ class FakeWorker {
   terminate() { return this.w.terminate(); }
 }
 globalThis.Worker = FakeWorker;
-const store = await import("../src/place-store.mjs");
+const store = await import("../src/store/place-store.mjs");
 
 // a canonical digest (FNV-1a 32 bits): keys sorted, typed arrays by their bytes, Maps and Sets by their entries; a function anywhere is refused
 function digest(v) {
@@ -58,14 +58,16 @@ test("what the page posts to the places worker crosses by structured clone, and 
       assert.equal(digest(w.ir), digest(here[i].ir), `seed ${seed} cell ${c}: the IR is the page's, tile for tile`);
       assert.equal(digest(w.place), digest(here[i].place), `seed ${seed} cell ${c}: the baked place is the page's, tile for tile`);
     });
-    assert.equal(store.readySites(seed, [slot], kit), true, `seed ${seed}: a background slice of Hollow Tree sites is accepted`);
     const id = store.bakedGet(seed, slot, v, cells[0]).place.id;
     assert.equal(store.groundAsk(id, store.bakedGet(seed, slot, v, cells[0]).place, kit), true, `seed ${seed}: a ground is accepted`);
     await until(() => !store.groundPending(id), "the ground of seed " + seed);
     const g = store.groundTake(id); assert.ok(g && g.frames.length > 0, `seed ${seed}: the ground came back`);
   }
   assert.ok(withCache >= 1, "the test reaches the realm's caches (at least one seed had made its width classes before the realm was posted)");
-  for (const op of ["init", "seed", "bake", "sites", "ground"]) assert.ok(posted.includes(op), `a '${op}' message was posted and cloned`);
+  for (const op of ["init", "seed", "bake", "ground"]) assert.ok(posted.includes(op), `a '${op}' message was posted and cloned`);
+  // a ground the worker cannot render: the wait for it ends, nothing comes, and it is not asked again (the page renders it itself)
+  assert.equal(store.groundAsk("no-place", null, kit), true); await until(() => !store.groundPending("no-place"), "the failed ground's answer");
+  assert.equal(store.groundTake("no-place"), null); assert.equal(store.groundAsk("no-place", null, kit), false, "a ground that failed is not asked twice");
 });
 
 // play-freeze-1 (live, 2026-11-17: Firefox "slowing down" on a played save): telling the worker which sites the page has made never makes the page's decor (its land is seconds of work on the page thread).

@@ -1,14 +1,14 @@
 // A baked cell as .mbplace bytes (format 2, baked-package-8): the place and the bake's hold outputs in ONE file, and back.
-//   writeBaked(ir, place, { seed, cell }) -> bytes   the Station's side: what the places worker made (exploration/src/world7.mjs bakedCell) is kept as the bytes the device's flash takes.
-//   readBaked(bytes) -> { ir, place }                the Companion's side, the one read path: the object adaptCell (exploration/src/adapt7.mjs) reads today, made from the bytes alone.
+//   writeBaked(ir, place, { seed, cell }) -> bytes   the Station's side: what the places worker made (exploration/src/gen7/world7.mjs bakedCell) is kept as the bytes the device's flash takes.
+//   readBaked(bytes) -> { ir, place }                the Companion's side, the one read path: the object adaptCell (exploration/src/gen7/adapt7.mjs) reads today, made from the bytes alone.
 // The hold outputs are rolled once at the bake, from the seed; the Companion never generates. Nothing is rolled on a read: adaptCell's own hashes (the slab, the special tiles, a find's roll)
 // are a function of the seed and the cell, and both are in the bytes (place.seed, place.cell).
 // A value that changes in play is player state and stays in the save (a strike's age advances there, as the veil and the finds do); the file holds the bake's value.
 import { writePlace, FORMAT_VERSION } from './write.mjs';
 import { readPlace } from './read.mjs';
+import { FIND_KINDS } from '../bake/steps.mjs';
 
 const CW = 24, CH = 28;   // a generated place's tiles (exploration/src/gen7/world.mjs); a cell's baked place has a one-tile apron, so its origin is one tile before the cell's own
-export const FIND_KINDS = ['pod', 'fruit', 'dew', 'stone', 'material'];   // the order the format's `kinds` index (places/src/bake/ldtk.mjs)
 const xy = (a) => ({ x: a[0], y: a[1] });
 
 export function writeBaked(ir, place, { seed, cell }) {

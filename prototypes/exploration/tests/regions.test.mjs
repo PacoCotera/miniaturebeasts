@@ -1,12 +1,12 @@
-// src/regions.mjs: the realm's regions as pure functions.
+// src/logic/regions.mjs: the realm's regions as pure functions.
 // A v8 save becomes region 1 of a v9 realm, and mounting it gives back the very state the page held: five saves, equal before and after,
-// the full map's picture included. Then the round trip in bytes, the v8 copy, the atlas rules, and the names.
+// the full map's picture included. Then the round trip in bytes, the atlas rules, and the names.
 //   node --test prototypes/exploration/tests/regions.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import * as W from "../src/world.mjs";
-import * as R from "../src/regions.mjs";
+import * as W from "../src/logic/world.mjs";
+import * as R from "../src/logic/regions.mjs";
 import * as SN from "../src/logic/seen.mjs";
 import { makePage } from "./page-harness.mjs";
 
@@ -25,7 +25,6 @@ const picture = p => { p.run("mapCv = null; ensureMap(); scr.px().fill(-1); draw
 // the state the page holds after a load, as the v8 page held it: the realm's own fields (began, here, regions) taken off, the map still mounted on S
 const flat = p => { const o = plain(p.S); o.v = 8; for (const k of ["began", "here", "regions"]) delete o[k]; return o; };
 const pageExplored = p => plain(p.run("(() => { let n = 0, s = 0; for (let c = 0; c < MW * MH; c++) { if (explored(c)) n++; if (S.seen.rev[c]) s++; } return [n, s]; })()"));
-const store = (init = {}) => { const m = new Map(Object.entries(init)); return { m, getItem: k => m.has(k) ? m.get(k) : null, setItem: (k, v) => { m.set(k, String(v)); } }; };
 
 for (const name of FIXTURES) {
   test(`1. ${name}: v8 to v9 and mounted again, the same state; the full map the same picture`, () => {
@@ -101,19 +100,6 @@ test("4. realmStatus: a newer save or a generator this page does not know makes 
   assert.equal(R.realmStatus(second, [5, 6, 99]), "ok", "a page that knows it");
   assert.equal(R.realmStatus({ ...v9, v: 8 }), "broken"); assert.equal(R.realmStatus(null), "broken"); assert.equal(R.realmStatus([]), "broken");
   assert.equal(R.realmStatus({ ...v9, regions: [] }), "broken");
-});
-
-test("5. keepPre9: the v8 bytes are copied once, untouched, and read back", () => {
-  const raw = FIX("played-g2"), key = "mb-save-v8@c1";
-  const s = store();
-  assert.equal(R.keepPre9(s, key, raw), true);
-  assert.equal(s.m.get(key + ".pre9"), raw, "equal to the v8 bytes");
-  assert.equal(R.keepPre9(s, key, "later bytes"), true); assert.equal(s.m.get(key + ".pre9"), raw, "kept: the oldest v8 bytes");
-  // a copy that cannot be made, or does not read back the same, is no copy: the save then opens read-only
-  assert.equal(R.keepPre9({ getItem: () => null, setItem: () => { throw new Error("quota"); } }, key, raw), false);
-  assert.equal(R.keepPre9({ getItem: () => null, setItem: () => {} }, key, raw), false, "written but not there");
-  const bent = new Map(); assert.equal(R.keepPre9({ getItem: k => bent.get(k) ?? null, setItem: (k, v) => bent.set(k, v.slice(1)) }, key, raw), false, "written but not the same");
-  assert.equal(R.keepPre9({ getItem: () => { throw new Error("denied"); }, setItem: () => {} }, key, raw), false);
 });
 
 // ---- mount and unmount ----
@@ -302,7 +288,6 @@ test("9. canOpen: 140 x n explored cells across the home regions, up to 25", () 
   assert.equal(R.canOpen(S), false, "240 of 280"); S.regions[1].exploredN = 140; assert.equal(R.canOpen(S), true, "280 of 280");
   S.regions[1].exploredN = 139; assert.equal(R.canOpen(S), false, "279 of 280");
   assert.equal(R.canOpen({ ...S, regions: S.regions.slice(0, 2) }, 100), true, "the developer's number");
-  assert.equal(R.exploredAcross({ here: "g1", regions: S.regions.slice(0, 2) }), 279);
   // the region in use counts live, not as last cached
   const live = { here: "g1", regions: [home(1, [2, 2], { exploredN: 0 })], seen: SN.newSeen(320) };
   assert.equal(R.canOpen(live), false);
@@ -373,10 +358,9 @@ test("12. regionRecord and blankMap: the shape of a record, and a new region's m
   assert.equal(R.exploredCount({ seen: { been: [1, 1, 0], walked: { 0: 1, 2: 1 } } }), 1); assert.equal(R.seenCount({ seen: { rev: [1, 0, 1] } }), 2);
 });
 
-test("13. the page imports regions.mjs (the page and the Station took v9 in one merge); the module is pure", () => {
-  const src = readFileSync(new URL("../src/regions.mjs", import.meta.url), "utf8");
+test("13. the module is pure", () => {
+  const src = readFileSync(new URL("../src/logic/regions.mjs", import.meta.url), "utf8");
   assert.ok(!/\b(document|window|localStorage|fetch|Math\.random)\b/.test(src.replace(/\/\/.*$/gm, "")), "no page, no storage, no chance");
-  assert.ok(/from "\.\/src\/regions\.mjs"/.test(readFileSync(new URL("../index.html", import.meta.url), "utf8")));
 });
 
 test("0. a new realm is written as version 3 (biomeV 3); a loaded old save stays without one", () => {

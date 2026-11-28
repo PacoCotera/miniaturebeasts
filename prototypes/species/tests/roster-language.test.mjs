@@ -87,7 +87,7 @@ test("each roster species takes its land and family from the registry; a land ha
 
 test("the player's land words: Meadows, Hills, Cliffs, Lakes, Highpools; Woods, Tallwood, Thickets and Marsh keep their names", async () => {
   const { LANGUAGE } = await import("../framework/language.mjs");
-  const { BIOMES, BIOME_NAME, BIOME_KINDS } = await import("../../exploration/src/regions.mjs");
+  const { BIOMES, BIOME_NAME, BIOME_KINDS } = await import("../../exploration/src/logic/regions.mjs");
   const word = Object.fromEntries(LANGUAGE.lands.map((l) => [l.id, l.word]));
   assert.deepEqual(word, { mixed: "Meadows", woods: "Woods", tallwood: "Tallwood", thickets: "Thickets", fells: "Cliffs", downs: "Hills", marsh: "Marsh", tarns: "Highpools", meres: "Lakes" });
   assert.deepEqual(Object.keys(BIOME_NAME).sort(), [...BIOMES].sort());
@@ -98,7 +98,7 @@ test("the player's land words: Meadows, Hills, Cliffs, Lakes, Highpools; Woods, 
   assert.deepEqual(BIOME_KINDS.downs, ["S01", "S02", "S15", "S18"]);
   assert.equal(Object.values(BIOME_KINDS).flat().length, 19 + 9);
   // the frozen lists of a realm of kind version 2: the Loika in the Woods only
-  const { BIOME_KINDS_V2 } = await import("../../exploration/src/regions.mjs");
+  const { BIOME_KINDS_V2 } = await import("../../exploration/src/logic/regions.mjs");
   assert.deepEqual(Object.keys(BIOME_KINDS_V2), Object.keys(BIOME_KINDS).sort((a, b) => Object.keys(BIOME_KINDS_V2).indexOf(a) - Object.keys(BIOME_KINDS_V2).indexOf(b)));
   assert.deepEqual(BIOME_KINDS_V2.woods, ["S01", "S05"]);
   assert.equal(Object.values(BIOME_KINDS_V2).flat().length, 20);

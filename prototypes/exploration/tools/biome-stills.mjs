@@ -6,8 +6,8 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { windowIR, cellTerrain, biomeAtTile, TV, CW, CH, RW, RH } from '../src/gen7/place.mjs';
 import { slotBiomes } from '../src/gen7/world.mjs';
-import { ATLAS } from '../src/regions.mjs';
-import { MW, MH } from '../src/world.mjs';
+import { ATLAS } from '../src/logic/regions.mjs';
+import { MW, MH } from '../src/logic/world.mjs';
 import { renderIR } from './gen7-render.mjs';
 import { encodePng } from '../../places/src/png.mjs';
 import { artHooks } from '../../places/src/setload.mjs';

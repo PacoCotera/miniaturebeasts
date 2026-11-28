@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { PLACES } from "./page-harness.mjs";
 import { genRegion7 } from "../src/gen7/region.mjs";
-import { bakedCell, layout7 } from "../src/world7.mjs";
+import { bakedCell, layout7 } from "../src/gen7/world7.mjs";
 
 const ts = PLACES.ts, name = (d) => ts.sprites[d.kind].kind, isCliff = (d) => /^cliff-|^way-up/.test(name(d));
 const CASES = [[4260276819, 171]];   // the owner's world (note mwkxax1vaa4550), patch 11,10: a stone at tile 16,13 beside a run of the face

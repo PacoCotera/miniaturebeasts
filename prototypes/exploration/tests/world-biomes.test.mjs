@@ -1,12 +1,12 @@
-// Generator 4, biomes (src/world.mjs genWorld4): its golden vectors by biome, generators 1 to 3 untouched, the land shares over 200 seeds
+// Generator 4, biomes (src/logic/world.mjs genWorld4): its golden vectors by biome, generators 1 to 3 untouched, the land shares over 200 seeds
 // against the design table, the walkable floor, the Fells' stairs and height changes against generator 2, the Shade, the doubled habitat
 // herds, and every species in every biome.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import * as W from "../src/world.mjs";
-import * as A from "../src/atlas.mjs";
-import { viewOf, camAt, TS } from "../src/view.mjs";
+import * as W from "../src/logic/world.mjs";
+import * as A from "../src/render/atlas.mjs";
+import { viewOf, camAt, TS } from "../src/render/view.mjs";
 import { seedDigest, SEEDS, placeKeys2, placeDigest, syntheticPieces, SYNTH_TONE } from "../tools/world-vectors.mjs";
 
 const { L, EDGE, MW, MH } = W, N = MW * MH;

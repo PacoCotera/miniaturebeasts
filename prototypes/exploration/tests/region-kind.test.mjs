@@ -3,18 +3,14 @@
 //   node --test prototypes/exploration/tests/region-kind.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { genWorld7 } from "../src/world7.mjs";
-import * as R from "../src/regions.mjs";
+import { genWorld7 } from "../src/gen7/world7.mjs";
+import * as R from "../src/logic/regions.mjs";
 import { makePage } from "./page-harness.mjs";
 
 const plain = x => JSON.parse(JSON.stringify(x));
 const digest = G => JSON.stringify({ land: [...G.land], level: [...G.level], edge: [...G.edge], comp: [...G.comp], gate: G.gate, mouth: G.mouth, spawns: [...G.spawns] });
 
 const digestOf = p => p.run("JSON.stringify({ land: [...G.land], level: [...G.level], edge: [...G.edge], comp: [...G.comp], gate: G.gate, mouth: G.mouth, spawns: [...G.spawns] })");
-
-test("openGen: every realm opens its regions with generator 7", () => {
-  assert.equal(R.openGen({ biomeV: 2 }), 7); assert.equal(R.openGen({}), 7); assert.equal(R.openGen({ biomeV: 1 }), 7);
-});
 
 test("a new realm (kind version 3): region 1 is generator 7's home at its slot; every region opened is generator 7 in its slot's kind", () => {
   const p = makePage({ gen: 7, console: "silent" });

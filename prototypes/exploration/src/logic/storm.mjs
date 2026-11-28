@@ -1,6 +1,6 @@
 // The storm band's rules that read only what they are handed: a map cell, a band ({ x: its west edge in columns, w: its width, dir: +1 moving east or -1 west,
 // v: columns an action, t: its own clock }). No game state, no clock.
-import { MW, cxy } from "../world.mjs";
+import { MW, cxy } from "./world.mjs";
 
 // The band starts three columns upwind of the start, so it arrives within a dozen actions.
 export function stormFor(cell) { const col = cxy(cell).x, w = 3, fromWest = col >= MW / 2;

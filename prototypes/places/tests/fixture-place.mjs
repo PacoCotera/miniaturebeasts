@@ -1,7 +1,7 @@
 // A fixture place for the format tests: 18 x 22 cells, a sand-ringed pond, a path, a few props, a heart, a clue, finds and openings, on the ninja-test set.
 import { terrainLayers, packDepth } from '../src/dualgrid.mjs';
 import { layerDescriptors } from '../src/setload.mjs';
-import { layersToTileIds } from '../src/bake/build.mjs';
+import { layersToTileIds } from '../src/bake/steps.mjs';
 
 export const W = 18, H = 22;
 

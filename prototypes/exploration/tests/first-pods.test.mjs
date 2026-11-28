@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { makePage } from "./page-harness.mjs";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 
 
 // generator 6: the composed places (the first pods land in the template's find slots). The first pod is home, so the signs and hints of these suites show (the first walk holds them: the tests at the end of this file)
@@ -284,7 +284,7 @@ test("the Probe's marks say what they are (plan 3.17 B3): Reach has its count, a
   const p = page();
   p.run("newWorld(3); S.phase = 'probe'; S.found.push('met:bolt', 'met:flag'); globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
   const said = () => p.run("__t = []; drawProbe(0); __t.join('|')");
-  const range = p.run("tierOf().range"), total = (range * 2 + 1) ** 2;
+  const range = p.run("tierOf(S.tier).range"), total = (range * 2 + 1) ** 2;
   let t = said();
   assert.ok(t.includes(`0 of ${total} explored`), "between expeditions none are explored: " + t);
   assert.ok(t.includes("Bolt"), "the ringed sign's name: " + t);
@@ -405,7 +405,7 @@ test("an empty pod slot is a dashed outline; the fruit is at 2x; the Case betwee
   assert.ok(/FRUIT2\(\)/.test(p.run("PIC.fruit.toString()")) && p.run("FRUIT().w === 12 && FRUIT2().w === 24 && FRUIT2().h === 24"), "the 12x12 fruit is drawn 24x24");
   p.run("S.phase = 'cargo'; S.bay = [{ id: 1, n: 1, pods: [], e: 1, d: 0, s: 0 }]; __t = []; drawCargo(0);");
   const t = p.run("__t.join('|')"); assert.ok(!/Away|Docked|accepts|Probe tier|World turn|Nothing sealed/.test(t), t); assert.ok(t.includes("Sealed for home"));
-  assert.equal(p.run("Math.max(tierOf().hold, 0)"), 2, "tier 1: two pod slots");
+  assert.equal(p.run("Math.max(tierOf(S.tier).hold, 0)"), 2, "tier 1: two pod slots");
   p.run("startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; __t = []; drawCargo(0);"); assert.ok(!p.run("__t").includes("Reach"), "no Reach caption on the Case");
 });
 

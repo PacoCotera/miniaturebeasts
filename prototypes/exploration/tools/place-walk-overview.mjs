@@ -4,7 +4,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { TV, CW, CH, RW, RH } from '../src/gen7/place.mjs';
 import { genRegion7 } from '../src/gen7/region.mjs';
-import { MW, MH } from '../src/world.mjs';
+import { MW, MH } from '../src/logic/world.mjs';
 import { newImage, encodePng } from '../../places/src/png.mjs';
 
 const NB4 = [[1, 0], [-1, 0], [0, 1], [0, -1]], [seedArg, adir, bdir, outFile] = process.argv.slice(2), seed = +seedArg, WW = RW * CW, WH = RH * CH, SW = MW * CW, SH = MH * CH, S = 5;

@@ -2,7 +2,7 @@
 // (open, stair, cliff, scree or bank, water, the map's end) and the map, the reach view and the cell itself must all show it. This compares the world's edge with what a cell holds, for every cell of a
 // world, and counts the mismatches by kind. Generator 7 (the page's): auditGen7, on the cell's IR; the generated places of the frozen generators 2 and 5: auditGenerated.
 //   node prototypes/exploration/tools/views-audit-run.mjs [seedFrom seedTo] [--gens 7,2]       the table (a sweep of seeds 1-200 builds 200 realms: allow an hour, or run it in shards)
-import { MW, MH, T, T_BLOCK, L, TERR, sideKind } from "../src/world.mjs";
+import { MW, MH, T, T_BLOCK, L, TERR, sideKind } from "../src/logic/world.mjs";
 
 export const SIDES = ["up", "down", "left", "right"];
 const WET = new Set([T.WATER, T.DEEP, T.ISLE, T.STEP, T.WADE]);

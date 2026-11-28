@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { drawsCut } from "../src/watch.mjs";
+import { drawsCut } from "../src/logic/watch.mjs";
 
 test("the cut is drawn only at mid and near in clear air", () => {
   assert.equal(drawsCut("far", true), false, "far in clear air: shape");

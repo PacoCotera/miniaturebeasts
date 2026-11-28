@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { sortItems, propItems, drawItems, blitPlaced, canopyPass, cutOut, CUT_RADIUS } from '../src/sprites.mjs';
 import { tablesOf } from '../src/ground.mjs';
-import { BAYER4 } from '../../exploration/src/view.mjs';
+import { BAYER4 } from '../../exploration/src/render/view.mjs';
 import { ts, place, kindIndex } from './render-helpers.mjs';
 
 const W48 = place.w * 48, H48 = place.h * 48;

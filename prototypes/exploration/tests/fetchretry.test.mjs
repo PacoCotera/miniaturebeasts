@@ -1,7 +1,7 @@
-// src/fetchretry.mjs: a non-ok answer or a dropped request is tried again twice; the last failure names the file and the status.
+// src/render/fetchretry.mjs: a non-ok answer or a dropped request is tried again twice; the last failure names the file and the status.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { fetchOk, loadImg } from "../src/fetchretry.mjs";
+import { fetchOk, loadImg } from "../src/render/fetchretry.mjs";
 
 const pause = async () => {};
 

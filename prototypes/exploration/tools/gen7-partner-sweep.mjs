@@ -1,7 +1,7 @@
 // Generator 7 sweep of the partner abilities' ground (partner-gates-7-1): per region of each seed, the earth banks and soft cells the rules hold,
 // and how many bank edges have a real step of the land (raised ground against low walkable ground) within NEAR tiles of the cell border, by the way the step faces.
 // node tools/gen7-partner-sweep.mjs [seed ...]   (default 7 13 42)
-import { MW, MH, L, EDGE, softGround, bankEdges } from '../src/world.mjs';
+import { MW, MH, L, EDGE, softGround, bankEdges } from '../src/logic/world.mjs';
 import { genRegion7 } from '../src/gen7/region.mjs';
 import { cellTerrain, CW, CH, TV } from '../src/gen7/place.mjs';
 

@@ -4,7 +4,7 @@
 //   import { loadPage, makePage, PAGE, MODULE, SCRIPT } from "./page-harness.mjs";
 import { readFileSync, readdirSync } from "node:fs";
 import vm from "node:vm";
-import * as regions from "../src/regions.mjs";
+import * as regions from "../src/logic/regions.mjs";
 
 export const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 export const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
@@ -22,7 +22,7 @@ const { readTileSet } = await import("../../places/src/format/read.mjs");
 const fileBytes = (name) => new Uint8Array(readFileSync(new URL(name, BAKED_DIR)));
 export const PLACES = (() => {
   const ts = readTileSet(fileBytes("ninja-test.mbtiles")), terrains = JSON.parse(readFileSync(new URL("terrain.json", BAKED_DIR), "utf8")).terrains;
-  const desc = MODS.world7.reviveLayers(JSON.parse(readFileSync(new URL("../art/gen7/layers.json", import.meta.url), "utf8")));
+  const desc = MODS["gen7/world7"].reviveLayers(JSON.parse(readFileSync(new URL("../art/gen7/layers.json", import.meta.url), "utf8")));
   return { ts, terrains, desc, ctx: { ts, terrains, desc } };
 })();
 
@@ -57,7 +57,7 @@ export function loadPage(ctx, script = SCRIPT) {
   for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from];
   // The page plays generator 7 only (GENS = [7]). The suites written for generator 5's generated places run on generator 5, which stays frozen in world.mjs: a page opened with
   // `gen: 7` (makePage) or `__gen7: true` (a ctx given to loadPage) is the page as played; any other is that page with generator 5 played too and new worlds of generator 5.
-  if (!ctx.__gen7) { ctx.NEW_GEN = 5; ctx.GENS = [...new Set([...MODS.world.GENS, 5])]; }
+  if (!ctx.__gen7) { ctx.NEW_GEN = 5; ctx.GENS = [...new Set([...MODS["logic/world"].GENS, 5])]; }
   vm.createContext(ctx); const run = src => vm.runInContext(src, ctx); ctx.__run = run; vm.runInContext(script, ctx);
   return run;
 }
@@ -137,7 +137,7 @@ export function makePage(opts = {}) {
     storageEvent(key) { for (const f of listeners.storage || []) f({ key }); },   // the other tab wrote `key`
     // the Station writes its part of the shared save, and the Companion reads it (the page's storage event calls save())
     writeSt(st) { const o = JSON.parse(store[KEY]); o.st = JSON.parse(JSON.stringify(st)); store[KEY] = JSON.stringify(o); run("save()"); },
-    // A second home region in a free slot, for the tests and tools that need one (the game opens none yet): its record by the realm's own rule (src/regions.mjs openHome),
+    // A second home region in a free slot, for the tests and tools that need one (the game opens none yet): its record by the realm's own rule (src/logic/regions.mjs openHome),
     // its life made with that region mounted, as a new realm makes region 1's; the region in hand is put back. Returns its id.
     openRegion(slot) {
       const rec = regions.openHome(run("S"), slot);

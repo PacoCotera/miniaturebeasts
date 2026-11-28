@@ -4,7 +4,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { makePage } from "./page-harness.mjs";
-import * as A from "../src/atlas.mjs";
+import * as A from "../src/render/atlas.mjs";
 
 const FILE = JSON.parse(readFileSync(new URL("../../../art/companion-48/terrain/meadow/meadow-palette.json", import.meta.url), "utf8"));
 const rgbOf = e => [1, 3, 5].map(i => parseInt(e.hex.slice(i, i + 2), 16));

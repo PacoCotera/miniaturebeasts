@@ -2,7 +2,7 @@
 // node tools/ability-sweep.mjs [seeds per biome per generator, default 100]
 // Per biome and generator 2 to 4 (generators 2 and 3 have the mixed ground only): the share of worlds with at least one soft feature (target 8 in 10 over generators 2 to 4),
 // and the share with a bank that opens a pocket (2 or more cells outside G.comp) or a shortcut of 6 steps or more (target 7 in 10 for mixed, downs, woods, thickets, tallwood).
-import { genWorld, ALL_BIOMES, softGround, bankEdges, canStepIn, SOFT, MW, MH, DIRS, edgeIndex } from '../src/world.mjs';
+import { genWorld, ALL_BIOMES, softGround, bankEdges, canStepIn, SOFT, MW, MH, DIRS, edgeIndex } from '../src/logic/world.mjs';
 
 const N = +process.argv[2] || 100, NC = MW * MH, D4 = Object.keys(DIRS);
 const stepCell = (c, dir) => { const x = c % MW + DIRS[dir][0], y = ((c / MW) | 0) + DIRS[dir][1]; return x < 0 || y < 0 || x >= MW || y >= MH ? -1 : y * MW + x; };

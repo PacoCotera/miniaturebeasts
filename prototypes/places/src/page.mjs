@@ -3,7 +3,7 @@
 // The page owns the creatures, the partner, the explorer and the overlays; this module never draws them.
 import { readPlace, readTileSet } from './format/read.mjs';
 import { PlaceGroundCache, GroundCache, duskOf, duskLitOf, applyLight, lightState, tablesOf, LEVELS, renderHalfView, renderViewSteps, wholeScale } from './ground.mjs';
-import { BAYER4 } from '../../exploration/src/view.mjs';
+import { BAYER4 } from '../../exploration/src/render/view.mjs';
 import { cutOut, scaleTo, walkFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
 import { stepCamera, newCam, TILE } from './camera.mjs';
@@ -48,7 +48,7 @@ export class BakedView {
   // The colours the baked art can put on screen, for the page's off-palette check.
   paletteRgb() { return this.colours; }
 
-  // The place's ground as the page's worker rendered it (src/realm-worker.mjs 'ground': { frames: [[clock, buf]], half, size }, no decals): kept as the ground the caches made, so the page draws no tile of it.
+  // The place's ground as the page's worker rendered it (src/worker.mjs 'ground': { frames: [[clock, buf]], half, size }, no decals): kept as the ground the caches made, so the page draws no tile of it.
   installGround(g) {
     for (const [clock, buf] of g.frames) this.cache.preset(clock, buf);
     const T = this.wholeSize(); if (g.size === T) this.half.preset({ x: 0, y: 0, w: this.place.w * T, h: this.place.h * T }, 0, g.half);

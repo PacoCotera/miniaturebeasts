@@ -180,10 +180,10 @@ test("B2: a fresh world: the frame is night, each light's own cell is land in th
 });
 
 test("B2: the reach fits the frame: cell 52 at tier 1, 31 at tier 2; the start flag is on the land", () => {
-  const p = returning(); assert.equal(p.run("openFrame().cs"), 52); assert.equal(p.run("tierOf().range"), 2);
+  const p = returning(); assert.equal(p.run("openFrame().cs"), 52); assert.equal(p.run("tierOf(S.tier).range"), 2);
   const s = p.run("openFrame().at(S.ui.lastPos)"); draw(p);
   const f = p.run("up2('flag', ICON.flag())"), r = stands(p, f, Math.round(s.x + 26 - f.w / 2 + 2), Math.round(s.y + 26 - f.h + 4)); assert.ok(r.n > 50 && r.bad === 0, "the flag at 2x: " + JSON.stringify(r));
-  p.run("S.tier = 2;"); assert.equal(p.run("tierOf().range"), 4); assert.equal(p.run("openFrame().cs"), 31); draw(p);
+  p.run("S.tier = 2;"); assert.equal(p.run("tierOf(S.tier).range"), 4); assert.equal(p.run("openFrame().cs"), 31); draw(p);
   const o = plain(p.run("(() => { const o = openFrame(); return [o.WX, o.WY, o.WW, o.WH]; })()")); assert.deepEqual(o, [10, 40, 430, 316]);
 });
 

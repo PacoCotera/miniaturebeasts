@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
 import { mapOf } from "../../station/src/map-read.mjs";
-import { SIGN_ORDER, signBook, pickSigns } from "../src/map-rules.mjs";
+import { SIGN_ORDER, signBook, pickSigns } from "../src/logic/map-rules.mjs";
 
 const SEEDS = [3, 17, 41];
 

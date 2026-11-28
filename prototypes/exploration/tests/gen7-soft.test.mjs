@@ -3,9 +3,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage, PLACES } from "./page-harness.mjs";
-import { MW, MH, T_BLOCK, T, softGround } from "../src/world.mjs";
+import { MW, MH, T_BLOCK, T, softGround } from "../src/logic/world.mjs";
 import { genRegion7 } from "../src/gen7/region.mjs";
-import { bakedCell, layout7 } from "../src/world7.mjs";
+import { bakedCell, layout7 } from "../src/gen7/world7.mjs";
 
 const mibi = (id, sp) => ({ id, name: "Fig", sp, born: 0, outings: 0, notches: 2, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null });
 const walk7 = (seed, sp) => { const p = makePage({ gen: 7, console: "silent" });

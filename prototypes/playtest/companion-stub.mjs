@@ -26,10 +26,10 @@ export function trip(session, rng, turn) {
 }
 
 // ---- the Companion that puts a realm to sleep ----
-// The real responder (exploration/src/sleeper.mjs) on a small stand-in for the page: a v10 save in the shared store, the page's save() that stops writing while locked, and a
+// The real responder (exploration/src/store/sleeper.mjs) on a small stand-in for the page: a v10 save in the shared store, the page's save() that stops writing while locked, and a
 // newRealm that stores a fresh v10 save under the new wid (the Station's part is left out, as the page leaves it). `store` is the shared localStorage; `keys` a key store (memoryStore).
 // Boot it with boot(): the page's own order (holdAtBoot, then start). seat(on) is the Caddy's cradle; ask(op, fields) is the shell's relay and answers `lifted` unless seated.
-import { makeSleeper } from "../exploration/src/sleeper.mjs";
+import { makeSleeper } from "../exploration/src/store/sleeper.mjs";
 
 export const freshV10 = (id, wid, seed, now) => ({ v: 10, wid, seed: seed >>> 0, companionId: id, began: now, here: "g1", turn: 0, expN: 0, mibis: [], bay: [], hold: null,
   regions: [{ id: "g1", n: 1, kind: "home", biome: "mixed", slot: [0, 0], ev: null, name: null, seed: seed >>> 0, gen: 5, opened: now, openedTurn: 0, turnSeen: 0, closed: false, closes: null, exploredN: 0, seenN: 0, map: { pods: [] } }] });

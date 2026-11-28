@@ -5,8 +5,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { Worker as NodeWorker } from "node:worker_threads";
 import { PLACES } from "./page-harness.mjs";
-import { MW, MH } from "../src/world.mjs";
-import { realm7 } from "../src/world7.mjs";
+import { MW, MH } from "../src/logic/world.mjs";
+import { realm7 } from "../src/gen7/world7.mjs";
 
 const SHIM = new URL("./places-worker-shim.mjs", import.meta.url), threads = [], bakedMsgs = [];
 class FakeWorker {
@@ -19,7 +19,7 @@ class FakeWorker {
   terminate() { return this.w.terminate(); }
 }
 globalThis.Worker = FakeWorker;
-const store = await import("../src/place-store.mjs");
+const store = await import("../src/store/place-store.mjs");
 
 test("a first: true bake (the set-out's reach) is made ahead of a long background list, and no cell is made twice", async (t) => {
   t.after(() => { for (const w of threads) w.terminate(); });

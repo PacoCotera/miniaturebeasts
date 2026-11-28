@@ -4,7 +4,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { DAY, partOfDay } from "../src/words.mjs";
+import { DAY, partOfDay } from "../src/data/words.mjs";
+import { PARTS } from "../src/logic/habits.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 // The signed shas, copied from the art ledger lines (mibi-art signed.jsonl) with these ids: dawn d0f6911e75, morning 0dca3108bd, midday e888a73ecb, afternoon b842e156ba, dusk 0928ab9c1e, night ba19e2e9d6.
@@ -18,7 +19,7 @@ test("each picture's sha256 is the signed one (14x14, ledger ids d0f6911e75, 0dc
 });
 
 test("the bar loads those six files and draws the one partOfDay names, as loaded; the Station keeps the sun", () => {
-  assert.deepEqual(PAGE.match(/const DAY_PARTS = \[([^\]]*)\]/)[1].replace(/['\s]/g, "").split(","), DAY.parts.map(p => p[0]), "the file list is the six parts, in order");
+  assert.deepEqual(PARTS, Object.keys(SIGNED), "the file list is the six signed parts, in the day's order");
   assert.deepEqual(DAY.parts.map(p => partOfDay(p === DAY.parts[0] ? 0 : DAY.parts.slice(0, DAY.parts.indexOf(p)).reduce((s, q) => s + q[1], 0))), DAY.parts.map(p => p[0]));
   assert.match(PAGE, /'day-' \+ n \+ '\.png'/, "the file is day-<part>.png");
   assert.match(PAGE, /const part = S\.exp && S\.day \? dayPart\(\) : null;/, "on a walk the part comes from dayPart; at the Station none");

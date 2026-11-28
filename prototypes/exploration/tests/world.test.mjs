@@ -1,4 +1,4 @@
-// The seeded world (src/world.mjs): generator 1 against its golden vectors (tests/world-vectors.json, captured from the page
+// The seeded world (src/logic/world.mjs): generator 1 against its golden vectors (tests/world-vectors.json, captured from the page
 // before the world moved out of it), the module's purity, the generator recorded in the save (`gen`, absent means 1) through
 // the page itself, and the Station's save reader keeping `gen` untouched. Generator 2 (terrain levels and stairs): its
 // golden vectors, its integer purity, its invariants over seeds 0–999 (places on 0–99) and canStepIn on hand-built worlds.
@@ -10,20 +10,20 @@ import { loadPage, fakeCanvas, paletteLook, PAGE, MODULE, SCRIPT, STONE_ART } fr
 import { blank } from "../../face/tools/blank.mjs";
 import { detail } from "../../core/base/noise.mjs";
 import { NOISE_VECTORS } from "./noise-vectors.mjs";
-import * as W from "../src/world.mjs";
-import { PLAYTEST_SEEDS, PLAYTEST_REALM_REV, PLAYTEST_BIOME_V } from "../src/playtest-seeds.mjs";
+import * as W from "../src/logic/world.mjs";
+import { PLAYTEST_SEEDS, PLAYTEST_REALM_REV, PLAYTEST_BIOME_V } from "../src/data/playtest-seeds.mjs";
 import { REALM_REV } from "../src/gen7/region.mjs";
-import { WORDS } from "../src/words.mjs";
-import * as R from "../src/regions.mjs";
-import * as A from "../src/atlas.mjs";
-import * as V from "../src/view.mjs";
-import * as EDGE from "../src/render/edge.mjs";
+import { WORDS } from "../src/data/words.mjs";
+import * as R from "../src/logic/regions.mjs";
+import * as A from "../src/render/atlas.mjs";
+import * as V from "../src/render/view.mjs";
+import * as SHAPE from "../src/render/edge.mjs";
 import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs, viewOut, ATLAS_CASES, atlasCaseOut, atlasPlaces, syntheticPieces, SYNTH_TONE, NO_MACRO, PROOF_GRID, proofStates, fnv as fnvStr } from "../tools/world-vectors.mjs";
 
 const VECTORS = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
-const MODULE_SRC = readFileSync(new URL("../src/world.mjs", import.meta.url), "utf8");
-const VIEW_SRC = readFileSync(new URL("../src/view.mjs", import.meta.url), "utf8");
-const ATLAS_SRC = readFileSync(new URL("../src/atlas.mjs", import.meta.url), "utf8");
+const MODULE_SRC = readFileSync(new URL("../src/logic/world.mjs", import.meta.url), "utf8");
+const VIEW_SRC = readFileSync(new URL("../src/render/view.mjs", import.meta.url), "utf8");
+const ATLAS_SRC = readFileSync(new URL("../src/render/atlas.mjs", import.meta.url), "utf8");
 const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
 const LIFE = { roster: W.ROSTER, genLife: (G, seed) => W.genLife(G, seed, W.ROSTER) };   // the roster column
 const API = { hash: W.hash, L: W.L, genWorld: s => W.genWorld(s, 1), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells, ...LIFE };
@@ -84,7 +84,7 @@ test("purity, by source: no page state, DOM, storage, clock, randomness, drawing
   const code = blank(MODULE_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/]) assert.doesNotMatch(code, re);
   const imports = MODULE_SRC.split("\n").filter((l) => /^\s*import\b/.test(l));
-  assert.deepEqual(imports, ['import { mulberry32 } from "../../core/base/random.mjs";'], "the one import is the core's random module");
+  assert.deepEqual(imports, ['import { mulberry32 } from "../../../core/base/random.mjs";'], "the one import is the core's random module");
 });
 
 test("unknown generators are refused; the module knows generators 1 to 5, the page plays generator 7 only, and new worlds take generator 7", () => {
@@ -227,15 +227,15 @@ test("generator 2: the key list is complete, generator 1's G gains no field, and
   assert.equal(W.depotCells(G, 7), G.depots.set, "the eager outposts are the memo");
 });
 
-// ---- src/view.mjs: the place camera and coordinates ----
-test("view: src/view.mjs gives every literal case in world-vectors.json, and the file holds every case", () => {
+// ---- src/render/view.mjs: the place camera and coordinates ----
+test("view: src/render/view.mjs gives every literal case in world-vectors.json, and the file holds every case", () => {
   assert.deepEqual(VECTORS.view.map(c => c.name), VIEW_CASES.map(c => c.name), "the case list");
-  for (const c of VECTORS.view) assert.deepEqual(viewOut(V, c), c.out, c.name);
+  for (const c of VECTORS.view) assert.deepEqual(viewOut({ ...V, ...SHAPE }, c), c.out, c.name);
   const at = n => VECTORS.view.find(c => c.name === n).out;
   assert.deepEqual(at("camAt at 32 (today's value)"), { x: 239, y: 492 }, "today's camera on main at 32 px");
   assert.deepEqual(at("visTiles at spawn"), { tx0: 9, ty0: 20, tx1: 19, ty1: 31 }, "11 × 12 tiles");
 });
-// ---- src/atlas.mjs: the per-tile layers of a 48 px place, on the synthetic catalogue in world-vectors.json ----
+// ---- src/render/atlas.mjs: the per-tile layers of a 48 px place, on the synthetic catalogue in world-vectors.json ----
 const SYN = () => A.catalogue(VECTORS.atlas.catalogue, VECTORS.atlas.levelTone);
 const vecPlaces = () => atlasPlaces(W).map(p => { const lay = W.genPlace(p.G, p.seed, p.key); return { ...p, lay, level: p.G.level ? p.G.level[lay.cell] : null }; });
 test("atlas: the synthetic catalogue and the literal cases in world-vectors.json", () => {
@@ -370,19 +370,19 @@ test("atlas: a blocking tile never draws as lawn; without its own pieces it take
   assert.ok(withBlock.length > 0); for (const p of withBlock) assert.deepEqual(A.placeLayers(p.lay, p.seed, none, 0, p.level), { ok: false }, p.key);
   const flat = places.find(p => !p.lay.tiles.some(t => blockKinds.includes(t))); if (flat) assert.ok(A.placeLayers(flat.lay, flat.seed, none, 0, flat.level).ok, "a place with no blocking terrain kind");
 });
-test("atlas: pure and integer only, by source; its only import is ./world.mjs; no export shadows a page identifier", () => {
+test("atlas: pure and integer only, by source; its only import is the world module; no export shadows a page identifier", () => {
   const code = blank(ATLAS_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /Math\.round/, /Math\.hypot/, /Math\.sqrt/]) assert.doesNotMatch(code, re, String(re));
   assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
-  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["./world.mjs"]);
+  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["../logic/world.mjs"]);
   const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
   for (const k of Object.keys(A)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
 });
-test("view: pure and integer only, by source; its only import is ./world.mjs; no export shadows a page identifier", () => {
+test("view: pure and integer only, by source; its only import is the world module; no export shadows a page identifier", () => {
   const code = blank(VIEW_SRC);
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /Math\.round/, /Math\.hypot/, /Math\.sqrt/]) assert.doesNotMatch(code, re, String(re));
   assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
-  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["./world.mjs"]);
+  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["../logic/world.mjs"]);
   assert.equal((code.match(/\bimport\b/g) || []).length, 1, "one import");
   const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
   for (const k of Object.keys(V)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
@@ -1083,7 +1083,7 @@ test("the warned-tile card in a 48 px place shows the cell's sprite box (columns
 
 // ---- the edges at 48: coverage fades, the storm step, the place's own tables ----
 const BAYER_ = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-// The eighth rule from its definition, independent of src/view.mjs: brute force over a 12 px grid with the exact disc (a far eighth within 8 cells keeps a cell out of the core,
+// The eighth rule from its definition, independent of src/render/view.mjs: brute force over a 12 px grid with the exact disc (a far eighth within 8 cells keeps a cell out of the core,
 // a core cell within 8 opens it), cut-only, and the quarter look for a near tile the opening empties. `far(x, y)` is the tile far bit (off the place: not far).
 const NB8_ = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
 function refGrid(far, w = 28, h = 32, noFallback = false) {
@@ -1111,13 +1111,13 @@ test("48 px edges: an eighth's dither (all 512 masks) equals its definition; a s
     for (let y = 0; y < 12; y++) for (let x = 0; x < 12; x++) { let c = 0; for (const oy of [-6, -3, 0, 3, 6]) for (const ox of [-6, -3, 0, 3, 6]) c += far(Math.floor((x + ox) / 12), Math.floor((y + oy) / 12));
       f[y * 12 + x] = 32 * c > (2 * BAYER_[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; } return f; };
   assert.deepEqual(V.BAYER4, BAYER_);
-  for (let m = 0; m < 512; m++) assert.deepEqual(Array.from(EDGE.coverE(m)), Array.from(want(m)), "mask " + m);
-  assert.equal(EDGE.coverE(7), EDGE.coverE(7), "the table is built once");
-  assert.ok(EDGE.coverE(0).every(v => v === 0) && EDGE.coverE(511).every(v => v === 1));
-  const w = EDGE.coverE(0xe0);   // the west column of eighths far, the eighth itself near: from 6 px in, every pixel is near
+  for (let m = 0; m < 512; m++) assert.deepEqual(Array.from(SHAPE.coverE(m)), Array.from(want(m)), "mask " + m);
+  assert.equal(SHAPE.coverE(7), SHAPE.coverE(7), "the table is built once");
+  assert.ok(SHAPE.coverE(0).every(v => v === 0) && SHAPE.coverE(511).every(v => v === 1));
+  const w = SHAPE.coverE(0xe0);   // the west column of eighths far, the eighth itself near: from 6 px in, every pixel is near
   for (let y = 0; y < 12; y++) for (let x = 6; x < 12; x++) assert.equal(w[y * 12 + x], 0, "inside the near eighth at " + x + "," + y);
   assert.ok(w.some(v => v === 1) && w.some((v, i) => (i % 12) < 6 && v === 0), "the dither lies across the boundary, one eighth wide");
-  const c = EDGE.coverE(0x002);   // only the NE eighth far: a rounded patch gathering at the corner
+  const c = SHAPE.coverE(0x002);   // only the NE eighth far: a rounded patch gathering at the corner
   let corner = 0; for (let y = 0; y < 3; y++) for (let x = 9; x < 12; x++) corner += c[y * 12 + x]; assert.ok(corner > 0 && corner < 9, "far pixels gather at the corner: " + corner); assert.equal(c[11 * 12], 0);
 });
 test("48 px edges: the eighth grid equals its definition on random shapes and the sight discs; it is cut-only; a thin region falls back to the quarter look; a disc loses at most 8 of a tile's 16 eighths", () => {
@@ -1127,7 +1127,7 @@ test("48 px edges: the eighth grid equals its definition on random shapes and th
   shapes.push((x, y) => Math.hypot(x - 14, y - 16) > 4.5, (x, y) => Math.hypot(x - 14, y - 16) > 6.5, (x, y) => Math.hypot(x - 1, y - 1) > 6.5, (x, y) => x < 12 || x > 12, (x, y) => x < 12 || x > 16, (x, y) => !(x === 12 && y === 10));
   for (const far of shapes) {
     const tf = new Uint8Array(896); for (let y = 0; y < 32; y++) for (let x = 0; x < 28; x++) tf[y * 28 + x] = far(x, y) ? 1 : 0;
-    const got = EDGE.eighthGrid(tf, 28, 32), want = refGrid(far);
+    const got = SHAPE.eighthGrid(tf, 28, 32), want = refGrid(far);
     assert.deepEqual(Array.from(got), Array.from(want));
     for (let ty = 0; ty < 32; ty++) for (let tx = 0; tx < 28; tx++) if (tf[ty * 28 + tx]) for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) assert.equal(got[(4 * ty + j) * 112 + 4 * tx + i], 1, "a hidden tile's eighths are all far"); }
   const count = (far, tx, ty, grid) => { let n = 0; for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) n += grid[(4 * ty + j) * 112 + 4 * tx + i]; return n; };
@@ -1136,11 +1136,11 @@ test("48 px edges: the eighth grid equals its definition on random shapes and th
     assert.equal(g.emptied.length, 0, "no tile of the disc is emptied"); }
   const col = n => (x, y) => !(x >= 12 && x < 12 + n), one = refGrid(col(1), 28, 32, true), five = refGrid(col(5), 28, 32, true);
   assert.ok(one.emptied.length === 32 && five.emptied.length === 0, "a corridor 1 wide is emptied by the opening, 5 wide keeps every tile: " + one.emptied.length + ", " + five.emptied.length);
-  const fb = EDGE.eighthGrid(Uint8Array.from({ length: 896 }, (_, k) => col(1)(k % 28, (k / 28) | 0) ? 1 : 0), 28, 32);   // the fallback: a 1-wide corridor takes quarterFar's look (here: all near)
+  const fb = SHAPE.eighthGrid(Uint8Array.from({ length: 896 }, (_, k) => col(1)(k % 28, (k / 28) | 0) ? 1 : 0), 28, 32);   // the fallback: a 1-wide corridor takes quarterFar's look (here: all near)
   for (let ty = 0; ty < 32; ty++) for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) assert.equal(fb[(4 * ty + j) * 112 + 48 + i], 0, "a corridor tile draws near by its quarters");
 });
 test("48 px edges: a quarter of a tile is far where its tile is far, or where both sides meeting at its corner are far unless the tile is boxed in (a lone tile stays whole)", () => {
-  for (let m8 = 0; m8 < 256; m8++) for (const own of [0, 1]) { const q = EDGE.quarterFar(own, m8), bit = b => (m8 >> b) & 1, boxed = bit(0) && bit(2) && bit(4) && bit(6);
+  for (let m8 = 0; m8 < 256; m8++) for (const own of [0, 1]) { const q = SHAPE.quarterFar(own, m8), bit = b => (m8 >> b) & 1, boxed = bit(0) && bit(2) && bit(4) && bit(6);
     const want = own ? 15 : boxed ? 0 : (bit(0) & bit(6)) | ((bit(0) & bit(2)) << 1) | ((bit(4) & bit(6)) << 2) | ((bit(4) & bit(2)) << 3);
     assert.equal(q, want, "own " + own + " m8 " + m8); }
 });
@@ -1215,7 +1215,7 @@ test("48 px storm on grass: a grass colour takes dark2 in the band, under the ov
     assert.ok(grass > 100 && n > 1000, what + ": grass pixels " + grass + " of " + n); };
   check(band, 12, 12, c => ps[c], "a band tile (the pawn's column minus two)");
   check(over, 14, 12, c => ps[c], "under the overcast");
-  check(band, 13, 12, (c, x, y) => EDGE.stormStep(x, x, y) ? ps[c] : c, "the lit tile beside the band (its 6 px step takes the storm table)");
+  check(band, 13, 12, (c, x, y) => SHAPE.stormStep(x, x, y) ? ps[c] : c, "the lit tile beside the band (its 6 px step takes the storm table)");
   assert.equal(band.run("PLACE_STORM[53] === DARK2[53] && REMAP_PLACE[1] === PLACE_STORM && REMAP[1] === DARK"), true, "the band, the step and the overcast share one table; 32 px reads the core dark");
 });
 test("48 px fog edge: in the storm's band the clear side takes the band's dark (PLACE_STORM), as 32 px does, and outside the band it is lit", () => {
@@ -1700,7 +1700,7 @@ test("finds: fruit and an unlit beacon are not takes; a place with a full cup re
 // lock-playtest-world (owner 2026-11-10 20:18): the playtest seed list, the land version on the save, the three notice slots.
 test("a new world takes its seed from the playtest list only, and the list is made on this build's land", () => {
   assert.ok(PLAYTEST_SEEDS.length >= 1);
-  assert.equal(PLAYTEST_REALM_REV, REALM_REV, "src/playtest-seeds.mjs is made again (tools/playtest-world-check.mjs --list) when REALM_REV changes");
+  assert.equal(PLAYTEST_REALM_REV, REALM_REV, "src/data/playtest-seeds.mjs is made again (tools/playtest-world-check.mjs --list) when REALM_REV changes");
   assert.equal(PLAYTEST_BIOME_V, R.REALM_BIOME_V);
   const p = page({});
   for (let i = 0; i < 6; i++) assert.ok(PLAYTEST_SEEDS.includes(p.run("randomSeed()")), "randomSeed is a seed of the list");

@@ -1,5 +1,5 @@
 // Writes art/gen7/layers.json: the dual grid's layer descriptors of the tile set generator 7 bakes with (places/src/setload.mjs layerDescriptors), which read the set's pictures and so run in Node only.
-// The page bakes a cell in the browser (src/bake7.mjs) from this file and the tile set's .mbtiles. Run when the set changes:  node tools/gen7-layers.mjs
+// The page bakes a cell in the browser (src/gen7/bake7.mjs) from this file and the tile set's .mbtiles. Run when the set changes:  node tools/gen7-layers.mjs
 import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';
 import { bakeCtx } from './gen7-render.mjs';
 

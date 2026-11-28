@@ -9,7 +9,7 @@
 //   s.run(budgetMs)    steps until the budget is spent (checked between slices), the plan is done or a pause; returns the slices made
 //   s.digests          Map of 'p:X,Y' / 's:X,Y' to the slice's digest; s.log every slice made, in order, with its ms
 import { cellTerrain, sectorOf, decorOf, banksOfRegion, CW, CH, RW, RH } from './place.mjs';
-import { ATLAS } from '../regions.mjs';
+import { ATLAS } from '../logic/regions.mjs';
 
 const H0 = 2166136261;
 const fnvBytes = (h, a) => { const b = new Uint8Array(a.buffer, a.byteOffset, a.byteLength); for (let i = 0; i < b.length; i++) { h ^= b[i]; h = Math.imul(h, 16777619); } return h >>> 0; };

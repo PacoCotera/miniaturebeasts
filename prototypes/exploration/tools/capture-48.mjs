@@ -15,8 +15,8 @@ import { inflateSync } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodePNG, pageRGB, pageTables } from "./atlas-check.mjs";
-import { decodeExact, paletteTable, catalogue, placeLayers } from "../src/atlas.mjs";
-import { PW, PH, T, TERR } from "../src/world.mjs";
+import { decodeExact, paletteTable, catalogue, placeLayers } from "../src/render/atlas.mjs";
+import { PW, PH, T, TERR } from "../src/logic/world.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const arg = (n, d) => { const i = process.argv.indexOf("--" + n); return i < 0 ? d : process.argv[i + 1]; };

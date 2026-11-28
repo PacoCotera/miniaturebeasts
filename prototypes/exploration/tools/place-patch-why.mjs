@@ -3,8 +3,8 @@
 import { realm7 } from '../src/gen7/region.mjs';
 import { cellIR, cellTerrain, TV } from '../src/gen7/place.mjs';
 import { planOf } from '../src/gen7/places.mjs';
-import { hash, L, MW, MH } from '../src/world.mjs';
-import { ATLAS } from '../src/regions.mjs';
+import { hash, L, MW, MH } from '../src/logic/world.mjs';
+import { ATLAS } from '../src/logic/regions.mjs';
 
 const [per, ...seedArgs] = process.argv.slice(2), N = Number(per || 64), seeds = seedArgs.map(Number), names = Object.fromEntries(Object.entries(TV).map(([k, v]) => [v, k.toLowerCase()]));
 const why = {};

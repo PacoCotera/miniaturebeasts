@@ -14,8 +14,8 @@ import { RULES } from '../src/gen7/rules.mjs';
 import { recipeAt, GROUND, BLEND } from '../src/gen7/ground.mjs';
 import { slotBiomes } from '../src/gen7/world.mjs';
 import { genRegion7 } from '../src/gen7/region.mjs';
-import { ATLAS } from '../src/regions.mjs';
-import { MW, MH, L } from '../src/world.mjs';
+import { ATLAS } from '../src/logic/regions.mjs';
+import { MW, MH, L } from '../src/logic/world.mjs';
 
 // The whole-world proofs take about five minutes a seed. A pull request into main (MB_CI_FAST=1) runs seed 7 and seeds 1-5 only; the full set runs locally before every merge.
 const FAST = process.env.MB_CI_FAST === '1';
@@ -368,7 +368,7 @@ test('seed 7: the sector of a place is 16 blocks of ground and level, agrees wit
 
 // The reach asks for the places in view first: a sector made for some cells holds exactly what the whole region's holds in them, marks them in `have`, and leaves the rest empty.
 test('seed 7: a sector asked for the cells in view equals the whole region sector in those cells', { timeout: 900000 }, async () => {
-  const { sectorOfRegion } = await import('../src/world7.mjs'), seed = 7, slot = [1, 1], cells = [0, 1, 25, 26, 100], part = sectorOfRegion(seed, slot, cells), whole = sectorOfRegion(seed, slot);
+  const { sectorOfRegion } = await import('../src/gen7/world7.mjs'), seed = 7, slot = [1, 1], cells = [0, 1, 25, 26, 100], part = sectorOfRegion(seed, slot, cells), whole = sectorOfRegion(seed, slot);
   assert.equal(whole.have, undefined);
   for (let c = 0; c < part.have.length; c++) {
     assert.equal(part.have[c], cells.includes(c) ? 1 : 0);

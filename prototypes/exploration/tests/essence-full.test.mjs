@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import * as A from "../src/atlas.mjs";
+import * as A from "../src/render/atlas.mjs";
 
 
 const page = () => makePage({ console: "silent", els: true, raf: 1 }).run;

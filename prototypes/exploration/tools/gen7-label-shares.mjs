@@ -3,8 +3,8 @@
 //   node tools/gen7-label-shares.mjs 7 13 42
 import { cellTerrain, TV, CW, CH } from '../src/gen7/place.mjs';
 import { genRegion7 } from '../src/gen7/region.mjs';
-import { ATLAS } from '../src/regions.mjs';
-import { MW, MH, L } from '../src/world.mjs';
+import { ATLAS } from '../src/logic/regions.mjs';
+import { MW, MH, L } from '../src/logic/world.mjs';
 
 const LN = Object.fromEntries(Object.entries(L).map(([k, v]) => [v, k.toLowerCase()]));
 const TN = Object.fromEntries(Object.entries(TV).map(([k, v]) => [v, k.toLowerCase()]));

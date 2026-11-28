@@ -1,4 +1,4 @@
-// Bug 68: src/pngdecode.mjs reads a PNG's own bytes. Checked against the Node reference decoder on real files from art/, on every filter type
+// Bug 68: src/render/pngdecode.mjs reads a PNG's own bytes. Checked against the Node reference decoder on real files from art/, on every filter type
 // and colour type we ship, on the refusals, and on readPixels with a canvas that adds noise (the farbling browser): the bytes path never touches it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -6,7 +6,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { deflateSync } from "node:zlib";
-import { decodePng, readPixels } from "../src/pngdecode.mjs";
+import { decodePng, readPixels } from "../src/render/pngdecode.mjs";
 import { decodePNG } from "../tools/atlas-check.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");

@@ -2,7 +2,7 @@
 //   node --test prototypes/exploration/tests/satchel-stack.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { stacks, stackRoom, capStacks, STACK, SATCHEL } from "../src/habits.mjs";
+import { stacks, stackRoom, capStacks, STACK, SATCHEL } from "../src/logic/habits.mjs";
 
 const mk = (item, n, from = 0) => Array.from({ length: n }, (_, i) => ({ id: item + (from + i), item }));
 
@@ -31,7 +31,7 @@ test("an old save merges like kinds and keeps no stack over 9", () => {
 });
 
 test("the stack line: names, then and k more (editorial 11-26)", async () => {
-  const { WORDS } = await import("../src/words.mjs"), f = WORDS.case.stackFrom;
+  const { WORDS } = await import("../src/data/words.mjs"), f = WORDS.case.stackFrom;
   assert.equal(f(["Old", "Elm"]), "from Old and Elm"); assert.equal(f(["Old", "Elm", "Ash"]), "from Old, Elm and Ash");
   assert.equal(f(["Old", "Elm", "Ash", "Fen", "Oak", "Ivy", "Rue", "Bay", "Yew"]), "from Old, Elm and 7 more"); assert.equal(f(["Old"]), "from Old");
 });

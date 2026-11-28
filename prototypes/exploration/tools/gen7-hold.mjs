@@ -5,8 +5,8 @@ import { realm7 } from '../src/gen7/region.mjs';
 import { cellIR, decorOf } from '../src/gen7/place.mjs';
 import { landmarksOf } from '../src/gen7/landmarks.mjs';
 import { isStartCell } from '../src/gen7/hold.mjs';
-import { hash, L, MW, MH } from '../src/world.mjs';
-import { ATLAS } from '../src/regions.mjs';
+import { hash, L, MW, MH } from '../src/logic/world.mjs';
+import { ATLAS } from '../src/logic/regions.mjs';
 
 const [s0, s1, per, out] = [Number(process.argv[2] || 7), Number(process.argv[3] || 7), Number(process.argv[4] || 100), process.argv[5]];
 const res = { seeds: 0, cells: 0, bad: [], finds: 0, byKind: {}, byBiome: {}, hist: Array(12).fill(0), marks: 0, glassOffSand: 0, glass: 0, marksCells: 0, landCellsAll: 0, landmarks: 0, spacingBreaks: 0, regionsMissing: [], startNoMark: 0, starts: 0, startNoStone: 0, startNoPod: 0, startNoFind: 0, noOpen: 0, noSpawn: 0, noName: 0, noFind: 0, hearts: 0, oldClues: 0, kindsLm: {}, ms: 0, tracks: 0, reedlines: 0, moss: 0, pearls: 0, traces: 0, herdPods: 0, namesRepeat: 0 };

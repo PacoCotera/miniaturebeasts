@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { runBot, RUN, FIXED_DATE } from "../tools/realm-run.mjs";
 import { makePage } from "./page-harness.mjs";
-import { MAP_KEYS } from "../src/regions.mjs";
+import { MAP_KEYS } from "../src/logic/regions.mjs";
 
 const GOLDEN = JSON.parse(readFileSync(new URL("./realm-run.golden.json", import.meta.url), "utf8"));
 const FIX = name => readFileSync(new URL(`../../station/tests/fixtures/save-v8-${name}.json`, import.meta.url), "utf8");

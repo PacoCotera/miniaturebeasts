@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { DAY } from "../src/words.mjs";
+import { DAY } from "../src/data/words.mjs";
 
 const page = () => makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });
 const find = `(() => { for (const c of [...new Set(S.cr.filter(q => q.sp === 0).map(q => q.c))]) { if (!G.comp[c] || G.land[c] === L.WATER) continue; const key = String(c), lay = layout(key), live = ensureLive(key);

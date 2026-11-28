@@ -1,5 +1,5 @@
 // The side between two land cells of a generator 7 region, read off both places' tiles. No game state: two layouts in, the answer out.
-import { T_BLOCK } from "../world.mjs";
+import { T_BLOCK } from "./world.mjs";
 
 // Both layouts are the generator's own (a stand-in made while the tile set loads has no levels to read).
 export const sideReady = (la, lb) => !!(la.tiles && lb.tiles && la.raisedFn && lb.raisedFn);

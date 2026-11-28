@@ -1,5 +1,5 @@
 // tools/atlas-check.mjs, the art director's loader check, on PNGs and manifests made here: the forms it
-// takes and refuses, the chunks that refuse a sheet, exact palette colours only, and the core set from src/atlas.mjs.
+// takes and refuses, the chunks that refuse a sheet, exact palette colours only, and the core set from src/render/atlas.mjs.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
@@ -7,7 +7,7 @@ import os from "node:os";
 import path from "node:path";
 import { deflateSync } from "node:zlib";
 import { check, decodePNG, pageRGB, pageTables } from "../tools/atlas-check.mjs";
-import { decodeExact, paletteTable, overrideCounts, stormOnGrass, PLACE_OVERRIDES, QUADS, SHORE_STATES, LIP_STATES } from "../src/atlas.mjs";
+import { decodeExact, paletteTable, overrideCounts, stormOnGrass, PLACE_OVERRIDES, QUADS, SHORE_STATES, LIP_STATES } from "../src/render/atlas.mjs";
 
 const CRC = Array.from({ length: 256 }, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
 const crc = b => { let c = 0xffffffff; for (const x of b) c = CRC[(c ^ x) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };

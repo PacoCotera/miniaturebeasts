@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage, PAGE } from "./page-harness.mjs";
-import * as W from "../src/world.mjs";
+import * as W from "../src/logic/world.mjs";
 
 
 const page = (store = {}) => makePage({ store }).run;

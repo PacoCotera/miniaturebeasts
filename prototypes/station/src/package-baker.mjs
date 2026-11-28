@@ -1,11 +1,11 @@
 // The Station bakes the Companion's region: when the Companion's world is known (its save, same origin) and no current package exists for its
-// region and revs, the realm's places worker (exploration/src/realm-worker.mjs, the one the Companion bakes with) makes the cells in the order of package-store.mjs bakeOrder (the start place, its reach, the ring, the rest
+// region and revs, the realm's places worker (exploration/src/worker.mjs, the one the Companion bakes with) makes the cells in the order of package-store.mjs bakeOrder (the start place, its reach, the ring, the rest
 // nearest first) and each is written to the package as it lands. The page's thread only receives a cell, hashes it and hands it to IndexedDB: the bake is the worker's.
 // Nothing here changes a place: the cell kept is the cell the worker made, from the same seed, slot and v, as .mbplace bytes (place format 2).
 // Pure parts take their world from the caller (a test gives its own worker, store and realm); `startPackage` is the page's wiring.
 
 // What the save names: the region a package is for, and where its order starts. null: no generator 7 world in the save.
-const biomeV = (sv) => (sv && sv.biomeV != null ? sv.biomeV : 1);   // the realm's kind version, as the Companion reads it (exploration/src/regions.mjs biomeVersion), so this check imports no generator
+const biomeV = (sv) => (sv && sv.biomeV != null ? sv.biomeV : 1);   // the realm's kind version, as the Companion reads it (exploration/src/logic/regions.mjs biomeVersion), so this check imports no generator
 export function wantOf(sv, biomeVersion = biomeV) {
   const regions = sv && Array.isArray(sv.regions) ? sv.regions : [], R = regions.find(r => r && r.id === sv.here) || regions[0];
   if (!R || R.gen !== 7 || !regions[0] || typeof regions[0].seed !== 'number' || !Array.isArray(R.slot)) return null;
@@ -71,12 +71,12 @@ export function startPackage(sv, opts = {}) {
     try {
       const want = wantOf(sv); if (!want) { packageState.phase = 'none'; DONE_KEY = key; return null; }
       packageState.startedAt = performance.now(); const tI = packageState.startedAt;
-      const [world7, realmStore, place, realm, places, store] = await Promise.all([import('../../exploration/src/world7.mjs'), import('../../exploration/src/realm-store.mjs'), import('../../exploration/src/gen7/place.mjs'), import('../../exploration/src/gen7/region.mjs'), import('../../exploration/src/place-store.mjs'), import('../../exploration/src/package-store.mjs')]);
+      const [world7, realmStore, place, realm, places, store] = await Promise.all([import('../../exploration/src/gen7/world7.mjs'), import('../../exploration/src/store/realm-store.mjs'), import('../../exploration/src/gen7/place.mjs'), import('../../exploration/src/gen7/region.mjs'), import('../../exploration/src/store/place-store.mjs'), import('../../exploration/src/store/package-store.mjs')]);
       const tk = performance.now(), kit = await loadKit({ world7, places }), kv = await store.idbKv(), t0 = performance.now();
       packageState.steps = { imports: Math.round(tk - tI), kit: Math.round(t0 - tk) }; packageState.phase = 'baking';
       const r = await bakePackage(want, {
         store, kv, kit, now: () => performance.now(), limit: opts.limit,
-        makeWorker: () => new Worker(new URL('../../exploration/src/realm-worker.mjs', import.meta.url), { type: 'module' }),
+        makeWorker: () => new Worker(new URL('../../exploration/src/worker.mjs', import.meta.url), { type: 'module' }),
         realm: seed => realmStore.readyRealm(seed),
         world: { genWorld7: world7.genWorld7, realm7: realm.realm7, decorSites: place.decorSites, madeBanks: place.madeBanks },
         mark: (name, ms) => { packageState.steps[name] = ms; },

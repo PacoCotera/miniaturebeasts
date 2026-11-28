@@ -3,8 +3,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { PLAYTEST_SEEDS } from "../src/playtest-seeds.mjs";
-import { DRAWN_PIECES } from "../src/adapt7.mjs";
+import { PLAYTEST_SEEDS } from "../src/data/playtest-seeds.mjs";
+import { DRAWN_PIECES } from "../src/gen7/adapt7.mjs";
 
 test("on every land cell of every playtest world, every placed set piece has a drawn picture (no invisible block)", () => {
   let cells = 0, pieces = 0;

@@ -12,7 +12,7 @@ import { mirrorIR } from '../src/bake/mirror.mjs';
 import { buildPlace, drawnTerrain } from '../src/bake/build.mjs';
 import { readPlace } from '../src/format/read.mjs';
 import { terrainLayers, packDepth } from '../src/dualgrid.mjs';
-import { layersToTileIds } from '../src/bake/build.mjs';
+import { layersToTileIds } from '../src/bake/steps.mjs';
 import { applyOpenEdges } from '../src/bake/openedges.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));

@@ -5,7 +5,7 @@ import { tileSlot, renderGround, renderView, renderHalfView, lightState, applyLi
 import { cameraFor } from '../src/camera.mjs';
 import { compareGolden } from '../src/golden.mjs';
 import { ts, place, NIGHT, toImage, goldenFile, cells } from './render-helpers.mjs';
-import { BAYER4 } from '../../exploration/src/view.mjs';
+import { BAYER4 } from '../../exploration/src/render/view.mjs';
 
 const VIEW = { w: 450, h: 532 };
 const W48 = place.w * 48, H48 = place.h * 48;

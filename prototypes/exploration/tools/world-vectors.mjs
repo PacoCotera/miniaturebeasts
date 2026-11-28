@@ -1,10 +1,10 @@
 // Golden vectors for the seeded world: per generator and seed, a digest of the world (genWorld) and of its places (genPlace), hashed
 // with the game's own hash(). Generator 1 has up to 11 places a seed; generator 2 up to 16 more, one per terrain side (placeKeys2).
-// Not a suite: CI runs tests/world.test.mjs, which checks src/world.mjs against tests/world-vectors.json.
-// The file also holds `view`: literal cases for src/view.mjs (the place camera and coordinates), each input with its output; and `atlas`:
-// src/atlas.mjs on a fixed synthetic catalogue (stored in the file, so the vectors test the logic, not the art): literal cases, and
+// Not a suite: CI runs tests/world.test.mjs, which checks src/logic/world.mjs against tests/world-vectors.json.
+// The file also holds `view`: literal cases for src/render/view.mjs (the place camera and coordinates), each input with its output; and `atlas`:
+// src/render/atlas.mjs on a fixed synthetic catalogue (stored in the file, so the vectors test the logic, not the art): literal cases, and
 // an FNV-1a digest of every place's layers (generator 2 seeds 1, 7, 42 and generator 1 seed 7, both water frames).
-//   node prototypes/exploration/tools/world-vectors.mjs                         the whole file from ../src/world.mjs, JSON to stdout (generator 4 by biome):
+//   node prototypes/exploration/tools/world-vectors.mjs                         the whole file from ../src/logic/world.mjs, JSON to stdout (generator 4 by biome):
 //        gens["1"] is checked against the stored file and never re-captured (exits non-zero if it differs); gens["2"] is captured
 //   node prototypes/exploration/tools/world-vectors.mjs --page <index.html>     generator 1 from that page's own script, run in a vm
 //   node prototypes/exploration/tools/world-vectors.mjs --compare <index.html> [--seeds N]
@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 export const SEEDS = [0, 1, 2, 3, 5, 7, 13, 42, 99, 1000, 31337, 65536, 123456789, 2147483647, 2147483648, 4294967295];
-const HASH_NOTE = "hash() of src/world.mjs: FNV-1a 32 + murmur3 finaliser; H(name, values) = 8 hex digits";
+const HASH_NOTE = "hash() of src/logic/world.mjs: FNV-1a 32 + murmur3 finaliser; H(name, values) = 8 hex digits";
 const FEAT_EXTRA = ["full", "ch", "under"];
 
 const hex = h => (h >>> 0).toString(16).padStart(8, "0");
@@ -122,7 +122,7 @@ export function rosterColumn(api, G, seed) {
 }
 
 export async function moduleApi(gen = 1, biome = "mixed") {
-  const W = await import(new URL("../src/world.mjs", import.meta.url));
+  const W = await import(new URL("../src/logic/world.mjs", import.meta.url));
   return { gen, hash: W.hash, L: W.L, EDGE: W.EDGE, genWorld: s => W.genWorld(s, gen, biome), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells,
     roster: W.ROSTER, genLife: (G, seed) => W.genLife(G, seed, W.ROSTER) };
 }
@@ -166,7 +166,7 @@ export function format(seedObjs, capturedFrom, gen2 = null, view = null, atlas =
       "\n],\n  \"shadowGrid\": " + JSON.stringify(atlas.shadowGrid) + ",\n  \"noMacro\": " + JSON.stringify(atlas.noMacro) + ",\n  \"placesNoMacro\": [\n" + (atlas.placesNoMacro || []).map(c => "  " + JSON.stringify(c)).join(",\n") + "\n] }" : "") + " }\n";
 }
 
-// src/view.mjs's cases: a `view` argument is viewOf's five arguments, a `box` is the module's named box; the output is captured.
+// src/render/view.mjs's cases: a `view` argument is viewOf's five arguments, a `box` is the module's named box; the output is captured.
 export const VIEW_CASES = [
   { name: "viewOf", fn: "viewOf", args: [48, 0, 32, 450, 532] },
   { name: "camAt at spawn", fn: "camAt", args: [{ view: [48, 0, 32, 450, 532] }, 672, 1392] },
@@ -343,10 +343,10 @@ async function main(argv) {
   if (st2 && withRoster(st2.seeds) && JSON.stringify(g2) !== JSON.stringify(st2.seeds)) { console.error("generator 2 differs from tests/world-vectors.json; it is never re-captured"); process.exitCode = 1; return; }
   const same2 = st2 && core(g2) === core(st2.seeds);
   const api3 = await moduleApi(3), g3 = SEEDS.map(s => seedDigest(api3, s)), st3 = stored.gens["3"], same3 = st3 && JSON.stringify(g3) === JSON.stringify(st3.seeds);
-  const BIOMES = (await import(new URL("../src/world.mjs", import.meta.url))).BIOMES, g4 = {};
+  const BIOMES = (await import(new URL("../src/logic/world.mjs", import.meta.url))).BIOMES, g4 = {};
   for (const b of BIOMES) { const api = await moduleApi(4, b); g4[b] = SEEDS.map(s => seedDigest(api, s)); }
   const st4 = stored.gens["4"], same4 = st4 && JSON.stringify(g4) === JSON.stringify(Object.fromEntries(Object.keys(st4.biomes).map(b => [b, st4.biomes[b].seeds])));
-  const V = { ...(await import(new URL("../src/view.mjs", import.meta.url))), ...(await import(new URL("../src/render/edge.mjs", import.meta.url))) }, A = await import(new URL("../src/atlas.mjs", import.meta.url)), W = await import(new URL("../src/world.mjs", import.meta.url));
+  const V = { ...(await import(new URL("../src/render/view.mjs", import.meta.url))), ...(await import(new URL("../src/render/edge.mjs", import.meta.url))) }, A = await import(new URL("../src/render/atlas.mjs", import.meta.url)), W = await import(new URL("../src/logic/world.mjs", import.meta.url));
   process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: same2 ? st2.capturedFrom : headCommit(), seeds: g2 }, viewVectors(V), atlasVectors(A, W, stored), { capturedFrom: same3 ? st3.capturedFrom : headCommit(), seeds: g3 }, { capturedFrom: same4 ? st4.capturedFrom : headCommit(), biomes: g4 }));
 }
 
