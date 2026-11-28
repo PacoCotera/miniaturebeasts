@@ -2184,7 +2184,7 @@ it(`s41 facing Dunnock at ease 3 the bar's middle reads her word, ears up (#174,
       assert.ok(dw < 0.4, `the case is reached: the ground he walked, west of the middle, is drawn (${dw.toFixed(3)} of it dark)`);
       assert.ok(dn > 0.99, `no tile he had not seen is lit in the north rows (${dn.toFixed(3)} dark)`);
       assert.ok(ds > 0.99, `no tile he had not seen is lit in the south-west rows (${ds.toFixed(3)} dark)`);
-      const land = { x: r.x + 230, y: r.y + 340, w: 300, h: 420 };
+      const land = { x: r.x + 330, y: r.y + 340, w: 250, h: 420 };   // right of the place's first five tile columns: the cell's own edge draws one way when the cell west of it is built and another when it is not yet (the edge shapers, render-edge-1)
       assert.ok(changed(a, b2, land).frac < 0.02, "two shots of the look-around alike, so a crop can judge it");
       const c = againstRef(a, land, "s42c-west");
       assert.ok(c.frac < 0.03, `the ground west of the place is as its crop (${c.frac.toFixed(3)} differ)`);
