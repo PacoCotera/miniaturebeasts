@@ -18,6 +18,6 @@ One source for every surface: `tokens.json` (W3C Design Tokens format). Colour v
 
 - `tokens.css`: CSS custom properties, every name prefixed `--mb-` (`--mb-bone`, `--mb-space-8`, `--mb-size-web-14`, `--mb-radius-6`, `--mb-duration-160`). The play page, the Station page, the Companion page and the test page link it; `ui/keys.css` and `play/options/options.css` read it.
 - `station-palette.json`: the Station's palette data, same shape as `palettes/station.json`.
-- `companion-colors.mjs`: the Companion's `PALETTE` (name, hex), as in `exploration/index.html`.
+- `companion-colors.mjs`: the Companion's `PALETTE` (name, hex); the Companion's page reads it through `exploration/src/data/palette.mjs`.
 
 `npm test` compares the Station and Companion outputs with their sources, name by name.
