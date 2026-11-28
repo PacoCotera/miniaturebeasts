@@ -1,6 +1,6 @@
 // The dusk, night and dawn cards move a little (#175, "minimalistic animation"). No new art: every frame is the signed card with
 // pixels it already has moved or re-toned back to its own palette. One motion a card, a gentle loop of 4 steps, one rhythm:
-//   night: the fireflies blink and drift a pixel;  dusk: the sun's glow rings breathe;  dawn: the pond's mist drifts a pixel.
+//   night: the fireflies blink and drift a pixel;  dusk: the sun's glow rings breathe;  dawn: the mist drifts three pixels (#175 round 4: seen within 2 s at 412).
 // Pure: grids are Uint8Array RGB on the card's 225 x 300 grid (the 450 x 600 file is 2x nearest).
 export const CARD_W = 225, CARD_H = 300;
 // ms a step lasts, and the order the frames play (ping-pong where the motion is a breath or a drift)
@@ -77,12 +77,12 @@ function duskFrames(a) {
   for (let y = 125; y < 170; y++) for (let x = 100; x < 200; x++) { const i = at(a, x, y), l = a[i] + a[i + 1] + a[i + 2]; if (l > best) best = l; }
   for (let y = 125; y < 170; y++) for (let x = 100; x < 200; x++) { const i = at(a, x, y); if (a[i] + a[i + 1] + a[i + 2] >= best - 6) { cx += x; cy += y; n++; } }
   cx = Math.floor(cx / n); cy = Math.floor(cy / n);
-  const pal = palOf(a), steps = [-0.12, 0, 0.14], g3 = [];
+  const pal = palOf(a), steps = [-0.3, 0, 0.35], g3 = [];
   for (const k of steps) {
     const o = a.slice();
     if (k) for (let y = 0; y < CARD_H; y++) for (let x = 0; x < CARD_W; x++) {
-      const d = Math.hypot(x - cx, y - cy); if (d < 14 || d > 40) continue;
-      const t = k * (1 - (d - 14) / 26), tgt = t > 0 ? 255 : 0, i = at(a, x, y);
+      const d = Math.hypot(x - cx, y - cy); if (d < 8 || d > 56) continue;
+      const t = k * (1 - (d - 8) / 48), tgt = t > 0 ? 255 : 0, i = at(a, x, y);
       put(o, i, snapTo(pal, a[i] + Math.trunc(Math.abs(t) * (tgt - a[i])), a[i + 1] + Math.trunc(Math.abs(t) * (tgt - a[i + 1])), a[i + 2] + Math.trunc(Math.abs(t) * (tgt - a[i + 2]))));
     }
     g3.push(o);
@@ -93,11 +93,11 @@ function duskFrames(a) {
 const MIST = [[160, 155, 151], [102, 120, 120], [119, 135, 137], [111, 120, 132], [187, 196, 174]];
 function dawnFrames(a) {   // the mist band's own pixels take the colour of the mist pixel one step left, only where both are mist
   const M = new Uint8Array(CARD_W * CARD_H);
-  for (let y = 150; y <= 200; y++) for (let x = 0; x < CARD_W; x++) { const i = at(a, x, y); if (MIST.some(m => m[0] === a[i] && m[1] === a[i + 1] && m[2] === a[i + 2])) M[y * CARD_W + x] = 1; }
+  for (let y = 130; y <= 235; y++) for (let x = 0; x < CARD_W; x++) { const i = at(a, x, y); if (MIST.some(m => m[0] === a[i] && m[1] === a[i + 1] && m[2] === a[i + 2])) M[y * CARD_W + x] = 1; }
   return [0, 1, 2, 1].map(s => {
     const o = a.slice();
-    if (s) for (let y = 150; y <= 200; y++) for (let x = 0; x < CARD_W; x++) {
-      const sx = (x - s + CARD_W) % CARD_W;
+    if (s) for (let y = 130; y <= 235; y++) for (let x = 0; x < CARD_W; x++) {
+      const sx = (x - 3 * s + CARD_W) % CARD_W;
       if (M[y * CARD_W + x] && M[y * CARD_W + sx]) put(o, at(o, x, y), [a[at(a, sx, y)], a[at(a, sx, y) + 1], a[at(a, sx, y) + 2]]);
     }
     return o;

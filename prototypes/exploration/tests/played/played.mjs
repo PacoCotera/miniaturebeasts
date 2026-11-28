@@ -683,6 +683,35 @@ for (const size of SIZES) {
       assert.equal(all.n - inGlow.n, 0, "the card matches outside the glow");
     } finally { await g.ctx.close(); }
   });
+  // OWNER 2026-11-25 22:07 UTC (#175) and the lead's ruling 11-27 21:12 ("he asked for minimal, not invisible: dawn and dusk get one small motion each that a player sees within 2 s at 412"), splash-anim-4, rule 16a.
+  // Dusk (his #166 save) and dawn (the pod-sleep-night-b save, played on to first light): two shots 500 ms apart differ in the moving region by clearly more than the 690 numbers (dusk glow: 50 pixels was the bar; dawn mist: near none) and match outside it.
+  // State only asserts each card is up. The region comes from the card file's own loop frames.
+  if (size.w === 412) for (const kind of ["dusk", "dawn"]) it(`s40 the ${kind} card's motion is plain to see: two shots 500 ms apart differ clearly in its region and match outside it [${tag}]`, async () => {
+    const g = await open(size, kind === "dusk" ? "166" : "pod-sleep-night-b");
+    try {
+      g.page.on("console", (m) => { if (/card/.test(m.text())) console.log("# s40 page:", m.text().slice(0, 300)); });
+      const card = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return m.FX.card && m.FX.card.k; });
+      for (let i = 0; i < 90 && (await card()) !== kind; i++) await g.press(i % 2 ? "left" : "right", 100, 300);
+      assert.equal(await card(), kind, "the case is reached: the " + kind + " card is up");
+      const rgba = decodePNG(readFileSync(path.join(repo, `prototypes/exploration/art/cards/${kind}-card-450x600.png`))).data, fr = cardFrames(kind, rgba);
+      let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1;
+      for (const f of fr) for (let y = 0; y < CARD_H; y++) for (let x = 0; x < CARD_W; x++) { const i = (y * CARD_W + x) * 3; if (f[i] !== fr[0][i] || f[i + 1] !== fr[0][i + 1] || f[i + 2] !== fr[0][i + 2]) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); } }
+      assert.ok(x1 > x0 && y1 > y0, "the loop's frames differ somewhere");
+      const box = [(x0 - 1) / CARD_W, (y0 - 1) / CARD_H, (x1 - x0 + 3) / CARD_W, (y1 - y0 + 3) / CARD_H];
+      const r = await g.region(), t0 = Date.now();
+      let prev = await g.shot(`s40-${kind}-a`), all, inBox;
+      await wait(Math.max(0, 500 - (Date.now() - t0)));
+      for (let k = 0; k < 4; k++) {   // two shots 500 ms apart; a loaded machine can land both on one frame of the 0,1,2,1 loop (and the sleeper's save is slow to draw), so the next beat's pair counts then
+        const next = await g.shot(`s40-${kind}-${"bcde"[k]}`);
+        all = changed(prev, next, r); inBox = changed(prev, next, r, box); prev = next;
+        if (inBox.n > 0) break;
+        await wait(450);
+      }
+      console.log(`# s40 ${kind}: ${inBox.n} of ${inBox.of} pixels differ in the moving region, ${all.n - inBox.n} outside it`);
+      assert.ok(inBox.n > (kind === "dusk" ? 4000 : 1500), `the ${kind} card moves plainly between the two shots (${inBox.n} pixels)`);
+      assert.equal(all.n - inBox.n, 0, "the card matches outside the moving region");
+    } finally { await g.ctx.close(); }
+  });
 
   // OWNER 11-25 16:3x ("collecting materials is cool too, but you fill up too fast your inventory."; satchel-stack-build-1): one satchel slot holds one kind, up to 9; the Case shows the count on the slot, and a 10th keepsake stays with its sleeper.
   // Arranged save sleep-claws-8: two curled Loikas at their beds (Plover, Marsh) in the place five light into the night, the hero 4 tiles right of Plover, the satchel holding 8 claws.
