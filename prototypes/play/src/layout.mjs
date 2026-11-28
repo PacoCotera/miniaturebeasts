@@ -131,7 +131,8 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
   } else {
     const sc = laptopScales(W, H, dpr, zSet), avail = H - BAR;
     s = snap64(st ? sc.station : sc.companion); sw = fw * s; sh = fh * s;
-    bh = Math.max(sh, leftH) + 2 * EDGE; bw = LW + sw + RW;
+    if (st && page) { out.view = { w: PAGE_W_H[0], h: PAGE_W_H[1] }; out.pageForm = { x: (sw - PAGE_W_H[0] * s) / 2, w: PAGE_W_H[0] * s, h: PAGE_W_H[1] * s }; }   // her page, the nursery and a pod's page (530 x 600 windows of the 1024 face) on the laptop: the page whole, centred in the screen's place, not the left half of a blank screen (station-fix-2)
+    bh =Math.max(sh, leftH) + 2 * EDGE; bw = LW + sw + RW;
     const lift = st && asleep ? NOTE_H + GAP : 0, blockH = bh + lift;
     const y0 = BAR + Math.max(LAPTOP_TOP, Math.floor((avail - blockH) / 2));
     by = y0 + lift; bxx = Math.max(SIDE_LAPTOP, Math.round((W - bw) / 2));
