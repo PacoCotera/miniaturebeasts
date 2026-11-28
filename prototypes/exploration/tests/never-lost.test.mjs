@@ -30,8 +30,12 @@ async function serve() {
 async function enter(browser, url, seed, motion) {
   const ctx = await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: motion ? "no-preference" : "reduce" });
   await ctx.addInitScript(() => {
-    const orig = CanvasRenderingContext2D.prototype.drawImage; window.__spr = [];
-    CanvasRenderingContext2D.prototype.drawImage = function (img, x, y, ...r) { if (img && img.width === 32 && img.height === 32 && typeof x === "number" && window.__mb) window.__spr.push([x, y, window.__mb.RT.frameN]); return orig.call(this, img, x, y, ...r); };
+    const orig = CanvasRenderingContext2D.prototype.drawImage; window.__spr = []; window.__pics = null; window.__boom = null; window.__boomN = 0;
+    CanvasRenderingContext2D.prototype.drawImage = function (img, x, y, ...r) {
+      if (img && typeof x === "number" && !r.length) { const k = [x, y, img.width, img.height].join();   // a whole picture put at a spot: the one named by __boom throws, as a broken picture would
+        if (k === window.__boom) { window.__boomN++; throw new Error("test: this picture throws"); }
+        if (window.__pics) window.__pics.add(k); }
+      if (img && img.width === 32 && img.height === 32 && typeof x === "number" && window.__mb) window.__spr.push([x, y, window.__mb.RT.frameN]); return orig.call(this, img, x, y, ...r); };
   });
   const page = await ctx.newPage();
   const errors = [], logged = []; page.on("pageerror", (e) => errors.push(e.message)); page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) logged.push(m.text()); });
@@ -46,6 +50,10 @@ const where = (page) => page.evaluate(() => { const m = window.__mb, RT = m.RT, 
   const drawn = pl ? window.__spr.some(([x, y, fr]) => fr === f && Math.abs(x - (pl.x - 16)) <= 2 && Math.abs(y - (pl.y - 8)) <= 2) : false;
   window.__spr.length = 0; return { pl: pl && { x: pl.x, y: pl.y }, drawn, view: !!RT.view || !!RT.spot, phase: m.S.phase }; });
 const inView = (s) => s.pl && s.pl.x >= 24 && s.pl.x <= 450 - 24 && s.pl.y >= 32 + 24 && s.pl.y <= 564 - 24;
+// The whole pictures a few frames put with their top-left corner inside the cell dx tiles beside the explorer, as "x,y,w,h".
+const picsBeside = async (page, dx) => { await page.evaluate(() => { window.__pics = new Set(); }); await page.waitForTimeout(200);
+  return page.evaluate((dx) => { const RT = window.__mb.RT, ts = RT.ts, x0 = RT.plScr.x - (ts >> 1) + dx * ts, y0 = RT.plScr.y - (ts >> 1), all = [...window.__pics]; window.__pics = null;
+    return all.filter((k) => { const [x, y] = k.split(",").map(Number); return x >= x0 && x < x0 + ts && y >= y0 && y < y0 + ts; }); }, dx); };
 const still = async (page) => decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
 
 for (const [seed, motion] of [[6, true], [7, true], [11, true], [6, false]]) {
@@ -76,9 +84,19 @@ test("a sprite that throws, or the place view throwing after its sprites, never 
   const { server, url } = await serve();
   try {
     const { page, ctx, errors, logged } = await enter(browser, url, 6, false);
-    await page.evaluate(() => { window.__mb.TEST.boom = 1; }); await page.waitForTimeout(400); await where(page); await page.waitForTimeout(100);
+    // a fruit put down beside the explorer is one of the view's sprites: its picture throws on every frame
+    const b0 = await picsBeside(page, 1);
+    await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; m.S.exp.live[P.key].fr.push({ x: P.x + 1, y: P.y, put: 1 }); });
+    const fruit = (await picsBeside(page, 1)).filter((k) => !b0.includes(k)); assert.equal(fruit.length, 1, "the fruit is one new picture beside the explorer: " + fruit);
+    await page.evaluate((k) => { window.__boom = k; }, fruit[0]); await page.waitForTimeout(400); await where(page); await page.waitForTimeout(100);
     let s = await where(page); assert.ok(s.drawn && inView(s), "a throwing sprite: the explorer is still drawn " + JSON.stringify(s));
-    await page.evaluate(() => { window.__mb.TEST.boom = 2; }); await page.waitForTimeout(400);
+    assert.ok(await page.evaluate(() => window.__boomN) > 0, "the fruit's picture threw");
+    // a pod lying beside the explorer is drawn by the view itself, after its sprites: its picture throws on every frame
+    await page.evaluate(() => { window.__boom = null; }); const p0 = await picsBeside(page, -1);
+    await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; m.S.pods.push({ k: P.key, x: P.x - 1, y: P.y, h: 0, g: 0, sp: 0, id: "thrown" }); });
+    const pod = (await picsBeside(page, -1)).filter((k) => !p0.includes(k)); assert.equal(pod.length, 1, "the pod is one new picture beside the explorer: " + pod);
+    await page.evaluate((k) => { window.__boom = k; window.__boomN = 0; }, pod[0]); await page.waitForTimeout(400);
+    assert.ok(await page.evaluate(() => window.__boomN) > 0, "the pod's picture threw");
     // the top bar follows the game while the place view throws (a clip left from the throwing view would freeze everything outside the view): a magenta mark on a clean canvas at the top bar and on the bottom line is painted over by the next frame
     await page.evaluate(() => { window.__mb.TEST.paint(3, 3); window.__mb.TEST.paint(3, 580); }); await page.waitForTimeout(250);
     const a = await still(page), px = (x, y) => (a.data[(y * a.w + x) * 4] << 16) | (a.data[(y * a.w + x) * 4 + 1] << 8) | a.data[(y * a.w + x) * 4 + 2];
